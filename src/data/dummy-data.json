@@ -1,0 +1,6 @@
+{
+  "questions": {
+    "q1": { "question": "Are you a boy?", "answer": null },
+    "q2": { "question": "Are you a girl?", "answer": null }
+  }
+}

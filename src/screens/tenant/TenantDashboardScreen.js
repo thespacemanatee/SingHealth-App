@@ -9,30 +9,36 @@ import {
   TopNavigationAction,
 } from "@ui-kitten/components";
 
-const BackIcon = (props) => <Icon {...props} name="menu-outline" />;
+const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
+const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 
-export const StaffScreen = ({ navigation }) => {
-  const BackAction = () => (
+export const TenantDashboardScreen = ({ navigation }) => {
+  const DrawerAction = () => (
     <TopNavigationAction
-      icon={BackIcon}
+      icon={DrawerIcon}
       onPress={() => {
         navigation.openDrawer();
       }}
     />
   );
 
+  const NotificationAction = () => (
+    <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
+  );
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <TopNavigation
-        title="MyApp"
+        title="Home"
         alignment="center"
-        accessoryLeft={BackAction}
+        accessoryLeft={DrawerAction}
+        accessoryRight={NotificationAction}
       />
       <Divider />
       <Layout
         style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
       >
-        <Text category="h1">ADMIN</Text>
+        <Text category="h1">TENANT</Text>
       </Layout>
     </SafeAreaView>
   );
