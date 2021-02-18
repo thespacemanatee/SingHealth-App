@@ -3,10 +3,6 @@ import { SafeAreaView } from "react-native";
 import { Button, Divider, Layout, TopNavigation } from "@ui-kitten/components";
 
 export const HomeScreen = ({ navigation }) => {
-  const navigateDetails = () => {
-    navigation.navigate("Details");
-  };
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <TopNavigation
@@ -22,7 +18,20 @@ export const HomeScreen = ({ navigation }) => {
           alignItems: "center",
         }}
       >
-        <Button onPress={navigateDetails}>OPEN DETAILS</Button>
+        <Button
+          onPress={() => {
+            navigation.navigate("StaffNavigator");
+          }}
+        >
+          STAFF
+        </Button>
+        <Button
+          onPress={() => {
+            navigation.navigate("TenantNavigator");
+          }}
+        >
+          TENANT
+        </Button>
       </Layout>
     </SafeAreaView>
   );

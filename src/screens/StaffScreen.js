@@ -9,15 +9,16 @@ import {
   TopNavigationAction,
 } from "@ui-kitten/components";
 
-const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
+const BackIcon = (props) => <Icon {...props} name="menu-outline" />;
 
-export const DetailsScreen = ({ navigation }) => {
-  const navigateBack = () => {
-    navigation.goBack();
-  };
-
+export const StaffScreen = ({ navigation }) => {
   const BackAction = () => (
-    <TopNavigationAction icon={BackIcon} onPress={navigateBack} />
+    <TopNavigationAction
+      icon={BackIcon}
+      onPress={() => {
+        navigation.openDrawer();
+      }}
+    />
   );
 
   return (
@@ -31,7 +32,7 @@ export const DetailsScreen = ({ navigation }) => {
       <Layout
         style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
       >
-        <Text category="h1">DETAILS</Text>
+        <Text category="h1">ADMIN</Text>
       </Layout>
     </SafeAreaView>
   );
