@@ -41,7 +41,9 @@ export const DirectoryScreen = ({ navigation }) => {
           justifyContent: "center",
           alignItems: "center",
         }}
-      ></Layout>
+      >
+        <Text category="h1">DIRECTORY</Text>
+      </Layout>
     </SafeAreaView>
   );
 };

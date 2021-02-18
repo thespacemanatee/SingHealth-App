@@ -1,4 +1,5 @@
-import React from "react";
+import React, { Fragment, useState } from "react";
+import { StyleSheet } from "react-native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
@@ -9,26 +10,45 @@ import {
   IndexPath,
   BottomNavigation,
   BottomNavigationTab,
+  Icon,
 } from "@ui-kitten/components";
 
 import { TenantDashboardScreen } from "../screens/tenant/TenantDashboardScreen";
+import { DirectoryScreen } from "../screens/staff/DirectoryScreen";
 
-const TenantBottomTabBar = ({ navigation, state }) => (
-  <BottomNavigation
-    selectedIndex={state.index}
-    onSelect={(index) => navigation.navigate(state.routeNames[index])}
-  >
-    <BottomNavigationTab title="DASHBOARD" />
-    <BottomNavigationTab title="DIRECTORY" />
-  </BottomNavigation>
-);
+const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
+
+const DirectoryIcon = (props) => <Icon {...props} name="folder-outline" />;
+
+const useBottomNavigationState = (initialState = 0) => {
+  const [selectedIndex, setSelectedIndex] = useState(initialState);
+  return { selectedIndex, onSelect: setSelectedIndex };
+};
+
+export const BottomNavigationAccessoriesShowcase = ({ navigation, state }) => {
+  const topState = useBottomNavigationState();
+
+  return (
+    <BottomNavigation
+      style={styles.bottomNavigation}
+      {...topState}
+      selectedIndex={state.index}
+      onSelect={(index) => navigation.navigate(state.routeNames[index])}
+    >
+      <BottomNavigationTab title="DASHBOARD" icon={DashboardIcon} />
+      <BottomNavigationTab title="DIRECTORY" icon={DirectoryIcon} />
+    </BottomNavigation>
+  );
+};
 
 const TenantTabNavigator = () => {
   const { Navigator, Screen } = createBottomTabNavigator();
   return (
-    <Navigator tabBar={(props) => <TenantBottomTabBar {...props} />}>
+    <Navigator
+      tabBar={(props) => <BottomNavigationAccessoriesShowcase {...props} />}
+    >
       <Screen name="TenantDashboard" component={TenantDashboardScreen} />
-      {/* <Screen name="Orders" component={OrdersScreen} /> */}
+      <Screen name="Directory" component={DirectoryScreen} />
     </Navigator>
   );
 };
@@ -50,3 +70,9 @@ export const TenantNavigator = () => {
     </Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  bottomNavigation: {
+    paddingVertical: 8,
+  },
+});
