@@ -9,6 +9,8 @@ import {
   TopNavigationAction,
 } from "@ui-kitten/components";
 
+import Graph from "../../components/ui/graph/Graph";
+
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 
@@ -42,7 +44,7 @@ export const DirectoryScreen = ({ navigation }) => {
           alignItems: "center",
         }}
       >
-        <Text category="h1">DIRECTORY</Text>
+        <Graph />
       </Layout>
     </SafeAreaView>
   );
