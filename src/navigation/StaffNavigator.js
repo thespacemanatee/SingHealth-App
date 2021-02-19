@@ -13,8 +13,8 @@ import {
   Icon,
 } from "@ui-kitten/components";
 
-import { StaffDashboardScreen } from "../screens/staff/StaffDashboardScreen";
-import { DirectoryScreen } from "../screens/staff/DirectoryScreen";
+import StaffDashboardScreen from "../screens/staff/StaffDashboardScreen";
+import DirectoryScreen from "../screens/staff/DirectoryScreen";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
 
@@ -62,7 +62,7 @@ const DrawerContent = ({ navigation, state }) => (
   </Drawer>
 );
 
-export const StaffNavigator = () => {
+const StaffNavigator = () => {
   const { Navigator, Screen } = createDrawerNavigator();
   return (
     <Navigator drawerContent={(props) => <DrawerContent {...props} />}>
@@ -76,3 +76,5 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
 });
+
+export default StaffNavigator;

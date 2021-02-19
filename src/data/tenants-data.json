@@ -4,16 +4,12 @@
       "email": "ten@ant.com",
       "password": "1234567890",
       "institution": "sgh",
-      "stalls": {
-        "stall1": {
-          "name": "Mr. Bin",
-          "type": "F&B",
-          "company": "Company Y PTE LTD",
-          "company_POC": {
-            "name": "Mr. Lee",
-            "email": "lee@gmail.com"
-          }
-        }
+      "name": "Mr. Bin",
+      "type": "F&B",
+      "company": "Company Y PTE LTD",
+      "company_POC": {
+        "name": "Mr. Lee",
+        "email": "lee@gmail.com"
       },
       "stallAddress": {
         "block": "345A",
@@ -27,16 +23,12 @@
       "email": "ten@ant.com",
       "password": "1234567890",
       "institution": "sgh",
-      "stalls": {
-        "stall1": {
-          "name": "Mr. Bin",
-          "type": "F&B",
-          "company": "Company Y PTE LTD",
-          "company_POC": {
-            "name": "Mr. Lee",
-            "email": "lee@gmail.com"
-          }
-        }
+      "name": "Best Ramen Shop",
+      "type": "F&B",
+      "company": "Company Y PTE LTD",
+      "company_POC": {
+        "name": "Mr. Tan",
+        "email": "tan@gmail.com"
       },
       "stallAddress": {
         "block": "345A",

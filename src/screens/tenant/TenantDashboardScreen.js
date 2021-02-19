@@ -12,7 +12,7 @@ import {
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 
-export const TenantDashboardScreen = ({ navigation }) => {
+const TenantDashboardScreen = ({ navigation }) => {
   const DrawerAction = () => (
     <TopNavigationAction
       icon={DrawerIcon}
@@ -43,3 +43,5 @@ export const TenantDashboardScreen = ({ navigation }) => {
     </SafeAreaView>
   );
 };
+
+export default TenantDashboardScreen;

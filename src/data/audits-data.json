@@ -1,56 +1,196 @@
 {
-  "audit1": {
-    "auditorID": "staff1",
-    "staffID": "staff1",
-    "institutionID": "sgh",
-    "address": {
-      "block": "345A",
-      "street": "Somapah Rd",
-      "building": "SUTD",
-      "unit": "#04-414",
-      "zipcode": "123434"
+  "active_audits": [
+    "audit1",
+    "audit2",
+    "audit3",
+    "audit4",
+    "audit5",
+    "audit6",
+    "audit7",
+    "audit8"
+  ],
+  "audits": {
+    "audit1": {
+      "auditorID": "staff1",
+      "staffID": "staff1",
+      "institutionID": "sgh",
+      "tenantID": "tenant1",
+      "date": "21-01-2020",
+      "time": "23:59",
+      "rectified": false,
+      "auditChecklists": {
+        "audit_form1": {
+          "1": {
+            "answer": 0,
+            "image": {
+              "url": "photos.google.com/1",
+              "tags": ["Serious issue", "Spotted in SUTD", "Worm in cai png"]
+            },
+            "2": {
+              "answer": 1
+            }
+          }
+        }
+      }
     },
-    "date": "21-01-2020",
-    "time": "23:59",
-    "auditChecklists": {
-      "audit_form1": {
-        "1": {
-          "answer": 0,
-          "image": {
-            "url": "photos.google.com/1",
-            "tags": ["Serious issue", "Spotted in SUTD", "Worm in cai png"]
+    "audit2": {
+      "auditorID": "staff2",
+      "staffID": "staff2",
+      "institutionID": "cgh",
+      "tenantID": "tenant2",
+      "date": "21-01-2020",
+      "time": "23:59",
+      "rectified": true,
+      "auditChecklists": {
+        "audit_form1": {
+          "1": {
+            "answer": 0,
+            "image": {
+              "url": "photos.google.com/2",
+              "tags": ["Mild issue", "Spotted in SUTD", "Hair in cai png"]
+            }
           },
           "2": {
             "answer": 1
           }
         }
       }
-    }
-  },
-  "audit2": {
-    "auditorID": "staff2",
-    "staffID": "staff2",
-    "institutionID": "cgh",
-    "address": {
-      "block": "345A",
-      "street": "Somapah Rd",
-      "building": "SUTD",
-      "unit": "#04-414",
-      "zipcode": "123434"
     },
-    "date": "21-01-2020",
-    "time": "23:59",
-    "auditChecklists": {
-      "audit_form1": {
-        "1": {
-          "answer": 0,
-          "image": {
-            "url": "photos.google.com/2",
-            "tags": ["Mild issue", "Spotted in SUTD", "Hair in cai png"]
+    "audit3": {
+      "auditorID": "staff1",
+      "staffID": "staff1",
+      "institutionID": "cgh",
+      "tenantID": "tenant1",
+      "date": "21-01-2020",
+      "time": "23:59",
+      "rectified": true,
+      "auditChecklists": {
+        "audit_form1": {
+          "1": {
+            "answer": 0,
+            "image": {
+              "url": "photos.google.com/2",
+              "tags": ["Mild issue", "Spotted in SUTD", "Hair in cai png"]
+            }
+          },
+          "2": {
+            "answer": 1
           }
-        },
-        "2": {
-          "answer": 1
+        }
+      }
+    },
+    "audit4": {
+      "auditorID": "staff2",
+      "staffID": "staff2",
+      "institutionID": "cgh",
+      "tenantID": "tenant2",
+      "date": "21-01-2020",
+      "time": "23:59",
+      "rectified": true,
+      "auditChecklists": {
+        "audit_form1": {
+          "1": {
+            "answer": 0,
+            "image": {
+              "url": "photos.google.com/2",
+              "tags": ["Mild issue", "Spotted in SUTD", "Hair in cai png"]
+            }
+          },
+          "2": {
+            "answer": 1
+          }
+        }
+      }
+    },
+    "audit5": {
+      "auditorID": "staff1",
+      "staffID": "staff1",
+      "institutionID": "cgh",
+      "tenantID": "tenant1",
+      "date": "21-01-2020",
+      "time": "23:59",
+      "rectified": true,
+      "auditChecklists": {
+        "audit_form1": {
+          "1": {
+            "answer": 0,
+            "image": {
+              "url": "photos.google.com/2",
+              "tags": ["Mild issue", "Spotted in SUTD", "Hair in cai png"]
+            }
+          },
+          "2": {
+            "answer": 1
+          }
+        }
+      }
+    },
+    "audit6": {
+      "auditorID": "staff2",
+      "staffID": "staff2",
+      "institutionID": "cgh",
+      "tenantID": "tenant2",
+      "date": "21-01-2020",
+      "time": "23:59",
+      "rectified": true,
+      "auditChecklists": {
+        "audit_form1": {
+          "1": {
+            "answer": 0,
+            "image": {
+              "url": "photos.google.com/2",
+              "tags": ["Mild issue", "Spotted in SUTD", "Hair in cai png"]
+            }
+          },
+          "2": {
+            "answer": 1
+          }
+        }
+      }
+    },
+    "audit7": {
+      "auditorID": "staff1",
+      "staffID": "staff1",
+      "institutionID": "cgh",
+      "tenantID": "tenant1",
+      "date": "21-01-2020",
+      "time": "23:59",
+      "rectified": true,
+      "auditChecklists": {
+        "audit_form1": {
+          "1": {
+            "answer": 0,
+            "image": {
+              "url": "photos.google.com/2",
+              "tags": ["Mild issue", "Spotted in SUTD", "Hair in cai png"]
+            }
+          },
+          "2": {
+            "answer": 1
+          }
+        }
+      }
+    },
+    "audit8": {
+      "auditorID": "staff2",
+      "staffID": "staff2",
+      "institutionID": "cgh",
+      "tenantID": "tenant2",
+      "date": "21-01-2020",
+      "time": "23:59",
+      "rectified": true,
+      "auditChecklists": {
+        "audit_form1": {
+          "1": {
+            "answer": 0,
+            "image": {
+              "url": "photos.google.com/2",
+              "tags": ["Mild issue", "Spotted in SUTD", "Hair in cai png"]
+            }
+          },
+          "2": {
+            "answer": 1
+          }
         }
       }
     }

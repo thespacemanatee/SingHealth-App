@@ -1,6 +1,6 @@
 {
   "audit_form1": {
-    "cluster": "sgh",
+    "institutionID": "sgh",
     "questions": {
       "1": {
         "question": "Have you eaten?",
@@ -13,7 +13,7 @@
     }
   },
   "audit_form2": {
-    "cluster": "cgh",
+    "institutionID": "cgh",
     "questions": {
       "1": {
         "question": "Have you eaten?",

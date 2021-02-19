@@ -14,7 +14,7 @@ import Graph from "../../components/ui/graph/Graph";
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 
-export const DirectoryScreen = ({ navigation }) => {
+const DirectoryScreen = ({ navigation }) => {
   const DrawerAction = () => (
     <TopNavigationAction
       icon={DrawerIcon}
@@ -44,8 +44,10 @@ export const DirectoryScreen = ({ navigation }) => {
           alignItems: "center",
         }}
       >
-        <Graph />
+        <Text>Directory</Text>
       </Layout>
     </SafeAreaView>
   );
 };
+
+export default DirectoryScreen;

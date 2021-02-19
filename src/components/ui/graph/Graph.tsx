@@ -9,13 +9,16 @@ import {
   Extrapolate,
 } from "react-native-reanimated";
 
-import { parsePath, getPointAtLength } from "../../../components/AnimatedHelpers";
+import {
+  parsePath,
+  getPointAtLength,
+} from "../../../components/AnimatedHelpers";
 
 import Cursor from "./Cursor";
 import Label from "./Label";
 
 const { width } = Dimensions.get("window");
-const height = width;
+const height = width / 3;
 const data: [number, number][] = [
   { x: new Date(2020, 5, 1), y: 4371 },
   { x: new Date(2020, 5, 2), y: 6198 },
@@ -55,7 +58,7 @@ const path = parsePath(d);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    // justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",
   },
@@ -78,7 +81,6 @@ const Graph = () => {
   });
   return (
     <View style={styles.container}>
-      <Label {...{ data, point }} />
       <View>
         <Svg {...{ width, height }}>
           <Defs>
@@ -101,6 +103,7 @@ const Graph = () => {
         </Svg>
         <Cursor {...{ path, length, point }} />
       </View>
+      <Label {...{ data, point }} />
     </View>
   );
 };

@@ -3,15 +3,17 @@ import { Platform } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import { HomeScreen } from "../screens/HomeScreen";
-import { StaffNavigator } from "../navigation/StaffNavigator";
-import { TenantNavigator } from "../navigation/TenantNavigator";
+import StaffNavigator from "../navigation/StaffNavigator";
+import TenantNavigator from "../navigation/TenantNavigator";
 
 const { Navigator, Screen } = createStackNavigator();
 
-export const HomeNavigator = () => (
+const HomeNavigator = () => (
   <Navigator headerMode="none">
     <Screen name="Home" component={HomeScreen} />
     <Screen name="StaffNavigator" component={StaffNavigator} />
     <Screen name="TenantNavigator" component={TenantNavigator} />
   </Navigator>
 );
+
+export default HomeNavigator;
