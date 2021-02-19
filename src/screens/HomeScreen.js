@@ -1,15 +1,21 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { SafeAreaView } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
 import { Button, Divider, Layout, TopNavigation } from "@ui-kitten/components";
 
+import { database } from "../data/dummy-database";
+import * as databaseActions from "../store/actions/databaseActions";
+
 export const HomeScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(databaseActions.storeDatabase(database));
+  }, [database, dispatch]);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <TopNavigation
-        title="SingHealth"
-        alignment="center"
-        // style={{ height: 56 }}
-      />
+      <TopNavigation title="SingHealth" alignment="center" />
       <Divider />
       <Layout
         style={{

@@ -13,6 +13,7 @@ import {
   List,
   Card,
 } from "@ui-kitten/components";
+import { FAB, Portal } from "react-native-paper";
 
 import { database } from "../../data/dummy-database";
 import Graph from "../../components/ui/graph/Graph";
@@ -21,10 +22,13 @@ const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 
 const StaffDashboardScreen = ({ navigation }) => {
-  const relevantAudits = useSelector((state) => state.database.relevantAudits);
-  console.log(relevantAudits);
-  const [] = useState([]);
-  // console.log(database);
+  const databaseStore = useSelector((state) => state.database);
+  const [state, setState] = useState({ open: false });
+
+  const onStateChange = ({ open }) => setState({ open });
+
+  const { open } = state;
+
   const DrawerAction = () => (
     <TopNavigationAction
       icon={DrawerIcon}
@@ -38,22 +42,24 @@ const StaffDashboardScreen = ({ navigation }) => {
     <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
   );
 
-  const renderActiveAudits = (itemData) => {
-    // console.log(database.audits.audits);
-    const auditID = `${itemData.item}`;
-    const tenantID = database.audits.audits[auditID].tenantID;
-    const tenantInfo = database.tenants.tenants[tenantID];
-    return (
-      <Card
-        style={styles.item}
-        status="basic"
-        // header={itemData.item}
-        // footer={itemData.item}
-      >
-        <Text>{tenantInfo.name}</Text>
-      </Card>
-    );
-  };
+  const renderActiveAudits = useCallback(
+    (itemData) => {
+      const auditID = `${itemData.item}`;
+      const tenantID = database.audits.audits[auditID].tenantID;
+      const tenantInfo = database.tenants.tenants[tenantID];
+      return (
+        <Card
+          style={styles.item}
+          status="basic"
+          // header={itemData.item}
+          // footer={itemData.item}
+        >
+          <Text>{tenantInfo.name}</Text>
+        </Card>
+      );
+    },
+    [databaseStore]
+  );
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -71,10 +77,34 @@ const StaffDashboardScreen = ({ navigation }) => {
         <View style={styles.listContainer}>
           <List
             contentContainerStyle={styles.contentContainer}
-            data={database.audits.active_audits}
+            data={databaseStore.audits.active_audits}
             renderItem={renderActiveAudits}
           />
         </View>
+
+        <FAB.Group
+          open={open}
+          icon="plus"
+          actions={[
+            {
+              icon: "pencil-plus",
+              label: "Create new checklist",
+              onPress: () => console.log("Pressed new checklist"),
+            },
+            {
+              icon: "file-plus",
+              label: "New Audit",
+              onPress: () => console.log("Pressed new audit"),
+              small: false,
+            },
+          ]}
+          onStateChange={onStateChange}
+          onPress={() => {
+            if (open) {
+              // do something if the speed dial is open
+            }
+          }}
+        />
       </Layout>
     </SafeAreaView>
   );

@@ -6,6 +6,7 @@ import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import { createStore, combineReducers, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
 import ReduxThunk from "redux-thunk";
+import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 
 import { databaseReducer } from "./src/store/reducers/databaseReducer";
 import { AppNavigator } from "./src/navigation/AppNavigator";
@@ -17,15 +18,27 @@ const rootReducer = combineReducers({
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
+const paperTheme = {
+  ...DefaultTheme,
+  roundness: 2,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: "#FC4A1A",
+    accent: "#FEA675",
+  },
+};
+
 export default () => (
   <>
     <IconRegistry icons={EvaIconsPack} />
     <Provider store={store}>
-      <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
-        <SafeAreaView style={{ flex: 1, marginTop: StatusBar.currentHeight }}>
-          <AppNavigator />
-        </SafeAreaView>
-      </ApplicationProvider>
+      <PaperProvider theme={paperTheme}>
+        <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
+          <SafeAreaView style={{ flex: 1, marginTop: StatusBar.currentHeight }}>
+            <AppNavigator />
+          </SafeAreaView>
+        </ApplicationProvider>
+      </PaperProvider>
     </Provider>
   </>
 );

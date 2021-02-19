@@ -1,5 +1,5 @@
-export const STORE_RELEVANT_AUDITS = "STORE_RELEVANT_AUDITS";
+export const STORE_DATABASE = "STORE_DATABASE";
 
-export const storeRelevantAudits = (audits) => {
-  return { type: STORE_RELEVANT_AUDITS, audits: audits };
+export const storeDatabase = (database) => {
+  return { type: STORE_DATABASE, database: database };
 };
