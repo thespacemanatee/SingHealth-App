@@ -1,0 +1,32 @@
+{
+  "sgh": {
+    "name": "Singapore General Hospital",
+    "address": {
+      "block": "45A",
+      "street": "Somapah Rd",
+      "building": "Autopsy Services",
+      "unit": "#04-414",
+      "zipcode": "123434"
+    },
+    "POC": {
+      "name": "Mr. Liu",
+      "designation": "CEO",
+      "email": "liu@cough.com"
+    }
+  },
+  "cgh": {
+    "name": "Changi General Hospital",
+    "address": {
+      "block": "46A",
+      "street": "Somapah Rd",
+      "building": "Autopsy Services",
+      "unit": "#04-414",
+      "zipcode": "123434"
+    },
+    "POC": {
+      "name": "Mr. Mang",
+      "designation": "CEO",
+      "email": "mang@cough.com"
+    }
+  }
+}

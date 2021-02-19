@@ -1,0 +1,58 @@
+{
+  "audit1": {
+    "auditorID": "staff1",
+    "staffID": "staff1",
+    "institutionID": "sgh",
+    "address": {
+      "block": "345A",
+      "street": "Somapah Rd",
+      "building": "SUTD",
+      "unit": "#04-414",
+      "zipcode": "123434"
+    },
+    "date": "21-01-2020",
+    "time": "23:59",
+    "auditChecklists": {
+      "audit_form1": {
+        "1": {
+          "answer": 0,
+          "image": {
+            "url": "photos.google.com/1",
+            "tags": ["Serious issue", "Spotted in SUTD", "Worm in cai png"]
+          },
+          "2": {
+            "answer": 1
+          }
+        }
+      }
+    }
+  },
+  "audit2": {
+    "auditorID": "staff2",
+    "staffID": "staff2",
+    "institutionID": "cgh",
+    "address": {
+      "block": "345A",
+      "street": "Somapah Rd",
+      "building": "SUTD",
+      "unit": "#04-414",
+      "zipcode": "123434"
+    },
+    "date": "21-01-2020",
+    "time": "23:59",
+    "auditChecklists": {
+      "audit_form1": {
+        "1": {
+          "answer": 0,
+          "image": {
+            "url": "photos.google.com/2",
+            "tags": ["Mild issue", "Spotted in SUTD", "Hair in cai png"]
+          }
+        },
+        "2": {
+          "answer": 1
+        }
+      }
+    }
+  }
+}
