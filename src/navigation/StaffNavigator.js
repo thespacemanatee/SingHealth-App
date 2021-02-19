@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from "react";
 import { StyleSheet } from "react-native";
+import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
@@ -15,6 +16,7 @@ import {
 
 import StaffDashboardScreen from "../screens/staff/StaffDashboardScreen";
 import DirectoryScreen from "../screens/staff/DirectoryScreen";
+import CheckList from "../screens/staff/AuditScreens/CheckList";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
 
@@ -47,7 +49,7 @@ const StaffTabNavigator = () => {
     <Navigator
       tabBar={(props) => <BottomNavigationAccessoriesShowcase {...props} />}
     >
-      <Screen name="StaffDashboard" component={StaffDashboardScreen} />
+      <Screen name="StaffDashboard" component={StaffDashboardStackNavigator} />
       <Screen name="Directory" component={DirectoryScreen} />
     </Navigator>
   );
@@ -67,6 +69,15 @@ const StaffNavigator = () => {
   return (
     <Navigator drawerContent={(props) => <DrawerContent {...props} />}>
       <Screen name="Staff" component={StaffTabNavigator} />
+    </Navigator>
+  );
+};
+const StaffDashboardStackNavigator = () => {
+  const { Navigator, Screen } = createStackNavigator();
+  return (
+    <Navigator headerMode="none">
+      <Screen name="StaffDashboard" component={StaffDashboardScreen} />
+      <Screen name="CheckList" component={CheckList} />
     </Navigator>
   );
 };

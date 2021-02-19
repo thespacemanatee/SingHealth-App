@@ -41,14 +41,14 @@ const Label = ({ point }: LabelProps) => {
       day: "numeric",
     });
   });
-  const price = useDerivedValue(() => {
+  const points = useDerivedValue(() => {
     const p = point.value.data.y;
-    return `$ ${round(p, 2).toLocaleString("en-US", { currency: "USD" })}`;
+    return `${round(p, 0)}`;
   });
   return (
     <View>
       <ReText style={styles.date} text={date} />
-      <ReText style={styles.price} text={price} />
+      <ReText style={styles.price} text={points} />
     </View>
   );
 };

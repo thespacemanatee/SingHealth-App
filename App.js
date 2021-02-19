@@ -23,8 +23,8 @@ const paperTheme = {
   roundness: 2,
   colors: {
     ...DefaultTheme.colors,
-    primary: "#FC4A1A",
-    accent: "#FEA675",
+    primary: "#FD8352",
+    accent: "#FC4A1A",
   },
 };
 

@@ -13,7 +13,7 @@ import {
   List,
   Card,
 } from "@ui-kitten/components";
-import { FAB, Portal } from "react-native-paper";
+import { FAB } from "react-native-paper";
 
 import { database } from "../../data/dummy-database";
 import Graph from "../../components/ui/graph/Graph";
@@ -94,7 +94,9 @@ const StaffDashboardScreen = ({ navigation }) => {
             {
               icon: "file-plus",
               label: "New Audit",
-              onPress: () => console.log("Pressed new audit"),
+              onPress: () => {
+                navigation.navigate("CheckList");
+              },
               small: false,
             },
           ]}
