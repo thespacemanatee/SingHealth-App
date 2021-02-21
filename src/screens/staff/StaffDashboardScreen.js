@@ -46,7 +46,7 @@ const StaffDashboardScreen = ({ navigation }) => {
     (itemData) => {
       const auditID = `${itemData.item}`;
       const tenantID = database.audits.audits[auditID].tenantID;
-      const tenantInfo = database.tenants.tenants[tenantID];
+      const tenantInfo = database.tenants[tenantID];
       return (
         <Card
           style={styles.item}
@@ -95,7 +95,7 @@ const StaffDashboardScreen = ({ navigation }) => {
               icon: "file-plus",
               label: "New Audit",
               onPress: () => {
-                navigation.navigate("CheckList");
+                navigation.navigate("ChooseTenantScreen");
               },
               small: false,
             },
