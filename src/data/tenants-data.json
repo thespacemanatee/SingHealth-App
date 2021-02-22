@@ -1,42 +1,74 @@
 {
-  "tenants": {
-    "tenant1": {
-      "email": "ten@ant.com",
-      "password": "1234567890",
-      "institution": "sgh",
-      "name": "Mr. Bin",
-      "type": "F&B",
-      "company": "Company Y PTE LTD",
-      "company_POC": {
-        "name": "Mr. Lee",
-        "email": "lee@gmail.com"
-      },
-      "stallAddress": {
-        "block": "345A",
-        "street": "Somapah Rd",
-        "building": "Autopsy Services",
-        "unit": "#04-414",
-        "zipcode": "123434"
-      }
+  "tenant1": {
+    "email": "ten@ant.com",
+    "institution": "sgh",
+    "name": "Mr. Bin",
+    "type": "F&B",
+    "company": "Company Y PTE LTD",
+    "company_POC": {
+      "name": "Mr. Lee",
+      "email": "lee@gmail.com"
     },
-    "tenant2": {
-      "email": "ten@ant.com",
-      "password": "1234567890",
-      "institution": "sgh",
-      "name": "Best Ramen Shop",
-      "type": "F&B",
-      "company": "Company Y PTE LTD",
-      "company_POC": {
-        "name": "Mr. Tan",
-        "email": "tan@gmail.com"
-      },
-      "stallAddress": {
-        "block": "345A",
-        "street": "Somapah Rd",
-        "building": "Autopsy Services",
-        "unit": "#04-414",
-        "zipcode": "123434"
-      }
+    "stallAddress": {
+      "block": "345A",
+      "street": "Somapah Rd",
+      "building": "Autopsy Services",
+      "unit": "#04-414",
+      "zipcode": "123434"
+    }
+  },
+  "tenant2": {
+    "email": "ten@ant.com",
+    "institution": "sgh",
+    "name": "Best Ramen Shop",
+    "type": "F&B",
+    "company": "Company Y PTE LTD",
+    "company_POC": {
+      "name": "Mr. Tan",
+      "email": "tan@gmail.com"
+    },
+    "stallAddress": {
+      "block": "345A",
+      "street": "Somapah Rd",
+      "building": "Autopsy Services",
+      "unit": "#04-414",
+      "zipcode": "123434"
+    }
+  },
+  "tenant3": {
+    "email": "ten@ant.com",
+    "institution": "cgh",
+    "name": "Meh Ramen Shop",
+    "type": "F&B",
+    "company": "Company Y PTE LTD",
+    "company_POC": {
+      "name": "Mr. Tan",
+      "email": "tan@gmail.com"
+    },
+    "stallAddress": {
+      "block": "345A",
+      "street": "Somapah Rd",
+      "building": "Autopsy Services",
+      "unit": "#04-414",
+      "zipcode": "123434"
+    }
+  },
+  "tenant4": {
+    "email": "ten@ant.com",
+    "institution": "cgh",
+    "name": "Second Ramen Shop",
+    "type": "F&B",
+    "company": "Company Y PTE LTD",
+    "company_POC": {
+      "name": "Mr. Tan",
+      "email": "tan@gmail.com"
+    },
+    "stallAddress": {
+      "block": "345A",
+      "street": "Somapah Rd",
+      "building": "Autopsy Services",
+      "unit": "#04-414",
+      "zipcode": "123434"
     }
   }
 }

@@ -1,6 +1,7 @@
 import { STORE_DATABASE } from "../actions/databaseActions";
 
 const initialState = {
+  current_institution: "cgh",
   audit_forms: [],
   audits: [],
   institutions: [],
