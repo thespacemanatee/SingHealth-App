@@ -1,0 +1,95 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://example.com/product.schema.json",
+    "title": "tenant",
+    "description": "Info about a single tenant",
+    "type": "object",
+    "properties": {
+        "tenantId": {
+          "description": "The unique identifier for a tenant",
+          "type": "string"
+        },
+        "email": {
+            "description": "The unique identifier for a tenant",
+            "type": "string"
+        },
+        "pswd": {
+        "description": "The unique identifier for a tenant",
+        "type": "string"
+        },
+        "institutionId": {
+            "description": "The unique identifier for a tenant",
+            "type": "string"
+        },
+        "stall": {
+            "description": "All the info regarding their stall",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "description": "Name of the stall",
+                    "type": "string"
+                },
+                "companyName": {
+                    "description": "Name of the company the stall is representing",
+                    "type": "string"
+                },
+                "companyPOC": {
+                    "description": "The unique identifier for a tenant",
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "description": "Name of the company POC",
+                            "type": "string"
+                        },
+                        "email": {
+                            "description": "Email of the company POC",
+                            "type": "string"
+                        }
+                    },
+                    "required": ["name", "email"]
+                },
+                "family":{
+                    "description": "If tenant is part of a food court or similar grouping of stalls, this will be the name of the food court",
+                    "type": "string"
+                },
+                "address": {
+                    "description": "Name of the company the stall is representing",
+                    "type": "object",
+                    "properties": {
+                        "blk": {
+                            "description": "blk number. I.e. 243A",
+                            "type": "string"
+                        },
+                        "street": {
+                            "description": "Street name",
+                            "type": "string"
+                        },
+                        "bldg": {
+                            "description": "Name of the building",
+                            "type": "string"
+                        },
+                        "unitNo": {
+                            "description": "The unit number. I.e. 02-212 (without hashes)",
+                            "type": "string"
+                        },
+                        "zipcode": {
+                            "description": "Name of the company POC",
+                            "type": "integer"
+                        },
+                        "stall": {
+                            "description": "Stall number. For F&B outlets within a food court",
+                            "type": "string"
+                        }
+                    },
+                    "required": [ "blk", "street", "unitNo", "zipcode" ]
+                },
+                "fnb": {
+                    "description": "Whether the stall is an F&B stall",
+                    "type": "boolean"
+                }
+            },
+            "required": ["name", "companyName", "companyPOC", "address", "fnb"]
+        }
+    },
+    "required": [ "tenantId", "email", "pswd", "institutionId", "stall" ]
+  }
