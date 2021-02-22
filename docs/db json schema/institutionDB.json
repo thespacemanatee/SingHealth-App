@@ -1,0 +1,52 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://example.com/product.schema.json",
+    "title": "institution",
+    "description": "Info about the institution I.e. hospital/clinic",
+    "type": "object",
+    "properties": {
+        "id": {
+          "description": "The unique identifier for a staff",
+          "type": "string"
+        },
+        "name": {
+            "description": "Full name of the institution",
+            "type": "string"
+        },
+        "address": {
+            "description": "The address of the institution",
+            "type": "object",
+            "properties": {
+                "blk": {
+                    "description": "blk number. I.e. 243A",
+                    "type": "string"
+                },
+                "street": {
+                    "description": "Street name",
+                    "type": "string"
+                },
+                "bldg": {
+                    "description": "Name of the building",
+                    "type": "string"
+                },
+                "unitNo": {
+                    "description": "The unit number. I.e. 02-212 (without hashes)",
+                    "type": "string"
+                },
+                "zipcode": {
+                    "description": "Name of the company POC",
+                    "type": "integer"
+                },
+                "stall": {
+                    "description": "Stall number. For F&B outlets within a food court",
+                    "type": "string"
+                }
+            }
+        },
+        "poc": {
+            "description": "The ID of the institution that the staff is from",
+            "type": "string"
+        }
+    },
+    "required": [ "staffId", "email", "pswd", "institutionID" ]
+}

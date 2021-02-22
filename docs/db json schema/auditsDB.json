@@ -1,0 +1,59 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://example.com/product.schema.json",
+    "title": "audit",
+    "description": "Info about a single audit session",
+    "type": "object",
+    "properties": {
+        "auditId": {
+          "description": "The unique identifier for an audit",
+          "type": "string"
+        },
+        "staffID": {
+            "description": "Unique identifier of the staff doing the audit",
+            "type": "string"
+        },
+        "tenantID": {
+            "description": "The unique identifier of the tenant",
+            "type": "string"
+        },
+        "institutionID": {
+            "description": "The unique identifier of the institution that the tenant/staff is from",
+            "type": "string"
+        },
+        "date": {
+            "type": "string"
+        },
+        "time": {
+            "type": "string"
+        },
+        "auditChecklists": {
+            "patternProperties": {
+                ".*": {
+                    "type": "object",
+                    "patternProperties": {
+                        "^[0-9]+$": {
+                            "type": "object",
+                            "properties": {
+                                "answer": {
+                                    "type": "boolean"
+                                },
+                                "photos": {
+                                    "patternProperties": {
+                                        ".*": {
+                                            "description": "Links the photo ID to its place in the DB ",
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "remarks": {
+                                    "description": "remakrs for a single audit line item, if any",
+                                    "type": "string"
+                                }
+                            }
+                    }
+                }
+        }
+    },
+    "required": [ "staffId", "email", "pswd", "institutionID" ]
+}
