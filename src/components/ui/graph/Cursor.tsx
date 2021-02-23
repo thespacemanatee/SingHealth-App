@@ -20,10 +20,10 @@ import { Path } from "../../../components/AnimatedHelpers";
 import Label, { DataPoint } from "./Label";
 
 const { width } = Dimensions.get("window");
-const CURSOR = 50;
+const CURSOR = 75;
 const styles = StyleSheet.create({
   cursorContainer: {
-    width: CURSOR * 2,
+    width: CURSOR,
     height: CURSOR,
     justifyContent: "center",
     alignItems: "center",
