@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Dimensions } from "react-native";
 import {
   PanGestureHandler,
@@ -10,6 +10,9 @@ import Animated, {
   interpolate,
   useAnimatedStyle,
   withDecay,
+  runOnJS,
+  Easing,
+  EasingNode,
 } from "react-native-reanimated";
 
 import { Path } from "../../../components/AnimatedHelpers";
@@ -34,10 +37,10 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     backgroundColor: "white",
   },
-  label:{
+  label: {
     position: "absolute",
     top: CURSOR,
-  }
+  },
 });
 
 interface CursorProps {
@@ -47,6 +50,24 @@ interface CursorProps {
 }
 
 const Cursor = ({ path, length, point }: CursorProps) => {
+  const opacity = useState(new Animated.Value(0.5))[0];
+
+  const fadeIn = () => {
+    Animated.timing(opacity, {
+      toValue: 1,
+      duration: 200,
+      easing: EasingNode.ease,
+    }).start();
+  };
+
+  const fadeOut = () => {
+    Animated.timing(opacity, {
+      toValue: 0.5,
+      duration: 200,
+      easing: EasingNode.ease,
+    }).start();
+  };
+
   const onGestureEvent = useAnimatedGestureHandler<
     PanGestureHandlerGestureEvent,
     {
@@ -55,6 +76,7 @@ const Cursor = ({ path, length, point }: CursorProps) => {
     }
   >({
     onStart: (_event, ctx) => {
+      runOnJS(fadeIn)();
       ctx.offsetX = interpolate(
         length.value,
         [0, path.length],
@@ -71,6 +93,7 @@ const Cursor = ({ path, length, point }: CursorProps) => {
       );
     },
     onEnd: ({ velocityX }) => {
+      runOnJS(fadeOut)();
       length.value = withDecay({
         velocity: velocityX,
         clamp: [0, path.length],
@@ -90,7 +113,7 @@ const Cursor = ({ path, length, point }: CursorProps) => {
   return (
     <View style={StyleSheet.absoluteFill}>
       <PanGestureHandler {...{ onGestureEvent }}>
-        <Animated.View style={[styles.cursorContainer, style]}>
+        <Animated.View style={[{ ...styles.cursorContainer, opacity }, style]}>
           <View style={styles.cursor} />
           <View style={styles.label}>
             <Label {...{ point }} />

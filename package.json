@@ -36,6 +36,7 @@
     "expo-status-bar": "~1.0.3",
     "formik": "^2.2.6",
     "lottie-react-native": "~2.6.1",
+    "netlify-cli": "^3.8.5",
     "patch-package": "^6.2.2",
     "postinstall-postinstall": "^2.1.0",
     "react": "16.13.1",
