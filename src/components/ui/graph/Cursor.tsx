@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
+import { View, StyleSheet, Dimensions, Platform } from "react-native";
 import {
   PanGestureHandler,
   PanGestureHandlerGestureEvent,
@@ -23,7 +23,7 @@ const { width } = Dimensions.get("window");
 const CURSOR = 50;
 const styles = StyleSheet.create({
   cursorContainer: {
-    width: CURSOR,
+    width: CURSOR * 2,
     height: CURSOR,
     justifyContent: "center",
     alignItems: "center",
@@ -50,7 +50,10 @@ interface CursorProps {
 }
 
 const Cursor = ({ path, length, point }: CursorProps) => {
-  const opacity = useState(new Animated.Value(0.5))[0];
+  let opacity: Animated.Node<number>;
+  if (Platform.OS !== "web") {
+    opacity = useState(new Animated.Value(0.5))[0];
+  }
 
   const fadeIn = () => {
     Animated.timing(opacity, {
@@ -76,7 +79,9 @@ const Cursor = ({ path, length, point }: CursorProps) => {
     }
   >({
     onStart: (_event, ctx) => {
-      runOnJS(fadeIn)();
+      if (Platform.OS !== "web") {
+        runOnJS(fadeIn)();
+      }
       ctx.offsetX = interpolate(
         length.value,
         [0, path.length],
@@ -93,7 +98,9 @@ const Cursor = ({ path, length, point }: CursorProps) => {
       );
     },
     onEnd: ({ velocityX }) => {
-      runOnJS(fadeOut)();
+      if (Platform.OS !== "web") {
+        runOnJS(fadeOut)();
+      }
       length.value = withDecay({
         velocity: velocityX,
         clamp: [0, path.length],
