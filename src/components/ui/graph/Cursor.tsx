@@ -14,17 +14,17 @@ import Animated, {
 
 import { Path } from "../../../components/AnimatedHelpers";
 
-import { DataPoint } from "./Label";
+import Label, { DataPoint } from "./Label";
 
 const { width } = Dimensions.get("window");
-const CURSOR = 100;
+const CURSOR = 50;
 const styles = StyleSheet.create({
   cursorContainer: {
     width: CURSOR,
     height: CURSOR,
     justifyContent: "center",
     alignItems: "center",
-    //backgroundColor: "rgba(100, 200, 300, 0.4)",
+    // backgroundColor: "rgba(100, 200, 300, 0.4)",
   },
   cursor: {
     width: 30,
@@ -34,6 +34,10 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     backgroundColor: "white",
   },
+  label:{
+    position: "absolute",
+    top: CURSOR,
+  }
 });
 
 interface CursorProps {
@@ -88,6 +92,9 @@ const Cursor = ({ path, length, point }: CursorProps) => {
       <PanGestureHandler {...{ onGestureEvent }}>
         <Animated.View style={[styles.cursorContainer, style]}>
           <View style={styles.cursor} />
+          <View style={styles.label}>
+            <Label {...{ point }} />
+          </View>
         </Animated.View>
       </PanGestureHandler>
     </View>

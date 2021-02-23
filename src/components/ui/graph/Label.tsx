@@ -2,17 +2,33 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import Animated, { useDerivedValue } from "react-native-reanimated";
 import { ReText, round } from "react-native-redash";
+import { Card, Text } from "@ui-kitten/components";
 
 import { StyleGuide } from "../../../components";
 
 const styles = StyleSheet.create({
   date: {
-    ...StyleGuide.typography.title3,
-    textAlign: "center",
+    ...StyleGuide.typography.body,
+    textAlign: "right",
+    // backgroundColor: "red",
   },
   price: {
-    ...StyleGuide.typography.title2,
-    textAlign: "center",
+    ...StyleGuide.typography.body,
+    textAlign: "right",
+    // backgroundColor: "red",
+  },
+  labelContainer: {
+    flex: 1,
+    width: 150,
+    // backgroundColor: "red",
+  },
+  dateContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  contentContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });
 
@@ -34,22 +50,25 @@ interface LabelProps {
 const Label = ({ point }: LabelProps) => {
   const date = useDerivedValue(() => {
     const d = new Date(point.value.data.x);
-    return d.toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    return d.toDateString().replace(/^\S+\s/,'');
   });
   const points = useDerivedValue(() => {
     const p = point.value.data.y;
     return `${round(p, 0)}`;
   });
   return (
-    <View>
-      <ReText style={styles.date} text={date} />
-      <ReText style={styles.price} text={points} />
-    </View>
+    <Card>
+      <View style={styles.labelContainer}>
+        <View style={styles.dateContainer}>
+          <Text>Date: </Text>
+          <ReText style={styles.date} text={date} />
+        </View>
+        <View style={styles.contentContainer}>
+          <Text>Average: </Text>
+          <ReText style={styles.price} text={points} />
+        </View>
+      </View>
+    </Card>
   );
 };
 

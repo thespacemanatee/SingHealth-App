@@ -103,7 +103,7 @@ const Graph = () => {
         </Svg>
         <Cursor {...{ path, length, point }} />
       </View>
-      <Label {...{ data, point }} />
+      {/* <Label {...{ data, point }} /> */}
     </View>
   );
 };
