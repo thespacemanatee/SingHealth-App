@@ -95,7 +95,7 @@ const StaffDashboardScreen = ({ navigation }) => {
               icon: "file-plus",
               label: "New Audit",
               onPress: () => {
-                navigation.navigate("ChooseTenantScreen");
+                navigation.navigate("ChooseTenant");
               },
               small: false,
             },

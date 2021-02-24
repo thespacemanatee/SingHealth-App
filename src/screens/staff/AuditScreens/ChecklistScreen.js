@@ -22,7 +22,7 @@ import QuestionCard from "../../../components/QuestionCard";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
-const ChooseTenantScreen = ({ navigation }) => {
+const ChecklistScreen = ({ navigation }) => {
   const databaseStore = useSelector((state) => state.database);
   const checklistStore = useSelector((state) => state.checklist);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -41,7 +41,11 @@ const ChooseTenantScreen = ({ navigation }) => {
 
   const renderChosenChecklist = useCallback(
     (itemData) => {
-      return <QuestionCard itemData={itemData} />;
+      return (
+        <View>
+          <QuestionCard itemData={itemData} />
+        </View>
+      );
     },
     [chosenChecklist]
   );
@@ -110,4 +114,4 @@ const styles = StyleService.create({
   },
 });
 
-export default ChooseTenantScreen;
+export default ChecklistScreen;
