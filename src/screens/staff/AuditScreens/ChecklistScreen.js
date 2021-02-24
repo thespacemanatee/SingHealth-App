@@ -39,16 +39,15 @@ const ChecklistScreen = ({ navigation }) => {
     />
   );
 
-  const renderChosenChecklist = useCallback(
-    (itemData) => {
-      return (
-        <View>
-          <QuestionCard itemData={itemData} />
-        </View>
-      );
-    },
-    [chosenChecklist]
-  );
+  const renderChosenChecklist = useCallback((itemData) => {
+    return (
+      <QuestionCard
+        itemData={itemData}
+        index={itemData.index}
+        navigation={navigation}
+      />
+    );
+  }, []);
 
   useEffect(() => {
     if (selectedIndex == 0) {
@@ -93,7 +92,11 @@ const ChecklistScreen = ({ navigation }) => {
           <Radio>F&B</Radio>
           <Radio>Non-F&B</Radio>
         </RadioGroup>
-        <List data={chosenChecklist} renderItem={renderChosenChecklist} />
+        <List
+          data={chosenChecklist}
+          renderItem={renderChosenChecklist}
+          initialNumToRender={40}
+        />
       </Layout>
     </SafeAreaView>
   );

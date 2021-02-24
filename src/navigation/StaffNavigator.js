@@ -18,6 +18,7 @@ import StaffDashboardScreen from "../screens/staff/StaffDashboardScreen";
 import DirectoryScreen from "../screens/staff/DirectoryScreen";
 import ChooseTenantScreen from "../screens/staff/AuditScreens/ChooseTenantScreen";
 import ChecklistScreen from "../screens/staff/AuditScreens/ChecklistScreen";
+import QuestionDetailsScreen from "../screens/staff/AuditScreens/QuestionDetailsScreen";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
 
@@ -80,6 +81,7 @@ const StaffDashboardStackNavigator = () => {
       <Screen name="StaffDashboard" component={StaffDashboardScreen} />
       <Screen name="ChooseTenant" component={ChooseTenantScreen} />
       <Screen name="Checklist" component={ChecklistScreen} />
+      <Screen name="QuestionDetails" component={QuestionDetailsScreen} />
     </Navigator>
   );
 };

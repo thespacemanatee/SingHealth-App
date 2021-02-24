@@ -25,10 +25,10 @@
             "image": {
               "url": "photos.google.com/1",
               "tags": ["Serious issue", "Spotted in SUTD", "Worm in cai png"]
-            },
-            "2": {
-              "answer": 1
             }
+          },
+          "2": {
+            "answer": 1
           }
         }
       }

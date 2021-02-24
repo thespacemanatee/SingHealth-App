@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View } from "react-native";
 import {
   Button,
@@ -16,10 +16,17 @@ const UndoIcon = (props) => <Icon {...props} name="undo" />;
 const CameraIcon = (props) => <Icon {...props} name="camera" />;
 
 const QuestionCard = (props) => {
+  console.log("Re-rendered questioncard " + props.index);
   const [checked, setChecked] = useState(false);
   const [deleted, setDeleted] = useState(false);
 
-  const rightSwipe = (progress, dragX) => {
+  const onClickDetailHandler = () => {
+    props.navigation.navigate("QuestionDetails", {
+      index: props.index,
+    });
+  };
+
+  const rightSwipe = useCallback((progress, dragX) => {
     // const scale = dragX.interpolate({
     //   inputRange: [0, 100],
     //   outputRange: [0, 1],
@@ -36,27 +43,15 @@ const QuestionCard = (props) => {
         />
       </View>
     );
-  };
-
-  const leftSwipe = (progress, dragX) => {
-    return (
-      <View style={styles.deleteBox}>
-        <Button
-          appearance="ghost"
-          accessoryLeft={CameraIcon}
-          onPress={() => {}}
-        />
-      </View>
-    );
-  };
+  }, []);
 
   return (
     <Swipeable
       renderLeftActions={rightSwipe}
-      renderRightActions={deleted ? undefined : leftSwipe}
+      overshootLeft={false}
     >
       <View>
-        <Card>
+        <Card onPress={onClickDetailHandler}>
           <View style={styles.questionContainer}>
             <CheckBox
               checked={checked}
@@ -79,7 +74,18 @@ const QuestionCard = (props) => {
   );
 };
 
-export default QuestionCard;
+const areEqual = (prevProps, nextProps) => {
+  const { isSelected } = nextProps;
+  const { isSelected: prevIsSelected } = prevProps;
+  
+  /*if the props are equal, it won't update*/
+  const isSelectedEqual = isSelected === prevIsSelected;
+
+  return isSelectedEqual;
+};
+
+
+export default React.memo(QuestionCard, areEqual);
 
 const styles = StyleService.create({
   questionContainer: {
