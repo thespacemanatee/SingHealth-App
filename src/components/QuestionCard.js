@@ -13,16 +13,21 @@ import { Extrapolate } from "react-native-reanimated";
 
 const TrashIcon = (props) => <Icon {...props} name="trash" />;
 const UndoIcon = (props) => <Icon {...props} name="undo" />;
-const CameraIcon = (props) => <Icon {...props} name="camera" />;
 
 const QuestionCard = (props) => {
-  console.log("Re-rendered questioncard " + props.index);
   const [checked, setChecked] = useState(false);
   const [deleted, setDeleted] = useState(false);
+  const { index } = props;
+
+  const Header = (props) => (
+    <View {...props}>
+      <Text>{index + 1}</Text>
+    </View>
+  );
 
   const onClickDetailHandler = () => {
     props.navigation.navigate("QuestionDetails", {
-      index: props.index,
+      index: index,
     });
   };
 
@@ -46,12 +51,9 @@ const QuestionCard = (props) => {
   }, []);
 
   return (
-    <Swipeable
-      renderLeftActions={rightSwipe}
-      overshootLeft={false}
-    >
+    <Swipeable renderLeftActions={rightSwipe} overshootLeft={false}>
       <View>
-        <Card onPress={onClickDetailHandler}>
+        <Card onPress={onClickDetailHandler} header={Header}>
           <View style={styles.questionContainer}>
             <CheckBox
               checked={checked}
@@ -77,13 +79,12 @@ const QuestionCard = (props) => {
 const areEqual = (prevProps, nextProps) => {
   const { isSelected } = nextProps;
   const { isSelected: prevIsSelected } = prevProps;
-  
+
   /*if the props are equal, it won't update*/
   const isSelectedEqual = isSelected === prevIsSelected;
 
   return isSelectedEqual;
 };
-
 
 export default React.memo(QuestionCard, areEqual);
 
