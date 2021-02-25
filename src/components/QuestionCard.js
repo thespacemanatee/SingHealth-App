@@ -48,7 +48,7 @@ const QuestionCard = (props) => {
         />
       </View>
     );
-  }, []);
+  }, [deleted]);
 
   return (
     <Swipeable renderLeftActions={rightSwipe} overshootLeft={false}>

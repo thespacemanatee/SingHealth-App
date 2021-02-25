@@ -11,7 +11,6 @@ import Animated, {
   useAnimatedStyle,
   withDecay,
   runOnJS,
-  Easing,
   EasingNode,
 } from "react-native-reanimated";
 

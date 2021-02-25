@@ -63,7 +63,7 @@ const ChecklistScreen = ({ navigation }) => {
         )
       );
     }
-  }, [selectedIndex]);
+  }, [selectedIndex, databaseStore]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

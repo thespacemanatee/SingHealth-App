@@ -19,6 +19,7 @@ import DirectoryScreen from "../screens/staff/DirectoryScreen";
 import ChooseTenantScreen from "../screens/staff/AuditScreens/ChooseTenantScreen";
 import ChecklistScreen from "../screens/staff/AuditScreens/ChecklistScreen";
 import QuestionDetailsScreen from "../screens/staff/AuditScreens/QuestionDetailsScreen";
+import CameraScreen from "../screens/CameraScreen";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
 
@@ -45,18 +46,6 @@ export const BottomNavigationAccessoriesShowcase = ({ navigation, state }) => {
   );
 };
 
-const StaffTabNavigator = () => {
-  const { Navigator, Screen } = createBottomTabNavigator();
-  return (
-    <Navigator
-      tabBar={(props) => <BottomNavigationAccessoriesShowcase {...props} />}
-    >
-      <Screen name="StaffDashboard" component={StaffDashboardStackNavigator} />
-      <Screen name="Directory" component={DirectoryScreen} />
-    </Navigator>
-  );
-};
-
 const DrawerContent = ({ navigation, state }) => (
   <Drawer
     selectedIndex={new IndexPath(state.index)}
@@ -70,10 +59,33 @@ const StaffNavigator = () => {
   const { Navigator, Screen } = createDrawerNavigator();
   return (
     <Navigator drawerContent={(props) => <DrawerContent {...props} />}>
-      <Screen name="Staff" component={StaffTabNavigator} />
+      <Screen name="StaffModalStack" component={StaffModalStackNavigator} />
     </Navigator>
   );
 };
+
+const StaffModalStackNavigator = () => {
+  const { Navigator, Screen } = createStackNavigator();
+  return (
+    <Navigator headerMode="none" mode="modal">
+      <Screen name="StaffTabNavigator" component={StaffTabNavigator} />
+      <Screen name="CameraModal" component={CameraScreen} />
+    </Navigator>
+  );
+};
+
+const StaffTabNavigator = () => {
+  const { Navigator, Screen } = createBottomTabNavigator();
+  return (
+    <Navigator
+      tabBar={(props) => <BottomNavigationAccessoriesShowcase {...props} />}
+    >
+      <Screen name="StaffDashboard" component={StaffDashboardStackNavigator} />
+      <Screen name="Directory" component={DirectoryScreen} />
+    </Navigator>
+  );
+};
+
 const StaffDashboardStackNavigator = () => {
   const { Navigator, Screen } = createStackNavigator();
   return (
