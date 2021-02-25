@@ -5,6 +5,7 @@ import {
   ImageBackground,
   Alert,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -20,6 +21,7 @@ import {
   List,
 } from "@ui-kitten/components";
 import { Camera } from "expo-camera";
+import * as Permissions from "expo-permissions";
 
 import * as checklistActions from "../../../store/actions/checklistActions";
 
@@ -32,7 +34,9 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
 
   const __startCamera = async () => {
     const { status } = await Camera.requestPermissionsAsync();
-    if (status === "granted") {
+    if (Platform.OS === "web") {
+      navigation.navigate("CameraModal");
+    } else if (status === "granted") {
       navigation.navigate("CameraModal");
     } else {
       Alert.alert("Access denied");
@@ -58,7 +62,16 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   );
 
   const CameraAction = () => (
-    <TopNavigationAction icon={CameraIcon} onPress={cameraHandler} />
+    <TopNavigationAction
+      icon={CameraIcon}
+      onPress={() => {
+        if (Platform.OS === "web") {
+          navigation.navigate("CameraModal");
+        } else {
+          cameraHandler();
+        }
+      }}
+    />
   );
 
   return (

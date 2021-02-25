@@ -2,21 +2,11 @@ import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   ImageBackground,
-  Alert,
   TouchableOpacity,
   Dimensions,
 } from "react-native";
 import { Camera } from "expo-camera";
-import {
-  Button,
-  Text,
-  StyleService,
-  Icon,
-  TopNavigation,
-  TopNavigationAction,
-  Divider,
-  Layout,
-} from "@ui-kitten/components";
+import { Button, StyleService, Icon } from "@ui-kitten/components";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { StatusBar } from "expo-status-bar";
 
@@ -94,14 +84,16 @@ const CameraScreen = ({ route, navigation }) => {
           style={{ height: CAMERA_VIEW_HEIGHT }}
         />
       ) : (
-        <Camera
-          type={cameraType}
-          flashMode={flashMode}
-          style={{ height: CAMERA_VIEW_HEIGHT }}
-          ref={(r) => {
-            camera = r;
-          }}
-        ></Camera>
+        <View style={{ height: CAMERA_VIEW_HEIGHT }}>
+          <Camera
+            type={cameraType}
+            flashMode={flashMode}
+            style={{ height: CAMERA_VIEW_HEIGHT }}
+            ref={(r) => {
+              camera = r;
+            }}
+          ></Camera>
+        </View>
       )}
       <View
         style={{
