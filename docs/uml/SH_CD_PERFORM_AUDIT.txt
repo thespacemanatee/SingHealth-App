@@ -1,0 +1,57 @@
+@startuml
+
+title Performing an audit on a tenant
+
+actor Staff
+
+Staff -> StaffObject: Login with username and password
+activate StaffObject 
+StaffObject -> Staff: Access granted
+deactivate StaffObject 
+
+Staff -> App : Start an audit form
+
+loop audit incomplete
+	alt non compliance
+		Staff -> App: Take/upload photo of non compliance 
+		activate App
+		App -> App: Save photo
+		deactivate App
+		Staff -> App: Set deadline for rectifying non-compliance
+		Staff -> App: Add remarks to the photo
+	else compliance
+		Staff -> App: Tick a checkbox
+	end
+end
+
+Staff -> App: Upload form
+activate App
+App -> Server: Filled audit form
+activate Server
+Server -> Database: Filled audit form
+activate Database
+Database -> Server: Acknowledgement message
+deactivate Database
+Server -> App: Acknowledgement message
+deactivate Server
+deactivate App
+
+
+
+@enduml
+
+staff
+tenant
+Server 
+dB
+app
+
+
+Open a new audit form
+while audit not complete, mark next line item
+if non compliant, take pic and/or add remarks & set deadline
+
+
+else skip line item
+
+Upload form to DB

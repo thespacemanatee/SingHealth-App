@@ -9,5 +9,8 @@ npm-debug.*
 *.orig.*
 web-build/
 
+# uml
+**/plantuml.jar
+
 # macOS
 .DS_Store

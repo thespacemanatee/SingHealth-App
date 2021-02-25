@@ -1,0 +1,24 @@
+@startuml
+title Staff login process
+actor Staff
+
+Staff -> App: Enter username & password\n& press Login
+App -> StaffObject: Initialise with\nusername &\npassword
+activate StaffObject
+activate StaffObject
+StaffObject -> StaffObject: Encrypt\ncredentials
+deactivate StaffObject
+StaffObject -> Server: Encrypted login credentials
+Server -> Databse: Check for matched\nusername-password pairs
+
+alt match found
+	Database -> Server: Access granted message
+	Server -> StaffObject: Reply message code 200
+	StaffObject -> App: Login = True
+
+else username/password wrong
+	Database -> Server: Access denied message
+	Server -> StaffObject: Reply message code 404
+	StaffObject -> App: Login = False
+end
+@enduml

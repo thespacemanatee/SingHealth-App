@@ -1,0 +1,67 @@
+@startuml
+
+title Non-compliance
+
+actor Staff
+actor Tenant
+
+alt view 1 audit
+	Staff -> App : Start to view 1 audit detail
+	activate App
+	App -> Server : Upload selected audit information with conditions
+	alt detailed information
+		Server -> Server : Generate a SQL query
+		Server -> Database : Send query
+		Database -> Server : Audit Information data
+		Server -> App : Audit Information JSON file
+	else normal information
+		Server -> Database : Send the default query
+		Database -> Server : Audit Information data
+		Server -> App : Audit Information JSON file
+	end
+end
+
+
+alt non compliance
+	alt fix outstanding non compliance
+		Staff -> App: fix message
+		App -> Server: fix message with audit infomation
+		Server -> Database: change the status of non compliance record
+		Server -> Tenant: non compliance fixed notice
+	end
+end
+
+alt need request for extension
+	Tenant -> App: Send extension request
+	App -> Server: Send extension message
+	Server -> Database: Saved extension request
+	Server -> Staff: Notification on new extention request
+end
+
+alt send audit non compliance rectification
+	Tenant ->App: Take/upload photo of rectification of non compliance 
+	activate App
+	App -> App: Save photo
+	deactivate App
+	App -> Server: Upload the photo
+	Server -> Database: Store the photo
+	Server -> Staff: notify on the rectification
+	Staff -> App: Check if it is rectificated
+	Staff -> App: Add remarks to the photo
+end
+
+alt Show tenants rectification progress
+	alt login as staff
+		Staff -> App: Request tenants rectification progress
+	else login as tenant
+		Tenant -> App: Request his own rectification progress
+	end
+	App -> Server: request for rectification progress
+	Server -> Database: request for rectification progress
+	Database -> Server: return rectification progress information
+	Server -> App:  rectification progress
+end
+
+
+@enduml
+
