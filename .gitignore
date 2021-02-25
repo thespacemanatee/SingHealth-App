@@ -12,5 +12,10 @@ web-build/
 # uml
 **/plantuml.jar
 
+# backend code
+**/__pycache__
+backend/backend/**
+
+
 # macOS
 .DS_Store
