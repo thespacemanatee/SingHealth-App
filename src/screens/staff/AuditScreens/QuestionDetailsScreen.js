@@ -21,12 +21,11 @@ import {
   List,
 } from "@ui-kitten/components";
 import { Camera } from "expo-camera";
-import * as Permissions from "expo-permissions";
 
 import * as checklistActions from "../../../store/actions/checklistActions";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
-const CameraIcon = (props) => <Icon {...props} name="camera" />;
+const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
 
 const QuestionDetailsScreen = ({ route, navigation }) => {
   const { index } = route.params;

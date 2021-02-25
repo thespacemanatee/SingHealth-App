@@ -36,7 +36,12 @@ export default () => (
     <Provider store={store}>
       <PaperProvider theme={paperTheme}>
         <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
-          <SafeAreaView style={{ flex: 1, marginTop: StatusBar.currentHeight }}>
+          <SafeAreaView
+            style={{
+              flex: 1,
+              marginTop: Platform.OS === "web" ? 0 : StatusBar.currentHeight,
+            }}
+          >
             {Platform.OS === "ios" && <StatusBar barStyle="dark-content" />}
             <AppNavigator />
           </SafeAreaView>

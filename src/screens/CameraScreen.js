@@ -7,8 +7,6 @@ import {
 } from "react-native";
 import { Camera } from "expo-camera";
 import { Button, StyleService, Icon } from "@ui-kitten/components";
-import { getStatusBarHeight } from "react-native-status-bar-height";
-import { StatusBar } from "expo-status-bar";
 
 let camera;
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
@@ -25,7 +23,8 @@ const CameraScreen = ({ route, navigation }) => {
   const WINDOW_WIDTH = Dimensions.get("window").width;
   const WINDOW_HEIGHT = Dimensions.get("window").height;
   const CAMERA_VIEW_HEIGHT = (WINDOW_WIDTH / 3) * 4;
-  const TOOLBAR_HEIGHT = (WINDOW_HEIGHT - CAMERA_VIEW_HEIGHT) / 2;
+  const TOOLBAR_TOP_HEIGHT = 64;
+  const TOOLBAR_BOTTOM_HEIGHT = (WINDOW_HEIGHT - CAMERA_VIEW_HEIGHT) - TOOLBAR_TOP_HEIGHT;
 
   const __takePicture = async () => {
     const photo = await camera.takePictureAsync();
@@ -64,7 +63,7 @@ const CameraScreen = ({ route, navigation }) => {
         style={{
           flexDirection: "row",
           backgroundColor: "black",
-          height: TOOLBAR_HEIGHT - getStatusBarHeight(),
+          height: TOOLBAR_TOP_HEIGHT,
           justifyContent: "space-between",
         }}
       >
@@ -99,7 +98,7 @@ const CameraScreen = ({ route, navigation }) => {
         style={{
           flexDirection: "row",
           backgroundColor: "black",
-          height: TOOLBAR_HEIGHT + getStatusBarHeight(),
+          height: TOOLBAR_BOTTOM_HEIGHT,
           justifyContent: "center",
           alignItems: "center",
           paddingBottom: 40,
