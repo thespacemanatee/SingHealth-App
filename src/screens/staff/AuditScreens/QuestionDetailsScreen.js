@@ -1,12 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  SafeAreaView,
-  View,
-  Image,
-  Alert,
-  TouchableOpacity,
-  Platform,
-} from "react-native";
+import { SafeAreaView, View, Image, Alert, Platform } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -17,6 +10,7 @@ import {
   StyleService,
   ViewPager,
   Input,
+  Text,
 } from "@ui-kitten/components";
 import { Camera } from "expo-camera";
 import * as FileSystem from "expo-file-system";
@@ -44,9 +38,9 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
 
   const multilineInputState = useInputState();
 
-  const renderImages = imageArray.map((imageUri) => {
+  const renderImages = imageArray.map((imageUri, index) => {
     return (
-      <View style={styles.shadowContainer}>
+      <View key={index} style={styles.shadowContainer}>
         <View style={styles.imageContainer}>
           <Image
             style={styles.image}
@@ -133,17 +127,46 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
         }}
       >
         <ViewPager
+          style={{ height: "70%" }}
           selectedIndex={selectedIndex}
           onSelect={(index) => setSelectedIndex(index)}
         >
-          {renderImages}
+          {imageArray.length > 0 ? (
+            renderImages
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <View style={styles.shadowContainer}>
+                <View style={styles.imageContainer}>
+                  <View
+                    style={{
+                      ...styles.image,
+                      justifyContent: "center",
+                      alignContent: "center",
+                      padding: 50,
+                    }}
+                  >
+                    <Text>No Images. Start adding some!</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          )}
         </ViewPager>
-        <Input
-          multiline={true}
-          textStyle={{ minHeight: 64 }}
-          placeholder="Multiline"
-          {...multilineInputState}
-        />
+        <View style={styles.inputContainer}>
+          <Text category="h6">Remarks:</Text>
+          <Input
+            multiline={true}
+            textStyle={{ minHeight: 64 }}
+            placeholder="Multiline"
+            {...multilineInputState}
+          />
+        </View>
       </Layout>
     </SafeAreaView>
   );
@@ -153,7 +176,6 @@ export default QuestionDetailsScreen;
 
 const styles = StyleService.create({
   shadowContainer: {
-    height: "80%",
     margin: 20,
   },
   imageContainer: {
@@ -172,5 +194,8 @@ const styles = StyleService.create({
     shadowRadius: 10,
     borderRadius: 10,
     overflow: "hidden",
+  },
+  inputContainer: {
+    margin: 20,
   },
 });
