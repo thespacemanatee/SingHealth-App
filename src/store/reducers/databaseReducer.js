@@ -12,7 +12,7 @@ const initialState = {
 export const databaseReducer = (state = initialState, action) => {
   switch (action.type) {
     case STORE_DATABASE:
-      console.log(action.database.audits);
+      // console.log(action.database.audits);
       return {
         ...state,
         audit_forms: action.database.audit_forms,

@@ -33,7 +33,7 @@ const CameraScreen = ({ route, navigation }) => {
     setCapturedImage(photo);
   };
   const __savePhoto = () => {
-    route.params.onSave({ image: capturedImage });
+    route.params.onSave(capturedImage);
     navigation.goBack();
   };
   const __retakePicture = () => {

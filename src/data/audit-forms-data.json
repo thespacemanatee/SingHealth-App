@@ -1,588 +1,731 @@
 {
   "fnb": {
-    "institutionID": null,
+    "institutionID": {},
     "questions": [
       {
         "question": "Shop is open and ready to service patients/visitors according to operating hours.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Staff Attendance: adequate staff for peak and non-peak hours.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "At least one (1) clearly assigned person in-charge on site.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Staff who are unfit for work due to illness should not report to work).",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Staff who are fit for work but suffering from the lingering effects of a cough and/or cold should cover their mouths with a surgical mask.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Clean clothes/uniform or aprons are worn during food preparation and food service.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Hair is kept tidy (long hair must be tied up) and covered with clean caps or hair nets where appropriate.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Sores, wounds or cuts on hands, if any, are covered with waterproof and brightly-coloured plaster.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Hands are washed thoroughly with soap and water, frequently and at appropriate times.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Fingernails are short, clean, unpolished and without nail accessories.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "No wrist watches/ rings or other hand jewellery (with exception of wedding ring) is worn by staff handling food.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Food is handled with clean utensils and gloves.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Disposable gloves are changed regularly and/ or in between tasks. Staff do not handle cash with gloved hands.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Cleaning and maintenance records for equipment, ventilation and exhaust system.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Adequate and regular pest control. Pest control record.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Goods and equipment are within shop boundary.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Store display/ Shop front is neat and tidy.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Work/ serving area is neat, clean and free of spillage.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Uncluttered circulation space free of refuse/ furniture.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Tables are cleared promptly within 10 minutes.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Fixtures and fittings including shelves, cupboards and drawers are clean and dry, free from pests, and in a good state.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Ceiling/ ceiling boards are free from stains/ dust with no gaps.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Fans and air-con units are in proper working order and clean and free from dust. Proper maintenance and routine cleaning are carried out regularly.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Equipment, exhaust hood, crockery and utensils are clean, in good condition and serviced.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Surfaces, walls and ceilings within customer areas are dry and clean.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Floor within customer areas is clean, dry and non-greasy.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Waste bins are properly lined with plastic bags and covered at all times.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Adequate number of covered waste pedal bins are available and waste is properly managed and disposed. Waste bins are not over-filled. Waste Management: Proper disposal of food stuff and waste. Waste is properly bagged before disposing it at the waste disposal area/ bin centre.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Hand washing facilities are easily accessible, in good working condition and soap is provided.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Adequate facilities for hand hygiene are available including liquid soap and disposable hand towels.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Food is stored in appropriate conditions and at an appropriate temperature.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Food and non-food are clearly segregated. Non-food items (e.g. insecticides, detergents and other chemicals) are not stored together with the food items.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Food is not placed near sources of contamination.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Storage of food does not invite pest infestation.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Dry goods (e.g. canned food and drinks) and other food items are stored neatly on shelves, off the floor and away from walls.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Proper stock rotation system such as the First-Expired-First-Out (FEFO) system is used for inventory management.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Food is protected from contamination; packaging is intact and no products are found with signs of spoilage.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Ice machine is clean and well maintained. Only ice is stored in the ice machine to prevent contamination of the ice.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Scoop for ice is stored outside the ice machine in a dedicated container.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Food supplied is clean and not expired.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Clear labelling of date of date of preparation/ manufacture/ expiry on all food containers/packaging.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Cooked food is properly covered to prevent cross-contamination.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Proper work flow and segregation of areas to prevent cross-contamination between raw and cooked/ ready-to-eat food areas.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Proper separation of cooked food/ ready-to-eat food, raw meat, seafood and vegetable to prevent cross-contamination. E.g. Different chopping boards, knives and other utensils are used for cooked/ ready-to-eat and raw food.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Frozen food is thawed in chiller, microwave or under running water.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Ingredients used are clean and washed thoroughly before cooking.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "All cooking ingredient (e.g. cooking oil, sauces) are properly covered in proper containers and properly labelled, indicating the content and date of expiry.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "All sauces are stored at appropriate condition & temperature.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Cooking oil is not used for more than 1 day.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Cooking oil is properly stored with a cover.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Perishable food is stored in the fridge.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Raw food and cooked food/ ready to serve food are clearly segregated. Cold and/ or hot holding units are clean and well maintained.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Food preparation area is free of bird and animal (e.g. dog or cat).",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Food preparation area is clean, free of pests and in good state of repair.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Food is not prepared on the floor, near drain or near/ in toilet.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Personal belongings are kept separately in the staff locker area or cabinet, away from the food storage and preparation area.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Daily Temperature Log for food storage units (freezers, chillers, warmers, steamers, ovens) using independent thermometer, etc. is maintained for inspection from time to time.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Food storage units (freezers, chillers, warmers, steamers, ovens) are kept clean and well maintained. All rubber gaskets of refrigerators / warmers are free from defect, dirt and mould.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Food storage units are not overstocked to allow good air circulation.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "For walk-in freezers and chillers, food items are stored neatly on shelves and off the floor.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Frozen food is stored at a temperature of not more than -12Â°C. Freezerâ€™s temperature: < -12Â°C",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Chilled food is stored at a temperature of not more than 4Â°C. Chillerâ€™s temperature: 0Â°C ~ 4Â°C",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Hot food are held above 60Â°C. Food warmerâ€™s temperature: > 60Â°C",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Perishable food is stored at a temperature of not more than 4Â°C.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Dairy products are stored at a temperature of not more than 7Â°C.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Cooked/ ready-to-eat food are stored above raw food.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Food items are properly wrapped/covered in proper containers and protected from contamination.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Min. no. of healthier variety of food items per stall. Lease Term: 50% of food items.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Label caloric count of healthier options.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Include HPBâ€™s Identifiers beside healthier options.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Use of healthier cooking oils.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Offer wholemeal/ whole-grain option.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Healthier option food sold at lower price than regular items.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Limit deep-fried and pre-deep fried food items sold (â‰¤ 20% deep-fried items).",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "No sugar / Lower-sugar brewed beverage offerings according to guidelines.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Healthier option beverages sold at lower price than regular items.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Label caloric count of healthier options.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Limit sugar content on commercially-prepared sweetened beverages. (â‰¥ 70% commercially-prepared sweetened beverages sold to have HCS)",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "All food handlers have Basic Food Hygiene certificate and a valid Refresher Food Hygiene certificate (if applicable).",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "MSDS for all industrial chemicals are available and up to date.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Proper chemicals storage.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "All detergent and bottles containing liquids are labelled appropriately.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "All personnel to wear safety shoes and safety attire where necessary.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Knives and sharp objects are kept at a safe place.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Area under the sink should not be cluttered with items other than washing agents.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Delivery personnel do not stack goods above the shoulder level.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Stacking of goods does not exceed 600mm from the ceiling and heavy items at the bottom, light items on top.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Proper signage/ label (fire, hazards, warnings, food stuff) and Exit signs in working order.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Equipment, crockery and utensils are not chipped, broken or cracked.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Fire extinguishers access is unobstructed; Fire extinguishers are not expired and employees know how to use them.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Escape route and exits are unobstructed.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "First aid box is available and well-equipped.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Electrical sockets are not overloaded â€“ one plug to one socket.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Plugs and cords are intact and free from exposure/ tension with PSB safety mark.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Power points that are in close proximity to flammable and/or water sources are installed with a plastic cover.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Electrical panels / DBs are covered.",
-        "answer": null
+        "answer": false,
+        "image": {}
       }
     ]
   },
   "non_fnb": {
-    "institutionID": null,
+    "institutionID": {},
     "questions": [
       {
         "question": "Shop is open and ready to service patients/visitors according to operating hours.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Staff Attendance: adequate staff for peak and non-peak hours.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "At least one (1) clearly assigned person in-charge on site.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Staff uniform/attire is not soiled.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Staff who are unfit for work due to illness should not report to work).",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Staff who are fit for work but suffering from the lingering effects of a cough and/or cold should cover their mouths with a surgical mask.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Adequate and regular pest control. Pest control record.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Goods and equipment are within shop boundary.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Store display/ Shop front is neat and tidy.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Work/ serving area is neat, clean and free of spillage.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Uncluttered circulation space free of refuse/ furniture.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Fixtures and fittings including shelves, cupboards and drawers are clean and dry and in a good state.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Ceiling/ ceiling boards are free from stains/ dust with no gaps.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Fans and air-con units are in proper working order and clean and free from dust. Proper maintenance and routine cleaning are carried out regularly.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Equipment is clean, in good condition and serviced.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Surfaces, walls and ceilings within customer areas are dry and clean.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Floor within customer areas is clean and dry.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Waste is properly managed and disposed. Waste bins are not over-filled. Waste Management: Proper disposal of general waste. ",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "MSDS for all industrial chemicals are available and up to date.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Proper chemicals storage.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "All detergent and bottles containing liquids are labelled appropriately.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "All personnel to wear safety shoes and safety attire where necessary.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Knives and sharp objects are kept at a safe place.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Area under the sink should not be cluttered with items other than washing agents.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Delivery personnel do not stack goods above the shoulder level.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Stacking of goods does not exceed 600mm from the ceiling and heavy items at the bottom, light items on top.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Proper signage/ label (fire, hazards, warnings, food stuff) and Exit signs in working order.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Fire extinguishers access is unobstructed; Fire extinguishers are not expired and employees know how to use them.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Escape route and exits are unobstructed.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "First aid box is available and well-equipped.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Electrical sockets are not overloaded â€“ one plug to one socket.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Plugs and cords are intact and free from exposure/ tension with PSB safety mark.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Power points that are in close proximity to flammable and/or water sources are installed with a plastic cover.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       {
         "question": "Electrical panels / DBs are covered.",
-        "answer": null
+        "answer": false,
+        "image": {}
       }
     ]
   },
   "covid19": {
-    "institutionID": null,
+    "institutionID": {},
     "questions": {
       "1": {
         "question": "SafeEntry has been implemented for dine-in customers.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       "2": {
         "question": "Temperature screening is conducted for customers of outlets that are located outside of institutionâ€™s temperature screening zone.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       "3": {
         "question": "Table and seating arrangement adheres to the one-metre spacing between tables or groups. Where tables/seats are fixed, tables/seats should be marked out, ensuring at least one-metre spacing.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       "4": {
         "question": "Queue is demarcated to ensure at least one-metre spacing between customers such as entrances and cashier counters (e.g. through floor markers).",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       "5": {
         "question": "Staff to ensure customers maintain safe distance of one-metre when queuing and seated.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       "6": {
         "question": "Staff to ensure customers wear a mask at all times, unless eating or drinking.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       "7": {
         "question": "Hand sanitizers are placed at high touch areas (i.e. tray return, collection point, outlet entrance/exit).",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       "8": {
         "question": "Outlet promotes use of cashless payment modes.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       "9": {
         "question": "All staff to wear a mask at all times, unless eating or drinking.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       "10": {
         "question": "Mask worn by staff is in the correct manner (i.e. cover nose and mouth, no hanging of mask under the chin/neck).",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       "11": {
         "question": "All staff to record their temperature daily.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       "12": {
         "question": "Staff to maintain safe distance of one-metre (where possible) and not congregate, including at common areas, and during break/meal times.",
-        "answer": null
+        "answer": false,
+        "image": {}
       },
       "13": {
         "question": "Check with supervisor that all staff record SafeEntry check-in and check-out (Note: Supervisor is accountable for adherence)",
-        "answer": null
+        "answer": false,
+        "image": {}
       }
     }
   }
