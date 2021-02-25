@@ -95,7 +95,7 @@ const StaffDashboardScreen = ({ navigation }) => {
               icon: "file-plus",
               label: "New Audit",
               onPress: () => {
-                navigation.navigate("ChooseTenantScreen");
+                navigation.navigate("ChooseTenant");
               },
               small: false,
             },
@@ -119,10 +119,10 @@ const styles = StyleService.create({
     flex: 1,
   },
   graphContainer: {
-    flex: 0.4,
+    flex: 0.35,
   },
   listContainer: {
-    flex: 0.6,
+    flex: 0.65,
   },
   contentContainer: {
     paddingHorizontal: 8,

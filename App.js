@@ -1,5 +1,5 @@
 import React from "react";
-import { SafeAreaView, StatusBar } from "react-native";
+import { SafeAreaView, StatusBar, Platform } from "react-native";
 import * as eva from "@eva-design/eva";
 import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
@@ -37,6 +37,7 @@ export default () => (
       <PaperProvider theme={paperTheme}>
         <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
           <SafeAreaView style={{ flex: 1, marginTop: StatusBar.currentHeight }}>
+            {Platform.OS === "ios" && <StatusBar barStyle="dark-content" />}
             <AppNavigator />
           </SafeAreaView>
         </ApplicationProvider>

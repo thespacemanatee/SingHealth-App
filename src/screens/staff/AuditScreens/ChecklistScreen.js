@@ -22,7 +22,7 @@ import QuestionCard from "../../../components/QuestionCard";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
-const ChooseTenantScreen = ({ navigation }) => {
+const ChecklistScreen = ({ navigation }) => {
   const databaseStore = useSelector((state) => state.database);
   const checklistStore = useSelector((state) => state.checklist);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -39,12 +39,15 @@ const ChooseTenantScreen = ({ navigation }) => {
     />
   );
 
-  const renderChosenChecklist = useCallback(
-    (itemData) => {
-      return <QuestionCard itemData={itemData} />;
-    },
-    [chosenChecklist]
-  );
+  const renderChosenChecklist = useCallback((itemData) => {
+    return (
+      <QuestionCard
+        itemData={itemData}
+        index={itemData.index}
+        navigation={navigation}
+      />
+    );
+  }, []);
 
   useEffect(() => {
     if (selectedIndex == 0) {
@@ -89,7 +92,11 @@ const ChooseTenantScreen = ({ navigation }) => {
           <Radio>F&B</Radio>
           <Radio>Non-F&B</Radio>
         </RadioGroup>
-        <List data={chosenChecklist} renderItem={renderChosenChecklist} />
+        <List
+          data={chosenChecklist}
+          renderItem={renderChosenChecklist}
+          initialNumToRender={40}
+        />
       </Layout>
     </SafeAreaView>
   );
@@ -110,4 +117,4 @@ const styles = StyleService.create({
   },
 });
 
-export default ChooseTenantScreen;
+export default ChecklistScreen;

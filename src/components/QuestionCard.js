@@ -1,25 +1,92 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View } from "react-native";
-import { Text, Card, StyleService, CheckBox } from "@ui-kitten/components";
+import {
+  Button,
+  Text,
+  Card,
+  StyleService,
+  CheckBox,
+  Icon,
+} from "@ui-kitten/components";
+import Swipeable from "react-native-gesture-handler/Swipeable";
+import { Extrapolate } from "react-native-reanimated";
+
+const TrashIcon = (props) => <Icon {...props} name="trash" />;
+const UndoIcon = (props) => <Icon {...props} name="undo" />;
 
 const QuestionCard = (props) => {
   const [checked, setChecked] = useState(false);
-  return (
-    <Card>
-      <View style={styles.questionContainer}>
-        <CheckBox
-          checked={checked}
-          onChange={(nextChecked) => setChecked(nextChecked)}
+  const [deleted, setDeleted] = useState(false);
+  const { index } = props;
+
+  const Header = (props) => (
+    <View {...props}>
+      <Text>{index + 1}</Text>
+    </View>
+  );
+
+  const onClickDetailHandler = () => {
+    props.navigation.navigate("QuestionDetails", {
+      index: index,
+    });
+  };
+
+  const rightSwipe = useCallback((progress, dragX) => {
+    // const scale = dragX.interpolate({
+    //   inputRange: [0, 100],
+    //   outputRange: [0, 1],
+    //   extrapolate: Extrapolate.CLAMP,
+    // });
+    return (
+      <View style={styles.deleteBox}>
+        <Button
+          appearance="ghost"
+          accessoryLeft={deleted ? UndoIcon : TrashIcon}
+          onPress={() => {
+            setDeleted(!deleted);
+          }}
         />
-        <View style={styles.questionTextContainer}>
-          <Text>{props.itemData.item.question}</Text>
-        </View>
       </View>
-    </Card>
+    );
+  }, []);
+
+  return (
+    <Swipeable renderLeftActions={rightSwipe} overshootLeft={false}>
+      <View>
+        <Card onPress={onClickDetailHandler} header={Header}>
+          <View style={styles.questionContainer}>
+            <CheckBox
+              checked={checked}
+              onChange={(nextChecked) => setChecked(nextChecked)}
+              disabled={deleted ? true : false}
+            />
+            <View style={styles.questionTextContainer}>
+              <Text
+                style={{
+                  textDecorationLine: deleted ? "line-through" : null,
+                }}
+              >
+                {props.itemData.item.question}
+              </Text>
+            </View>
+          </View>
+        </Card>
+      </View>
+    </Swipeable>
   );
 };
 
-export default QuestionCard;
+const areEqual = (prevProps, nextProps) => {
+  const { isSelected } = nextProps;
+  const { isSelected: prevIsSelected } = prevProps;
+
+  /*if the props are equal, it won't update*/
+  const isSelectedEqual = isSelected === prevIsSelected;
+
+  return isSelectedEqual;
+};
+
+export default React.memo(QuestionCard, areEqual);
 
 const styles = StyleService.create({
   questionContainer: {
@@ -27,5 +94,12 @@ const styles = StyleService.create({
   },
   questionTextContainer: {
     paddingLeft: 10,
+  },
+  deleteBox: {
+    // flex: 1,
+    backgroundColor: "#FEE8D1",
+    justifyContent: "center",
+    alignItems: "center",
+    // width: 100,
   },
 });

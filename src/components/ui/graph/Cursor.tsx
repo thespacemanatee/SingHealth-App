@@ -1,5 +1,5 @@
-import React from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
+import React, { useState } from "react";
+import { View, StyleSheet, Dimensions, Platform } from "react-native";
 import {
   PanGestureHandler,
   PanGestureHandlerGestureEvent,
@@ -10,21 +10,24 @@ import Animated, {
   interpolate,
   useAnimatedStyle,
   withDecay,
+  runOnJS,
+  Easing,
+  EasingNode,
 } from "react-native-reanimated";
 
 import { Path } from "../../../components/AnimatedHelpers";
 
-import { DataPoint } from "./Label";
+import Label, { DataPoint } from "./Label";
 
 const { width } = Dimensions.get("window");
-const CURSOR = 100;
+const CURSOR = 75;
 const styles = StyleSheet.create({
   cursorContainer: {
     width: CURSOR,
     height: CURSOR,
     justifyContent: "center",
     alignItems: "center",
-    //backgroundColor: "rgba(100, 200, 300, 0.4)",
+    // backgroundColor: "rgba(100, 200, 300, 0.4)",
   },
   cursor: {
     width: 30,
@@ -33,6 +36,10 @@ const styles = StyleSheet.create({
     borderColor: "#367be2",
     borderWidth: 4,
     backgroundColor: "white",
+  },
+  label: {
+    position: "absolute",
+    top: CURSOR,
   },
 });
 
@@ -43,6 +50,27 @@ interface CursorProps {
 }
 
 const Cursor = ({ path, length, point }: CursorProps) => {
+  let opacity: Animated.Node<number>;
+  if (Platform.OS !== "web") {
+    opacity = useState(new Animated.Value(0.5))[0];
+  }
+
+  const fadeIn = () => {
+    Animated.timing(opacity, {
+      toValue: 1,
+      duration: 200,
+      easing: EasingNode.ease,
+    }).start();
+  };
+
+  const fadeOut = () => {
+    Animated.timing(opacity, {
+      toValue: 0.5,
+      duration: 200,
+      easing: EasingNode.ease,
+    }).start();
+  };
+
   const onGestureEvent = useAnimatedGestureHandler<
     PanGestureHandlerGestureEvent,
     {
@@ -51,6 +79,9 @@ const Cursor = ({ path, length, point }: CursorProps) => {
     }
   >({
     onStart: (_event, ctx) => {
+      if (Platform.OS !== "web") {
+        runOnJS(fadeIn)();
+      }
       ctx.offsetX = interpolate(
         length.value,
         [0, path.length],
@@ -67,6 +98,9 @@ const Cursor = ({ path, length, point }: CursorProps) => {
       );
     },
     onEnd: ({ velocityX }) => {
+      if (Platform.OS !== "web") {
+        runOnJS(fadeOut)();
+      }
       length.value = withDecay({
         velocity: velocityX,
         clamp: [0, path.length],
@@ -86,8 +120,11 @@ const Cursor = ({ path, length, point }: CursorProps) => {
   return (
     <View style={StyleSheet.absoluteFill}>
       <PanGestureHandler {...{ onGestureEvent }}>
-        <Animated.View style={[styles.cursorContainer, style]}>
+        <Animated.View style={[{ ...styles.cursorContainer, opacity }, style]}>
           <View style={styles.cursor} />
+          <View style={styles.label}>
+            <Label {...{ point }} />
+          </View>
         </Animated.View>
       </PanGestureHandler>
     </View>

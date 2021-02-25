@@ -41,7 +41,7 @@ const ChooseTenantScreen = ({ navigation }) => {
           status="basic"
           onPress={() => {
             dispatch(checklistActions.addAuditTenantSelection(itemData.item));
-            navigation.navigate("AuditOptionsScreen");
+            navigation.navigate("Checklist");
           }}
         >
           <Text>{itemData.item.name}</Text>
