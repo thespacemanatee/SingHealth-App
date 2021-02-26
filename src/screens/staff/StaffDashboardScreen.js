@@ -15,7 +15,6 @@ import {
 } from "@ui-kitten/components";
 import { FAB } from "react-native-paper";
 
-import { database } from "../../data/dummy-database";
 import Graph from "../../components/ui/graph/Graph";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
@@ -45,8 +44,8 @@ const StaffDashboardScreen = ({ navigation }) => {
   const renderActiveAudits = useCallback(
     (itemData) => {
       const auditID = `${itemData.item}`;
-      const tenantID = database.audits.audits[auditID].tenantID;
-      const tenantInfo = database.tenants[tenantID];
+      const tenantID = databaseStore.audits.audits[auditID].tenantID;
+      const tenantInfo = databaseStore.tenants[tenantID];
       return (
         <Card
           style={styles.item}

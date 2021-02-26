@@ -9,7 +9,6 @@ import {
   Icon,
 } from "@ui-kitten/components";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-import { Extrapolate } from "react-native-reanimated";
 
 const TrashIcon = (props) => <Icon {...props} name="trash" />;
 const UndoIcon = (props) => <Icon {...props} name="undo" />;
@@ -32,11 +31,6 @@ const QuestionCard = (props) => {
   };
 
   const rightSwipe = useCallback((progress, dragX) => {
-    // const scale = dragX.interpolate({
-    //   inputRange: [0, 100],
-    //   outputRange: [0, 1],
-    //   extrapolate: Extrapolate.CLAMP,
-    // });
     return (
       <View style={styles.deleteBox}>
         <Button

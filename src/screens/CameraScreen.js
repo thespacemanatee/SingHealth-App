@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState } from "react";
 import {
   View,
   ImageBackground,
@@ -24,7 +24,6 @@ const CameraScreen = ({ route, navigation }) => {
   const WINDOW_HEIGHT = Dimensions.get("window").height;
   const CAMERA_VIEW_HEIGHT = (WINDOW_WIDTH / 3) * 4;
   const TOOLBAR_TOP_HEIGHT = 64;
-  const TOOLBAR_BOTTOM_HEIGHT = (WINDOW_HEIGHT - CAMERA_VIEW_HEIGHT) - TOOLBAR_TOP_HEIGHT;
 
   const __takePicture = async () => {
     const photo = await camera.takePictureAsync();
@@ -58,13 +57,13 @@ const CameraScreen = ({ route, navigation }) => {
   };
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <View
         style={{
           flexDirection: "row",
           backgroundColor: "black",
           height: TOOLBAR_TOP_HEIGHT,
-          justifyContent: "space-between",
+          // justifyContent: "space-between",
         }}
       >
         <Button
@@ -96,18 +95,17 @@ const CameraScreen = ({ route, navigation }) => {
       )}
       <View
         style={{
+          flex: 1,
           flexDirection: "row",
           backgroundColor: "black",
-          height: TOOLBAR_BOTTOM_HEIGHT,
           justifyContent: "center",
           alignItems: "center",
-          paddingBottom: 40,
         }}
       >
         {previewVisible && capturedImage ? (
           <View
             style={{
-              flex: 1,
+              flexGrow: 1,
               flexDirection: "row",
               justifyContent: "space-around",
             }}
@@ -134,7 +132,7 @@ const CameraScreen = ({ route, navigation }) => {
         ) : (
           <View
             style={{
-              flex: 1,
+              flexGrow: 1,
               flexDirection: "row",
               justifyContent: "space-around",
             }}

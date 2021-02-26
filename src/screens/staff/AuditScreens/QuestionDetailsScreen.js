@@ -1,12 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
-import {
-  SafeAreaView,
-  View,
-  Image,
-  Alert,
-  Platform,
-  ImageBackground,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { SafeAreaView, View, Image, Alert, Platform } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -27,23 +20,22 @@ import * as checklistActions from "../../../store/actions/checklistActions";
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
 
-const useInputState = (initialValue = "") => {
-  const [value, setValue] = useState(initialValue);
-  return { value, onChangeText: setValue };
-};
-
 const QuestionDetailsScreen = ({ route, navigation }) => {
   const databaseStore = useSelector((state) => state.database);
   const checklistStore = useSelector((state) => state.checklist);
   const { index } = route.params;
   const [savedImage, setSavedImage] = useState(false);
+  const [value, setValue] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [imageArray, setImageArray] = useState([]);
-  const [remarks, setRemarks] = useState("");
 
   const dispatch = useDispatch();
 
-  const multilineInputState = useInputState();
+  const changeTextHandler = (value) => {
+    setValue(value);
+    console.log(value);
+    dispatch(checklistActions.addRemarks(index, value));
+  };
 
   const renderImages = imageArray.map((imageUri, index) => {
     return (
@@ -80,7 +72,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
       setImageArray(storeImageUri);
     }
     if (storeRemarks) {
-      setRemarks(storeRemarks);
+      setValue(storeRemarks);
     }
     console.log(imageArray);
   }, [checklistStore, savedImage]);
@@ -199,7 +191,8 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
             multiline={true}
             textStyle={{ minHeight: 64 }}
             placeholder="Multiline"
-            {...multilineInputState}
+            value={value}
+            onChangeText={changeTextHandler}
           />
         </View>
       </Layout>
