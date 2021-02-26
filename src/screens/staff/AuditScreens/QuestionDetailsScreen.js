@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { SafeAreaView, View, Image, Alert, Platform } from "react-native";
+import {
+  SafeAreaView,
+  View,
+  Image,
+  Alert,
+  Platform,
+  ImageBackground,
+} from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -32,7 +39,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   const [savedImage, setSavedImage] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [imageArray, setImageArray] = useState([]);
-  const [remarks, setRemarks] = useState([]);
+  const [remarks, setRemarks] = useState("");
 
   const dispatch = useDispatch();
 
@@ -40,8 +47,19 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
 
   const renderImages = imageArray.map((imageUri, index) => {
     return (
-      <View key={index} style={styles.shadowContainer}>
-        <View style={styles.imageContainer}>
+      <View
+        key={index}
+        style={{
+          ...styles.shadowContainer,
+          height: Platform.OS === "web" ? "100%" : null,
+        }}
+      >
+        <View
+          style={{
+            ...styles.imageContainer,
+            height: Platform.OS === "web" ? "100%" : null,
+          }}
+        >
           <Image
             style={styles.image}
             source={{
@@ -54,20 +72,32 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   });
 
   useEffect(() => {
-    if (checklistStore.chosen_checklist.questions[index].image.uri) {
-      setImageArray(checklistStore.chosen_checklist.questions[index].image.uri);
+    const storeImageUri =
+      checklistStore.chosen_checklist.questions[index].image.uri;
+    const storeRemarks =
+      checklistStore.chosen_checklist.questions[index].image.remarks;
+    if (storeImageUri) {
+      setImageArray(storeImageUri);
+    }
+    if (storeRemarks) {
+      setRemarks(storeRemarks);
     }
     console.log(imageArray);
   }, [checklistStore, savedImage]);
 
   const onSave = async (imageData) => {
     const currentTime = Date.now();
-    const destination =
-      FileSystem.documentDirectory + "audit_images/" + currentTime;
-    await FileSystem.copyAsync({
-      from: imageData.uri,
-      to: destination,
-    });
+    let destination;
+    if (Platform.OS === "web") {
+      destination = imageData.uri;
+    } else {
+      destination =
+        FileSystem.documentDirectory + "audit_images/" + currentTime;
+      await FileSystem.copyAsync({
+        from: imageData.uri,
+        to: destination,
+      });
+    }
     setSavedImage(!savedImage);
     dispatch(checklistActions.addImage(index, destination));
   };
@@ -158,7 +188,12 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
             </View>
           )}
         </ViewPager>
-        <View style={styles.inputContainer}>
+        <View
+          style={{
+            ...styles.inputContainer,
+            marginTop: Platform.OS === "web" ? 40 : null,
+          }}
+        >
           <Text category="h6">Remarks:</Text>
           <Input
             multiline={true}
@@ -187,6 +222,7 @@ const styles = StyleService.create({
   },
   image: {
     height: "100%",
+    width: "100%",
     backgroundColor: "white",
     shadowColor: "black",
     shadowOpacity: 0.26,
