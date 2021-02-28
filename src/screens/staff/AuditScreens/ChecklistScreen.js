@@ -47,7 +47,7 @@ const ChecklistScreen = ({ navigation }) => {
         navigation={navigation}
       />
     );
-  }, []);
+  }, [selectedIndex]);
 
   useEffect(() => {
     if (selectedIndex == 0) {
