@@ -1,0 +1,37 @@
+@startuml
+
+Staff -> Server: Request to login
+Server -> Database: Check login credentials
+Database ->> Server: Return result
+
+alt result == True
+Server ->> Staff: Allow access as staff
+
+Staff -> Server : Request for audit info \nfor a selected range \nof time
+Server -> Database : Request for audit info \nfor a selected range \nof time
+Database ->> Server : Return the audit data \nfor the selected range \nof time
+activate Server 
+Server -> Server : Compute audit data and graph
+Server ->> Staff : Display computed data\nand graph
+deactivate Server
+
+Staff -> Server : Insert institution\ \ncluster to compare data with
+Server -> Database : Request for audit info \nof selected institution\cluster \nfor a selected range of time 
+Database ->> Server : Return the audit data \nof selected institution\cluster \nfor a selected range of time 
+activate Server 
+Server -> Server : Compute audit data and graph
+Server ->> Staff : Display comparison data\nand graph
+deactivate Server
+
+Staff -> Server : Request to export to excel
+activate Server
+Server -> Server : Convert the data to excel file 
+Server ->> Staff : Open excel file
+deactivate Server
+
+else Result == False
+Server ->> Staff : Error message
+
+end
+
+@enduml

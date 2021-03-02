@@ -19,7 +19,7 @@ import { Path } from "../../../components/AnimatedHelpers";
 import Label, { DataPoint } from "./Label";
 
 const { width } = Dimensions.get("window");
-const CURSOR = 75;
+const CURSOR = Platform.OS === "web" ? 30 : 150;
 const styles = StyleSheet.create({
   cursorContainer: {
     width: CURSOR,
@@ -38,7 +38,8 @@ const styles = StyleSheet.create({
   },
   label: {
     position: "absolute",
-    top: CURSOR,
+    top: 25,
+    // left: 0,
   },
 });
 
@@ -107,7 +108,7 @@ const Cursor = ({ path, length, point }: CursorProps) => {
     },
   });
 
-  const style = useAnimatedStyle(() => {
+  const cursorStyle = useAnimatedStyle(() => {
     const { coord } = point.value;
     const translateX = coord.x - CURSOR / 2;
     const translateY = coord.y - CURSOR / 2;
@@ -115,15 +116,31 @@ const Cursor = ({ path, length, point }: CursorProps) => {
       transform: [{ translateX }, { translateY }],
     };
   });
+  const labelStyle = useAnimatedStyle(() => {
+    const { coord } = point.value;
+    const translateX = coord.x - CURSOR / 2;
+    const translateY = coord.y - CURSOR / 2;
+    return {
+      transform: [{ translateX }, { translateY }],
+      left:
+        Platform.OS !== "web" ? (coord.x > (width / 2) ? -150 : 100) : -85,
+    };
+  });
 
   return (
     <View style={StyleSheet.absoluteFill}>
       <PanGestureHandler {...{ onGestureEvent }}>
-        <Animated.View style={[{ ...styles.cursorContainer, opacity }, style]}>
-          <View style={styles.cursor} />
-          <View style={styles.label}>
-            <Label {...{ point }} />
-          </View>
+        <Animated.View>
+          <Animated.View
+            style={[{ ...styles.cursorContainer, opacity }, cursorStyle]}
+          >
+            <View style={styles.cursor} />
+          </Animated.View>
+          <Animated.View style={[{ ...styles.label, opacity }, labelStyle]}>
+            <View style={styles.label}>
+              <Label {...{ point }} />
+            </View>
+          </Animated.View>
         </Animated.View>
       </PanGestureHandler>
     </View>

@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Alert, SafeAreaView } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Button, Divider, Layout, TopNavigation } from "@ui-kitten/components";
 import * as Permissions from "expo-permissions";
 

@@ -47,7 +47,7 @@ const ChecklistScreen = ({ navigation }) => {
         navigation={navigation}
       />
     );
-  }, []);
+  }, [selectedIndex]);
 
   useEffect(() => {
     if (selectedIndex == 0) {
@@ -58,9 +58,7 @@ const ChecklistScreen = ({ navigation }) => {
     } else {
       setChosenChecklist(databaseStore.audit_forms.non_fnb.questions);
       dispatch(
-        checklistActions.addChosenChecklist(
-          databaseStore.audit_forms.non_fnb.questions
-        )
+        checklistActions.addChosenChecklist(databaseStore.audit_forms.non_fnb)
       );
     }
   }, [selectedIndex, databaseStore]);

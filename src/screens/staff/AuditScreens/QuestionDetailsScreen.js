@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView, View, Image, Alert, Platform } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -20,28 +20,38 @@ import * as checklistActions from "../../../store/actions/checklistActions";
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
 
-const useInputState = (initialValue = "") => {
-  const [value, setValue] = useState(initialValue);
-  return { value, onChangeText: setValue };
-};
-
 const QuestionDetailsScreen = ({ route, navigation }) => {
   const databaseStore = useSelector((state) => state.database);
   const checklistStore = useSelector((state) => state.checklist);
   const { index } = route.params;
   const [savedImage, setSavedImage] = useState(false);
+  const [value, setValue] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [imageArray, setImageArray] = useState([]);
-  const [remarks, setRemarks] = useState([]);
 
   const dispatch = useDispatch();
 
-  const multilineInputState = useInputState();
+  const changeTextHandler = (value) => {
+    setValue(value);
+    console.log(value);
+    dispatch(checklistActions.addRemarks(index, value));
+  };
 
   const renderImages = imageArray.map((imageUri, index) => {
     return (
-      <View key={index} style={styles.shadowContainer}>
-        <View style={styles.imageContainer}>
+      <View
+        key={index}
+        style={{
+          ...styles.shadowContainer,
+          height: Platform.OS === "web" ? "100%" : null,
+        }}
+      >
+        <View
+          style={{
+            ...styles.imageContainer,
+            height: Platform.OS === "web" ? "100%" : null,
+          }}
+        >
           <Image
             style={styles.image}
             source={{
@@ -54,20 +64,31 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   });
 
   useEffect(() => {
-    if (checklistStore.chosen_checklist.questions[index].image.uri) {
-      setImageArray(checklistStore.chosen_checklist.questions[index].image.uri);
+    const storeImageUri =
+      checklistStore.chosen_checklist.questions[index].image.uri;
+    const storeRemarks =
+      checklistStore.chosen_checklist.questions[index].image.remarks;
+    if (storeImageUri) {
+      setImageArray(storeImageUri);
+    }
+    if (storeRemarks) {
+      setValue(storeRemarks);
     }
     console.log(imageArray);
   }, [checklistStore, savedImage]);
 
   const onSave = async (imageData) => {
     const currentTime = Date.now();
-    const destination =
-      FileSystem.documentDirectory + "audit_images/" + currentTime;
-    await FileSystem.copyAsync({
-      from: imageData.uri,
-      to: destination,
-    });
+    let destination;
+    if (Platform.OS === "web") {
+      destination = imageData.uri;
+    } else {
+      destination = FileSystem.cacheDirectory + "audit_images/" + currentTime;
+      await FileSystem.copyAsync({
+        from: imageData.uri,
+        to: destination,
+      });
+    }
     setSavedImage(!savedImage);
     dispatch(checklistActions.addImage(index, destination));
   };
@@ -158,13 +179,19 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
             </View>
           )}
         </ViewPager>
-        <View style={styles.inputContainer}>
+        <View
+          style={{
+            ...styles.inputContainer,
+            marginTop: Platform.OS === "web" ? 40 : null,
+          }}
+        >
           <Text category="h6">Remarks:</Text>
           <Input
             multiline={true}
             textStyle={{ minHeight: 64 }}
             placeholder="Multiline"
-            {...multilineInputState}
+            value={value}
+            onChangeText={changeTextHandler}
           />
         </View>
       </Layout>
@@ -187,6 +214,7 @@ const styles = StyleService.create({
   },
   image: {
     height: "100%",
+    width: "100%",
     backgroundColor: "white",
     shadowColor: "black",
     shadowOpacity: 0.26,

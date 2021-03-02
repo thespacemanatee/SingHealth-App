@@ -9,7 +9,6 @@ import {
   Icon,
 } from "@ui-kitten/components";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-import { Extrapolate } from "react-native-reanimated";
 
 const TrashIcon = (props) => <Icon {...props} name="trash" />;
 const UndoIcon = (props) => <Icon {...props} name="undo" />;
@@ -31,24 +30,22 @@ const QuestionCard = (props) => {
     });
   };
 
-  const rightSwipe = useCallback((progress, dragX) => {
-    // const scale = dragX.interpolate({
-    //   inputRange: [0, 100],
-    //   outputRange: [0, 1],
-    //   extrapolate: Extrapolate.CLAMP,
-    // });
-    return (
-      <View style={styles.deleteBox}>
-        <Button
-          appearance="ghost"
-          accessoryLeft={deleted ? UndoIcon : TrashIcon}
-          onPress={() => {
-            setDeleted(!deleted);
-          }}
-        />
-      </View>
-    );
-  }, [deleted]);
+  const rightSwipe = useCallback(
+    (progress, dragX) => {
+      return (
+        <View style={styles.deleteBox}>
+          <Button
+            appearance="ghost"
+            accessoryLeft={deleted ? UndoIcon : TrashIcon}
+            onPress={() => {
+              setDeleted(!deleted);
+            }}
+          />
+        </View>
+      );
+    },
+    [deleted]
+  );
 
   return (
     <Swipeable renderLeftActions={rightSwipe} overshootLeft={false}>
@@ -77,11 +74,11 @@ const QuestionCard = (props) => {
 };
 
 const areEqual = (prevProps, nextProps) => {
-  const { isSelected } = nextProps;
-  const { isSelected: prevIsSelected } = prevProps;
+  const { itemData } = nextProps;
+  const { itemData: prevItemData } = prevProps;
 
   /*if the props are equal, it won't update*/
-  const isSelectedEqual = isSelected === prevIsSelected;
+  const isSelectedEqual = itemData.item.question === prevItemData.item.question;
 
   return isSelectedEqual;
 };
