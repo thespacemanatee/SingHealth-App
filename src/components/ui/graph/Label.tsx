@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Platform } from "react-native";
 import Animated, { useDerivedValue } from "react-native-reanimated";
 import { ReText, round } from "react-native-redash";
 import { Card, Text } from "@ui-kitten/components";
@@ -9,12 +9,12 @@ import { StyleGuide } from "../../../components";
 const styles = StyleSheet.create({
   date: {
     ...StyleGuide.typography.body,
-    textAlign: "right",
+    textAlign: Platform.OS !== "web" ? "right" : null,
     // backgroundColor: "red",
   },
-  price: {
+  score: {
     ...StyleGuide.typography.body,
-    textAlign: "right",
+    textAlign: Platform.OS !== "web" ? "right" : null,
     // backgroundColor: "red",
   },
   labelContainer: {
@@ -50,7 +50,7 @@ interface LabelProps {
 const Label = ({ point }: LabelProps) => {
   const date = useDerivedValue(() => {
     const d = new Date(point.value.data.x);
-    return d.toDateString().replace(/^\S+\s/,'');
+    return d.toDateString().replace(/^\S+\s/, "");
   });
   const points = useDerivedValue(() => {
     const p = point.value.data.y;
@@ -65,7 +65,7 @@ const Label = ({ point }: LabelProps) => {
         </View>
         <View style={styles.contentContainer}>
           <Text>Average: </Text>
-          <ReText style={styles.price} text={points} />
+          <ReText style={styles.score} text={points} />
         </View>
       </View>
     </Card>

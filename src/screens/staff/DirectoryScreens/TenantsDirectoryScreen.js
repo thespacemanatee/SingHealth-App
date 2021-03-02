@@ -16,8 +16,7 @@ import {
 
 import { Styles as directoryStyles } from "../DirectoryScreens/StyleGuide";
 
-const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
-const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
+const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const TenantsDirectoryScreen = ({ route, navigation }) => {
   const databaseStore = useSelector((state) => state.database);
@@ -27,17 +26,13 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
 
   const theme = useTheme();
 
-  const DrawerAction = () => (
+  const BackAction = () => (
     <TopNavigationAction
-      icon={DrawerIcon}
+      icon={BackIcon}
       onPress={() => {
-        navigation.openDrawer();
+        navigation.goBack();
       }}
     />
-  );
-
-  const NotificationAction = () => (
-    <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
   );
 
   const renderInstitutions = useCallback((itemData) => {
@@ -73,8 +68,7 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
       <TopNavigation
         title="Directory"
         alignment="center"
-        accessoryLeft={DrawerAction}
-        accessoryRight={NotificationAction}
+        accessoryLeft={BackAction}
       />
       <Divider />
       <Layout

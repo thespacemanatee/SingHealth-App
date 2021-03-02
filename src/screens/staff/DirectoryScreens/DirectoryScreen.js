@@ -64,7 +64,10 @@ const DirectoryScreen = ({ navigation }) => {
 
   useEffect(() => {
     const tempArray = Object.entries(databaseStore.institutions);
-    setInstitutions(tempArray);
+    const newTempArray = tempArray.filter((e) => {
+      return e[0] !== "default";
+    });
+    setInstitutions(newTempArray);
   }, [databaseStore.institutions]);
 
   return (
