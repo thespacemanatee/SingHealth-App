@@ -1,5 +1,6 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { View } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Button,
   Text,
@@ -10,13 +11,25 @@ import {
 } from "@ui-kitten/components";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 
+import * as checklistActions from "../store/actions/checklistActions";
+
 const TrashIcon = (props) => <Icon {...props} name="trash" />;
 const UndoIcon = (props) => <Icon {...props} name="undo" />;
 
 const QuestionCard = (props) => {
+  const checklistTypeStore = useSelector(
+    (state) => state.checklist.chosen_checklist_type
+  );
   const [checked, setChecked] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const { index } = props;
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setChecked(false);
+    setDeleted(false);
+  }, [checklistTypeStore]);
 
   const Header = (props) => (
     <View {...props}>
@@ -39,6 +52,7 @@ const QuestionCard = (props) => {
             accessoryLeft={deleted ? UndoIcon : TrashIcon}
             onPress={() => {
               setDeleted(!deleted);
+              dispatch(checklistActions.changeMaximumScore(deleted));
             }}
           />
         </View>
@@ -47,6 +61,11 @@ const QuestionCard = (props) => {
     [deleted]
   );
 
+  const onChangeHandler = (nextChecked) => {
+    setChecked(nextChecked);
+    dispatch(checklistActions.changeCurrentScore(nextChecked));
+  };
+
   return (
     <Swipeable renderLeftActions={rightSwipe} overshootLeft={false}>
       <View>
@@ -54,8 +73,8 @@ const QuestionCard = (props) => {
           <View style={styles.questionContainer}>
             <CheckBox
               checked={checked}
-              onChange={(nextChecked) => setChecked(nextChecked)}
-              disabled={deleted ? true : false}
+              onChange={onChangeHandler}
+              disabled={deleted}
             />
             <View style={styles.questionTextContainer}>
               <Text

@@ -5,11 +5,17 @@ import {
   ADD_CHOSEN_CHECKLIST,
   ADD_IMAGE,
   ADD_REMARKS,
+  SET_MAXIMUM_SCORE,
+  CHANGE_CURRENT_SCORE,
+  CHANGE_MAXIMUM_SCORE,
 } from "../actions/checklistActions";
 
 const initialState = {
   chosen_tenant: null,
+  chosen_checklist_type: null,
   chosen_checklist: null,
+  maximum_score: 0,
+  current_score: 0,
 };
 
 export const checklistReducer = (state = initialState, action) => {
@@ -18,12 +24,18 @@ export const checklistReducer = (state = initialState, action) => {
       return {
         ...state,
         chosen_tenant: action.tenant,
+        chosen_checklist_type: null,
         chosen_checklist: null,
+        maximum_score: 0,
+        current_score: 0,
       };
     case ADD_CHOSEN_CHECKLIST: {
       return {
         ...state,
+        chosen_checklist_type: action.checklist_type,
         chosen_checklist: _.cloneDeep(action.checklist),
+        maximum_score: 0,
+        current_score: 0,
       };
     }
     case ADD_IMAGE: {
@@ -49,6 +61,36 @@ export const checklistReducer = (state = initialState, action) => {
       return {
         ...state,
         chosen_checklist: newChecklist,
+      };
+    }
+    case SET_MAXIMUM_SCORE: {
+      return {
+        ...state,
+        maximum_score: action.score,
+      };
+    }
+    case CHANGE_CURRENT_SCORE: {
+      let new_current_score;
+      if (action.change) {
+        new_current_score = state.current_score + 1;
+      } else {
+        new_current_score = state.current_score - 1;
+      }
+      return {
+        ...state,
+        current_score: new_current_score,
+      };
+    }
+    case CHANGE_MAXIMUM_SCORE: {
+      let new_maximum_score;
+      if (action.change) {
+        new_maximum_score = state.maximum_score + 1;
+      } else {
+        new_maximum_score = state.maximum_score - 1;
+      }
+      return {
+        ...state,
+        maximum_score: new_maximum_score,
       };
     }
     default:
