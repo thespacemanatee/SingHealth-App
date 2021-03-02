@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useCallback, Fragment } from "react";
-import { SafeAreaView, View, SectionList } from "react-native";
+import {
+  SafeAreaView,
+  View,
+  SectionList,
+  ActivityIndicator,
+} from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { CommonActions } from "@react-navigation/native";
 import {
@@ -14,6 +19,7 @@ import {
   StyleService,
   Radio,
   RadioGroup,
+  useTheme,
 } from "@ui-kitten/components";
 
 import * as checklistActions from "../../../store/actions/checklistActions";
@@ -26,6 +32,9 @@ const ChecklistScreen = ({ navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [completeChecklist, setCompleteChecklist] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const theme = useTheme();
 
   const dispatch = useDispatch();
 
@@ -53,7 +62,16 @@ const ChecklistScreen = ({ navigation }) => {
 
   const renderSectionHeader = useCallback(
     ({ section: { title } }) => {
-      return <Text style={styles.header}>{title}</Text>;
+      return (
+        <Text
+          style={[
+            styles.header,
+            { backgroundColor: theme["color-primary-300"] },
+          ]}
+        >
+          {title}
+        </Text>
+      );
     },
     [selectedIndex]
   );
@@ -94,7 +112,32 @@ const ChecklistScreen = ({ navigation }) => {
       max += section.data.length;
     });
     dispatch(checklistActions.setMaximumScore(max));
+    setLoading(false);
   }, [selectedIndex, databaseStore]);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <TopNavigation
+          title="SingHealth"
+          alignment="center"
+          accessoryLeft={BackAction}
+        />
+        <Divider />
+        <Layout
+          style={{
+            flex: 1,
+            justifyContent: "center",
+          }}
+        >
+          <ActivityIndicator
+            size="large"
+            color={theme["color-primary-default"]}
+          />
+        </Layout>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -109,7 +152,12 @@ const ChecklistScreen = ({ navigation }) => {
           flex: 1,
         }}
       >
-        <View style={styles.titleContainer}>
+        <View
+          style={[
+            styles.titleContainer,
+            { backgroundColor: theme["color-primary-400"] },
+          ]}
+        >
           <Text style={styles.title}>
             Audit: {checklistStore.chosen_tenant.name}
           </Text>
@@ -159,7 +207,6 @@ const ChecklistScreen = ({ navigation }) => {
 const styles = StyleService.create({
   titleContainer: {
     padding: 20,
-    backgroundColor: "#FD8352",
   },
   title: {
     fontSize: 20,
@@ -171,8 +218,7 @@ const styles = StyleService.create({
   },
   header: {
     fontSize: 32,
-    backgroundColor: "#fff",
-    margin: 10,
+    padding: 10,
   },
   bottomContainer: {
     flexDirection: "row",

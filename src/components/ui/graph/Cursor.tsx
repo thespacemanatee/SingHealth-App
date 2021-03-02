@@ -122,8 +122,7 @@ const Cursor = ({ path, length, point }: CursorProps) => {
     const translateY = coord.y - CURSOR / 2;
     return {
       transform: [{ translateX }, { translateY }],
-      left:
-        Platform.OS !== "web" ? (coord.x > (width / 2) ? -150 : 100) : -85,
+      left: Platform.OS !== "web" ? (coord.x > width / 2 ? -150 : 100) : -85,
     };
   });
 
@@ -131,9 +130,7 @@ const Cursor = ({ path, length, point }: CursorProps) => {
     <View style={StyleSheet.absoluteFill}>
       <PanGestureHandler {...{ onGestureEvent }}>
         <Animated.View>
-          <Animated.View
-            style={[{ ...styles.cursorContainer, opacity }, cursorStyle]}
-          >
+          <Animated.View style={[{ ...styles.cursorContainer }, cursorStyle]}>
             <View style={styles.cursor} />
           </Animated.View>
           <Animated.View style={[{ ...styles.label, opacity }, labelStyle]}>
