@@ -1,0 +1,56 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://example.com/product.schema.json",
+    "title": "audit",
+    "description": "A form filled up after an audit",
+    "type": "object",
+    "properties": {
+        "_id": {
+            "description": "The unique identifier for an audit",
+            "type": "string"
+        },
+        "type": {
+            "description": "fnb / non_fnb / covid19",
+            "type": "string"
+        },
+        "formTemplateID": { "type": "string" },
+        "answers": {
+            "description": "All the questions for this audit form",
+            "type": "object",
+            "patternProperties": {
+                "^[0-9]+$": { 
+                    "description": "details for a single question",
+                    "type": "object",
+                    "properties": {
+                        "answer": {
+                            "type": "boolean"
+                        },
+                        "image": {
+                            "description": "The URL to query for the image",
+                            "type": "array"
+                            TODO: string array
+                        },
+                        "rectificationImages":{
+                            "description": "The URL to query for the image",
+                            "type": "array"
+                            TODO: string array
+                        },
+                        "remarks": {
+                            "type": "string"
+                        },
+                        "deadline":{
+                            "description": "date in DDMMYYYY",
+                            "type":"string" 
+                        },
+                        "rectified": {"type": "boolean"},
+                        "requestForExt": {"type": "boolean"},
+                        "acceptedRequest": {"type": "boolean"}
+                    },
+                    "required": [ "answer" ]
+                }
+            },
+            "additionalProperties": false
+        }
+        
+    }
+}

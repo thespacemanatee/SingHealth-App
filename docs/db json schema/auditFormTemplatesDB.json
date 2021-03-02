@@ -1,0 +1,44 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://example.com/product.schema.json",
+    "title": "Audit form",
+    "description": "An audit form",
+    "type": "object",
+    "properties": {
+        "_id": {
+          "description": "The unique identifier for an audit form",
+          "type": "string"
+        },
+        "questions": {
+            "description": "All the questions for this audit form",
+            "type": "object",
+            "patternProperties": {
+                "^[0-9]+$": { 
+                    "description": "details for a single question",
+                    "type": "object",
+                    "properties": {
+                        "question": {
+                            "type": "string"
+                        },
+                        "answer": {
+                            "type": "boolean"
+                        },
+                        "image": {
+                            "type": "string"
+                        },
+                        "remarks": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [ "question", "answer" ]
+                }
+            },
+            "additionalProperties": false
+        },
+        "type": {
+            "description": "fnb / non_fnb / covid19",
+            "type": "string"
+        }
+    },
+    "required": [ "_id", "questions", "type" ]
+}

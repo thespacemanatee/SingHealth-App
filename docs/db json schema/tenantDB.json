@@ -5,21 +5,25 @@
     "description": "Info about a single tenant",
     "type": "object",
     "properties": {
-        "tenantId": {
+        "_id": {
           "description": "The unique identifier for a tenant",
           "type": "string"
         },
         "email": {
-            "description": "The unique identifier for a tenant",
+            "description": "The user email of a tenant",
             "type": "string"
         },
         "pswd": {
-        "description": "The unique identifier for a tenant",
-        "type": "string"
+            "description": "The password credentials for a tenant",
+            "type": "string"
         },
         "institutionId": {
-            "description": "The unique identifier for a tenant",
+            "description": "The institution where a tenant operates under",
             "type": "string"
+        },
+        "demeritPoints":{
+            "description": "If tenant consistently scores low for certain number of times, they get 1 demerit. Too many demerit points and they might have to end tenantship",
+            "type": "integer"
         },
         "stall": {
             "description": "All the info regarding their stall",
@@ -48,7 +52,7 @@
                     },
                     "required": ["name", "email"]
                 },
-                "family":{
+                "group":{
                     "description": "If tenant is part of a food court or similar grouping of stalls, this will be the name of the food court",
                     "type": "string"
                 },
@@ -73,7 +77,6 @@
                             "type": "string"
                         },
                         "zipcode": {
-                            "description": "Name of the company POC",
                             "type": "integer"
                         },
                         "stall": {
@@ -81,7 +84,7 @@
                             "type": "string"
                         }
                     },
-                    "required": [ "blk", "street", "unitNo", "zipcode" ]
+                    "required": [ "unitNo" ]
                 },
                 "fnb": {
                     "description": "Whether the stall is an F&B stall",
@@ -91,5 +94,5 @@
             "required": ["name", "companyName", "companyPOC", "address", "fnb"]
         }
     },
-    "required": [ "tenantId", "email", "pswd", "institutionId", "stall" ]
+    "required": [ "_id", "email", "pswd", "institutionId", "stall" ]
   }

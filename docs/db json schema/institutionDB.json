@@ -5,8 +5,8 @@
     "description": "Info about the institution I.e. hospital/clinic",
     "type": "object",
     "properties": {
-        "id": {
-          "description": "The unique identifier for a staff",
+        "_id": {
+          "description": "The unique identifier for an institution",
           "type": "string"
         },
         "name": {
@@ -36,17 +36,25 @@
                 "zipcode": {
                     "description": "Name of the company POC",
                     "type": "integer"
-                },
-                "stall": {
-                    "description": "Stall number. For F&B outlets within a food court",
-                    "type": "string"
                 }
             }
         },
         "poc": {
-            "description": "The ID of the institution that the staff is from",
-            "type": "string"
+            "description": "Point of contact for that institution",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "designation": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                }
+            },
+            "required": [ "email" ]
         }
     },
-    "required": [ "staffId", "email", "pswd", "institutionID" ]
+    "required": [ "_id", "name", "address" ]
 }

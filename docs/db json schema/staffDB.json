@@ -5,7 +5,7 @@
     "description": "Info about a single staff",
     "type": "object",
     "properties": {
-        "staffId": {
+        "_id": {
           "description": "The unique identifier for a staff",
           "type": "string"
         },
@@ -22,5 +22,5 @@
             "type": "string"
         }
     },
-    "required": [ "staffId", "email", "pswd", "institutionID" ]
+    "required": [ "_id", "email", "pswd", "institutionID" ]
 }
