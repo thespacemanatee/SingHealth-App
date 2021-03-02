@@ -34,6 +34,6 @@ export const changeCurrentScore = (change) => {
   return { type: CHANGE_CURRENT_SCORE, change: change };
 };
 
-export const changeMaximumScore = (change) => {
-  return { type: CHANGE_MAXIMUM_SCORE, change: change };
+export const changeMaximumScore = (change, checked) => {
+  return { type: CHANGE_MAXIMUM_SCORE, change: change, checked: checked };
 };

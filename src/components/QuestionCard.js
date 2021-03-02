@@ -52,19 +52,19 @@ const QuestionCard = (props) => {
             accessoryLeft={deleted ? UndoIcon : TrashIcon}
             onPress={() => {
               setDeleted(!deleted);
-              dispatch(checklistActions.changeMaximumScore(deleted));
+              dispatch(checklistActions.changeMaximumScore(deleted, checked));
             }}
           />
         </View>
       );
     },
-    [deleted]
+    [deleted, checked]
   );
 
-  const onChangeHandler = (nextChecked) => {
+  const onChangeHandler = useCallback((nextChecked) => {
     setChecked(nextChecked);
     dispatch(checklistActions.changeCurrentScore(nextChecked));
-  };
+  }, []);
 
   return (
     <Swipeable renderLeftActions={rightSwipe} overshootLeft={false}>

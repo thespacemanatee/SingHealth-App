@@ -82,15 +82,24 @@ export const checklistReducer = (state = initialState, action) => {
       };
     }
     case CHANGE_MAXIMUM_SCORE: {
+      console.log(action.checked);
       let new_maximum_score;
+      let new_current_score = state.current_score;
       if (action.change) {
         new_maximum_score = state.maximum_score + 1;
+        if (action.checked) {
+          new_current_score++;
+        }
       } else {
         new_maximum_score = state.maximum_score - 1;
+        if (action.checked) {
+          new_current_score--;
+        }
       }
       return {
         ...state,
         maximum_score: new_maximum_score,
+        current_score: new_current_score,
       };
     }
     default:
