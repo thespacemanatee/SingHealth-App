@@ -78,12 +78,12 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   }, [checklistStore, savedImage]);
 
   const onSave = async (imageData) => {
-    const currentTime = Date.now();
+    const fileName = checklistStore.chosen_tenant.name + Date.now();
     let destination;
     if (Platform.OS === "web") {
       destination = imageData.uri;
     } else {
-      destination = FileSystem.cacheDirectory + "audit_images/" + currentTime;
+      destination = FileSystem.cacheDirectory + "audit_images/" + fileName;
       await FileSystem.copyAsync({
         from: imageData.uri,
         to: destination,
