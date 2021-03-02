@@ -52,6 +52,7 @@ const QuestionCard = (props) => {
             accessoryLeft={deleted ? UndoIcon : TrashIcon}
             onPress={() => {
               setDeleted(!deleted);
+              dispatch(checklistActions.changeMaximumScore(deleted));
             }}
           />
         </View>
