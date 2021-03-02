@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, Fragment } from "react";
-import { SafeAreaView, View, ImageBackground, SectionList } from "react-native";
+import { SafeAreaView, View, SectionList } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
+import { CommonActions } from "@react-navigation/native";
 import {
   Button,
   Divider,
@@ -95,10 +96,6 @@ const ChecklistScreen = ({ navigation }) => {
     dispatch(checklistActions.setMaximumScore(max));
   }, [selectedIndex, databaseStore]);
 
-  // useEffect(() => {
-  //   setCurrentScore(checklistStore.current_score);
-  // }, [checklistStore.current_score]);
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <TopNavigation
@@ -138,6 +135,21 @@ const ChecklistScreen = ({ navigation }) => {
             Current Score: {checklistStore.current_score}/
             {checklistStore.maximum_score}
           </Text>
+          <Button
+            //   style={styles.button}
+            // appearance="filled"
+            status="primary"
+            onPress={() => {
+              navigation.dispatch(
+                CommonActions.reset({
+                  index: 1,
+                  routes: [{ name: "StaffDashboard" }],
+                })
+              );
+            }}
+          >
+            SUBMIT
+          </Button>
         </View>
       </Layout>
     </SafeAreaView>
@@ -163,9 +175,12 @@ const styles = StyleService.create({
     margin: 10,
   },
   bottomContainer: {
+    flexDirection: "row",
     padding: 20,
     borderColor: "grey",
     borderTopWidth: 1,
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 });
 

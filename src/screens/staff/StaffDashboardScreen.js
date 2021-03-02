@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { SafeAreaView, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-
 import {
   Divider,
   Icon,
@@ -12,6 +11,7 @@ import {
   TopNavigationAction,
   List,
   Card,
+  useTheme,
 } from "@ui-kitten/components";
 import { FAB } from "react-native-paper";
 
@@ -23,6 +23,8 @@ const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 const StaffDashboardScreen = ({ navigation }) => {
   const databaseStore = useSelector((state) => state.database);
   const [state, setState] = useState({ open: false });
+
+  const theme = useTheme();
 
   const onStateChange = ({ open }) => setState({ open });
 
@@ -48,12 +50,15 @@ const StaffDashboardScreen = ({ navigation }) => {
       const tenantInfo = databaseStore.tenants[tenantID];
       return (
         <Card
-          style={styles.item}
-          status="basic"
+          style={[styles.item, { backgroundColor: theme["color-info-100"] }]}
+          status="info"
+          activeOpacity={0.5}
           // header={itemData.item}
           // footer={itemData.item}
         >
-          <Text>{tenantInfo.name}</Text>
+          <View>
+            <Text>{tenantInfo.name}</Text>
+          </View>
         </Card>
       );
     },
@@ -72,6 +77,9 @@ const StaffDashboardScreen = ({ navigation }) => {
       <Layout style={styles.screen}>
         <View style={styles.graphContainer}>
           <Graph />
+        </View>
+        <View style={styles.textContainer}>
+          <Text style={styles.text}>Rectification Progress</Text>
         </View>
         <View style={styles.listContainer}>
           <List
@@ -119,6 +127,13 @@ const styles = StyleService.create({
   },
   graphContainer: {
     flex: 0.35,
+  },
+  textContainer: {
+    marginLeft: 20,
+    marginBottom: 20,
+  },
+  text: {
+    fontSize: 26,
   },
   listContainer: {
     flex: 0.65,

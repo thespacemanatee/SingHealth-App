@@ -14,11 +14,11 @@ import {
 } from "@ui-kitten/components";
 
 import TenantDashboardScreen from "../screens/tenant/TenantDashboardScreen";
-import DirectoryScreen from "../screens/staff/DirectoryScreen";
+// import DirectoryScreen from "../screens/staff/directory/DirectoryScreen";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
 
-const DirectoryIcon = (props) => <Icon {...props} name="folder-outline" />;
+// const DirectoryIcon = (props) => <Icon {...props} name="folder-outline" />;
 
 const useBottomNavigationState = (initialState = 0) => {
   const [selectedIndex, setSelectedIndex] = useState(initialState);
@@ -36,7 +36,7 @@ export const BottomNavigationAccessoriesShowcase = ({ navigation, state }) => {
       onSelect={(index) => navigation.navigate(state.routeNames[index])}
     >
       <BottomNavigationTab title="DASHBOARD" icon={DashboardIcon} />
-      <BottomNavigationTab title="DIRECTORY" icon={DirectoryIcon} />
+      {/* <BottomNavigationTab title="DIRECTORY" icon={DirectoryIcon} /> */}
     </BottomNavigation>
   );
 };
@@ -48,7 +48,7 @@ const TenantTabNavigator = () => {
       tabBar={(props) => <BottomNavigationAccessoriesShowcase {...props} />}
     >
       <Screen name="TenantDashboard" component={TenantDashboardScreen} />
-      <Screen name="Directory" component={DirectoryScreen} />
+      {/* <Screen name="Directory" component={DirectoryScreen} /> */}
     </Navigator>
   );
 };

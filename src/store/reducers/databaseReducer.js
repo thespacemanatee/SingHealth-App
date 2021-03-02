@@ -12,14 +12,18 @@ const initialState = {
 export const databaseReducer = (state = initialState, action) => {
   switch (action.type) {
     case STORE_DATABASE:
-      // console.log(action.database.audits);
+      const institutions = action.database.institutions;
+      delete institutions["default"];
+      const tenants = action.database.tenants;
+      delete tenants["default"];
+      console.log(tenants);
       return {
         ...state,
         audit_forms: action.database.audit_forms,
         audits: action.database.audits,
-        institutions: action.database.institutions,
+        institutions: institutions,
         staffs: action.database.staffs,
-        tenants: action.database.tenants,
+        tenants: tenants,
       };
     default:
       return state;

@@ -15,11 +15,12 @@ import {
 } from "@ui-kitten/components";
 
 import StaffDashboardScreen from "../screens/staff/StaffDashboardScreen";
-import DirectoryScreen from "../screens/staff/DirectoryScreen";
+import DirectoryScreen from "../screens/staff/DirectoryScreens/DirectoryScreen";
 import ChooseTenantScreen from "../screens/staff/AuditScreens/ChooseTenantScreen";
 import ChecklistScreen from "../screens/staff/AuditScreens/ChecklistScreen";
 import QuestionDetailsScreen from "../screens/staff/AuditScreens/QuestionDetailsScreen";
 import CameraScreen from "../screens/CameraScreen";
+import TenantsDirectoryScreen from "../screens/staff/DirectoryScreens/TenantsDirectoryScreen";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
 
@@ -80,8 +81,14 @@ const StaffTabNavigator = () => {
     <Navigator
       tabBar={(props) => <BottomNavigationAccessoriesShowcase {...props} />}
     >
-      <Screen name="StaffDashboard" component={StaffDashboardStackNavigator} />
-      <Screen name="Directory" component={DirectoryScreen} />
+      <Screen
+        name="StaffDashboardStack"
+        component={StaffDashboardStackNavigator}
+      />
+      <Screen
+        name="StaffDirectoryStack"
+        component={StaffDirectoryStackNavigator}
+      />
     </Navigator>
   );
 };
@@ -94,6 +101,16 @@ const StaffDashboardStackNavigator = () => {
       <Screen name="ChooseTenant" component={ChooseTenantScreen} />
       <Screen name="Checklist" component={ChecklistScreen} />
       <Screen name="QuestionDetails" component={QuestionDetailsScreen} />
+    </Navigator>
+  );
+};
+
+const StaffDirectoryStackNavigator = () => {
+  const { Navigator, Screen } = createStackNavigator();
+  return (
+    <Navigator headerMode="none">
+      <Screen name="Directory" component={DirectoryScreen} />
+      <Screen name="TenantsDirectory" component={TenantsDirectoryScreen} />
     </Navigator>
   );
 };
