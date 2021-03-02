@@ -11,26 +11,44 @@
         },
         "questions": {
             "description": "All the questions for this audit form",
-            "type": "object",
-            "patternProperties": {
-                "^[0-9]+$": { 
-                    "description": "details for a single question",
-                    "type": "object",
-                    "properties": {
-                        "question": {
-                            "type": "string"
-                        },
-                        "answer": {
-                            "type": "boolean"
-                        },
-                        "image": {
-                            "type": "string"
-                        },
-                        "remarks": {
-                            "type": "string"
-                        }
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "question": {
+                        "type": "string"
                     },
-                    "required": [ "question", "answer" ]
+                    "answer": {
+                        "type": "boolean"
+                    },
+                    "image": {
+                        "description": "The URL to query for the image",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "minItems": 0,
+                        "uniqueItems": true
+                    },
+                    "rectificationImages":{
+                        "description": "The URL to query for the image",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "minItems": 0,
+                        "uniqueItems": true
+                    },
+                    "remarks": {
+                        "type": "string"
+                    },
+                    "deadline":{
+                        "description": "date in DDMMYYYY",
+                        "type":"string" 
+                    },
+                    "rectified": {"type": "boolean"},
+                    "requestForExt": {"type": "boolean"},
+                    "acceptedRequest": {"type": "boolean"}
                 }
             },
             "additionalProperties": false
