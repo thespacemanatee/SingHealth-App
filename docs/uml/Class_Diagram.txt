@@ -1,0 +1,76 @@
+@startuml
+skinparam classAttributeIconSize 0
+abstract class User {
+	-userId: String
+	-email: String
+	-password: String
+	-institutionId: String
+	void getUserId()
+	void getInstitutionId()
+}
+
+class Staff {
+	void addTenant(Tenant.userId: String)
+	void removeTenant(Tenant.userId: String)
+	void submitAudit(audit: Audit)
+}
+
+class Tenant {
+	-demeritPoints: int
+	-stall: Stall
+	void submitRectifications()
+	
+}
+
+class Stall {
+	-name: String
+	-companyName: String
+	-companyPOCName: String
+	-companyPOCEmail: String
+	-group: String
+	-bldg: String
+	-unitNo: String
+	-fnb: Boolean
+}
+
+class Institution {
+	-institutionId: String
+	-name: String
+	-address: Address
+	-institutionPOCName: String
+	-institutionPOCEmail: String
+}
+
+class Audit {
+	-auditId: String
+	-staffId: String
+	-tenantId: String
+	-institutionId: String
+	-date: Date
+	-auditChecklists: AuditForm[]
+	
+}
+
+class AuditForm {
+	-formId: String
+	-questions: Question[]
+	-type: String
+}
+
+class Question {
+	-question: String
+	-answer: Boolean
+	-image: String[]
+	-remarks: String
+}
+
+User <|-- Staff
+
+User <|-- Tenant
+
+Tenant "1" -- "1..*" Staff
+Stall --o "0..1" Tenant
+AuditForm --> "3" Audit
+Question --o "1..*" AuditForm
+
+@enduml
