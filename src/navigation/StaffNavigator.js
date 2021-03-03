@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Drawer,
   DrawerItem,
@@ -48,12 +49,14 @@ export const BottomNavigationAccessoriesShowcase = ({ navigation, state }) => {
 };
 
 const DrawerContent = ({ navigation, state }) => (
-  <Drawer
-    selectedIndex={new IndexPath(state.index)}
-    onSelect={(index) => navigation.navigate(state.routeNames[index.row])}
-  >
-    <DrawerItem title="Staff" />
-  </Drawer>
+  <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+    <Drawer
+      selectedIndex={new IndexPath(state.index)}
+      onSelect={(index) => navigation.navigate(state.routeNames[index.row])}
+    >
+      <DrawerItem title="Staff" />
+    </Drawer>
+  </SafeAreaView>
 );
 
 const StaffNavigator = () => {
@@ -78,18 +81,20 @@ const StaffModalStackNavigator = () => {
 const StaffTabNavigator = () => {
   const { Navigator, Screen } = createBottomTabNavigator();
   return (
-    <Navigator
-      tabBar={(props) => <BottomNavigationAccessoriesShowcase {...props} />}
-    >
-      <Screen
-        name="StaffDashboardStack"
-        component={StaffDashboardStackNavigator}
-      />
-      <Screen
-        name="StaffDirectoryStack"
-        component={StaffDirectoryStackNavigator}
-      />
-    </Navigator>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      <Navigator
+        tabBar={(props) => <BottomNavigationAccessoriesShowcase {...props} />}
+      >
+        <Screen
+          name="StaffDashboardStack"
+          component={StaffDashboardStackNavigator}
+        />
+        <Screen
+          name="StaffDirectoryStack"
+          component={StaffDirectoryStackNavigator}
+        />
+      </Navigator>
+    </SafeAreaView>
   );
 };
 

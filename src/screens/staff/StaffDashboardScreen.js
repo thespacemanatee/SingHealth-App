@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { SafeAreaView, View } from "react-native";
+import { View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -66,7 +66,7 @@ const StaffDashboardScreen = ({ navigation }) => {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <TopNavigation
         title="Dashboard"
         alignment="center"
@@ -115,7 +115,7 @@ const StaffDashboardScreen = ({ navigation }) => {
           }}
         />
       </Layout>
-    </SafeAreaView>
+    </View>
   );
 };
 

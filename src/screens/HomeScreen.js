@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Alert, SafeAreaView } from "react-native";
+import { Alert } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import { Button, Divider, Layout, TopNavigation } from "@ui-kitten/components";
 import * as Permissions from "expo-permissions";
@@ -30,7 +31,7 @@ export const HomeScreen = ({ navigation }) => {
   }, [database, dispatch]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <TopNavigation title="SingHealth" alignment="center" />
       <Divider />
       <Layout

@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Camera } from "expo-camera";
 import { Button, StyleService, Icon } from "@ui-kitten/components";
 
@@ -57,7 +58,7 @@ const CameraScreen = ({ route, navigation }) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <View
         style={{
           flexDirection: "row",
@@ -176,7 +177,7 @@ const CameraScreen = ({ route, navigation }) => {
           </View>
         )}
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
