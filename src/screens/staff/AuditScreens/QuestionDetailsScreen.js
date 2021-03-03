@@ -83,7 +83,10 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     if (Platform.OS === "web") {
       destination = imageData.uri;
     } else {
-      destination = FileSystem.cacheDirectory + "audit_images/" + fileName;
+      destination =
+        FileSystem.cacheDirectory +
+        fileName.replace(/\s+/g, '');
+      console.log(destination);
       await FileSystem.copyAsync({
         from: imageData.uri,
         to: destination,
