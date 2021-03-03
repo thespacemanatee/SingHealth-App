@@ -15,12 +15,8 @@
             "items": {
                 "type": "object",
                 "properties": {
-                    "question": {
-                        "type": "string"
-                    },
-                    "answer": {
-                        "type": "boolean"
-                    },
+                    "question": {"type": "string"},
+                    "answer": {"type": "boolean"},
                     "image": {
                         "description": "The URL to query for the image",
                         "type": "array",
@@ -39,9 +35,7 @@
                         "minItems": 0,
                         "uniqueItems": true
                     },
-                    "remarks": {
-                        "type": "string"
-                    },
+                    "remarks": {"type": "string"},
                     "deadline":{
                         "description": "date in DDMMYYYY",
                         "type":"string" 
@@ -49,7 +43,8 @@
                     "rectified": {"type": "boolean"},
                     "requestForExt": {"type": "boolean"},
                     "acceptedRequest": {"type": "boolean"}
-                }
+                },
+                "required": [ "question" , "answer" ]
             },
             "additionalProperties": false
         },

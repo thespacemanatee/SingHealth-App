@@ -22,9 +22,11 @@
             "type": "string"
         },
         "date": {
+            "description": "DDMMYYYY",
             "type": "string"
         },
         "time": {
+            "description": "HH:MM 24 hr clock format",
             "type": "string"
         },
         "auditChecklists": {
