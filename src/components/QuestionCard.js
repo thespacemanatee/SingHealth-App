@@ -23,6 +23,7 @@ const QuestionCard = (props) => {
   const [checked, setChecked] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const { index } = props;
+  const { itemData } = props;
 
   const dispatch = useDispatch();
 
@@ -40,6 +41,7 @@ const QuestionCard = (props) => {
   const onClickDetailHandler = () => {
     props.navigation.navigate("QuestionDetails", {
       index: index,
+      item: itemData.item,
     });
   };
 
@@ -82,7 +84,7 @@ const QuestionCard = (props) => {
                   textDecorationLine: deleted ? "line-through" : null,
                 }}
               >
-                {props.itemData.item.question}
+                {itemData.item.question}
               </Text>
             </View>
           </View>

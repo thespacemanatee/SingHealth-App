@@ -1,5 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { SafeAreaView, View, Image, Alert, Platform } from "react-native";
+import React, { useState, useEffect, Fragment, useCallback } from "react";
+import {
+  SafeAreaView,
+  View,
+  Image,
+  Alert,
+  Platform,
+  ScrollView,
+  KeyboardAvoidingView,
+  Dimensions,
+} from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -11,25 +20,33 @@ import {
   ViewPager,
   Input,
   Text,
+  useTheme,
+  Button,
 } from "@ui-kitten/components";
 import { Camera } from "expo-camera";
 import * as FileSystem from "expo-file-system";
+import * as ImagePicker from "expo-image-picker";
 
 import * as checklistActions from "../../../store/actions/checklistActions";
+import { selectCurve } from "react-native-redash";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
+const ImageIcon = (props) => <Icon {...props} name="image-outline" />;
 
 const QuestionDetailsScreen = ({ route, navigation }) => {
-  const databaseStore = useSelector((state) => state.database);
   const checklistStore = useSelector((state) => state.checklist);
   const { index } = route.params;
-  const [savedImage, setSavedImage] = useState(false);
+  const { item } = route.params;
   const [value, setValue] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [imageArray, setImageArray] = useState([]);
 
+  const theme = useTheme();
+
   const dispatch = useDispatch();
+
+  const SCREEN_HEIGHT = Dimensions.get("window").height;
 
   const changeTextHandler = (value) => {
     setValue(value);
@@ -37,31 +54,69 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     dispatch(checklistActions.addRemarks(index, value));
   };
 
-  const renderImages = imageArray.map((imageUri, index) => {
-    return (
-      <View
-        key={index}
-        style={{
-          ...styles.shadowContainer,
-          height: Platform.OS === "web" ? "100%" : null,
-        }}
-      >
+  const renderImages = useCallback(
+    imageArray.map((imageUri, pager_index) => {
+      return (
         <View
+          key={pager_index}
           style={{
-            ...styles.imageContainer,
+            ...styles.shadowContainer,
             height: Platform.OS === "web" ? "100%" : null,
           }}
         >
-          <Image
-            style={styles.image}
-            source={{
-              uri: imageUri,
+          <View
+            style={{
+              ...styles.imageContainer,
+              height: Platform.OS === "web" ? "100%" : null,
             }}
-          />
+          >
+            <Image
+              style={styles.image}
+              source={{
+                uri: imageUri,
+              }}
+            />
+            <Button
+              style={{ position: "absolute", right: 0, bottom: 0 }}
+              appearance="ghost"
+              status="control"
+              size="giant"
+              onPress={() => {
+                Alert.alert("Delete Image", "Are you sure?", [
+                  { text: "Cancel", style: "cancel" },
+                  {
+                    text: "Delete",
+                    style: "destructive",
+                    onPress: () => {
+                      dispatch(
+                        checklistActions.deleteImage(index, selectedIndex)
+                      );
+                    },
+                  },
+                ]);
+              }}
+            >
+              Delete
+            </Button>
+          </View>
         </View>
-      </View>
-    );
-  });
+      );
+    }),
+    [selectedIndex, imageArray]
+  );
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== "web") {
+        const {
+          status,
+        } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") {
+          alert("Sorry, we need camera roll permissions to make this work!");
+        }
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     const storeImageUri =
@@ -74,8 +129,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     if (storeRemarks) {
       setValue(storeRemarks);
     }
-    console.log(imageArray);
-  }, [checklistStore, savedImage]);
+  }, [checklistStore]);
 
   const onSave = async (imageData) => {
     const fileName = checklistStore.chosen_tenant.name + Date.now();
@@ -83,16 +137,13 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     if (Platform.OS === "web") {
       destination = imageData.uri;
     } else {
-      destination =
-        FileSystem.cacheDirectory +
-        fileName.replace(/\s+/g, '');
+      destination = FileSystem.cacheDirectory + fileName.replace(/\s+/g, "");
       console.log(destination);
       await FileSystem.copyAsync({
         from: imageData.uri,
         to: destination,
       });
     }
-    setSavedImage(!savedImage);
     dispatch(checklistActions.addImage(index, destination));
   };
 
@@ -105,13 +156,19 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     }
   };
 
-  const cameraHandler = () => {
-    // Alert.alert("Add an image", "", [
-    //   { text: "Cancel", onPress: () => {}, style: "cancel" },
-    //   { text: "Choose from Gallery", onPress: () => {} },
-    //   { text: "Take Photo", onPress: __startCamera },
-    // ]);
-    __startCamera();
+  const imagePickerHandler = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [3, 4],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      onSave(result);
+    }
   };
 
   const BackAction = () => (
@@ -130,19 +187,41 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
         if (Platform.OS === "web") {
           navigation.navigate("CameraModal", { onSave: onSave });
         } else {
-          cameraHandler();
+          __startCamera();
         }
       }}
     />
   );
 
+  const ImageAction = () => (
+    <TopNavigationAction
+      icon={ImageIcon}
+      onPress={() => {
+        // if (Platform.OS === "web") {
+        //   navigation.navigate("CameraModal", { onSave: onSave });
+        // } else {
+        imagePickerHandler();
+        // }
+      }}
+    />
+  );
+
+  const renderRightActions = () => {
+    return (
+      <Fragment>
+        <CameraAction />
+        <ImageAction />
+      </Fragment>
+    );
+  };
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <TopNavigation
         title="SingHealth"
         alignment="center"
         accessoryLeft={BackAction}
-        accessoryRight={CameraAction}
+        accessoryRight={renderRightActions}
       />
       <Divider />
       <Layout
@@ -150,65 +229,86 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           flex: 1,
         }}
       >
-        <ViewPager
-          style={{ height: "70%" }}
-          selectedIndex={selectedIndex}
-          onSelect={(index) => setSelectedIndex(index)}
-        >
-          {imageArray.length > 0 ? (
-            renderImages
-          ) : (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <View
+            style={[
+              styles.titleContainer,
+              { backgroundColor: theme["color-primary-400"] },
+            ]}
+          >
+            <Text style={{ fontWeight: "bold" }}>{item.question}</Text>
+          </View>
+          <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior="padding"
+            keyboardVerticalOffset={100}
+          >
+            <ViewPager
+              style={{ height: "70%" }}
+              selectedIndex={selectedIndex}
+              onSelect={(index) => setSelectedIndex(index)}
             >
-              <View style={styles.shadowContainer}>
-                <View style={styles.imageContainer}>
-                  <View
-                    style={{
-                      ...styles.image,
-                      justifyContent: "center",
-                      alignContent: "center",
-                      padding: 50,
-                    }}
-                  >
-                    <Text>No Images. Start adding some!</Text>
+              {imageArray.length > 0 ? (
+                renderImages
+              ) : (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <View style={styles.shadowContainer}>
+                    <View style={styles.imageContainer}>
+                      <View
+                        style={{
+                          ...styles.image,
+                          justifyContent: "center",
+                          alignContent: "center",
+                          padding: 50,
+                        }}
+                      >
+                        <Text>No Images. Start adding some!</Text>
+                      </View>
+                    </View>
                   </View>
                 </View>
-              </View>
+              )}
+            </ViewPager>
+            <View
+              style={[
+                styles.inputContainer,
+                { marginTop: Platform.OS === "web" ? 40 : null },
+              ]}
+            >
+              <Text category="h6">Remarks:</Text>
+              <Input
+                height={SCREEN_HEIGHT * 0.075}
+                multiline={true}
+                // textStyle={{ minHeight: 64 }}
+                placeholder="Enter your remarks here"
+                value={value}
+                onChangeText={changeTextHandler}
+              />
             </View>
-          )}
-        </ViewPager>
-        <View
-          style={{
-            ...styles.inputContainer,
-            marginTop: Platform.OS === "web" ? 40 : null,
-          }}
-        >
-          <Text category="h6">Remarks:</Text>
-          <Input
-            multiline={true}
-            textStyle={{ minHeight: 64 }}
-            placeholder="Multiline"
-            value={value}
-            onChangeText={changeTextHandler}
-          />
-        </View>
+          </KeyboardAvoidingView>
+        </ScrollView>
       </Layout>
-    </SafeAreaView>
+    </View>
   );
 };
 
 export default QuestionDetailsScreen;
 
 const styles = StyleService.create({
+  titleContainer: {
+    padding: 20,
+  },
   shadowContainer: {
     margin: 20,
   },
   imageContainer: {
+    // position: "absolute",
     elevation: 10,
     shadowOffset: { width: 5, height: 5 },
     shadowColor: "grey",

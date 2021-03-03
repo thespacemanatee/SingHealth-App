@@ -4,6 +4,7 @@ import {
   ADD_AUDIT_TENANT_SELECTION,
   ADD_CHOSEN_CHECKLIST,
   ADD_IMAGE,
+  DELETE_IMAGE,
   ADD_REMARKS,
   SET_MAXIMUM_SCORE,
   CHANGE_CURRENT_SCORE,
@@ -46,6 +47,17 @@ export const checklistReducer = (state = initialState, action) => {
       newChecklist.questions[action.index].image.uri.push(action.imageUri);
       // console.log(newChecklist.questions);
 
+      return {
+        ...state,
+        chosen_checklist: newChecklist,
+      };
+    }
+    case DELETE_IMAGE: {
+      const newChecklist = _.cloneDeep(state.chosen_checklist);
+      newChecklist.questions[action.index].image.uri.splice(
+        action.selectedIndex
+      );
+      
       return {
         ...state,
         chosen_checklist: newChecklist,

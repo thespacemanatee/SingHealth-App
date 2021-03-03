@@ -1,6 +1,7 @@
 export const ADD_AUDIT_TENANT_SELECTION = "ADD_AUDIT_TENANT_SELECTION";
 export const ADD_CHOSEN_CHECKLIST = "ADD_CHOSEN_CHECKLIST";
 export const ADD_IMAGE = "ADD_IMAGE";
+export const DELETE_IMAGE = "DELETE_IMAGE";
 export const ADD_REMARKS = "ADD_REMARKS";
 export const SET_MAXIMUM_SCORE = "SET_MAXIMUM_SCORE";
 export const CHANGE_CURRENT_SCORE = "CHANGE_CURRENT_SCORE";
@@ -20,6 +21,10 @@ export const addChosenChecklist = (checklist_type, checklist) => {
 
 export const addImage = (index, imageUri) => {
   return { type: ADD_IMAGE, index: index, imageUri: imageUri };
+};
+
+export const deleteImage = (index, selectedIndex) => {
+  return { type: DELETE_IMAGE, index: index, selectedIndex: selectedIndex };
 };
 
 export const addRemarks = (index, remarks) => {

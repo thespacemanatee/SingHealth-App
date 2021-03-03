@@ -119,7 +119,7 @@ const ChecklistScreen = ({ navigation }) => {
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <TopNavigation
-          title="SingHealth"
+          title="Checklist"
           alignment="center"
           accessoryLeft={BackAction}
         />
@@ -142,7 +142,7 @@ const ChecklistScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <TopNavigation
-        title="SingHealth"
+        title="Checklist"
         alignment="center"
         accessoryLeft={BackAction}
       />
@@ -210,6 +210,7 @@ const styles = StyleService.create({
   },
   title: {
     fontSize: 20,
+    fontWeight: "bold",
   },
   radioGroup: {
     paddingLeft: 20,

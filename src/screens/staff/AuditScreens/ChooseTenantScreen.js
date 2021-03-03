@@ -67,7 +67,7 @@ const ChooseTenantScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <TopNavigation
-        title="SingHealth"
+        title="Tenant Selection"
         alignment="center"
         accessoryLeft={BackAction}
       />
