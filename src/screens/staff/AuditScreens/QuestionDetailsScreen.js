@@ -27,6 +27,7 @@ import { Camera } from "expo-camera";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 
+import alert from "../../../components/CustomAlert";
 import * as checklistActions from "../../../store/actions/checklistActions";
 import { selectCurve } from "react-native-redash";
 
@@ -82,7 +83,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
               status="control"
               size="giant"
               onPress={() => {
-                Alert.alert("Delete Image", "Are you sure?", [
+                alert("Delete Image", "Are you sure?", [
                   { text: "Cancel", style: "cancel" },
                   {
                     text: "Delete",
@@ -258,8 +259,18 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
                     alignItems: "center",
                   }}
                 >
-                  <View style={styles.shadowContainer}>
-                    <View style={styles.imageContainer}>
+                  <View
+                    style={[
+                      styles.shadowContainer,
+                      { height: Platform.OS === "web" ? "100%" : null },
+                    ]}
+                  >
+                    <View
+                      style={[
+                        styles.imageContainer,
+                        { height: Platform.OS === "web" ? "100%" : null },
+                      ]}
+                    >
                       <View
                         style={{
                           ...styles.image,

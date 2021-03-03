@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { View } from "react-native";
+import { Dimensions, Platform, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Button,
@@ -26,6 +26,8 @@ const QuestionCard = (props) => {
   const { itemData } = props;
 
   const dispatch = useDispatch();
+
+  const SCREEN_WIDTH = Dimensions.get("window").width;
 
   useEffect(() => {
     setChecked(false);
@@ -81,6 +83,7 @@ const QuestionCard = (props) => {
             <View style={styles.questionTextContainer}>
               <Text
                 style={{
+                  width: Platform.OS === "web" ? SCREEN_WIDTH - 100 : null,
                   textDecorationLine: deleted ? "line-through" : null,
                 }}
               >
