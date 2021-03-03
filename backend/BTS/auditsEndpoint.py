@@ -1,5 +1,5 @@
 import json
-	
+from .utils import failureMsg
 
 def printJ(data):
 	print(json.dumps(data, indent = 4, sort_keys=False))
@@ -21,25 +21,41 @@ def convertToFilledAuditForm(filledAuditFormTemplate):
 
 	return filledAuditForm
 
-def createIDfromForms(formTemplate, metadata):
+def createIDForFilledForm(formTemplate, metadata):
 	date = metadata["date"]
 	time = metadata["time"]
 	tenant = metadata["tenantID"]
 	typeOfForm = formTemplate["type"]
 	return date + time + tenant + typeOfForm
 
+def createIDForAuditMetaData(auditMetadata):
+	staffID = auditMetadata["staffID"]
+	tenantID = auditMetadata["tenantID"]
+	institutionID = auditMetadata["institutionID"]
+	date = auditMetadata["date"]
+	time = auditMetadata["time"]
+	return staffID + tenantID + institutionID + date + time
+
 def processAuditdata(auditData):
 	auditMetaData = auditData["auditMetadata"]
 	auditForms = auditData["auditForms"]
 
-	
+	auditMetaData["_id"] = createIDForAuditMetaData(auditMetaData)
+
+
 	filledAuditForms = {}
 	for formType, formTemplate in auditForms.items():
+		if formTemplate == None:
+			continue
 		filledAuditForm = convertToFilledAuditForm(formTemplate)
-		id = createIDfromForms(formTemplate, auditMetaData)
+		id = createIDForFilledForm(formTemplate, auditMetaData)
 		filledAuditForm["_id"] = id
 		filledAuditForms[filledAuditForm["type"]] = filledAuditForm
 		auditMetaData["auditChecklists"][filledAuditForm["type"]] = id
+
+			
+		
+
 	
 
 	return filledAuditForms , auditMetaData  
