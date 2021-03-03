@@ -65,7 +65,7 @@ const ChooseTenantScreen = ({ navigation }) => {
   }, [databaseStore]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <TopNavigation
         title="Tenant Selection"
         alignment="center"
@@ -86,7 +86,7 @@ const ChooseTenantScreen = ({ navigation }) => {
           contentContainerStyle={styles.contentContainer}
         />
       </Layout>
-    </SafeAreaView>
+    </View>
   );
 };
 

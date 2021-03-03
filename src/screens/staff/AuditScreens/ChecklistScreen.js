@@ -140,7 +140,7 @@ const ChecklistScreen = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <TopNavigation
         title="Checklist"
         alignment="center"
@@ -200,7 +200,7 @@ const ChecklistScreen = ({ navigation }) => {
           </Button>
         </View>
       </Layout>
-    </SafeAreaView>
+    </View>
   );
 };
 

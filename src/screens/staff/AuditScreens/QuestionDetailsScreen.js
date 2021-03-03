@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Fragment, useCallback } from "react";
 import {
-  SafeAreaView,
   View,
   Image,
   Alert,
@@ -29,7 +28,6 @@ import * as ImagePicker from "expo-image-picker";
 
 import alert from "../../../components/CustomAlert";
 import * as checklistActions from "../../../store/actions/checklistActions";
-import { selectCurve } from "react-native-redash";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
@@ -216,6 +214,12 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     );
   };
 
+  let CustomScroll = View;
+
+  if (Platform.OS !== "web") {
+    CustomScroll = ScrollView;
+  }
+
   return (
     <View style={{ flex: 1 }}>
       <TopNavigation
@@ -230,15 +234,20 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           flex: 1,
         }}
       >
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-          <View
-            style={[
-              styles.titleContainer,
-              { backgroundColor: theme["color-primary-400"] },
-            ]}
-          >
-            <Text style={{ fontWeight: "bold" }}>{item.question}</Text>
-          </View>
+        <View
+          style={[
+            styles.titleContainer,
+            { backgroundColor: theme["color-primary-400"] },
+          ]}
+        >
+          <Text style={{ fontWeight: "bold" }}>{item.question}</Text>
+        </View>
+        <CustomScroll
+          style={{ flex: 1 }}
+          contentContainerStyle={{
+            flexGrow: 1,
+          }}
+        >
           <KeyboardAvoidingView
             style={{ flex: 1 }}
             behavior="padding"
@@ -257,6 +266,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
                     flex: 1,
                     justifyContent: "center",
                     alignItems: "center",
+                    height: Platform.OS === "web" ? "100%" : null,
                   }}
                 >
                   <View
@@ -277,6 +287,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
                           justifyContent: "center",
                           alignContent: "center",
                           padding: 50,
+                          height: "100%",
                         }}
                       >
                         <Text>No Images. Start adding some!</Text>
@@ -303,7 +314,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
               />
             </View>
           </KeyboardAvoidingView>
-        </ScrollView>
+        </CustomScroll>
       </Layout>
     </View>
   );
