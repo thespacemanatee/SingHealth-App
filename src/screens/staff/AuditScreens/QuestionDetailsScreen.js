@@ -5,7 +5,6 @@ import {
   Alert,
   Platform,
   ScrollView,
-  KeyboardAvoidingView,
   Dimensions,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
@@ -25,6 +24,7 @@ import {
 import { Camera } from "expo-camera";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import alert from "../../../components/CustomAlert";
 import * as checklistActions from "../../../store/actions/checklistActions";
@@ -46,6 +46,8 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
 
   const SCREEN_HEIGHT = Dimensions.get("window").height;
+  const IMAGE_HEIGHT = SCREEN_HEIGHT * 0.5;
+  const IMAGE_WIDTH = (IMAGE_HEIGHT / 4) * 3;
 
   const changeTextHandler = (value) => {
     setValue(value);
@@ -59,44 +61,57 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
         <View
           key={pager_index}
           style={{
-            ...styles.shadowContainer,
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
             height: Platform.OS === "web" ? "100%" : null,
           }}
         >
           <View
-            style={{
-              ...styles.imageContainer,
-              height: Platform.OS === "web" ? "100%" : null,
-            }}
+            style={[
+              styles.shadowContainer,
+              { height: Platform.OS === "web" ? "100%" : null },
+            ]}
           >
-            <Image
-              style={styles.image}
-              source={{
-                uri: imageUri,
-              }}
-            />
-            <Button
-              style={{ position: "absolute", right: 0, bottom: 0 }}
-              appearance="ghost"
-              status="control"
-              size="giant"
-              onPress={() => {
-                alert("Delete Image", "Are you sure?", [
-                  { text: "Cancel", style: "cancel" },
-                  {
-                    text: "Delete",
-                    style: "destructive",
-                    onPress: () => {
-                      dispatch(
-                        checklistActions.deleteImage(index, selectedIndex)
-                      );
-                    },
-                  },
-                ]);
-              }}
+            <View
+              style={[
+                styles.imageContainer,
+                { height: Platform.OS === "web" ? "100%" : null },
+              ]}
             >
-              Delete
-            </Button>
+              <Image
+                style={{
+                  ...styles.image,
+                  height: IMAGE_HEIGHT,
+                  width: IMAGE_WIDTH,
+                }}
+                source={{
+                  uri: imageUri,
+                }}
+              />
+              <Button
+                style={{ position: "absolute", right: 0, bottom: 0 }}
+                appearance="ghost"
+                status="control"
+                size="giant"
+                onPress={() => {
+                  alert("Delete Image", "Are you sure?", [
+                    { text: "Cancel", style: "cancel" },
+                    {
+                      text: "Delete",
+                      style: "destructive",
+                      onPress: () => {
+                        dispatch(
+                          checklistActions.deleteImage(index, selectedIndex)
+                        );
+                      },
+                    },
+                  ]);
+                }}
+              >
+                Delete
+              </Button>
+            </View>
           </View>
         </View>
       );
@@ -242,79 +257,69 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
         >
           <Text style={{ fontWeight: "bold" }}>{item.question}</Text>
         </View>
-        <CustomScroll
-          style={{ flex: 1 }}
-          contentContainerStyle={{
-            flexGrow: 1,
-          }}
-        >
-          <KeyboardAvoidingView
+        <KeyboardAwareScrollView extraHeight={200}>
+          <ViewPager
             style={{ flex: 1 }}
-            behavior="padding"
-            keyboardVerticalOffset={100}
+            selectedIndex={selectedIndex}
+            onSelect={(index) => setSelectedIndex(index)}
           >
-            <ViewPager
-              style={{ height: "70%" }}
-              selectedIndex={selectedIndex}
-              onSelect={(index) => setSelectedIndex(index)}
-            >
-              {imageArray.length > 0 ? (
-                renderImages
-              ) : (
+            {imageArray.length > 0 ? (
+              renderImages
+            ) : (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: Platform.OS === "web" ? "100%" : null,
+                }}
+              >
                 <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: Platform.OS === "web" ? "100%" : null,
-                  }}
+                  style={[
+                    styles.shadowContainer,
+                    { height: Platform.OS === "web" ? "100%" : null },
+                  ]}
                 >
                   <View
                     style={[
-                      styles.shadowContainer,
+                      styles.imageContainer,
                       { height: Platform.OS === "web" ? "100%" : null },
                     ]}
                   >
                     <View
-                      style={[
-                        styles.imageContainer,
-                        { height: Platform.OS === "web" ? "100%" : null },
-                      ]}
+                      style={{
+                        ...styles.image,
+                        height: IMAGE_HEIGHT,
+                        width: IMAGE_WIDTH,
+                      }}
                     >
-                      <View
-                        style={{
-                          ...styles.image,
-                          justifyContent: "center",
-                          alignContent: "center",
-                          padding: 50,
-                          height: "100%",
-                        }}
-                      >
-                        <Text>No Images. Start adding some!</Text>
-                      </View>
+                      <Text style={{ textAlign: "center" }}>
+                        No Images. Start adding some!
+                      </Text>
                     </View>
                   </View>
                 </View>
-              )}
-            </ViewPager>
-            <View
-              style={[
-                styles.inputContainer,
-                { marginTop: Platform.OS === "web" ? 40 : null },
-              ]}
-            >
-              <Text category="h6">Remarks:</Text>
-              <Input
-                height={SCREEN_HEIGHT * 0.075}
-                multiline={true}
-                // textStyle={{ minHeight: 64 }}
-                placeholder="Enter your remarks here"
-                value={value}
-                onChangeText={changeTextHandler}
-              />
-            </View>
-          </KeyboardAvoidingView>
-        </CustomScroll>
+              </View>
+            )}
+          </ViewPager>
+
+          <View
+            style={[
+              styles.inputContainer,
+              { marginTop: Platform.OS === "web" ? 40 : null },
+            ]}
+          >
+            <Text category="h6">Remarks:</Text>
+            <Input
+              height={SCREEN_HEIGHT * 0.1}
+              multiline={true}
+              // textStyle={{ minHeight: 64 }}
+              placeholder="Enter your remarks here"
+              value={value}
+              onChangeText={changeTextHandler}
+            />
+          </View>
+        </KeyboardAwareScrollView>
       </Layout>
     </View>
   );
@@ -336,10 +341,9 @@ const styles = StyleService.create({
     shadowColor: "grey",
     shadowOpacity: 0.7,
     borderRadius: 20,
+    alignItems: "center",
   },
   image: {
-    height: "100%",
-    width: "100%",
     backgroundColor: "white",
     shadowColor: "black",
     shadowOpacity: 0.26,
@@ -347,6 +351,9 @@ const styles = StyleService.create({
     shadowRadius: 10,
     borderRadius: 10,
     overflow: "hidden",
+    justifyContent: "center",
+    alignContent: "center",
+    padding: 50,
   },
   inputContainer: {
     margin: 20,
