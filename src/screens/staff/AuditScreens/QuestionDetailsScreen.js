@@ -120,7 +120,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   );
 
   useEffect(() => {
-    (async () => {
+    async () => {
       if (Platform.OS !== "web") {
         const {
           status,
@@ -129,14 +129,14 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           alert("Sorry, we need camera roll permissions to make this work!");
         }
       }
-    })();
+    };
   }, []);
 
   useEffect(() => {
     const storeImageUri =
-      checklistStore.chosen_checklist.questions[index].image.uri;
+      checklistStore.chosen_checklist.questions[index].image;
     const storeRemarks =
-      checklistStore.chosen_checklist.questions[index].image.remarks;
+      checklistStore.chosen_checklist.questions[index].remarks;
     if (storeImageUri) {
       setImageArray(storeImageUri);
     }
@@ -152,13 +152,14 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
       destination = imageData.uri;
     } else {
       destination = FileSystem.cacheDirectory + fileName.replace(/\s+/g, "");
-      console.log(destination);
+      // console.log(destination);
       await FileSystem.copyAsync({
         from: imageData.uri,
         to: destination,
       });
     }
     dispatch(checklistActions.addImage(index, destination));
+    setSelectedIndex(selectedIndex + 1);
   };
 
   const __startCamera = async () => {
@@ -178,7 +179,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
       quality: 1,
     });
 
-    console.log(result);
+    // console.log(result);
 
     if (!result.cancelled) {
       onSave(result);
@@ -259,7 +260,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
         </View>
         <KeyboardAwareScrollView extraHeight={200}>
           <ViewPager
-            style={{ flex: 1 }}
+            style={{ flex: 1, marginTop: 20 }}
             selectedIndex={selectedIndex}
             onSelect={(index) => setSelectedIndex(index)}
           >
@@ -313,7 +314,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
             <Input
               height={SCREEN_HEIGHT * 0.1}
               multiline={true}
-              // textStyle={{ minHeight: 64 }}
+              textStyle={{ minHeight: 64 }}
               placeholder="Enter your remarks here"
               value={value}
               onChangeText={changeTextHandler}
@@ -332,7 +333,7 @@ const styles = StyleService.create({
     padding: 20,
   },
   shadowContainer: {
-    margin: 20,
+    // margin: 20,
   },
   imageContainer: {
     // position: "absolute",
@@ -353,7 +354,7 @@ const styles = StyleService.create({
     overflow: "hidden",
     justifyContent: "center",
     alignContent: "center",
-    padding: 50,
+    // padding: 50,
   },
   inputContainer: {
     margin: 20,

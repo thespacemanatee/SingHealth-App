@@ -39,12 +39,14 @@ export const checklistReducer = (state = initialState, action) => {
         current_score: 0,
       };
     }
+
+    //TODO:
     case ADD_IMAGE: {
       const newChecklist = _.cloneDeep(state.chosen_checklist);
-      if (newChecklist.questions[action.index].image.uri == null) {
-        newChecklist.questions[action.index].image.uri = [];
+      if (newChecklist.questions[action.index].image == null) {
+        newChecklist.questions[action.index].image = [];
       }
-      newChecklist.questions[action.index].image.uri.push(action.imageUri);
+      newChecklist.questions[action.index].image.push(action.imageUri);
       // console.log(newChecklist.questions);
 
       return {
@@ -54,10 +56,13 @@ export const checklistReducer = (state = initialState, action) => {
     }
     case DELETE_IMAGE: {
       const newChecklist = _.cloneDeep(state.chosen_checklist);
-      newChecklist.questions[action.index].image.uri.splice(
-        action.selectedIndex
+      newChecklist.questions[action.index].image.splice(
+        action.selectedIndex,
+        1
       );
-      
+
+      // console.log(newChecklist.questions[action.index].image.uri);
+
       return {
         ...state,
         chosen_checklist: newChecklist,
@@ -65,10 +70,10 @@ export const checklistReducer = (state = initialState, action) => {
     }
     case ADD_REMARKS: {
       const newChecklist = _.cloneDeep(state.chosen_checklist);
-      if (newChecklist.questions[action.index].image.remarks == null) {
-        newChecklist.questions[action.index].image.remarks = "";
+      if (newChecklist.questions[action.index].remarks == null) {
+        newChecklist.questions[action.index].remarks = "";
       }
-      newChecklist.questions[action.index].image.remarks = action.remarks;
+      newChecklist.questions[action.index].remarks = action.remarks;
 
       return {
         ...state,

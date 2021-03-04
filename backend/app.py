@@ -29,3 +29,5 @@ def audits():
             return failureMsg("Form has already been uploaded", 400), 400
 
         return successMsg("Forms have been submitted"), 200
+
+app.run(debug=True)

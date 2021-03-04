@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cp app.py backend/Lib/site-packages
 cp -R BTS backend/Lib/site-packages
 

@@ -1,0 +1,27 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+boto3 = "*"
+botocore = "*"
+click = "*"
+docutils = "*"
+itsdangerous = "*"
+jmespath = "*"
+python-dateutil = "*"
+s3transfer = "*"
+six = "*"
+urllib3 = "*"
+Flask = "*"
+Jinja2 = "*"
+MarkupSafe = "*"
+Werkzeug = "*"
+Flask-PyMongo = "*"
+Flask-Login = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"

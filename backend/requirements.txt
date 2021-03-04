@@ -1,0 +1,16 @@
+boto3
+botocore
+Click
+docutils
+Flask
+itsdangerous
+Jinja2
+jmespath
+MarkupSafe
+python-dateutil
+s3transfer
+six
+urllib3
+Werkzeug
+Flask-PyMongo
+Flask-Login
