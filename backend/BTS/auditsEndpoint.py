@@ -27,7 +27,6 @@ def convertToFilledAuditForm(filledAuditFormTemplate):
 
 def createIDForFilledForm(formTemplate, metadata):
     date = metadata["date"]
-    # time = metadata["time"]
     tenant = metadata["tenantID"]
     typeOfForm = formTemplate["type"]
     return date + tenant + typeOfForm
@@ -38,7 +37,6 @@ def createIDForAuditMetaData(auditMetadata):
     tenantID = auditMetadata["tenantID"]
     institutionID = auditMetadata["institutionID"]
     date = auditMetadata["date"]
-    # time = auditMetadata["time"]
     return staffID + tenantID + institutionID + date
 
 
