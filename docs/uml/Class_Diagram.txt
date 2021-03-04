@@ -1,4 +1,30 @@
 @startuml
+
+
+
+Institution "1"-down-"0..*" Tenant
+Institution "1"--"1..*" Staff
+
+class User << (I,#FF7700) Interface >>
+
+User <|.. Staff
+User <|.. Tenant
+
+Tenant "1"-- "1..*" Stall
+
+Staff "1..*"--"0..*" Audit
+Audit o-- AuditForm
+Audit "0..*"--"1" Tenant
+AuditForm o-- Question
+
+class Institution {
+	-institutionId: String
+	-name: String
+	-address: Address
+	-institutionPOCName: String
+	-institutionPOCEmail: String
+}
+
 skinparam classAttributeIconSize 0
 abstract class User {
 	-userId: String
@@ -33,14 +59,6 @@ class Stall {
 	-fnb: Boolean
 }
 
-class Institution {
-	-institutionId: String
-	-name: String
-	-address: Address
-	-institutionPOCName: String
-	-institutionPOCEmail: String
-}
-
 class Audit {
 	-auditId: String
 	-staffId: String
@@ -64,13 +82,6 @@ class Question {
 	-remarks: String
 }
 
-User <|-- Staff
 
-User <|-- Tenant
-
-Tenant "1" -- "1..*" Staff
-Stall --o "0..1" Tenant
-AuditForm --> "3" Audit
-Question --o "1..*" AuditForm
 
 @enduml
