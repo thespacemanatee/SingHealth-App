@@ -160,7 +160,10 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     if (imageArray.length > 2) {
       alert("Upload Failed", "Max upload count is 3.", [{ text: "OK" }]);
     } else {
-      const fileName = checklistStore.chosen_tenant.name + Date.now();
+      const fileName =
+        checklistStore.chosen_tenant[
+          Object.keys(checklistStore.chosen_tenant)[0]
+        ].name + Date.now();
       let destination;
       if (Platform.OS === "web") {
         destination = imageData.uri;
