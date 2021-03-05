@@ -26,6 +26,10 @@ import * as checklistActions from "../../../store/actions/checklistActions";
 import QuestionCard from "../../../components/QuestionCard";
 import alert from "../../../components/CustomAlert";
 
+export const FNB_SECTION = "F&B Checklist";
+export const NON_FNB_SECTION = "Non-F&B Checklist";
+export const COVID_SECTION = "COVID-19 Checklist";
+
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const ChecklistScreen = ({ navigation }) => {
@@ -34,6 +38,8 @@ const ChecklistScreen = ({ navigation }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [completeChecklist, setCompleteChecklist] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // console.log(checklistStore);
 
   const theme = useTheme();
 
@@ -62,6 +68,7 @@ const ChecklistScreen = ({ navigation }) => {
 
   const renderChosenChecklist = useCallback(
     (itemData) => {
+      // console.log(itemData.section);
       return (
         <QuestionCard
           itemData={itemData}
@@ -93,28 +100,32 @@ const ChecklistScreen = ({ navigation }) => {
     if (selectedIndex == 0) {
       dispatch(
         checklistActions.addChosenChecklist(
-          "fnb",
+          checklistActions.TYPE_FNB,
           databaseStore.audit_forms.fnb
         )
       );
     } else {
       dispatch(
         checklistActions.addChosenChecklist(
-          "non-fnb",
+          checklistActions.TYPE_NON_FNB,
           databaseStore.audit_forms.non_fnb
         )
       );
     }
+
+    dispatch(
+      checklistActions.addCovidChecklist(databaseStore.audit_forms.covid19)
+    );
     const checklist = [
       {
-        title: selectedIndex === 0 ? "F&B Checklist" : "Non-F&B Checklist",
+        title: selectedIndex === 0 ? FNB_SECTION : NON_FNB_SECTION,
         data:
           selectedIndex === 0
             ? databaseStore.audit_forms.fnb.questions
             : databaseStore.audit_forms.non_fnb.questions,
       },
       {
-        title: "COVID-19 Checklist",
+        title: COVID_SECTION,
         data: databaseStore.audit_forms.covid19.questions,
       },
     ];

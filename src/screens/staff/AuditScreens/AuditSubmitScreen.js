@@ -9,6 +9,8 @@ import {
   TopNavigation,
 } from "@ui-kitten/components";
 
+import SuccessAnimation from "../../../components/ui/SuccessAnimation";
+
 const AuditSubmitScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
@@ -22,7 +24,9 @@ const AuditSubmitScreen = ({ navigation }) => {
           justifyContent: "center",
           alignItems: "center",
         }}
-      ></Layout>
+      >
+        <SuccessAnimation loop={true} loading />
+      </Layout>
     </View>
   );
 };

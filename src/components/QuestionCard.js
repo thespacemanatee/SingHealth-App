@@ -44,6 +44,7 @@ const QuestionCard = (props) => {
     props.navigation.navigate("QuestionDetails", {
       index: index,
       item: itemData.item,
+      section: itemData.section.title,
     });
   };
 

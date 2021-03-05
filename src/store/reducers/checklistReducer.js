@@ -9,7 +9,10 @@ import {
   SET_MAXIMUM_SCORE,
   CHANGE_CURRENT_SCORE,
   CHANGE_MAXIMUM_SCORE,
+  ADD_COVID_CHECKLIST,
 } from "../actions/checklistActions";
+
+import { COVID_SECTION } from "../../screens/staff/AuditScreens/ChecklistScreen";
 
 const initialState = {
   chosen_tenant: null,
@@ -40,28 +43,59 @@ export const checklistReducer = (state = initialState, action) => {
       };
     }
 
+    case ADD_COVID_CHECKLIST: {
+      return {
+        ...state,
+        covid19: _.cloneDeep(action.checklist),
+        maximum_score: 0,
+        current_score: 0,
+      };
+    }
+
     //TODO:
     case ADD_IMAGE: {
-      const newChecklist = _.cloneDeep(state.chosen_checklist);
+      let newChecklist;
+      if (action.section === COVID_SECTION) {
+        newChecklist = _.cloneDeep(state.covid19);
+      } else {
+        newChecklist = _.cloneDeep(state.chosen_checklist);
+      }
       if (newChecklist.questions[action.index].image == null) {
         newChecklist.questions[action.index].image = [];
       }
       newChecklist.questions[action.index].image.push(action.imageUri);
       // console.log(newChecklist.questions);
 
+      if (action.section === COVID_SECTION) {
+        return {
+          ...state,
+          covid19: newChecklist,
+        };
+      }
       return {
         ...state,
         chosen_checklist: newChecklist,
       };
     }
     case DELETE_IMAGE: {
-      const newChecklist = _.cloneDeep(state.chosen_checklist);
+      let newChecklist;
+      if (action.section === COVID_SECTION) {
+        newChecklist = _.cloneDeep(state.covid19);
+      } else {
+        newChecklist = _.cloneDeep(state.chosen_checklist);
+      }
       newChecklist.questions[action.index].image.splice(
         action.selectedIndex,
         1
       );
 
       // console.log(newChecklist.questions[action.index].image.uri);
+      if (action.section === COVID_SECTION) {
+        return {
+          ...state,
+          covid19: newChecklist,
+        };
+      }
 
       return {
         ...state,
@@ -69,11 +103,23 @@ export const checklistReducer = (state = initialState, action) => {
       };
     }
     case ADD_REMARKS: {
-      const newChecklist = _.cloneDeep(state.chosen_checklist);
+      let newChecklist;
+      if (action.section === COVID_SECTION) {
+        newChecklist = _.cloneDeep(state.covid19);
+      } else {
+        newChecklist = _.cloneDeep(state.chosen_checklist);
+      }
       if (newChecklist.questions[action.index].remarks == null) {
         newChecklist.questions[action.index].remarks = "";
       }
       newChecklist.questions[action.index].remarks = action.remarks;
+
+      if (action.section === COVID_SECTION) {
+        return {
+          ...state,
+          covid19: newChecklist,
+        };
+      }
 
       return {
         ...state,
