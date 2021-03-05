@@ -1,12 +1,13 @@
 from BTS.auditsEndpoint import processAuditdata
 from BTS.utils import successMsg, failureMsg, upload_image, download_image
+from BTS.constants import S3BUCKETNAME, MONGODB_URI
 from pymongo.errors import DuplicateKeyError
 from flask import Flask, request, send_file
 from flask_pymongo import PyMongo
 
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb://localhost:27017/singhealth"
+app.config["MONGO_URI"] = MONGODB_URI
 mongo = PyMongo(app)
 
 
@@ -39,9 +40,17 @@ def images():
         
         for image in images:
             imgName = image.filename
-            upload_image(image, "singhealth", imgName)
+            upload_image(image, S3BUCKETNAME, imgName)
         
         return successMsg("Pictures have successfully been uploaded"), 200
+
+    elif request.method == "GET":
+        details = request.json
+        filename = details["image"]
+        filetype = str(filename.split('.')[-1])
+        imageObject = download_image(filename, S3BUCKETNAME)
+        return send_file(imageObject), 200
+
         
 
 
