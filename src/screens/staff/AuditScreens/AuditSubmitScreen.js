@@ -32,7 +32,11 @@ const AuditSubmitScreen = ({ navigation }) => {
       if (element.image) {
         element.image.forEach((image, index) => {
           const fileName = `${
-            chosen_tenant + "_" + index + "_" + Date.now()
+            chosen_tenant +
+            "_" +
+            index +
+            "_" +
+            Math.round(Date.now() * Math.random())
           }.jpg`;
           formData.append("images", {
             uri: image,
@@ -50,7 +54,11 @@ const AuditSubmitScreen = ({ navigation }) => {
       if (element.image) {
         element.forEach((image, index) => {
           const fileName = `${
-            chosen_tenant + "_" + index + "_" + Date.now()
+            chosen_tenant +
+            "_" +
+            index +
+            "_" +
+            Math.round(Date.now() * Math.random())
           }.jpg`;
           formData.append("images", {
             uri: image,
