@@ -39,59 +39,6 @@ const StaffDashboardScreen = ({ navigation }) => {
     />
   );
 
-  // const testBackend = () => {
-  //   fetch("http://localhost:5000/audits", {
-  //     method: "POST",
-  //     headers: {
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       auditMetadata: {
-  //         staffID: "CGH_Staff1",
-  //         tenantID: "CGH_Tenant1",
-  //         institutionID: "CGH",
-  //         date: "2012-04-23T18:25:43.511Z",
-  //       },
-  //       auditForms: {
-  //         fnb: {
-  //           type: "fnb",
-  //           questions: [
-  //             {
-  //               question: "Store is clean",
-  //               answer: true,
-  //             },
-  //             {
-  //               question: "Store is covid-free",
-  //               answer: false,
-  //               image: ["image001", "image002"],
-  //               remarks: "Case #36475 traced back here",
-  //               deadline: "2012-04-23T18:25:43.511Z",
-  //             },
-  //             {
-  //               question: "Personnel observed personal hygiene",
-  //               answer: false,
-  //               image: ["image001", "image002"],
-  //               remarks: "Ill personal came back to work",
-  //               deadline: "2012-04-23T18:25:43.511Z",
-  //             },
-  //           ],
-  //         },
-  //       },
-  //     }),
-  //   })
-  //     .then((response) => {
-  //       console.log(response.toString());
-  //     })
-  //     .catch((error) => {
-  //       console.error(error.toString());
-  //     });
-  // };
-
-  // useEffect(() => {
-  //   testBackend();
-  // }, [state]);
-
   const NotificationAction = () => (
     <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
   );

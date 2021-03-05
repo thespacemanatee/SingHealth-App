@@ -75,7 +75,7 @@ const AuditSubmitScreen = ({ navigation }) => {
       }
     });
 
-    // console.log(temp_chosen_checklist);
+    console.log(formData);
 
     const audit_data = {
       auditMetadata: {
@@ -90,7 +90,7 @@ const AuditSubmitScreen = ({ navigation }) => {
       },
     };
 
-    console.log(audit_data);
+    // console.log(audit_data);
 
     let endpoint;
 
@@ -117,7 +117,7 @@ const AuditSubmitScreen = ({ navigation }) => {
         Accept: "application/json",
         "Content-Type": "multipart/form-data",
       },
-      data: formData,
+      data: formData._parts.length > 0 ? formData : null,
     };
 
     axios
@@ -150,7 +150,10 @@ const AuditSubmitScreen = ({ navigation }) => {
           alignItems: "center",
         }}
       >
-        <SuccessAnimation loop={submitting} loading={submitting} />
+        <View style={{ height: 200, width: 200 }}>
+          {submitting && <SuccessAnimation loading={submitting} />}
+          {!submitting && <SuccessAnimation loading={submitting} />}
+        </View>
         {!submitting && (
           <View>
             <Text>Audit submitted on: {new Date().toLocaleDateString()}</Text>

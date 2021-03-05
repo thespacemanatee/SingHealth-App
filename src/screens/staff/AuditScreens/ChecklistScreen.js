@@ -4,6 +4,7 @@ import {
   View,
   SectionList,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { CommonActions } from "@react-navigation/native";
@@ -55,15 +56,19 @@ const ChecklistScreen = ({ navigation }) => {
   );
 
   const onSubmitHandler = () => {
-    alert("Confirm Submission", "Are you sure you want to submit?", [
-      { text: "Cancel" },
-      {
-        text: "Submit",
-        onPress: () => {
-          navigation.navigate("AuditSubmit");
+    if (Platform.OS === "web") {
+      navigation.navigate("AuditSubmit");
+    } else {
+      alert("Confirm Submission", "Are you sure you want to submit?", [
+        { text: "Cancel" },
+        {
+          text: "Submit",
+          onPress: () => {
+            navigation.navigate("AuditSubmit");
+          },
         },
-      },
-    ]);
+      ]);
+    }
   };
 
   const renderChosenChecklist = useCallback(
