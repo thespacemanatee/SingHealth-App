@@ -28,6 +28,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 import alert from "../../../components/CustomAlert";
 import * as checklistActions from "../../../store/actions/checklistActions";
+import { COVID_SECTION } from "../AuditScreens/ChecklistScreen";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
@@ -37,6 +38,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
   const { index } = route.params;
   const { item } = route.params;
+  const { section } = route.params;
   const [value, setValue] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [imageArray, setImageArray] = useState([]);
@@ -52,7 +54,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   const changeTextHandler = (value) => {
     setValue(value);
     console.log(value);
-    dispatch(checklistActions.addRemarks(index, value));
+    dispatch(checklistActions.addRemarks(section, index, value));
   };
 
   const renderImages = useCallback(
@@ -102,7 +104,11 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
                       style: "destructive",
                       onPress: () => {
                         dispatch(
-                          checklistActions.deleteImage(index, selectedIndex)
+                          checklistActions.deleteImage(
+                            section,
+                            index,
+                            selectedIndex
+                          )
                         );
                       },
                     },
@@ -133,10 +139,15 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   }, []);
 
   useEffect(() => {
-    const storeImageUri =
-      checklistStore.chosen_checklist.questions[index].image;
-    const storeRemarks =
-      checklistStore.chosen_checklist.questions[index].remarks;
+    let storeImageUri;
+    let storeRemarks;
+    if (section === COVID_SECTION) {
+      storeImageUri = checklistStore.covid19.questions[index].image;
+      storeRemarks = checklistStore.covid19.questions[index].remarks;
+    } else {
+      storeImageUri = checklistStore.chosen_checklist.questions[index].image;
+      storeRemarks = checklistStore.chosen_checklist.questions[index].remarks;
+    }
     if (storeImageUri) {
       setImageArray(storeImageUri);
     }
@@ -146,20 +157,24 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   }, [checklistStore]);
 
   const onSave = async (imageData) => {
-    const fileName = checklistStore.chosen_tenant.name + Date.now();
-    let destination;
-    if (Platform.OS === "web") {
-      destination = imageData.uri;
+    if (imageArray.length > 2) {
+      alert("Upload Failed", "Max upload count is 3.", [{ text: "OK" }]);
     } else {
-      destination = FileSystem.cacheDirectory + fileName.replace(/\s+/g, "");
-      // console.log(destination);
-      await FileSystem.copyAsync({
-        from: imageData.uri,
-        to: destination,
-      });
+      const fileName = checklistStore.chosen_tenant.name + Date.now();
+      let destination;
+      if (Platform.OS === "web") {
+        destination = imageData.uri;
+      } else {
+        destination = FileSystem.cacheDirectory + fileName.replace(/\s+/g, "");
+        // console.log(destination);
+        await FileSystem.copyAsync({
+          from: imageData.uri,
+          to: destination,
+        });
+      }
+      dispatch(checklistActions.addImage(section, index, destination));
+      setSelectedIndex(selectedIndex + 1);
     }
-    dispatch(checklistActions.addImage(index, destination));
-    setSelectedIndex(selectedIndex + 1);
   };
 
   const __startCamera = async () => {
@@ -229,12 +244,6 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
       </Fragment>
     );
   };
-
-  let CustomScroll = View;
-
-  if (Platform.OS !== "web") {
-    CustomScroll = ScrollView;
-  }
 
   return (
     <View style={{ flex: 1 }}>

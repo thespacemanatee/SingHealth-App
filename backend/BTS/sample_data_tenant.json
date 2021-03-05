@@ -1,0 +1,43 @@
+[{
+  "_id": {
+    "$oid": "6040e7acd7d7f506fc50d72b"
+  },
+  "email": "tenant1@gmoil.com",
+  "pswd": "tenant123",
+  "institutionId": "6040e0bed7d7f506fc50d72a",
+  "demeritPoints": 0,
+  "stall": {
+    "name": "Stall1",
+    "email": "stall1@gmoil.com"
+  },
+  "group": "-",
+  "address": {
+    "blk": "Block A",
+    "street": "Street1",
+    "bldg": "Building A",
+    "unitNo": "L1_123",
+    "zipcode": "123456"
+  },
+  "fnb": true
+},{
+  "_id": {
+    "$oid": "60412708d7d7f506fc50d72d"
+  },
+  "email": "tenant2@gmoil.com",
+  "pswd": "tenant123",
+  "institutionId": "6040e0bed7d7f506fc50d72a",
+  "demeritPoints": 0,
+  "stall": {
+    "name": "Stall2",
+    "email": "stall2@gmoil.com"
+  },
+  "group": "-",
+  "address": {
+    "blk": "Block A",
+    "street": "Street1",
+    "bldg": "Building A",
+    "unitNo": "L1_124",
+    "zipcode": "123456"
+  },
+  "fnb": true
+}]
