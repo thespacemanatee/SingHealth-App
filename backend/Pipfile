@@ -20,6 +20,8 @@ MarkupSafe = "*"
 Werkzeug = "*"
 Flask-PyMongo = "*"
 Flask-Login = "*"
+awscli = "*"
+pillow = "*"
 
 [dev-packages]
 
