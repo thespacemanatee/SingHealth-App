@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import LottieView from "lottie-react-native";
 
-export default SuccessAnimation = (props) => {
+const SuccessAnimation = (props) => {
   const animation = useRef(null);
 
   useEffect(() => {
@@ -39,3 +39,5 @@ const styles = StyleSheet.create({
     // backgroundColor: "red"
   },
 });
+
+export default SuccessAnimation;

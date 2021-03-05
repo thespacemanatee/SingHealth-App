@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Text,
@@ -9,6 +9,7 @@ import {
   StyleService,
   TopNavigation,
 } from "@ui-kitten/components";
+import axios from "axios";
 
 import SuccessAnimation from "../../../components/ui/SuccessAnimation";
 import { CommonActions } from "@react-navigation/routers";
@@ -52,7 +53,7 @@ const AuditSubmitScreen = ({ navigation }) => {
 
     temp_covid19_checklist.questions.forEach((element, index) => {
       if (element.image) {
-        element.forEach((image, index) => {
+        element.image.forEach((image, index) => {
           const fileName = `${
             chosen_tenant +
             "_" +
@@ -63,7 +64,7 @@ const AuditSubmitScreen = ({ navigation }) => {
           formData.append("images", {
             uri: image,
             name: fileName,
-            type: "image/jpg",
+            type: "image/jpeg",
           });
           covid19_checklist_images.push(fileName);
         });
@@ -91,23 +92,45 @@ const AuditSubmitScreen = ({ navigation }) => {
 
     console.log(audit_data);
 
-    await fetch("http://localhost:5000/audits", {
-      method: "POST",
+    let endpoint;
+
+    if (Platform.OS === "android") {
+      endpoint = "http://10.0.2.2:5000/";
+    } else {
+      endpoint = "http://localhost:5000/";
+    }
+
+    const post_audit = {
+      url: `${endpoint}audits`,
+      method: "post",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(audit_data),
-    });
+      data: audit_data,
+    };
 
-    await fetch("http://localhost:5000/images", {
-      method: "POST",
+    const post_images = {
+      url: `${endpoint}images`,
+      method: "post",
       headers: {
         Accept: "application/json",
         "Content-Type": "multipart/form-data",
       },
-      body: formData,
-    });
+      data: formData,
+    };
+
+    axios
+      .all([axios(post_audit), axios(post_images)])
+      .then(
+        axios.spread((req1, req2) => {
+          console.log(req1.status, "req1");
+          console.log(req2.status, "req2");
+        })
+      )
+      .catch((error) => {
+        console.error(error);
+      });
 
     setSubmitting(false);
   };
@@ -129,20 +152,22 @@ const AuditSubmitScreen = ({ navigation }) => {
       >
         <SuccessAnimation loop={submitting} loading={submitting} />
         {!submitting && (
-          <Text>Audit submitted on: {new Date().toLocaleDateString()}</Text>
+          <View>
+            <Text>Audit submitted on: {new Date().toLocaleDateString()}</Text>
+            <Button
+              onPress={() => {
+                navigation.dispatch(
+                  CommonActions.reset({
+                    index: 1,
+                    routes: [{ name: "StaffDashboard" }],
+                  })
+                );
+              }}
+            >
+              GO HOME
+            </Button>
+          </View>
         )}
-        <Button
-          onPress={() => {
-            navigation.dispatch(
-              CommonActions.reset({
-                index: 1,
-                routes: [{ name: "StaffDashboard" }],
-              })
-            );
-          }}
-        >
-          GO HOME
-        </Button>
       </Layout>
     </View>
   );
