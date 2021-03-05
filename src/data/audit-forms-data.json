@@ -1,6 +1,6 @@
 {
   "fnb": {
-    "institutionID": {},
+    "type": "fnb",
     "questions": [
       {
         "question": "Shop is open and ready to service patients/visitors according to operating hours.",
@@ -389,7 +389,7 @@
     ]
   },
   "non_fnb": {
-    "institutionID": {},
+    "type": "non_fnb",
     "questions": [
       {
         "question": "Shop is open and ready to service patients/visitors according to operating hours.",
@@ -530,7 +530,7 @@
     ]
   },
   "covid19": {
-    "institutionID": {},
+    "type": "covid19",
     "questions": [
       {
         "question": "SafeEntry has been implemented for dine-in customers.",

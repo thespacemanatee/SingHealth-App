@@ -44,7 +44,7 @@ const ChooseTenantScreen = ({ navigation }) => {
             navigation.navigate("Checklist");
           }}
         >
-          <Text>{itemData.item.name}</Text>
+          <Text>{itemData.item[Object.keys(itemData.item)[0]].name}</Text>
         </Card>
       );
     },
@@ -58,7 +58,7 @@ const ChooseTenantScreen = ({ navigation }) => {
         databaseStore.tenants[key].institution ==
         databaseStore.current_institution
       ) {
-        tempArray.push(databaseStore.tenants[key]);
+        tempArray.push({ [key]: databaseStore.tenants[key] });
       }
     });
     setRelevantTenants(tempArray);
