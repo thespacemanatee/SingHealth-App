@@ -17,7 +17,7 @@ Audit o-right- AuditForm
 Audit "0..*"--"1" Tenant
 FilledAuditForm "0..*"--"1" AuditForm
 FilledAuditForm --o Audit
-Staff --> Tenant
+Staff -> Tenant
 
 class Institution {
 	-institutionId : String

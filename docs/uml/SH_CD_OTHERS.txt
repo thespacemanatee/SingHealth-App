@@ -1,5 +1,7 @@
 @startuml
 
+title Login, Tracking Audit, Add Tenant, Delete Tenant, Push Notification, Send Broadcast, Submit New Form
+
 Staff -> Server: Request to login
 Server -> Database: Check login credentials
 Database ->> Server: Return result
