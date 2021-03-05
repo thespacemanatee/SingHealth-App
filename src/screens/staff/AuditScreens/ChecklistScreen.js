@@ -24,6 +24,7 @@ import {
 
 import * as checklistActions from "../../../store/actions/checklistActions";
 import QuestionCard from "../../../components/QuestionCard";
+import alert from "../../../components/CustomAlert";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -46,6 +47,18 @@ const ChecklistScreen = ({ navigation }) => {
       }}
     />
   );
+
+  const onSubmitHandler = () => {
+    alert("Confirm Submission", "Are you sure you want to submit?", [
+      { text: "Cancel" },
+      {
+        text: "Submit",
+        onPress: () => {
+          navigation.navigate("AuditSubmit");
+        },
+      },
+    ]);
+  };
 
   const renderChosenChecklist = useCallback(
     (itemData) => {
@@ -187,14 +200,7 @@ const ChecklistScreen = ({ navigation }) => {
             //   style={styles.button}
             // appearance="filled"
             status="primary"
-            onPress={() => {
-              navigation.dispatch(
-                CommonActions.reset({
-                  index: 1,
-                  routes: [{ name: "StaffDashboard" }],
-                })
-              );
-            }}
+            onPress={onSubmitHandler}
           >
             SUBMIT
           </Button>

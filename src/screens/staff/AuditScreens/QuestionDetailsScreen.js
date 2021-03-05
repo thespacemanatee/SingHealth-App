@@ -146,20 +146,24 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   }, [checklistStore]);
 
   const onSave = async (imageData) => {
-    const fileName = checklistStore.chosen_tenant.name + Date.now();
-    let destination;
-    if (Platform.OS === "web") {
-      destination = imageData.uri;
+    if (imageArray.length > 2) {
+      alert("Upload Failed", "Max upload count is 3.", [{ text: "OK" }]);
     } else {
-      destination = FileSystem.cacheDirectory + fileName.replace(/\s+/g, "");
-      // console.log(destination);
-      await FileSystem.copyAsync({
-        from: imageData.uri,
-        to: destination,
-      });
+      const fileName = checklistStore.chosen_tenant.name + Date.now();
+      let destination;
+      if (Platform.OS === "web") {
+        destination = imageData.uri;
+      } else {
+        destination = FileSystem.cacheDirectory + fileName.replace(/\s+/g, "");
+        // console.log(destination);
+        await FileSystem.copyAsync({
+          from: imageData.uri,
+          to: destination,
+        });
+      }
+      dispatch(checklistActions.addImage(index, destination));
+      setSelectedIndex(selectedIndex + 1);
     }
-    dispatch(checklistActions.addImage(index, destination));
-    setSelectedIndex(selectedIndex + 1);
   };
 
   const __startCamera = async () => {

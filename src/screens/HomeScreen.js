@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Alert } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View } from "react-native";
 import { useDispatch } from "react-redux";
 import { Button, Divider, Layout, TopNavigation } from "@ui-kitten/components";
 import * as Permissions from "expo-permissions";
 
 import { database } from "../data/dummy-database";
 import * as databaseActions from "../store/actions/databaseActions";
+import alert from "../components/CustomAlert";
 
 export const HomeScreen = ({ navigation }) => {
   const [status, setStatus] = useState(null);
@@ -18,7 +18,7 @@ export const HomeScreen = ({ navigation }) => {
     setStatus(status);
 
     if (status !== "granted") {
-      Alert.alert("Boo", "Why no accept?", [{ text: "OK" }]);
+      alert("Boo", "Why no accept?", [{ text: "OK" }]);
     }
   };
 
@@ -31,7 +31,7 @@ export const HomeScreen = ({ navigation }) => {
   }, [database, dispatch]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
       <TopNavigation title="SingHealth" alignment="center" />
       <Divider />
       <Layout
@@ -56,6 +56,6 @@ export const HomeScreen = ({ navigation }) => {
           TENANT
         </Button>
       </Layout>
-    </SafeAreaView>
+    </View>
   );
 };

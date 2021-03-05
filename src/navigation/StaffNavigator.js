@@ -20,6 +20,7 @@ import DirectoryScreen from "../screens/staff/DirectoryScreens/DirectoryScreen";
 import ChooseTenantScreen from "../screens/staff/AuditScreens/ChooseTenantScreen";
 import ChecklistScreen from "../screens/staff/AuditScreens/ChecklistScreen";
 import QuestionDetailsScreen from "../screens/staff/AuditScreens/QuestionDetailsScreen";
+import AuditSubmitScreen from "../screens/staff/AuditScreens/AuditSubmitScreen";
 import CameraScreen from "../screens/CameraScreen";
 import TenantsDirectoryScreen from "../screens/staff/DirectoryScreens/TenantsDirectoryScreen";
 
@@ -106,6 +107,7 @@ const StaffDashboardStackNavigator = () => {
       <Screen name="ChooseTenant" component={ChooseTenantScreen} />
       <Screen name="Checklist" component={ChecklistScreen} />
       <Screen name="QuestionDetails" component={QuestionDetailsScreen} />
+      <Screen name="AuditSubmit" component={AuditSubmitScreen} />
     </Navigator>
   );
 };
