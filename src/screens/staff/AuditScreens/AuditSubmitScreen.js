@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
   Divider,
@@ -10,9 +10,27 @@ import {
 } from "@ui-kitten/components";
 
 import SuccessAnimation from "../../../components/ui/SuccessAnimation";
+// import * as checklistActions from "../../../store/actions/checklistActions";
 
 const AuditSubmitScreen = ({ navigation }) => {
+  const checklistStore = useSelector((state) => state.checklist);
+  const [submitting, setSubmitting] = useState(true);
   const dispatch = useDispatch();
+
+  const submitHandler = () => {
+    setTimeout(() => {
+      setSubmitting(false);
+    }, 2000);
+  };
+
+  useEffect(() => {
+    submitHandler();
+  }, [checklistStore]);
+
+  const renderSuccessAnimation = useCallback(() => {
+    // console.log(submitting);
+    return <SuccessAnimation loop={submitting} loading={submitting} />;
+  }, [submitting]);
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -25,7 +43,7 @@ const AuditSubmitScreen = ({ navigation }) => {
           alignItems: "center",
         }}
       >
-        <SuccessAnimation loop={true} loading />
+        {renderSuccessAnimation()}
       </Layout>
     </View>
   );
