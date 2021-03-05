@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  Text,
   Button,
   Divider,
   Layout,
@@ -10,6 +11,7 @@ import {
 } from "@ui-kitten/components";
 
 import SuccessAnimation from "../../../components/ui/SuccessAnimation";
+import { CommonActions } from "@react-navigation/routers";
 // import * as checklistActions from "../../../store/actions/checklistActions";
 
 const AuditSubmitScreen = ({ navigation }) => {
@@ -57,7 +59,9 @@ const AuditSubmitScreen = ({ navigation }) => {
           });
           covid19_checklist_images.push(fileName);
         });
-        temp_covid19_checklist.questions[index].image = covid19_checklist_images;
+        temp_covid19_checklist.questions[
+          index
+        ].image = covid19_checklist_images;
         covid19_checklist_images = [];
       }
     });
@@ -77,12 +81,7 @@ const AuditSubmitScreen = ({ navigation }) => {
       },
     };
 
-    // console.log(formData);
     console.log(audit_data);
-
-    // setTimeout(() => {
-    //   setSubmitting(false);
-    // }, 2000);
 
     await fetch("http://localhost:5000/audits", {
       method: "POST",
@@ -109,11 +108,6 @@ const AuditSubmitScreen = ({ navigation }) => {
     submitHandler();
   }, [checklistStore]);
 
-  const renderSuccessAnimation = useCallback(() => {
-    // console.log(submitting);
-    return <SuccessAnimation loop={submitting} loading={submitting} />;
-  }, [submitting]);
-
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <TopNavigation title="SingHealth" alignment="center" />
@@ -125,7 +119,22 @@ const AuditSubmitScreen = ({ navigation }) => {
           alignItems: "center",
         }}
       >
-        {renderSuccessAnimation()}
+        <SuccessAnimation loop={submitting} loading={submitting} />
+        {!submitting && (
+          <Text>Audit submitted on: {new Date().toLocaleDateString()}</Text>
+        )}
+        <Button
+          onPress={() => {
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 1,
+                routes: [{ name: "StaffDashboard" }],
+              })
+            );
+          }}
+        >
+          GO HOME
+        </Button>
       </Layout>
     </View>
   );
