@@ -123,7 +123,12 @@ const AuditSubmitScreen = ({ navigation }) => {
         Accept: "application/json",
         "Content-Type": "multipart/form-data",
       },
-      data: formData,
+      data:
+        Platform.OS === "android"
+          ? formData._parts.length > 0
+            ? formData
+            : null
+          : formData,
     };
 
     // axios(post_audit)
