@@ -25,6 +25,7 @@ const QuestionCard = (props) => {
   const [deleted, setDeleted] = useState(false);
   const { index } = props;
   const { itemData } = props;
+  const section = itemData.section.title;
   const leftSwipeable = useRef(null);
 
   const theme = useTheme();
@@ -48,7 +49,7 @@ const QuestionCard = (props) => {
     props.navigation.navigate("QuestionDetails", {
       index: index,
       item: itemData.item,
-      section: itemData.section.title,
+      section: section,
     });
   };
 
@@ -71,16 +72,23 @@ const QuestionCard = (props) => {
     [deleted, checked]
   );
 
-  const rightSwipe = () => {
+  const rightSwipe = useCallback(() => {
+    console.log(section, index, deleted, checked);
     setDeleted(!deleted);
-    dispatch(checklistActions.changeMaximumScore(deleted, checked));
+    dispatch(checklistActions.changeMaximumScore(!deleted, checked));
+    dispatch(checklistActions.changeAnswer(section, index, !deleted, checked));
     leftSwipeable.current.close();
-  };
+  }, [section, index, deleted, checked]);
 
-  const onChangeHandler = useCallback((nextChecked) => {
-    setChecked(nextChecked);
-    dispatch(checklistActions.changeCurrentScore(nextChecked));
-  }, []);
+  const onChangeHandler = useCallback(
+    (nextChecked) => {
+      console.log(section, index, deleted, checked);
+      setChecked(nextChecked);
+      dispatch(checklistActions.changeCurrentScore(nextChecked));
+      dispatch(checklistActions.changeAnswer(section, index, deleted, nextChecked));
+    },
+    [section, index, deleted, checked]
+  );
 
   return (
     <Swipeable

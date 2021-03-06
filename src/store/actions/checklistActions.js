@@ -7,6 +7,7 @@ export const ADD_REMARKS = "ADD_REMARKS";
 export const SET_MAXIMUM_SCORE = "SET_MAXIMUM_SCORE";
 export const CHANGE_CURRENT_SCORE = "CHANGE_CURRENT_SCORE";
 export const CHANGE_MAXIMUM_SCORE = "CHANGE_MAXIMUM_SCORE";
+export const CHANGE_ANSWER = "CHANGE_ANSWER";
 
 export const TYPE_FNB = "fnb";
 export const TYPE_NON_FNB = "non_fnb";
@@ -29,7 +30,7 @@ export const addCovidChecklist = (checklist) => {
     type: ADD_COVID_CHECKLIST,
     checklist: checklist,
   };
-}
+};
 
 export const addImage = (section, index, imageUri) => {
   return {
@@ -66,6 +67,16 @@ export const changeCurrentScore = (change) => {
   return { type: CHANGE_CURRENT_SCORE, change: change };
 };
 
-export const changeMaximumScore = (change, checked) => {
-  return { type: CHANGE_MAXIMUM_SCORE, change: change, checked: checked };
+export const changeMaximumScore = (deleted, checked) => {
+  return { type: CHANGE_MAXIMUM_SCORE, deleted: deleted, checked: checked };
+};
+
+export const changeAnswer = (section, index, deleted, checked) => {
+  return {
+    type: CHANGE_ANSWER,
+    section: section,
+    index: index,
+    deleted: deleted,
+    checked: checked,
+  };
 };
