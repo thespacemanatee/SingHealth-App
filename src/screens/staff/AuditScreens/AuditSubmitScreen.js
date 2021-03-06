@@ -39,11 +39,14 @@ const AuditSubmitScreen = ({ navigation }) => {
             "_" +
             Math.round(Date.now() * Math.random())
           }.jpg`;
-          formData.append("images", {
-            uri: image,
-            name: fileName,
-            type: "image/jpg",
-          });
+          if (Platform.OS === "web") {
+          } else {
+            formData.append("images", {
+              uri: image,
+              name: fileName,
+              type: "image/jpg",
+            });
+          }
           chosen_checklist_images.push(fileName);
         });
         temp_chosen_checklist.questions[index].image = chosen_checklist_images;
@@ -61,11 +64,14 @@ const AuditSubmitScreen = ({ navigation }) => {
             "_" +
             Math.round(Date.now() * Math.random())
           }.jpg`;
-          formData.append("images", {
-            uri: image,
-            name: fileName,
-            type: "image/jpeg",
-          });
+          if (Platform.OS === "web") {
+          } else {
+            formData.append("images", {
+              uri: image,
+              name: fileName,
+              type: "image/jpeg",
+            });
+          }
           covid19_checklist_images.push(fileName);
         });
         temp_covid19_checklist.questions[
@@ -117,8 +123,16 @@ const AuditSubmitScreen = ({ navigation }) => {
         Accept: "application/json",
         "Content-Type": "multipart/form-data",
       },
-      data: formData._parts.length > 0 ? formData : null,
+      data: formData,
     };
+
+    // axios(post_audit)
+    //   .then((response) => {
+    //     console.log(JSON.stringify(response));
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //   });
 
     axios
       .all([axios(post_audit), axios(post_images)])

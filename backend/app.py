@@ -4,11 +4,13 @@ from BTS.constants import S3BUCKETNAME, MONGODB_URI
 from pymongo.errors import DuplicateKeyError
 from flask import Flask, request, send_file
 from flask_pymongo import PyMongo
+from flask_cors import CORS
 
 
 app = Flask(__name__)
 app.config["MONGO_URI"] = MONGODB_URI
 mongo = PyMongo(app)
+CORS(app)
 
 
 @app.route('/')
@@ -16,12 +18,11 @@ def hello_world():
     return 'Hello, good World!'
 
 
-@app.route("/audits", methods = ['POST'])
+@app.route("/audits", methods=['POST'])
 def audits():
     if request.method == 'POST':
         auditData = request.json
-        filledAuditForms , auditMetaData = processAuditdata(auditData)
-
+        filledAuditForms, auditMetaData = processAuditdata(auditData)
 
         try:
             mongo.db.audits.insert_one(auditMetaData)
@@ -32,16 +33,17 @@ def audits():
 
         return successMsg("Forms have been submitted"), 200
 
-@app.route("/images", methods = ["GET", 'POST'])
+
+@app.route("/images", methods=["GET", 'POST'])
 def images():
     if request.method == 'POST':
         formdata = request.files
-        images = formdata.getlist("images") 
-        
+        images = formdata.getlist("images")
+
         for image in images:
             imgName = image.filename
             upload_image(image, S3BUCKETNAME, imgName)
-        
+
         return successMsg("Pictures have successfully been uploaded"), 200
 
     elif request.method == "GET":
@@ -50,10 +52,6 @@ def images():
         filetype = str(filename.split('.')[-1])
         imageObject = download_image(filename, S3BUCKETNAME)
         return send_file(imageObject), 200
-
-        
-
-
 
 
 app.run(debug=True)
