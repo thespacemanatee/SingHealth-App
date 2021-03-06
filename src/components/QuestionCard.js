@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useRef } from "react";
 import { Dimensions, Platform, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -8,6 +8,7 @@ import {
   StyleService,
   CheckBox,
   Icon,
+  useTheme,
 } from "@ui-kitten/components";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 
@@ -24,6 +25,9 @@ const QuestionCard = (props) => {
   const [deleted, setDeleted] = useState(false);
   const { index } = props;
   const { itemData } = props;
+  const leftSwipeable = useRef(null);
+
+  const theme = useTheme();
 
   const dispatch = useDispatch();
 
@@ -48,17 +52,18 @@ const QuestionCard = (props) => {
     });
   };
 
-  const rightSwipe = useCallback(
+  const leftComponent = useCallback(
     (progress, dragX) => {
       return (
-        <View style={styles.deleteBox}>
+        <View
+          style={[
+            styles.deleteBox,
+            { backgroundColor: theme["color-primary-100"] },
+          ]}
+        >
           <Button
             appearance="ghost"
             accessoryLeft={deleted ? UndoIcon : TrashIcon}
-            onPress={() => {
-              setDeleted(!deleted);
-              dispatch(checklistActions.changeMaximumScore(deleted, checked));
-            }}
           />
         </View>
       );
@@ -66,13 +71,24 @@ const QuestionCard = (props) => {
     [deleted, checked]
   );
 
+  const rightSwipe = () => {
+    setDeleted(!deleted);
+    dispatch(checklistActions.changeMaximumScore(deleted, checked));
+    leftSwipeable.current.close();
+  };
+
   const onChangeHandler = useCallback((nextChecked) => {
     setChecked(nextChecked);
     dispatch(checklistActions.changeCurrentScore(nextChecked));
   }, []);
 
   return (
-    <Swipeable renderLeftActions={rightSwipe} overshootLeft={false}>
+    <Swipeable
+      ref={leftSwipeable}
+      renderLeftActions={leftComponent}
+      onSwipeableOpen={rightSwipe}
+      friction={2}
+    >
       <View>
         <Card onPress={onClickDetailHandler} header={Header}>
           <View style={styles.questionContainer}>
@@ -119,9 +135,8 @@ const styles = StyleService.create({
   },
   deleteBox: {
     // flex: 1,
-    backgroundColor: "#FEE8D1",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
     // width: 100,
   },
 });
