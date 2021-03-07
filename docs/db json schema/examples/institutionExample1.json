@@ -1,0 +1,14 @@
+{
+    "_id": "SKH",
+    "name": "Sengkang General Hospital",
+    "address": {
+        "blk": "110",
+        "street": "Sengkang East Way",
+        "zipcode": "544886"
+    },
+    "poc": {
+        "name": "Tan Seng Seng",
+        "designation": "Manager",
+        "email": "tss@skh.gov.sg"
+    }
+}

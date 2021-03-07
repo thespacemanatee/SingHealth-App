@@ -1,0 +1,12 @@
+{
+    "_id": "CGH",
+    "name": "Changi General Hospital",
+    "address": {
+        "street": "Simei street 3",
+        "zipcode": "529889"
+    },
+    "poc": {
+        "name": "Sam",
+        "email": "sam@skh.gov.sg"
+    }
+}

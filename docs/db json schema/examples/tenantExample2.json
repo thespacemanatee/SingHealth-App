@@ -1,0 +1,22 @@
+{
+    "_id": "6uj57woimm687633",
+    "name": "CAO CAO",
+    "email": "caocao@gmail.com",
+    "pswd": "romance of the 3 kingdoms",
+    "institutionID": "SKH",
+    "demeritPoints": 2,
+    "stall": {
+        "name": "BAN MAIN FISH SOUP",
+        "companyName": "BANMEE",
+        "companyPOC": {
+            "name": "LIM CHANG KEE",
+            "email": "kee@banmee.com"
+        },
+        "group": "KOUFU",
+        "address": { 
+            "unitNo": "B1-11",
+            "stall": "stall 6"
+         },
+        "fnb": true
+    }
+}

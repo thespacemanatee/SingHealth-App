@@ -1,0 +1,390 @@
+{
+    "_id": "fnb2021",
+    "type": "fnb",
+    "questions": [
+        {
+          "question": "Shop is open and ready to service patients/visitors according to operating hours.",
+          "answer": false
+        },
+        {
+          "question": "Staff Attendance: adequate staff for peak and non-peak hours.",
+          "answer": false
+        },
+        {
+          "question": "At least one (1) clearly assigned person in-charge on site.",
+          "answer": false
+        },
+        {
+          "question": "Staff who are unfit for work due to illness should not report to work).",
+          "answer": false
+        },
+        {
+          "question": "Staff who are fit for work but suffering from the lingering effects of a cough and/or cold should cover their mouths with a surgical mask.",
+          "answer": false
+        },
+        {
+          "question": "Clean clothes/uniform or aprons are worn during food preparation and food service.",
+          "answer": false
+        },
+        {
+          "question": "Hair is kept tidy (long hair must be tied up) and covered with clean caps or hair nets where appropriate.",
+          "answer": false
+        },
+        {
+          "question": "Sores, wounds or cuts on hands, if any, are covered with waterproof and brightly-coloured plaster.",
+          "answer": false
+        },
+        {
+          "question": "Hands are washed thoroughly with soap and water, frequently and at appropriate times.",
+          "answer": false
+        },
+        {
+          "question": "Fingernails are short, clean, unpolished and without nail accessories.",
+          "answer": false
+        },
+        {
+          "question": "No wrist watches/ rings or other hand jewellery (with exception of wedding ring) is worn by staff handling food.",
+          "answer": false
+        },
+        {
+          "question": "Food is handled with clean utensils and gloves.",
+          "answer": false
+        },
+        {
+          "question": "Disposable gloves are changed regularly and/ or in between tasks. Staff do not handle cash with gloved hands.",
+          "answer": false
+        },
+        {
+          "question": "Cleaning and maintenance records for equipment, ventilation and exhaust system.",
+          "answer": false
+        },
+        {
+          "question": "Adequate and regular pest control. Pest control record.",
+          "answer": false
+        },
+        {
+          "question": "Goods and equipment are within shop boundary.",
+          "answer": false
+        },
+        {
+          "question": "Store display/ Shop front is neat and tidy.",
+          "answer": false
+        },
+        {
+          "question": "Work/ serving area is neat, clean and free of spillage.",
+          "answer": false
+        },
+        {
+          "question": "Uncluttered circulation space free of refuse/ furniture.",
+          "answer": false
+        },
+        {
+          "question": "Tables are cleared promptly within 10 minutes.",
+          "answer": false
+        },
+        {
+          "question": "Fixtures and fittings including shelves, cupboards and drawers are clean and dry, free from pests, and in a good state.",
+          "answer": false
+        },
+        {
+          "question": "Ceiling/ ceiling boards are free from stains/ dust with no gaps.",
+          "answer": false
+        },
+        {
+          "question": "Fans and air-con units are in proper working order and clean and free from dust. Proper maintenance and routine cleaning are carried out regularly.",
+          "answer": false
+        },
+        {
+          "question": "Equipment, exhaust hood, crockery and utensils are clean, in good condition and serviced.",
+          "answer": false
+        },
+        {
+          "question": "Surfaces, walls and ceilings within customer areas are dry and clean.",
+          "answer": false
+        },
+        {
+          "question": "Floor within customer areas is clean, dry and non-greasy.",
+          "answer": false
+        },
+        {
+          "question": "Waste bins are properly lined with plastic bags and covered at all times.",
+          "answer": false
+        },
+        {
+          "question": "Adequate number of covered waste pedal bins are available and waste is properly managed and disposed. Waste bins are not over-filled. Waste Management: Proper disposal of food stuff and waste. Waste is properly bagged before disposing it at the waste disposal area/ bin centre.",
+          "answer": false
+        },
+        {
+          "question": "Hand washing facilities are easily accessible, in good working condition and soap is provided.",
+          "answer": false
+        },
+        {
+          "question": "Adequate facilities for hand hygiene are available including liquid soap and disposable hand towels.",
+          "answer": false
+        },
+        {
+          "question": "Food is stored in appropriate conditions and at an appropriate temperature.",
+          "answer": false
+        },
+        {
+          "question": "Food and non-food are clearly segregated. Non-food items (e.g. insecticides, detergents and other chemicals) are not stored together with the food items.",
+          "answer": false
+        },
+        {
+          "question": "Food is not placed near sources of contamination.",
+          "answer": false
+        },
+        {
+          "question": "Storage of food does not invite pest infestation.",
+          "answer": false
+        },
+        {
+          "question": "Dry goods (e.g. canned food and drinks) and other food items are stored neatly on shelves, off the floor and away from walls.",
+          "answer": false
+        },
+        {
+          "question": "Proper stock rotation system such as the First-Expired-First-Out (FEFO) system is used for inventory management.",
+          "answer": false
+        },
+        {
+          "question": "Food is protected from contamination; packaging is intact and no products are found with signs of spoilage.",
+          "answer": false
+        },
+        {
+          "question": "Ice machine is clean and well maintained. Only ice is stored in the ice machine to prevent contamination of the ice.",
+          "answer": false
+        },
+        {
+          "question": "Scoop for ice is stored outside the ice machine in a dedicated container.",
+          "answer": false
+        },
+        {
+          "question": "Food supplied is clean and not expired.",
+          "answer": false
+        },
+        {
+          "question": "Clear labelling of date of date of preparation/ manufacture/ expiry on all food containers/packaging.",
+          "answer": false
+        },
+        {
+          "question": "Cooked food is properly covered to prevent cross-contamination.",
+          "answer": false
+        },
+        {
+          "question": "Proper work flow and segregation of areas to prevent cross-contamination between raw and cooked/ ready-to-eat food areas.",
+          "answer": false
+        },
+        {
+          "question": "Proper separation of cooked food/ ready-to-eat food, raw meat, seafood and vegetable to prevent cross-contamination. E.g. Different chopping boards, knives and other utensils are used for cooked/ ready-to-eat and raw food.",
+          "answer": false
+        },
+        {
+          "question": "Frozen food is thawed in chiller, microwave or under running water.",
+          "answer": false
+        },
+        {
+          "question": "Ingredients used are clean and washed thoroughly before cooking.",
+          "answer": false
+        },
+        {
+          "question": "All cooking ingredient (e.g. cooking oil, sauces) are properly covered in proper containers and properly labelled, indicating the content and date of expiry.",
+          "answer": false
+        },
+        {
+          "question": "All sauces are stored at appropriate condition & temperature.",
+          "answer": false
+        },
+        {
+          "question": "Cooking oil is not used for more than 1 day.",
+          "answer": false
+        },
+        {
+          "question": "Cooking oil is properly stored with a cover.",
+          "answer": false
+        },
+        {
+          "question": "Perishable food is stored in the fridge.",
+          "answer": false
+        },
+        {
+          "question": "Raw food and cooked food/ ready to serve food are clearly segregated. Cold and/ or hot holding units are clean and well maintained.",
+          "answer": false
+        },
+        {
+          "question": "Food preparation area is free of bird and animal (e.g. dog or cat).",
+          "answer": false
+        },
+        {
+          "question": "Food preparation area is clean, free of pests and in good state of repair.",
+          "answer": false
+        },
+        {
+          "question": "Food is not prepared on the floor, near drain or near/ in toilet.",
+          "answer": false
+        },
+        {
+          "question": "Personal belongings are kept separately in the staff locker area or cabinet, away from the food storage and preparation area.",
+          "answer": false
+        },
+        {
+          "question": "Daily Temperature Log for food storage units (freezers, chillers, warmers, steamers, ovens) using independent thermometer, etc. is maintained for inspection from time to time.",
+          "answer": false
+        },
+        {
+          "question": "Food storage units (freezers, chillers, warmers, steamers, ovens) are kept clean and well maintained. All rubber gaskets of refrigerators / warmers are free from defect, dirt and mould.",
+          "answer": false
+        },
+        {
+          "question": "Food storage units are not overstocked to allow good air circulation.",
+          "answer": false
+        },
+        {
+          "question": "For walk-in freezers and chillers, food items are stored neatly on shelves and off the floor.",
+          "answer": false
+        },
+        {
+          "question": "Frozen food is stored at a temperature of not more than -12°C. Freezer’s temperature: < -12°C",
+          "answer": false
+        },
+        {
+          "question": "Chilled food is stored at a temperature of not more than 4°C. Chiller’s temperature: 0°C ~ 4°C",
+          "answer": false
+        },
+        {
+          "question": "Hot food are held above 60°C. Food warmer’s temperature: > 60°C",
+          "answer": false
+        },
+        {
+          "question": "Perishable food is stored at a temperature of not more than 4°C.",
+          "answer": false
+        },
+        {
+          "question": "Dairy products are stored at a temperature of not more than 7°C.",
+          "answer": false
+        },
+        {
+          "question": "Cooked/ ready-to-eat food are stored above raw food.",
+          "answer": false
+        },
+        {
+          "question": "Food items are properly wrapped/covered in proper containers and protected from contamination.",
+          "answer": false
+        },
+        {
+          "question": "Min. no. of healthier variety of food items per stall. Lease Term: 50% of food items.",
+          "answer": false
+        },
+        {
+          "question": "Label caloric count of healthier options.",
+          "answer": false
+        },
+        {
+          "question": "Include HPB’s Identifiers beside healthier options.",
+          "answer": false
+        },
+        {
+          "question": "Use of healthier cooking oils.",
+          "answer": false
+        },
+        {
+          "question": "Offer wholemeal/ whole-grain option.",
+          "answer": false
+        },
+        {
+          "question": "Healthier option food sold at lower price than regular items.",
+          "answer": false
+        },
+        {
+          "question": "Limit deep-fried and pre-deep fried food items sold (≤ 20% deep-fried items).",
+          "answer": false
+        },
+        {
+          "question": "No sugar / Lower-sugar brewed beverage offerings according to guidelines.",
+          "answer": false
+        },
+        {
+          "question": "Healthier option beverages sold at lower price than regular items.",
+          "answer": false
+        },
+        {
+          "question": "Label caloric count of healthier options.",
+          "answer": false
+        },
+        {
+          "question": "Limit sugar content on commercially-prepared sweetened beverages. (≥ 70% commercially-prepared sweetened beverages sold to have HCS)",
+          "answer": false
+        },
+        {
+          "question": "All food handlers have Basic Food Hygiene certificate and a valid Refresher Food Hygiene certificate (if applicable).",
+          "answer": false
+        },
+        {
+          "question": "MSDS for all industrial chemicals are available and up to date.",
+          "answer": false
+        },
+        {
+          "question": "Proper chemicals storage.",
+          "answer": false
+        },
+        {
+          "question": "All detergent and bottles containing liquids are labelled appropriately.",
+          "answer": false
+        },
+        {
+          "question": "All personnel to wear safety shoes and safety attire where necessary.",
+          "answer": false
+        },
+        {
+          "question": "Knives and sharp objects are kept at a safe place.",
+          "answer": false
+        },
+        {
+          "question": "Area under the sink should not be cluttered with items other than washing agents.",
+          "answer": false
+        },
+        {
+          "question": "Delivery personnel do not stack goods above the shoulder level.",
+          "answer": false
+        },
+        {
+          "question": "Stacking of goods does not exceed 600mm from the ceiling and heavy items at the bottom, light items on top.",
+          "answer": false
+        },
+        {
+          "question": "Proper signage/ label (fire, hazards, warnings, food stuff) and Exit signs in working order.",
+          "answer": false
+        },
+        {
+          "question": "Equipment, crockery and utensils are not chipped, broken or cracked.",
+          "answer": false
+        },
+        {
+          "question": "Fire extinguishers access is unobstructed; Fire extinguishers are not expired and employees know how to use them.",
+          "answer": false
+        },
+        {
+          "question": "Escape route and exits are unobstructed.",
+          "answer": false
+        },
+        {
+          "question": "First aid box is available and well-equipped.",
+          "answer": false
+        },
+        {
+          "question": "Electrical sockets are not overloaded – one plug to one socket.",
+          "answer": false
+        },
+        {
+          "question": "Plugs and cords are intact and free from exposure/ tension with PSB safety mark.",
+          "answer": false
+        },
+        {
+          "question": "Power points that are in close proximity to flammable and/or water sources are installed with a plastic cover.",
+          "answer": false
+        },
+        {
+          "question": "Electrical panels / DBs are covered.",
+          "answer": false
+        }
+       ]
+}

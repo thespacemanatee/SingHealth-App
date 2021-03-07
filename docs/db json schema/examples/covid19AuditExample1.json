@@ -1,0 +1,47 @@
+{
+    "_id": "fi85904u2bgfvu92",
+    "type": "covid19",
+    "formTemplateID": "covid192021",
+    "answers": [
+        {
+          "answer": false,
+          "remarks": "No safe entry in the shop"
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        }
+       ]
+}
