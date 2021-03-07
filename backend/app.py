@@ -5,6 +5,8 @@ from pymongo.errors import DuplicateKeyError
 from flask import Flask, request, send_file
 from flask_pymongo import PyMongo
 from flask_cors import CORS
+from base64 import b64decode
+import io
 
 
 app = Flask(__name__)
@@ -41,14 +43,27 @@ def audits():
 @app.route("/images", methods=["GET", 'POST'])
 def images():
     if request.method == 'POST':
-        formdata = request.files
-        images = formdata.getlist("images")
+        if len(request.files) > 0:
+            formdata = request.files
+            images = formdata.getlist("images")
 
-        for image in images:
-            imgName = image.filename
-            upload_image(image, S3BUCKETNAME, imgName)
+            for image in images:
+                imgName = image.filename
+                upload_image(image, S3BUCKETNAME, imgName)
 
-        return successMsg("Pictures have successfully been uploaded"), 200
+            return successMsg("Pictures have successfully been uploaded"), 200
+
+        requestData = request.json
+        if len(requestData["images"]) > 0:
+            for image in requestData["images"]:
+                imageName = image["fileName"]
+                imageData = image["uri"]
+                imageBytes = io.BytesIO(b64decode(imageData))
+                upload_image(imageBytes, S3BUCKETNAME, imageName)
+            return successMsg("Pictures have successfully been uploaded"), 200
+        
+        return failureMsg("No image data received", 400), 400
+
 
     elif request.method == "GET":
         details = request.json
