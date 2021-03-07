@@ -1,6 +1,6 @@
 import json
 from .utils import failureMsg
-
+from .constants import MAX_NUM_IMAGES_PER_NC
 
 def printJ(data):
     print(json.dumps(data, indent=4, sort_keys=False))
@@ -35,8 +35,8 @@ def validateFilledAuditForm(filledAuditForm):
             return False, f"Item at index {index} does not have an 'answer' attribute"
         
         if "images" in answer.keys():
-            if len(answer["images"]) > 3:
-                return False, f"Item at index {index} has > 3 images (Max is 3)"
+            if len(answer["images"]) > MAX_NUM_IMAGES_PER_NC:
+                return False, f"Item at index {index} has > {MAX_NUM_IMAGES_PER_NC} images (Max is {MAX_NUM_IMAGES_PER_NC})"
 
             numUniqueFilenames = len(list(set(answer["images"])))
             numFilenames = len(answer["images"])
