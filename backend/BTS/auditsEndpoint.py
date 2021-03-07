@@ -1,9 +1,6 @@
-import json
 from .utils import failureMsg
 from .constants import MAX_NUM_IMAGES_PER_NC
 
-def printJ(data):
-    print(json.dumps(data, indent=4, sort_keys=False))
 
 # does not give ID to converted form
 

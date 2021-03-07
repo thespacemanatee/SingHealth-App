@@ -1,7 +1,10 @@
 import io
+import json
 import boto3
 from PIL import Image
 
+def printJ(data):
+    print(json.dumps(data, indent=4, sort_keys=False))
 
 def upload_image(file_obj, bucket, file_name):
     """
