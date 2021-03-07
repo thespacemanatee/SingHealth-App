@@ -8,6 +8,10 @@ def printJ(data):
 # does not give ID to converted form
 
 
+
+
+# TODO: Add form checking in compliance to json schema
+# TODO: Add random integer or smth to the IDs
 def convertToFilledAuditForm(filledAuditFormTemplate):
     filledAuditForm = dict()
     filledAuditForm["formTemplateID"] = filledAuditFormTemplate.get("_id")
@@ -24,6 +28,25 @@ def convertToFilledAuditForm(filledAuditFormTemplate):
 
     return filledAuditForm
 
+def validateFilledAuditForm(filledAuditForm):
+    answers = filledAuditForm["answers"]
+    for index, answer in enumerate(answers):
+        if not "answer" in answer.keys():
+            return False, f"Item at index {index} does not have an 'answer' attribute"
+        
+        if "images" in answer.keys():
+            if len(answer["images"]) > 3:
+                return False, f"Item at index {index} has > 3 images (Max is 3)"
+
+            numUniqueFilenames = len(list(set(answer["images"])))
+            numFilenames = len(answer["images"])
+            if numFilenames > numUniqueFilenames:
+                return False, f"Item at index {index} has duplicate filenames"
+
+        if not answer["answer"] and len(answer["remarks"]) == 0:
+            return False, f"Item at index {index} non-compliant but no remarks were given"
+    
+    return True, "Form is valid and ready for uploading"
 
 def createIDForFilledForm(formTemplate, metadata):
     date = metadata["date"]
@@ -58,3 +81,10 @@ def processAuditdata(auditData):
         auditMetaData["auditChecklists"][filledAuditForm["type"]] = id
 
     return filledAuditForms, auditMetaData
+
+def validateFilledAuditForms(filledAuditForms):
+    for formType, form in filledAuditForms.items():
+        isValid = validateFilledAuditForm(form)
+        if not isValid[0]:
+            return False, f"{formType} form not valid because: {isValid[1]}"
+    return True, "All forms are valid and ready for uploading"

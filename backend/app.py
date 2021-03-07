@@ -1,4 +1,4 @@
-from BTS.auditsEndpoint import processAuditdata
+from BTS.auditsEndpoint import processAuditdata, validateFilledAuditForms
 from BTS.utils import successMsg, failureMsg, upload_image, download_image
 from BTS.constants import S3BUCKETNAME, MONGODB_URI
 from pymongo.errors import DuplicateKeyError
@@ -21,8 +21,11 @@ def audits():
     if request.method == 'POST':
         auditData = request.json
         filledAuditForms , auditMetaData = processAuditdata(auditData)
-
-
+        allFormsAreValid = validateFilledAuditForms(filledAuditForms)
+        
+        if not allFormsAreValid[0]:
+            return failureMsg(allFormsAreValid[1], 400), 400
+            
         try:
             mongo.db.audits.insert_one(auditMetaData)
             for filledForm in filledAuditForms.values():
