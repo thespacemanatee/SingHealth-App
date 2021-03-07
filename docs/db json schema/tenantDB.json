@@ -97,7 +97,23 @@
                 }
             },
             "required": ["name", "companyName", "companyPOC", "address", "fnb"]
+        },
+        "createdBy": {
+            "description": "ID of staff who created this account",
+            "type": "string"
+        },
+        "dateCreated": {
+            "description": "Date when the account was created.",
+            "type": "string"
+        },
+        "tenantDateStart": {
+            "description": "Date when tenantship started.",
+            "type": "string"
+        },
+        "tenantDateEnd": {
+            "description": "Date when tenantship ended.",
+            "type": "string"
         }
     },
-    "required": [ "_id", "name", "email", "pswd", "institutionId", "demeritPoints", "stall" ]
+    "required": [ "_id", "name", "email", "pswd", "institutionId", "demeritPoints", "stall", "createdBy", "dateCreated", "tenantDateStart", "tenantDateEnd"]
   }
