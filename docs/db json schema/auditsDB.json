@@ -25,10 +25,6 @@
             "description": "DDMMYYYY",
             "type": "string"
         },
-        "time": {
-            "description": "HH:MM 24 hr clock format",
-            "type": "string"
-        },
         "score": {
             "description": "The audit score as a percentage out of 100",
             "type": "number"
@@ -42,5 +38,5 @@
                 }
         }
     },
-    "required": [ "_id", "staffID", "tenantID", "institutionID", "date", "time", "auditChecklists"]
+    "required": [ "_id", "staffID", "tenantID", "institutionID", "date", "score", "auditChecklists"]
 }
