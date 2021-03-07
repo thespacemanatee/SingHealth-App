@@ -23,6 +23,7 @@ Flask-Login = "*"
 awscli = "*"
 pillow = "*"
 requests = "*"
+flask-cors = "*"
 
 [dev-packages]
 
