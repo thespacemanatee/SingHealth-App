@@ -21,13 +21,14 @@
                 "type": "object",
                 "properties": {
                     "answer": {"type": "boolean"},
-                    "image": {
+                    "images": {
                         "description": "The URL to query for the image",
                         "type": "array",
                         "items": {
                             "type": "string"
                         },
                         "minItems": 0,
+                        "maxItems": 3,
                         "uniqueItems": true
                     },
                     "rectificationImages":{
