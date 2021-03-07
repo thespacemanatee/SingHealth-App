@@ -9,6 +9,10 @@
           "description": "The unique identifier for a tenant",
           "type": "string"
         },
+        "name": {
+            "description": "Tenant's full name in upper case",
+            "type": "string"
+        },
         "email": {
             "description": "The user email of a tenant",
             "type": "string"
@@ -17,13 +21,14 @@
             "description": "The password credentials for a tenant",
             "type": "string"
         },
-        "institutionId": {
+        "institutionID": {
             "description": "The institution where a tenant operates under",
             "type": "string"
         },
-        "demeritPoints":{
+        "demeritPoints": {
             "description": "If tenant consistently scores low for certain number of times, they get 1 demerit. Too many demerit points and they might have to end tenantship",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 0
         },
         "stall": {
             "description": "All the info regarding their stall",
@@ -94,5 +99,5 @@
             "required": ["name", "companyName", "companyPOC", "address", "fnb"]
         }
     },
-    "required": [ "_id", "email", "pswd", "institutionId", "stall" ]
+    "required": [ "_id", "name", "email", "pswd", "institutionId", "demeritPoints", "stall" ]
   }

@@ -9,6 +9,10 @@
           "description": "The unique identifier for a staff",
           "type": "string"
         },
+        "name" : {
+            "description": "Full name of staff in upper case letters",
+            "type": "string"
+        },
         "email": {
             "description": "staff user email for the app",
             "type": "string"
@@ -22,5 +26,5 @@
             "type": "string"
         }
     },
-    "required": [ "_id", "email", "pswd", "institutionID" ]
+    "required": [ "_id", "name", "email", "pswd", "institutionID" ]
 }
