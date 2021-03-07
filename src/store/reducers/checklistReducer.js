@@ -10,6 +10,7 @@ import {
   CHANGE_CURRENT_SCORE,
   CHANGE_MAXIMUM_SCORE,
   ADD_COVID_CHECKLIST,
+  CHANGE_ANSWER,
 } from "../actions/checklistActions";
 
 import { COVID_SECTION } from "../../screens/staff/AuditScreens/ChecklistScreen";
@@ -145,24 +146,55 @@ export const checklistReducer = (state = initialState, action) => {
       };
     }
     case CHANGE_MAXIMUM_SCORE: {
-      console.log(action.checked);
+      console.log(action.deleted);
       let new_maximum_score;
       let new_current_score = state.current_score;
-      if (action.change) {
-        new_maximum_score = state.maximum_score + 1;
-        if (action.checked) {
-          new_current_score++;
-        }
-      } else {
+      if (action.deleted) {
         new_maximum_score = state.maximum_score - 1;
         if (action.checked) {
           new_current_score--;
+        }
+      } else {
+        new_maximum_score = state.maximum_score + 1;
+        if (action.checked) {
+          new_current_score++;
         }
       }
       return {
         ...state,
         maximum_score: new_maximum_score,
         current_score: new_current_score,
+      };
+    }
+    case CHANGE_ANSWER: {
+      let newChecklist;
+      if (action.section === COVID_SECTION) {
+        newChecklist = _.cloneDeep(state.covid19);
+      } else {
+        newChecklist = _.cloneDeep(state.chosen_checklist);
+      }
+      if (action.deleted) {
+        newChecklist.questions[action.index].answer = null;
+      } else {
+        if (action.checked) {
+          newChecklist.questions[action.index].answer = true;
+        } else {
+          newChecklist.questions[action.index].answer = false;
+        }
+      }
+
+      console.log(newChecklist);
+
+      if (action.section === COVID_SECTION) {
+        return {
+          ...state,
+          covid19: newChecklist,
+        };
+      }
+
+      return {
+        ...state,
+        chosen_checklist: newChecklist,
       };
     }
     default:

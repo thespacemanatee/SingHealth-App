@@ -9,22 +9,22 @@ import * as databaseActions from "../store/actions/databaseActions";
 import alert from "../components/CustomAlert";
 
 export const HomeScreen = ({ navigation }) => {
-  const [status, setStatus] = useState(null);
+  // const [status, setStatus] = useState(null);
   const dispatch = useDispatch();
 
-  const permissionFlow = async () => {
-    const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+  // const permissionFlow = async () => {
+  //   const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
 
-    setStatus(status);
+  //   setStatus(status);
 
-    if (status !== "granted") {
-      alert("Boo", "Why no accept?", [{ text: "OK" }]);
-    }
-  };
+  //   if (status !== "granted") {
+  //     alert("Boo", "Why no accept?", [{ text: "OK" }]);
+  //   }
+  // };
 
-  useEffect(() => {
-    permissionFlow();
-  }, [permissionFlow]);
+  // useEffect(() => {
+  //   permissionFlow();
+  // }, [permissionFlow]);
 
   useEffect(() => {
     dispatch(databaseActions.storeDatabase(database));

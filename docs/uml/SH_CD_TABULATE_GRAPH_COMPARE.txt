@@ -1,5 +1,7 @@
 @startuml
 
+title Tabulate and Compare Audit Data, Provide Trending Graph, Export to Excel
+
 Staff -> Server: Request to login
 Server -> Database: Check login credentials
 Database ->> Server: Return result

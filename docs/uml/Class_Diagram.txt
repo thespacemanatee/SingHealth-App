@@ -1,7 +1,5 @@
 @startuml
 
-
-
 Institution "1"-down-"0..*" Tenant
 Institution "1"--"1..*" Staff
 
@@ -10,19 +8,23 @@ class User << (I,#FF7700) Interface >>
 User <|.. Staff
 User <|.. Tenant
 
-Tenant "1"-- "1..*" Stall
+Staff -- Notifier
+Tenant -- Notifier
+Tenant "1"-right- "1..*" Stall
 
 Staff "1..*"--"0..*" Audit
-Audit o-- AuditForm
+Audit o-right- AuditForm
 Audit "0..*"--"1" Tenant
-AuditForm o-- Question
+FilledAuditForm "0..*"--"1" AuditForm
+FilledAuditForm --o Audit
+Staff -> Tenant
 
 class Institution {
-	-institutionId: String
-	-name: String
-	-address: Address
-	-institutionPOCName: String
-	-institutionPOCEmail: String
+	-institutionId : String
+	-name : String
+	-address : String
+	-institutionPOCName : String
+	-institutionPOCEmail : String
 }
 
 skinparam classAttributeIconSize 0
@@ -33,19 +35,41 @@ abstract class User {
 	-institutionId: String
 	void getUserId()
 	void getInstitutionId()
+	void login(username : String, pwd : String)
 }
 
 class Staff {
-	void addTenant(Tenant.userId: String)
-	void removeTenant(Tenant.userId: String)
-	void submitAudit(audit: Audit)
+	void addTenant(Tenant.userId : String)
+	void removeTenant(Tenant.userId : String)
+	void submitAudit(auditData : Audit)
+	void capturePhoto()
+	void editAuditForm(auditData : Audit)
+	json sendAuditForm(auditData : Audit)
+	void showTrendingGraphs(data : Audit)
+	void compareData(institution_id1 : String, institution_id2 : String)
+	Audit getAuditSubmission(audit_ID : String)
+	void sendBroadcast(data : Json)	
+	Audit respondToExtensionReq(audit_id : String)
+	Tenant createNewTenantAcc()
+	void editStaffAccount(user_id : String, data : Json)
+}
+
+class Notifier {
+	-sender : String
+	-message : String
+	void notify(receiver_list : String[])
+	void createNewNotifier()
+	void promptNC(receiver_list : String[]
 }
 
 class Tenant {
-	-demeritPoints: int
-	-stall: Stall
-	void submitRectifications()
-	
+	-demeritPoints : int
+	-stall : Stall
+	void submitRectifications(data : Json)
+	void takePicture()
+	json requestForExtension(audit_id : String)
+	Audit readAuditForm(audit_id : String)
+	void editTenantAccount(user_id : String, data : Json)
 }
 
 class Stall {
@@ -66,20 +90,30 @@ class Audit {
 	-institutionId: String
 	-date: Date
 	-auditChecklists: AuditForm[]
-	
+	integer autoComputeScore(filledAuditForm : FilledAuditForm)
+	AuditForm getAuditForm (audit_form_type : String)
+	FilledAuditForm getPreviousAuditResult(filled_audit_id : String)
 }
 
 class AuditForm {
 	-formId: String
-	-questions: Question[]
+	-questions: String[]
 	-type: String
+	-answer: String[]
+	-image: Boolean[]
+	-remarks: Boolean[]
+	-rectification: Boolean[]
 }
 
-class Question {
-	-question: String
-	-answer: Boolean
-	-image: String[]
-	-remarks: String
+
+class FilledAuditForm{
+	-answer_id : String
+	-audit_form_id : String
+	-answers : Boolean[]
+	-image : String[]
+	-remarks : String[]
+	-rectification: Boolean[]
+	
 }
 
 

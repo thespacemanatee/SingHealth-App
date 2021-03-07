@@ -22,6 +22,7 @@ Flask-PyMongo = "*"
 Flask-Login = "*"
 awscli = "*"
 pillow = "*"
+requests = "*"
 
 [dev-packages]
 

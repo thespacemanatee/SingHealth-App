@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  Text,
   Button,
   Divider,
   Layout,
   StyleService,
   TopNavigation,
 } from "@ui-kitten/components";
+import axios from "axios";
 
 import SuccessAnimation from "../../../components/ui/SuccessAnimation";
+import { CommonActions } from "@react-navigation/routers";
 // import * as checklistActions from "../../../store/actions/checklistActions";
 
 const AuditSubmitScreen = ({ navigation }) => {
@@ -30,13 +33,20 @@ const AuditSubmitScreen = ({ navigation }) => {
       if (element.image) {
         element.image.forEach((image, index) => {
           const fileName = `${
-            chosen_tenant + "_" + index + "_" + Date.now()
+            chosen_tenant +
+            "_" +
+            index +
+            "_" +
+            Math.round(Date.now() * Math.random())
           }.jpg`;
-          formData.append("images", {
-            uri: image,
-            name: fileName,
-            type: "image/jpg",
-          });
+          if (Platform.OS === "web") {
+          } else {
+            formData.append("images", {
+              uri: image,
+              name: fileName,
+              type: "image/jpg",
+            });
+          }
           chosen_checklist_images.push(fileName);
         });
         temp_chosen_checklist.questions[index].image = chosen_checklist_images;
@@ -46,23 +56,32 @@ const AuditSubmitScreen = ({ navigation }) => {
 
     temp_covid19_checklist.questions.forEach((element, index) => {
       if (element.image) {
-        element.forEach((image, index) => {
+        element.image.forEach((image, index) => {
           const fileName = `${
-            chosen_tenant + "_" + index + "_" + Date.now()
+            chosen_tenant +
+            "_" +
+            index +
+            "_" +
+            Math.round(Date.now() * Math.random())
           }.jpg`;
-          formData.append("images", {
-            uri: image,
-            name: fileName,
-            type: "image/jpg",
-          });
+          if (Platform.OS === "web") {
+          } else {
+            formData.append("images", {
+              uri: image,
+              name: fileName,
+              type: "image/jpeg",
+            });
+          }
           covid19_checklist_images.push(fileName);
         });
-        temp_covid19_checklist.questions[index].image = covid19_checklist_images;
+        temp_covid19_checklist.questions[
+          index
+        ].image = covid19_checklist_images;
         covid19_checklist_images = [];
       }
     });
 
-    // console.log(temp_chosen_checklist);
+    console.log(formData);
 
     const audit_data = {
       auditMetadata: {
@@ -77,30 +96,60 @@ const AuditSubmitScreen = ({ navigation }) => {
       },
     };
 
-    // console.log(formData);
-    console.log(audit_data);
+    // console.log(audit_data);
 
-    // setTimeout(() => {
-    //   setSubmitting(false);
-    // }, 2000);
+    let endpoint;
 
-    await fetch("http://localhost:5000/audits", {
-      method: "POST",
+    if (Platform.OS === "android") {
+      endpoint = "http://10.0.2.2:5000/";
+    } else {
+      endpoint = "http://localhost:5000/";
+    }
+
+    const post_audit = {
+      url: `${endpoint}audits`,
+      method: "post",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(audit_data),
-    });
+      data: audit_data,
+    };
 
-    await fetch("http://localhost:5000/images", {
-      method: "POST",
+    const post_images = {
+      url: `${endpoint}images`,
+      method: "post",
       headers: {
         Accept: "application/json",
         "Content-Type": "multipart/form-data",
       },
-      body: formData,
-    });
+      data:
+        Platform.OS === "android"
+          ? formData._parts.length > 0
+            ? formData
+            : null
+          : formData,
+    };
+
+    // axios(post_audit)
+    //   .then((response) => {
+    //     console.log(JSON.stringify(response));
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //   });
+
+    axios
+      .all([axios(post_audit), axios(post_images)])
+      .then(
+        axios.spread((req1, req2) => {
+          console.log(req1.status, "req1");
+          console.log(req2.status, "req2");
+        })
+      )
+      .catch((error) => {
+        console.error(error);
+      });
 
     setSubmitting(false);
   };
@@ -108,11 +157,6 @@ const AuditSubmitScreen = ({ navigation }) => {
   useEffect(() => {
     submitHandler();
   }, [checklistStore]);
-
-  const renderSuccessAnimation = useCallback(() => {
-    // console.log(submitting);
-    return <SuccessAnimation loop={submitting} loading={submitting} />;
-  }, [submitting]);
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -125,7 +169,27 @@ const AuditSubmitScreen = ({ navigation }) => {
           alignItems: "center",
         }}
       >
-        {renderSuccessAnimation()}
+        <View style={{ height: 200, width: 200 }}>
+          {submitting && <SuccessAnimation loading={submitting} />}
+          {!submitting && <SuccessAnimation loading={submitting} />}
+        </View>
+        {!submitting && (
+          <View>
+            <Text>Audit submitted on: {new Date().toLocaleDateString()}</Text>
+            <Button
+              onPress={() => {
+                navigation.dispatch(
+                  CommonActions.reset({
+                    index: 1,
+                    routes: [{ name: "StaffDashboard" }],
+                  })
+                );
+              }}
+            >
+              GO HOME
+            </Button>
+          </View>
+        )}
       </Layout>
     </View>
   );
