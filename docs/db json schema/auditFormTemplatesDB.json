@@ -42,7 +42,12 @@
                     },
                     "rectified": {"type": "boolean"},
                     "requestForExt": {"type": "boolean"},
-                    "acceptedRequest": {"type": "boolean"}
+                    "acceptedRequest": {"type": "boolean"},
+                    "questionTags": {
+                        "description": "Category of question",
+                        "type": "array",
+                        "items": {"type": "string"}
+                    }
                 },
                 "required": [ "question" , "answer" ]
             },
