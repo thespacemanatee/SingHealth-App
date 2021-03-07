@@ -5,7 +5,7 @@
         "tenantID": "CGH_Tenant1",
         "institutionID": "CGH",
         "date": "03032021",
-        "time": "13:59",
+        "score": 0.333,
         "auditChecklists": {}
     },
     "auditForms":{
