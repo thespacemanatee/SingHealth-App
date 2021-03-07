@@ -6,7 +6,7 @@
     "type": "object",
     "properties": {
         "_id": {
-          "description": "The unique identifier for an audit form",
+          "description": "The identifier to unique to the version of this audit form",
           "type": "string"
         },
         "questions": {
@@ -17,7 +17,7 @@
                 "properties": {
                     "question": {"type": "string"},
                     "answer": {"type": "boolean"},
-                    "image": {
+                    "images": {
                         "description": "The URL to query for the image",
                         "type": "array",
                         "items": {
