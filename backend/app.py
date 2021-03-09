@@ -1,16 +1,20 @@
 from BTS.auditsEndpoint import processAuditdata, validateFilledAuditForms
+from BTS.loginEndpoints import setUpLoginEndpointsForTenantAndStaff
 from BTS.utils import successMsg, failureMsg, upload_image, download_image
 from BTS.constants import S3BUCKETNAME, MONGODB_URI
 from pymongo.errors import DuplicateKeyError
 from flask import Flask, request, send_file
 from flask_pymongo import PyMongo
+from flask_login import login_required
 from flask_cors import CORS
 from base64 import b64decode
+import secrets
 import io
 
 
 app = Flask(__name__)
 app.config["MONGO_URI"] = MONGODB_URI
+app.config["SECRET_KEY"] = secrets.token_urlsafe(nbytes=32)
 mongo = PyMongo(app)
 CORS(app)
 
@@ -19,8 +23,8 @@ CORS(app)
 def hello_world():
     return 'Hello, good World!'
 
-
 @app.route("/audits", methods=['POST'])
+@login_required
 def audits():
     if request.method == 'POST':
         auditData = request.json
@@ -40,7 +44,9 @@ def audits():
         return successMsg("Forms have been submitted"), 200
 
 
+#TODO: Add defence against duplicate file names
 @app.route("/images", methods=["GET", 'POST'])
+@login_required
 def images():
     if request.method == 'POST':
         if len(request.files) > 0:
@@ -73,4 +79,6 @@ def images():
         return send_file(imageObject), 200
 
 
+
+setUpLoginEndpointsForTenantAndStaff(app, mongo)
 app.run(debug=True)
