@@ -42,7 +42,7 @@
                     },
                     "remarks": {"type": "string"},
                     "deadline":{
-                        "description": "date in DDMMYYYY",
+                        "description": "date in ISO",
                         "type":"string" 
                     },
                     "rectified": {"type": "boolean"},
@@ -54,7 +54,7 @@
                         "items": {"type": "string"}
                     }
                 },
-                "required": [ "answer" ]
+                "required": [ "answer" , "questionTags"]
             }
         }
     },

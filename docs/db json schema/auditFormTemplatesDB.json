@@ -49,7 +49,7 @@
                         "items": {"type": "string"}
                     }
                 },
-                "required": [ "question" , "answer" ]
+                "required": [ "question" , "answer", "questionTags"]
             },
             "additionalProperties": false
         },
