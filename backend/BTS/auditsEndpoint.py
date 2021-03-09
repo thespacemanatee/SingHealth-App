@@ -1,7 +1,8 @@
-from .utils import failureMsg
+from .utils import failureMsg, successMsg
 from .constants import MAX_NUM_IMAGES_PER_NC
-
-
+from flask import request
+from flask_login import login_required
+from pymongo.errors import DuplicateKeyError
 # does not give ID to converted form
 
 
@@ -85,3 +86,26 @@ def validateFilledAuditForms(filledAuditForms):
         if not isValid[0]:
             return False, f"{formType} form not valid because: {isValid[1]}"
     return True, "All forms are valid and ready for uploading"
+
+
+def addAuditsEndpoint(app, mongo):
+    @app.route("/audits", methods=['POST'])
+    @login_required
+    def audits():
+        if request.method == 'POST':
+            auditData = request.json
+            filledAuditForms , auditMetaData = processAuditdata(auditData)
+            allFormsAreValid = validateFilledAuditForms(filledAuditForms)
+            
+            if not allFormsAreValid[0]:
+                return failureMsg(allFormsAreValid[1], 400), 400
+                
+            try:
+                mongo.db.audits.insert_one(auditMetaData)
+                for filledForm in filledAuditForms.values():
+                    mongo.db.filledAuditForms.insert_one(filledForm)
+            except DuplicateKeyError:
+                return failureMsg("Form has already been uploaded", 400), 400
+
+            return successMsg("Forms have been submitted"), 200
+
