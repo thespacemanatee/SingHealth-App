@@ -1,12 +1,17 @@
 # REST API documentation
 ---
 
-```
-GET /tenants/{institutionId}
-GET /auditFormTemplates
-POST /audits
-POST /images
-```
+## Endpoints
+- [x] [`GET /tenants/{institutionId}`](#`GET-/tenants/{institutionId}`)
+- [ ] [`POST /tenants/{institutionId}`](#`POST-/tenants/{institutionId}`)
+- [x] [`GET /auditFormTemplates`](#`GET-/auditFormTemplates`)
+- [x] [`POST /audits`](#`POST-/audits`)
+- [ ] [`GET /audits`](#`POST-/audits`)
+- [x] [`POST /images`](#`POST-/images`)
+- [ ] [`GET /images`](#`GET-/images`)
+---
+
+
 ## `GET /tenants/{institutionId}`
 ### Parameters
 `institutionId`
@@ -41,76 +46,115 @@ curl GET "localhost:5000/tenants/{institutionId}"
 `stallName`
 ~ Name of the stall the tenant is from
 
-## `GET /auditForms [type_of_forms]`
-### Parameters
-`type_of_forms`
-~ Unique identifier for type of form
-
-### Sample request
-```
-curl GET "localhost:5000/tenants/ [fnb_form]"
-```
-
-### Sample success response
-```
-{
-  "status": 200,
-  "description": "success",
-  "data": [
-  		"formID": "1234gssowpq",
-  		"type": "fnb",
-      {
-        "question": "Question 1",
-        "answers_options" : ["Yes", "No", "NA"],
-        "image" : true,
-        "rectification" : true,
-        "remarks" : true,
-      },
-      {
-        "question": "Question 2",
-        "answers_options" : ["Yes", "No", "NA"],
-        "image" : true,
-        "rectification" : true,
-        "remarks" : true,
-      }
-  ]
-  
-}
-```
-### Response definitions
-`formID`
-~ Unique identifier for audit form
-`type`
-~ Types of form - F&B (fnb), non-F&B (non_fnb) or Covid-19 (covid19)
-`question`
-~ Question from the form
-`answer_options`
-~ Options to answer the question, will be translated to checklist
-`image`
-~ If the staff is able to attach images for the question
-`rectification`
-~ If the rectification for this non-compliance is allowed
-`remarks`
-~ If the staff is able to add remark for this question
-
+<br>
+<br>
 
 ## `POST /audits`
+---
 ### Query string parameters
-auditMetadata
+`auditMetadata`
 ~ JSON containing metadata about the audit
-auditForm
+`auditForms`
 ~ JSON containing all the QnA, photos, deadlines, remarks, etc
 
 ### Sample request
 ```
-curl POST "localhost:5000/audits" Content-type "application/json" "{"auditMetadata":\{staffId, tenantId, institutionID,...\}, \"auditForm\": \{type, questions, id\} }"
+curl POST "localhost:5000/audits" Content-type "application/json" "{"auditMetadata":\{staffId, tenantId, institutionID,...\}, \"auditForm\": \{\"fnb\":\{type, questions, id\}\} }"
 ```
 
 ### Sample response
+#### Success response
 ```
 {
   "status": 200,
-  "description": "success"
+  "description": "Forms have successfully been uploaded"
+}
+```
+#### Failure response
+```
+{
+  "status": 400,
+  "description": "Item at index 3 has duplicate images"
 }
 ```
 
+<br>
+<br>
+
+## `POST /images`
+---
+### JSON Query string parameters
+`images`
+~ An array of image objects each containing `fileName` & `uri`.
+`fileName`
+~ The name and file extension of the image. Must be globally unique.
+`uri`
+~ The actual image as a base64 string.
+
+### Multipart/formdata parameters
+Category | Name
+-|-
+Mimetype | `image/jpg` / `image/png`
+Key | `images`
+
+### Sample response
+#### Success
+```
+{
+  "status": 200,
+  "description": "Images have successfully been uploaded"
+}
+```
+#### Failure
+```
+{
+  "status": 400,
+  "description": "Image filenames not unique"
+}
+```
+
+## `GET /images`
+---
+### JSON Query string parameters
+`fileNames`
+~ The name and file extension of the image. Must be globally unique.
+
+### Sample request
+```
+{
+  "filenames": [
+    "image1.png",
+    "image2.png",
+    "image3.png"
+  ]
+}
+```
+
+### Sample response
+#### Success
+```
+{
+  "status": 200,
+  "description": "Images have successfully been uploaded"
+  "uri": [
+    "image1 in base64",
+    "image2 in base64",
+    "image3 in base64"
+  ]
+}
+```
+#### Failure
+##### Partial failure
+```
+{
+  "status": 200,
+  "description": "Image3 does not exist",
+  "uri": [
+    "image1 in base64",
+    "image2 in base64"
+  ],
+  "notFound": [
+    "image3 in base64"
+  ]
+}
+```
