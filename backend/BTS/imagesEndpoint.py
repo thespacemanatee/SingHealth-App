@@ -3,6 +3,7 @@ from flask import request
 from .utils import successMsg, failureMsg
 from .constants import S3BUCKETNAME
 from base64 import b64decode, b64encode
+from botocore.exceptions import ClientError
 import boto3
 import io
 
@@ -19,9 +20,9 @@ def download_image(file_name, bucket):
     """
     Function to download a given file from an S3 bucket
     """
-    s3 = boto3.resource('s3')
+    s3 = boto3.client('s3')
     file_stream = io.BytesIO()
-    s3.Bucket(bucket).download_fileobj(file_name, file_stream)
+    s3.download_fileobj(bucket, file_name, file_stream)
 
     return file_stream
 
@@ -70,7 +71,31 @@ def addImagesEndpoint(app):
 
         elif request.method == "GET":
             details = request.json
-            filename = details["image"]
-            filetype = str(filename.split('.')[-1])
-            imageObject = download_image(filename, S3BUCKETNAME)
-            return send_file(imageObject), 200
+            filenames = details["filenames"]
+            output = []
+            n = 0
+            m = 0
+            o = 0
+            failed = []
+            for index, filename in enumerate(filenames):
+                #TODO: What kind of error does boto 3 return if image is not found
+                try:
+                    imageObject = download_image(filename, S3BUCKETNAME)
+                    imageBase64 = b64encode(imageObject.getvalue()).decode()
+                    output.append(imageBase64)
+                    n += 1
+                except ClientError as e:
+                    msg = str(e)
+                    if "Not Found" in msg:
+                        m += 1
+                        failed.append(filename)
+                except:
+                    o += 1
+
+
+            
+            serverResponse = successMsg(f"{n} images successfully downloaded, {m} images failed to download and {o} failed due to other reasons")
+            serverResponse["uri"] = output
+            serverResponse["notFound"] = failed
+
+            return serverResponse
