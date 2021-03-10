@@ -4,7 +4,7 @@ from flask_pymongo import PyMongo
 from .login import User
 from .utils import successMsg, failureMsg
 
-def setUpLoginEndpointsForTenantAndStaff(app, mongo):
+def addLoginEndpointsForTenantAndStaff(app, mongo):
     login_manager = LoginManager()
     login_manager.init_app(app)
 
