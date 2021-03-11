@@ -12,15 +12,18 @@ import {
 import axios from "axios";
 
 import SuccessAnimation from "../../../components/ui/SuccessAnimation";
+import CrossAnimation from "../../../components/ui/CrossAnimation";
 import { CommonActions } from "@react-navigation/routers";
 // import * as checklistActions from "../../../store/actions/checklistActions";
 
 const AuditSubmitScreen = ({ navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
   const [submitting, setSubmitting] = useState(true);
+  const [error, setError] = useState(false);
   const dispatch = useDispatch();
 
   const submitHandler = async () => {
+    setError(false);
     const temp_chosen_checklist = { ...checklistStore.chosen_checklist };
     const temp_covid19_checklist = { ...checklistStore.covid19 };
     const chosen_tenant = Object.keys(checklistStore.chosen_tenant)[0];
@@ -148,6 +151,7 @@ const AuditSubmitScreen = ({ navigation }) => {
         })
       )
       .catch((error) => {
+        setError(true);
         console.error(error);
       });
 
@@ -171,11 +175,14 @@ const AuditSubmitScreen = ({ navigation }) => {
       >
         <View style={{ height: 200, width: 200 }}>
           {submitting && <SuccessAnimation loading={submitting} />}
-          {!submitting && <SuccessAnimation loading={submitting} />}
+          {!submitting && !error && <SuccessAnimation loading={submitting} />}
+          {!submitting && error && <CrossAnimation loading={submitting} />}
         </View>
         {!submitting && (
           <View>
-            <Text>Audit submitted on: {new Date().toLocaleDateString()}</Text>
+            <Text style={{ fontWeight: "bold" }}>
+              Audit submitted on: {new Date().toLocaleDateString()}
+            </Text>
             <Button
               onPress={() => {
                 navigation.dispatch(

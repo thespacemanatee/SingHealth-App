@@ -7,13 +7,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Drawer,
   DrawerItem,
-  Layout,
+  Divider,
   Text,
   IndexPath,
   BottomNavigation,
   BottomNavigationTab,
   Icon,
 } from "@ui-kitten/components";
+import axios from "axios";
 
 import StaffDashboardScreen from "../screens/staff/StaffDashboardScreen";
 import DirectoryScreen from "../screens/staff/DirectoryScreens/DirectoryScreen";
@@ -49,9 +50,32 @@ export const BottomNavigationAccessoriesShowcase = ({ navigation, state }) => {
   );
 };
 
+const Footer = (props) => (
+  <React.Fragment>
+    <DrawerItem
+      title="Logout"
+      onPress={() => {
+        const logout = {
+          url: `http://localhost:5000/logout`,
+          method: "get",
+        };
+        axios(logout)
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      }}
+    />
+    <Divider />
+  </React.Fragment>
+);
+
 const DrawerContent = ({ navigation, state }) => (
   <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
     <Drawer
+      footer={Footer}
       selectedIndex={new IndexPath(state.index)}
       onSelect={(index) => navigation.navigate(state.routeNames[index.row])}
     >

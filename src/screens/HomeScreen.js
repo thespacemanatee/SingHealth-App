@@ -6,7 +6,7 @@ import * as Permissions from "expo-permissions";
 
 import { database } from "../data/dummy-database";
 import * as databaseActions from "../store/actions/databaseActions";
-import alert from "../components/CustomAlert";
+import axios from "axios";
 
 export const HomeScreen = ({ navigation }) => {
   // const [status, setStatus] = useState(null);
@@ -26,6 +26,16 @@ export const HomeScreen = ({ navigation }) => {
   //   permissionFlow();
   // }, [permissionFlow]);
 
+  const login = (userType) => {
+    const loginOptions = {
+      url: `http://localhost:5000/test_login/${userType}`,
+      method: "get",
+    };
+    axios(loginOptions).then((res) => {
+      console.log(res);
+    }).catch((err) => {console.error(err)});
+  };
+
   useEffect(() => {
     dispatch(databaseActions.storeDatabase(database));
   }, [database, dispatch]);
@@ -43,6 +53,7 @@ export const HomeScreen = ({ navigation }) => {
       >
         <Button
           onPress={() => {
+            login("staff");
             navigation.navigate("StaffNavigator");
           }}
         >
@@ -50,6 +61,7 @@ export const HomeScreen = ({ navigation }) => {
         </Button>
         <Button
           onPress={() => {
+            login("tenant");
             navigation.navigate("TenantNavigator");
           }}
         >

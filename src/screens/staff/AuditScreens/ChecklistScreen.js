@@ -7,7 +7,6 @@ import {
   Platform,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { CommonActions } from "@react-navigation/native";
 import {
   Button,
   Divider,
@@ -188,7 +187,7 @@ const ChecklistScreen = ({ navigation }) => {
           ]}
         >
           <Text style={styles.title}>
-            Audit: {checklistStore.chosen_tenant.name}
+            Audit: {Object.values(checklistStore.chosen_tenant)[0].name}
           </Text>
           <Text>{new Date().toDateString()}</Text>
         </View>
