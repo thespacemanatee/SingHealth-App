@@ -1,39 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { View } from "react-native";
 import { useDispatch } from "react-redux";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, Divider, Layout, TopNavigation } from "@ui-kitten/components";
-import * as Permissions from "expo-permissions";
 
 import { database } from "../data/dummy-database";
 import * as databaseActions from "../store/actions/databaseActions";
 import axios from "axios";
 
-export const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({ navigation }) => {
   // const [status, setStatus] = useState(null);
   const dispatch = useDispatch();
-
-  // const permissionFlow = async () => {
-  //   const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
-
-  //   setStatus(status);
-
-  //   if (status !== "granted") {
-  //     alert("Boo", "Why no accept?", [{ text: "OK" }]);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   permissionFlow();
-  // }, [permissionFlow]);
 
   const login = (userType) => {
     const loginOptions = {
       url: `http://localhost:5000/test_login/${userType}`,
       method: "get",
     };
-    axios(loginOptions).then((res) => {
-      console.log(res);
-    }).catch((err) => {console.error(err)});
+    axios(loginOptions)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   useEffect(() => {
@@ -41,7 +30,7 @@ export const HomeScreen = ({ navigation }) => {
   }, [database, dispatch]);
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <TopNavigation title="SingHealth" alignment="center" />
       <Divider />
       <Layout
@@ -68,6 +57,8 @@ export const HomeScreen = ({ navigation }) => {
           TENANT
         </Button>
       </Layout>
-    </View>
+    </SafeAreaView>
   );
 };
+
+export default HomeScreen;

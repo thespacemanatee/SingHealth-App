@@ -1,5 +1,5 @@
 import React from "react";
-import { SafeAreaView, StatusBar, Platform } from "react-native";
+import { StatusBar, Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import * as eva from "@eva-design/eva";
 import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
@@ -11,10 +11,12 @@ import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 
 import { databaseReducer } from "./src/store/reducers/databaseReducer";
 import { checklistReducer } from "./src/store/reducers/checklistReducer";
-import { AppNavigator } from "./src/navigation/AppNavigator";
+import { authReducer } from "./src/store/reducers/authReducer";
+import AppNavigator from "./src/navigation/AppNavigator";
 import { default as theme } from "./src/theme/theme.json";
 
 const rootReducer = combineReducers({
+  auth: authReducer,
   database: databaseReducer,
   checklist: checklistReducer,
 });
