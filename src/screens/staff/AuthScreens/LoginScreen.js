@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TouchableOpacity, StyleSheet, View } from "react-native";
+import { TouchableOpacity, View, KeyboardAvoidingView, Platform } from "react-native";
 import { useDispatch } from "react-redux";
 import {
   Button,
@@ -9,12 +9,12 @@ import {
   TopNavigationAction,
   Text,
   Icon,
+  StyleService,
 } from "@ui-kitten/components";
 import CustomTextInput from "../../../components/CustomTextInput";
 import { emailValidator } from "../../../helpers/emailValidator";
 import { passwordValidator } from "../../../helpers/passwordValidator";
 import * as authActions from "../../../store/actions/authActions";
-import axios from "axios";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -45,7 +45,10 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <TopNavigation
         title="Login"
         alignment="center"
@@ -60,37 +63,39 @@ const LoginScreen = ({ navigation }) => {
         }}
       >
         <Text>Welcome back.</Text>
-        <CustomTextInput
-          label="Email"
-          returnKeyType="next"
-          value={email.value}
-          onChangeText={(text) => setEmail({ value: text, error: "" })}
-          error={!!email.error}
-          errorText={email.error}
-          autoCapitalize="none"
-          autoCompleteType="email"
-          textContentType="emailAddress"
-          keyboardType="email-address"
-        />
-        <CustomTextInput
-          label="Password"
-          returnKeyType="done"
-          value={password.value}
-          onChangeText={(text) => setPassword({ value: text, error: "" })}
-          error={!!password.error}
-          errorText={password.error}
-          secureTextEntry
-        />
-        <View style={styles.forgotPassword}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("ForgotPassword")}
-          >
-            <Text style={styles.forgot}>Forgot your password?</Text>
-          </TouchableOpacity>
+        <View style={styles.keyboardContainer}>
+          <CustomTextInput
+            label="Email"
+            returnKeyType="next"
+            value={email.value}
+            onChangeText={(text) => setEmail({ value: text, error: "" })}
+            error={!!email.error}
+            errorText={email.error}
+            autoCapitalize="none"
+            autoCompleteType="email"
+            textContentType="emailAddress"
+            keyboardType="email-address"
+          />
+          <CustomTextInput
+            label="Password"
+            returnKeyType="done"
+            value={password.value}
+            onChangeText={(text) => setPassword({ value: text, error: "" })}
+            error={!!password.error}
+            errorText={password.error}
+            secureTextEntry
+          />
+          <View style={styles.forgotPassword}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("ForgotPassword")}
+            >
+              <Text style={styles.forgot}>Forgot your password?</Text>
+            </TouchableOpacity>
+          </View>
+          <Button mode="contained" onPress={onLoginPressed}>
+            Login
+          </Button>
         </View>
-        <Button mode="contained" onPress={onLoginPressed}>
-          Login
-        </Button>
         <View style={styles.row}>
           <Text>Don’t have an account? </Text>
           <TouchableOpacity onPress={() => navigation.replace("Register")}>
@@ -98,15 +103,19 @@ const LoginScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </Layout>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
-const styles = StyleSheet.create({
+const styles = StyleService.create({
   forgotPassword: {
     width: "100%",
     alignItems: "flex-end",
     marginBottom: 24,
+  },
+  keyboardContainer: {
+    width: "100%",
+    padding: 20,
   },
   row: {
     flexDirection: "row",

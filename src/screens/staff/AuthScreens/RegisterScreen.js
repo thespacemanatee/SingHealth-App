@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
 import { useDispatch } from "react-redux";
 import {
   Button,
@@ -9,6 +9,7 @@ import {
   TopNavigationAction,
   Text,
   Icon,
+  StyleService,
 } from "@ui-kitten/components";
 import CustomTextInput from "../../../components/CustomTextInput";
 import { emailValidator } from "../../../helpers/emailValidator";
@@ -48,7 +49,10 @@ const RegisterScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <TopNavigation
         title="Register"
         alignment="center"
@@ -62,38 +66,40 @@ const RegisterScreen = ({ navigation }) => {
           alignItems: "center",
         }}
       >
-        <CustomTextInput
-          label="Name"
-          returnKeyType="next"
-          value={name.value}
-          onChangeText={(text) => setName({ value: text, error: "" })}
-          error={!!name.error}
-          errorText={name.error}
-        />
-        <CustomTextInput
-          label="Email"
-          returnKeyType="next"
-          value={email.value}
-          onChangeText={(text) => setEmail({ value: text, error: "" })}
-          error={!!email.error}
-          errorText={email.error}
-          autoCapitalize="none"
-          autoCompleteType="email"
-          textContentType="emailAddress"
-          keyboardType="email-address"
-        />
-        <CustomTextInput
-          label="Password"
-          returnKeyType="done"
-          value={password.value}
-          onChangeText={(text) => setPassword({ value: text, error: "" })}
-          error={!!password.error}
-          errorText={password.error}
-          secureTextEntry
-        />
-        <Button onPress={onSignUpPressed} style={{ marginTop: 24 }}>
-          Sign Up
-        </Button>
+        <View style={styles.keyboardContainer}>
+          <CustomTextInput
+            label="Name"
+            returnKeyType="next"
+            value={name.value}
+            onChangeText={(text) => setName({ value: text, error: "" })}
+            error={!!name.error}
+            errorText={name.error}
+          />
+          <CustomTextInput
+            label="Email"
+            returnKeyType="next"
+            value={email.value}
+            onChangeText={(text) => setEmail({ value: text, error: "" })}
+            error={!!email.error}
+            errorText={email.error}
+            autoCapitalize="none"
+            autoCompleteType="email"
+            textContentType="emailAddress"
+            keyboardType="email-address"
+          />
+          <CustomTextInput
+            label="Password"
+            returnKeyType="done"
+            value={password.value}
+            onChangeText={(text) => setPassword({ value: text, error: "" })}
+            error={!!password.error}
+            errorText={password.error}
+            secureTextEntry
+          />
+          <Button onPress={onSignUpPressed} style={{ marginTop: 24 }}>
+            Sign Up
+          </Button>
+        </View>
         <View style={styles.row}>
           <Text>Already have an account? </Text>
           <TouchableOpacity onPress={() => navigation.replace("Login")}>
@@ -101,11 +107,15 @@ const RegisterScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </Layout>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
-const styles = StyleSheet.create({
+const styles = StyleService.create({
+  keyboardContainer: {
+    width: "100%",
+    padding: 20,
+  },
   row: {
     flexDirection: "row",
     marginTop: 4,

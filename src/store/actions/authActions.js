@@ -1,9 +1,18 @@
+import { Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 export const RESTORE_TOKEN = "RESTORE_TOKEN";
 export const SIGN_IN = "SIGN_IN";
 export const SIGN_OUT = "SIGN_OUT";
+
+let endpoint;
+
+if (Platform.OS === "android") {
+  endpoint = "http://10.0.2.2:5000/";
+} else {
+  endpoint = "http://localhost:5000/";
+}
 
 export const restoreToken = () => {
   return async (dispatch, getState) => {
@@ -29,7 +38,7 @@ export const signIn = (email, password, userType) => {
     // dispatch({ action: SIGN_IN, token: token ? token : null });
 
     const loginOptions = {
-      url: `http://localhost:5000/test_login/${userType}`,
+      url: `${endpoint}test_login/${userType}`,
       method: "get",
     };
     axios(loginOptions)
@@ -50,7 +59,7 @@ export const signOut = () => {
     // dispatch({ action: SIGN_OUT, token: token ? token : null });
     console.log("Signing out!");
     const signOutOptions = {
-      url: `http://localhost:5000/logout`,
+      url: `${endpoint}/logout`,
       method: "get",
     };
     axios(signOutOptions)

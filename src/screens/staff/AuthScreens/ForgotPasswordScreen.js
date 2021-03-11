@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View } from "react-native";
+import { View, KeyboardAvoidingView, Platform } from "react-native";
 import { useDispatch } from "react-redux";
 import {
   Button,
@@ -9,8 +9,8 @@ import {
   TopNavigationAction,
   Text,
   Icon,
+  StyleService,
 } from "@ui-kitten/components";
-import axios from "axios";
 import CustomTextInput from "../../../components/CustomTextInput";
 import { emailValidator } from "../../../helpers/emailValidator";
 
@@ -38,7 +38,10 @@ const ForgotPasswordScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <TopNavigation
         title="Login"
         alignment="center"
@@ -52,25 +55,34 @@ const ForgotPasswordScreen = ({ navigation }) => {
           alignItems: "center",
         }}
       >
-        <CustomTextInput
-          label="E-mail address"
-          returnKeyType="done"
-          value={email.value}
-          onChangeText={(text) => setEmail({ value: text, error: "" })}
-          error={!!email.error}
-          errorText={email.error}
-          autoCapitalize="none"
-          autoCompleteType="email"
-          textContentType="emailAddress"
-          keyboardType="email-address"
-          description="You will receive email with password reset link."
-        />
-        <Button onPress={sendResetPasswordEmail} style={{ marginTop: 16 }}>
-          Send Instructions
-        </Button>
+        <View style={styles.keyboardContainer}>
+          <CustomTextInput
+            label="E-mail address"
+            returnKeyType="done"
+            value={email.value}
+            onChangeText={(text) => setEmail({ value: text, error: "" })}
+            error={!!email.error}
+            errorText={email.error}
+            autoCapitalize="none"
+            autoCompleteType="email"
+            textContentType="emailAddress"
+            keyboardType="email-address"
+            description="You will receive email with password reset link."
+          />
+          <Button onPress={sendResetPasswordEmail} style={{ marginTop: 16 }}>
+            Send Instructions
+          </Button>
+        </View>
       </Layout>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
+
+const styles = StyleService.create({
+  keyboardContainer: {
+    width: "100%",
+    padding: 20,
+  },
+});
 
 export default ForgotPasswordScreen;
