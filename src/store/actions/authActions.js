@@ -1,3 +1,6 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+
 export const RESTORE_TOKEN = "RESTORE_TOKEN";
 export const SIGN_IN = "SIGN_IN";
 export const SIGN_OUT = "SIGN_OUT";
@@ -10,6 +13,7 @@ export const restoreToken = () => {
       userToken = await AsyncStorage.getItem("userToken");
     } catch (e) {
       // Restoring token failed
+      console.log("RESTORE_TOKEN: no token found in local storage");
     }
 
     // After restoring token, we may need to validate it in production apps
@@ -20,14 +24,56 @@ export const restoreToken = () => {
   };
 };
 
-export const signIn = (token) => {
+export const signIn = (email, password, userType) => {
   return async (dispatch, getState) => {
-    dispatch({ action: SIGN_IN, token: token });
+    // dispatch({ action: SIGN_IN, token: token ? token : null });
+
+    const loginOptions = {
+      url: `http://localhost:5000/test_login/${userType}`,
+      method: "get",
+    };
+    axios(loginOptions)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+    dispatch({ type: SIGN_IN, token: "dummy-auth-token" });
+    saveTokenToStorage("dummy-auth-token");
   };
 };
 
 export const signOut = () => {
   return async (dispatch, getState) => {
-    dispatch({ action: SIGN_OUT, token: token });
+    // dispatch({ action: SIGN_OUT, token: token ? token : null });
+    console.log("Signing out!");
+    const signOutOptions = {
+      url: `http://localhost:5000/logout`,
+      method: "get",
+    };
+    axios(signOutOptions)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+    dispatch({ type: SIGN_OUT });
   };
+};
+
+const saveTokenToStorage = async (token) => {
+  try {
+    await AsyncStorage.setItem(
+      "userToken",
+      JSON.stringify({
+        token: token,
+      })
+    );
+  } catch (err) {
+    console.error(err);
+  }
 };

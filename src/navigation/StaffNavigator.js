@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from "react";
 import { StyleSheet } from "react-native";
+import { useDispatch } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -24,6 +25,7 @@ import QuestionDetailsScreen from "../screens/staff/AuditScreens/QuestionDetails
 import AuditSubmitScreen from "../screens/staff/AuditScreens/AuditSubmitScreen";
 import CameraScreen from "../screens/CameraScreen";
 import TenantsDirectoryScreen from "../screens/staff/DirectoryScreens/TenantsDirectoryScreen";
+import * as authActions from "../store/actions/authActions";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
 
@@ -50,27 +52,21 @@ export const BottomNavigationAccessoriesShowcase = ({ navigation, state }) => {
   );
 };
 
-const Footer = (props) => (
-  <React.Fragment>
-    <DrawerItem
-      title="Logout"
-      onPress={() => {
-        const logout = {
-          url: `http://localhost:5000/logout`,
-          method: "get",
-        };
-        axios(logout)
-          .then((res) => {
-            console.log(res);
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-      }}
-    />
-    <Divider />
-  </React.Fragment>
-);
+const Footer = () => {
+  const dispatch = useDispatch();
+
+  return (
+    <React.Fragment>
+      <DrawerItem
+        title="Logout"
+        onPress={() => {
+          dispatch(authActions.signOut());
+        }}
+      />
+      <Divider />
+    </React.Fragment>
+  );
+};
 
 const DrawerContent = ({ navigation, state }) => (
   <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>

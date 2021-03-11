@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { TouchableOpacity, StyleSheet, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { useDispatch } from "react-redux";
 import {
   Button,
@@ -13,12 +13,13 @@ import {
 import CustomTextInput from "../../../components/CustomTextInput";
 import { emailValidator } from "../../../helpers/emailValidator";
 import { passwordValidator } from "../../../helpers/passwordValidator";
+import { nameValidator } from "../../../helpers/nameValidator";
 import * as authActions from "../../../store/actions/authActions";
-import axios from "axios";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
-const LoginScreen = ({ navigation }) => {
+const RegisterScreen = ({ navigation }) => {
+  const [name, setName] = useState({ value: "", error: "" });
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
 
@@ -33,21 +34,23 @@ const LoginScreen = ({ navigation }) => {
     />
   );
 
-  const onLoginPressed = () => {
+  const onSignUpPressed = () => {
+    const nameError = nameValidator(name.value);
     const emailError = emailValidator(email.value);
     const passwordError = passwordValidator(password.value);
-    if (emailError || passwordError) {
+    if (emailError || passwordError || nameError) {
+      setName({ ...name, error: nameError });
       setEmail({ ...email, error: emailError });
       setPassword({ ...password, error: passwordError });
       return;
     }
-    dispatch(authActions.signIn(email, password, "staff"));
+    dispatch(authActions.signIn());
   };
 
   return (
     <View style={{ flex: 1 }}>
       <TopNavigation
-        title="Login"
+        title="Register"
         alignment="center"
         accessoryLeft={BackAction}
       />
@@ -59,7 +62,14 @@ const LoginScreen = ({ navigation }) => {
           alignItems: "center",
         }}
       >
-        <Text>Welcome back.</Text>
+        <CustomTextInput
+          label="Name"
+          returnKeyType="next"
+          value={name.value}
+          onChangeText={(text) => setName({ value: text, error: "" })}
+          error={!!name.error}
+          errorText={name.error}
+        />
         <CustomTextInput
           label="Email"
           returnKeyType="next"
@@ -81,20 +91,13 @@ const LoginScreen = ({ navigation }) => {
           errorText={password.error}
           secureTextEntry
         />
-        <View style={styles.forgotPassword}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("ForgotPassword")}
-          >
-            <Text style={styles.forgot}>Forgot your password?</Text>
-          </TouchableOpacity>
-        </View>
-        <Button mode="contained" onPress={onLoginPressed}>
-          Login
+        <Button onPress={onSignUpPressed} style={{ marginTop: 24 }}>
+          Sign Up
         </Button>
         <View style={styles.row}>
-          <Text>Don’t have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.replace("Register")}>
-            <Text style={styles.link}>Sign up</Text>
+          <Text>Already have an account? </Text>
+          <TouchableOpacity onPress={() => navigation.replace("Login")}>
+            <Text style={styles.link}>Login</Text>
           </TouchableOpacity>
         </View>
       </Layout>
@@ -103,21 +106,13 @@ const LoginScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  forgotPassword: {
-    width: "100%",
-    alignItems: "flex-end",
-    marginBottom: 24,
-  },
   row: {
     flexDirection: "row",
     marginTop: 4,
-  },
-  forgot: {
-    fontSize: 13,
   },
   link: {
     fontWeight: "bold",
   },
 });
 
-export default LoginScreen;
+export default RegisterScreen;
