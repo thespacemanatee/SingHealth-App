@@ -8,6 +8,7 @@ Created on Fri Mar  5 02:46:03 2021
 from flask import Flask, render_template, jsonify
 from flask_pymongo import PyMongo
 from bson import json_util, ObjectId
+from bson.json_util import dumps, loads
 import json
 
 app = Flask(__name__)
@@ -18,15 +19,38 @@ mongo = PyMongo(app)
 
 @app.route("/tenants/<institutionId>")
 def get_tenants_from_institution(institutionId):
-    tenants = mongo.db.tenant.find({"institutionId": "6040e0bed7d7f506fc50d72a"})
     
-    output = [{'Data' : {
-        'tenantID' : tenant['_id'], 'stall_info' : tenant["stall"]}}
-              for tenant in tenants]
+    try:
+        tenants = mongo.db.tenant.find({"institutionId": institutionId})
+        
+        #print(type(tenants.explain()["nReturned"]))
+        result = [{
+            'tenantID' : tenant['_id'], 
+            'stallName' : tenant["stall"]["name"]
+            }
+                  for tenant in tenants]
+        
+        #if data is found
+        if len(result) > 0 :
+            output = {
+                "status" : 200,
+                "description" : "success",
+                "data" : result}
+        else:
+            output = {
+                "status" : 200,
+                "description" : "no matching data",
+                "data" : []}
+            
+        
+    except PyMongo.errors.ConnectionError as e:
+        output = {
+                "status" : 404,
+                "description" : "error in connection",
+                "data" : []}
     
-    output_sanitized = json.loads(json_util.dumps(output))
-    print(output_sanitized)
-    return '<p> '+ str(output_sanitized) +' </p>'
+    json_data = dumps(output)
+    return json_data
 
 @app.route("/auditForms/<form_type>", methods = ["GET"])
 def get_audit_form(form_type):
