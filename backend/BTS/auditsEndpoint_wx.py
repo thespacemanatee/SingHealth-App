@@ -16,12 +16,11 @@ app.config["MONGO_URI"] = "mongodb://localhost:27017/BTS"
 mongo = PyMongo(app)
 
 #Able to retrieve tenant and audit form information and return as json string
-
-@app.route("/tenants/<institutionId>")
-def get_tenants_from_institution(institutionId):
+@app.route("/tenants/<institutionID>")
+def get_tenants_from_institution(institutionID):
     
     try:
-        tenants = mongo.db.tenant.find({"institutionId": institutionId})
+        tenants = mongo.db.tenant.find({"institutionID": institutionID})
         
         #print(type(tenants.explain()["nReturned"]))
         result = [{
