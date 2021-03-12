@@ -16,13 +16,11 @@ app.config["MONGO_URI"] = "mongodb://localhost:27017/BTS"
 mongo = PyMongo(app)
 
 #Able to retrieve tenant and audit form information and return as json string
-@app.route("/tenants/<institutionID>")
-def get_tenants_from_institution(institutionID):
-    
+@app.route("/tenants/<institutionID>", methods = ["GET"])
+def get_tenants_from_institution(institutionID): 
     try:
         tenants = mongo.db.tenant.find({"institutionID": institutionID})
-        
-        #print(type(tenants.explain()["nReturned"]))
+
         result = [{
             'tenantID' : tenant['_id'], 
             'stallName' : tenant["stall"]["name"]
@@ -42,7 +40,7 @@ def get_tenants_from_institution(institutionID):
                 "data" : []}
             
         
-    except PyMongo.errors.ConnectionError as e:
+    except:
         output = {
                 "status" : 404,
                 "description" : "error in connection",
@@ -53,11 +51,46 @@ def get_tenants_from_institution(institutionID):
 
 @app.route("/auditForms/<form_type>", methods = ["GET"])
 def get_audit_form(form_type):
-    audit_form = mongo.db.auditFormTemplate.find_one_or_404({"type": "fnb"})
-
-    output_sanitized = json.loads(json_util.dumps(audit_form))
-    print(output_sanitized)
-    return '<p> '+ str(output_sanitized) +' </p>'
+    
+    try:
+        form = mongo.db.auditFormTemplate.find_one(
+            {"type": form_type, "currentForm": True})  
+        
+        checklist = []
+        if form is not None:
+            #access the questions with each categories
+            for key, value in form["categories"].items():
+                value = {
+                    "category" : value,
+                    "questions" : form[key]["questions"]
+                    }
+                checklist.append(value)
+                
+            output = {
+                "status" : 200,
+                "description" : "success",
+                "data" : {
+                    "formID" : form["_id"],
+                    "type" : form["type"],
+                    "checklist" : checklist
+                    }
+                }
+            
+        else:
+            output = {
+                "status" : 200,
+                "description" : "no matching form",
+                "data" : {}
+                }
+            
+    except:
+         output = {
+                "status" : 404,
+                "description" : "unspecified connection/data error",
+                "data" : []}
+    
+    json_data = dumps(output)
+    return json_data
 
 #Flask test
 @app.route('/')
