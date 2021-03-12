@@ -49,8 +49,10 @@ export const signIn = (email, password, userType) => {
         console.error(err);
       });
 
-    dispatch({ type: SIGN_IN, token: "dummy-auth-token" });
-    saveTokenToStorage("dummy-auth-token");
+    let token = "dummy-auth-token";
+
+    dispatch({ type: SIGN_IN, token: token });
+    saveTokenToStorage(token);
   };
 };
 
@@ -70,7 +72,10 @@ export const signOut = () => {
         console.error(err);
       });
 
+    let token = "dummy-auth-token";
+
     dispatch({ type: SIGN_OUT });
+    removeTokenToStorage(token);
   };
 };
 
@@ -82,6 +87,14 @@ const saveTokenToStorage = async (token) => {
         token: token,
       })
     );
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const removeTokenToStorage = async (token) => {
+  try {
+    await AsyncStorage.removeItem("userToken");
   } catch (err) {
     console.error(err);
   }

@@ -1,5 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { useDispatch } from "react-redux";
 import {
   Button,
@@ -10,21 +15,46 @@ import {
   Text,
   Icon,
   StyleService,
+  useTheme,
 } from "@ui-kitten/components";
+import { Formik } from "formik";
+import * as Yup from "yup";
 import CustomTextInput from "../../../components/CustomTextInput";
-import { emailValidator } from "../../../helpers/emailValidator";
-import { passwordValidator } from "../../../helpers/passwordValidator";
-import { nameValidator } from "../../../helpers/nameValidator";
 import * as authActions from "../../../store/actions/authActions";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
+const AlertIcon = (props) => <Icon {...props} name="alert-circle-outline" />;
 
 const RegisterScreen = ({ navigation }) => {
-  const [name, setName] = useState({ value: "", error: "" });
-  const [email, setEmail] = useState({ value: "", error: "" });
-  const [password, setPassword] = useState({ value: "", error: "" });
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+
+  const theme = useTheme();
 
   const dispatch = useDispatch();
+
+  const RegisterSchema = Yup.object().shape({
+    name: Yup.string().required("Please enter your name!"),
+    email: Yup.string()
+      .email("Invalid email!")
+      .required("Please enter your email!"),
+    password: Yup.string()
+      .required("Please enter your password!")
+      .min(8, "Password is too short - should be 8 chars minimum."),
+    passwordConfirmation: Yup.string().oneOf(
+      [Yup.ref("password"), null],
+      "Passwords must match"
+    ),
+  });
+
+  const renderSecureIcon = (props) => (
+    <TouchableOpacity
+      onPress={() => {
+        setSecureTextEntry(!secureTextEntry);
+      }}
+    >
+      <Icon {...props} name={secureTextEntry ? "eye-off" : "eye"} />
+    </TouchableOpacity>
+  );
 
   const BackAction = () => (
     <TopNavigationAction
@@ -34,19 +64,6 @@ const RegisterScreen = ({ navigation }) => {
       }}
     />
   );
-
-  const onSignUpPressed = () => {
-    const nameError = nameValidator(name.value);
-    const emailError = emailValidator(email.value);
-    const passwordError = passwordValidator(password.value);
-    if (emailError || passwordError || nameError) {
-      setName({ ...name, error: nameError });
-      setEmail({ ...email, error: emailError });
-      setPassword({ ...password, error: passwordError });
-      return;
-    }
-    dispatch(authActions.signIn());
-  };
 
   return (
     <KeyboardAvoidingView
@@ -66,40 +83,79 @@ const RegisterScreen = ({ navigation }) => {
           alignItems: "center",
         }}
       >
-        <View style={styles.keyboardContainer}>
-          <CustomTextInput
-            label="Name"
-            returnKeyType="next"
-            value={name.value}
-            onChangeText={(text) => setName({ value: text, error: "" })}
-            error={!!name.error}
-            errorText={name.error}
-          />
-          <CustomTextInput
-            label="Email"
-            returnKeyType="next"
-            value={email.value}
-            onChangeText={(text) => setEmail({ value: text, error: "" })}
-            error={!!email.error}
-            errorText={email.error}
-            autoCapitalize="none"
-            autoCompleteType="email"
-            textContentType="emailAddress"
-            keyboardType="email-address"
-          />
-          <CustomTextInput
-            label="Password"
-            returnKeyType="done"
-            value={password.value}
-            onChangeText={(text) => setPassword({ value: text, error: "" })}
-            error={!!password.error}
-            errorText={password.error}
-            secureTextEntry
-          />
-          <Button onPress={onSignUpPressed} style={{ marginTop: 24 }}>
-            Sign Up
-          </Button>
-        </View>
+        <Formik
+          initialValues={{ name: "", email: "", password: "" }}
+          onSubmit={(values) => {
+            console.log(values);
+            // dispatch(
+            //   authActions.signIn(values.email, values.password, "staff")
+            // );
+          }}
+          validationSchema={RegisterSchema}
+        >
+          {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+            <View style={styles.keyboardContainer}>
+              <CustomTextInput
+                label="Name"
+                returnKeyType="next"
+                value={values.name}
+                onChangeText={handleChange("name")}
+                onBlur={handleBlur("name")}
+                error={!!errors.name}
+                errorText={errors.name}
+                accessoryRight={(props) => {
+                  return (
+                    !!errors.name && (
+                      <Icon
+                        {...props}
+                        name={"alert-circle-outline"}
+                        fill={theme["color-danger-700"]}
+                      />
+                    )
+                  );
+                }}
+              />
+              <CustomTextInput
+                label="Email"
+                returnKeyType="next"
+                value={values.email}
+                onChangeText={handleChange("email")}
+                onBlur={handleBlur("email")}
+                error={!!errors.email}
+                errorText={errors.email}
+                autoCapitalize="none"
+                autoCompleteType="email"
+                textContentType="emailAddress"
+                keyboardType="email-address"
+                accessoryRight={(props) => {
+                  return (
+                    !!errors.email && (
+                      <Icon
+                        {...props}
+                        name={"alert-circle-outline"}
+                        fill={theme["color-danger-700"]}
+                      />
+                    )
+                  );
+                }}
+              />
+              <CustomTextInput
+                label="Password"
+                returnKeyType="done"
+                value={values.password}
+                onChangeText={handleChange("password")}
+                onBlur={handleBlur("password")}
+                error={!!errors.password}
+                errorText={errors.password}
+                secureTextEntry={secureTextEntry}
+                accessoryRight={renderSecureIcon}
+              />
+              <Button onPress={handleSubmit} style={{ marginTop: 24 }}>
+                Sign Up
+              </Button>
+            </View>
+          )}
+        </Formik>
         <View style={styles.row}>
           <Text>Already have an account? </Text>
           <TouchableOpacity onPress={() => navigation.replace("Login")}>
