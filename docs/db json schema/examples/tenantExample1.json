@@ -14,6 +14,8 @@
         },
         "group": null,
         "address": { "unitNo": "01-111" },
-        "fnb": true
+        "fnb": true,
+	"createdBy" : "x68765yt34rgTHYTJUI*&U^Y%T$R",
+	"dateCreated" : "01/03/2021"
     }
 }
