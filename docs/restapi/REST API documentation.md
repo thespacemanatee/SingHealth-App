@@ -40,11 +40,48 @@ curl GET "localhost:5000/tenants/{institutionId}"
   
 }
 ```
+
+## `GET /auditForm/{type_of_form}`
+### Parameters
+`type_of_form`
+~ Unique identifier for type of form
+
+### Sample request
+```
+curl GET "localhost:5000/auditForm/{fnb}"
+```
+
+### Sample success response
+```
+{
+  "status": 200,
+  "description": "success",
+  "data": [
+      {
+        "formID" : "1234",
+        "type" : "fnb",
+        "checklist" : [
+        {"category": "name of category_1",
+         "questions" : ["question 1.1", "question 1.2"]
+        },
+        
+        {"category" : "name of category_2",
+         "questions" : ["question 2.1", "question 2.2"]
+        }
+        ]
+      }
+  ]
+  
+}
+```
+
 ### Response definitions
-`tenantID`
-~ Unique identifier for tenant
-`stallName`
-~ Name of the stall the tenant is from
+`formID`
+~ Unique identifier for auditForm
+`type`
+~ type of audit form
+`checklist`
+~ a list containing all the questions in its category
 
 <br>
 <br>
