@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import { View, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -51,7 +52,15 @@ const AppNavigator = () => {
         <Navigator headerMode="none">
           <Screen name="TenantNavigator" component={TenantNavigator} />
         </Navigator>
-      ) : null}
+      ) : (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text style={{ fontWeight: "bold" }}>
+            A serious error has occurred. You should never see this page.
+          </Text>
+        </View>
+      )}
     </NavigationContainer>
   );
 };

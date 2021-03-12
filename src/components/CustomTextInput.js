@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, Platform } from "react-native";
 import { Input, useTheme } from "@ui-kitten/components";
 
 const CustomTextInput = ({ errorText, description, ...props }) => {
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 12,
     paddingTop: 8,
-    position: "absolute",
+    position: Platform.OS !== "web" ? "absolute" : "relative",
     bottom: 0,
   },
   error: {

@@ -26,7 +26,6 @@ import * as authActions from "../../../store/actions/authActions";
 import Logo from "../../../components/ui/Logo";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
-const AlertIcon = (props) => <Icon {...props} name="alert-circle-outline" />;
 
 const RegisterScreen = ({ navigation }) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
@@ -71,7 +70,9 @@ const RegisterScreen = ({ navigation }) => {
   return (
     <TouchableWithoutFeedback
       onPress={() => {
-        Keyboard.dismiss();
+        if (Platform.OS !== "web") {
+          Keyboard.dismiss();
+        }
       }}
     >
       <KeyboardAvoidingView

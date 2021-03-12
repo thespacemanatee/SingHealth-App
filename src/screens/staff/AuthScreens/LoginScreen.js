@@ -66,7 +66,9 @@ const LoginScreen = ({ navigation }) => {
   return (
     <TouchableWithoutFeedback
       onPress={() => {
-        Keyboard.dismiss();
+        if (Platform.OS !== "web") {
+          Keyboard.dismiss();
+        }
       }}
     >
       <KeyboardAvoidingView
