@@ -8,6 +8,7 @@ import {
   Text,
   StyleService,
 } from "@ui-kitten/components";
+import Logo from "../../../components/ui/Logo";
 
 const LoginScreen = ({ navigation }) => {
   return (
@@ -17,11 +18,11 @@ const LoginScreen = ({ navigation }) => {
       <Layout
         style={{
           flex: 1,
-          justifyContent: "center",
+          justifyContent: "space-between",
           alignItems: "center",
         }}
       >
-        <Text>Welcome to BTS SingHealth App!</Text>
+        <Logo />
         <View style={styles.buttonsContainer}>
           <Button
             style={{ marginBottom: 10 }}

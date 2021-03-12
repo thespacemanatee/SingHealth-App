@@ -21,6 +21,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import CustomTextInput from "../../../components/CustomTextInput";
 import * as authActions from "../../../store/actions/authActions";
+import Logo from "../../../components/ui/Logo";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const AlertIcon = (props) => <Icon {...props} name="alert-circle-outline" />;
@@ -79,10 +80,10 @@ const RegisterScreen = ({ navigation }) => {
       <Layout
         style={{
           flex: 1,
-          justifyContent: "center",
           alignItems: "center",
         }}
       >
+        <Logo />
         <Formik
           initialValues={{ name: "", email: "", password: "" }}
           onSubmit={(values) => {

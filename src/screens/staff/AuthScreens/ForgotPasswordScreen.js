@@ -14,6 +14,7 @@ import {
 import { Formik } from "formik";
 import * as Yup from "yup";
 import CustomTextInput from "../../../components/CustomTextInput";
+import Logo from "../../../components/ui/Logo";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -49,10 +50,10 @@ const ForgotPasswordScreen = ({ navigation }) => {
       <Layout
         style={{
           flex: 1,
-          justifyContent: "center",
           alignItems: "center",
         }}
       >
+        <Logo />
         <Formik
           initialValues={{ email: "" }}
           onSubmit={(values) => {
