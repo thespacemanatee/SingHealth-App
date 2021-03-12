@@ -92,9 +92,11 @@ const ForgotPasswordScreen = ({ navigation }) => {
                   );
                 }}
               />
-              <Button onPress={handleSubmit} style={{ marginTop: 16 }}>
-                Send Instructions
-              </Button>
+              <View style={{ flex: 1, justifyContent: "flex-end" }}>
+                <Button onPress={handleSubmit} style={{ marginTop: 16 }}>
+                  Send Instructions
+                </Button>
+              </View>
             </View>
           )}
         </Formik>
@@ -105,6 +107,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
 
 const styles = StyleService.create({
   keyboardContainer: {
+    flex: 1,
     width: "100%",
     padding: 20,
   },

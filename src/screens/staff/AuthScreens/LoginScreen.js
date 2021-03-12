@@ -131,9 +131,11 @@ const LoginScreen = ({ navigation }) => {
                   <Text style={styles.forgot}>Forgot your password?</Text>
                 </TouchableOpacity>
               </View>
-              <Button mode="contained" onPress={handleSubmit}>
-                Login
-              </Button>
+              <View style={{ flex: 1, justifyContent: "flex-end" }}>
+                <Button mode="contained" onPress={handleSubmit}>
+                  Login
+                </Button>
+              </View>
             </View>
           )}
         </Formik>
@@ -155,6 +157,7 @@ const styles = StyleService.create({
     marginBottom: 24,
   },
   keyboardContainer: {
+    flex: 1,
     width: "100%",
     padding: 20,
   },

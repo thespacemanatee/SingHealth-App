@@ -7,20 +7,22 @@ const CustomTextInput = ({ errorText, description, ...props }) => {
 
   return (
     <View style={styles.container}>
-      <Input
-        style={[styles.input]}
-        {...props}
-      />
+      <Input size="large" {...props} />
       {description && !errorText ? (
-        <Text style={[styles.description, { color: theme["color-basic-600"] }]}>
+        <Text
+          style={[
+            styles.description,
+            {
+              color: theme["color-basic-600"],
+            },
+          ]}
+        >
           {description}
         </Text>
       ) : null}
-      {errorText ? (
-        <Text style={[styles.error, { color: theme["color-danger-700"] }]}>
-          {errorText}
-        </Text>
-      ) : null}
+      <Text style={[styles.error, { color: theme["color-danger-700"] }]}>
+        {errorText}
+      </Text>
     </View>
   );
 };
@@ -30,13 +32,14 @@ const styles = StyleSheet.create({
     width: "100%",
     marginVertical: 12,
   },
-  input: {},
   description: {
-    fontSize: 13,
+    fontSize: 12,
     paddingTop: 8,
+    position: "absolute",
+    bottom: 0,
   },
   error: {
-    fontSize: 13,
+    fontSize: 12,
     paddingTop: 8,
   },
 });

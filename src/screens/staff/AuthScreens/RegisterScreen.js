@@ -151,9 +151,11 @@ const RegisterScreen = ({ navigation }) => {
                 secureTextEntry={secureTextEntry}
                 accessoryRight={renderSecureIcon}
               />
-              <Button onPress={handleSubmit} style={{ marginTop: 24 }}>
-                Sign Up
-              </Button>
+              <View style={{ flex: 1, justifyContent: "flex-end" }}>
+                <Button onPress={handleSubmit} style={{ marginTop: 24 }}>
+                  Sign Up
+                </Button>
+              </View>
             </View>
           )}
         </Formik>
@@ -170,6 +172,7 @@ const RegisterScreen = ({ navigation }) => {
 
 const styles = StyleService.create({
   keyboardContainer: {
+    flex: 1,
     width: "100%",
     padding: 20,
   },
