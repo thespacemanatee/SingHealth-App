@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import {
   View,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
@@ -67,118 +69,134 @@ const RegisterScreen = ({ navigation }) => {
   );
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
     >
-      <TopNavigation
-        title="Register"
-        alignment="center"
-        accessoryLeft={BackAction}
-      />
-      <Divider />
-      <Layout
-        style={{
-          flex: 1,
-          alignItems: "center",
-        }}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <Logo />
-        <Formik
-          initialValues={{ name: "", email: "", password: "" }}
-          onSubmit={(values) => {
-            console.log(values);
-            // dispatch(
-            //   authActions.signIn(values.email, values.password, "staff")
-            // );
+        <TopNavigation
+          style={{ zIndex: 5 }}
+          title="Register"
+          alignment="center"
+          accessoryLeft={BackAction}
+        />
+        <Divider />
+        <Layout
+          style={{
+            flex: 1,
+            alignItems: "center",
           }}
-          validationSchema={RegisterSchema}
         >
-          {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
-            <View style={styles.keyboardContainer}>
-              <CustomTextInput
-                label="Name"
-                returnKeyType="next"
-                value={values.name}
-                onChangeText={handleChange("name")}
-                onBlur={handleBlur("name")}
-                error={!!errors.name}
-                errorText={errors.name}
-                accessoryRight={(props) => {
-                  return (
-                    !!errors.name && (
-                      <Icon
-                        {...props}
-                        name={"alert-circle-outline"}
-                        fill={theme["color-danger-700"]}
-                      />
-                    )
-                  );
-                }}
-              />
-              <CustomTextInput
-                label="Email"
-                returnKeyType="next"
-                value={values.email}
-                onChangeText={handleChange("email")}
-                onBlur={handleBlur("email")}
-                error={!!errors.email}
-                errorText={errors.email}
-                autoCapitalize="none"
-                autoCompleteType="email"
-                textContentType="emailAddress"
-                keyboardType="email-address"
-                accessoryRight={(props) => {
-                  return (
-                    !!errors.email && (
-                      <Icon
-                        {...props}
-                        name={"alert-circle-outline"}
-                        fill={theme["color-danger-700"]}
-                      />
-                    )
-                  );
-                }}
-              />
-              <CustomTextInput
-                label="Password"
-                returnKeyType="done"
-                value={values.password}
-                onChangeText={handleChange("password")}
-                onBlur={handleBlur("password")}
-                error={!!errors.password}
-                errorText={errors.password}
-                secureTextEntry={secureTextEntry}
-                accessoryRight={renderSecureIcon}
-              />
-              <View style={{ flex: 1, justifyContent: "flex-end" }}>
-                <Button onPress={handleSubmit} style={{ marginTop: 24 }}>
-                  Sign Up
-                </Button>
+          <Formik
+            initialValues={{ name: "", email: "", password: "" }}
+            onSubmit={(values) => {
+              console.log(values);
+              // dispatch(
+              //   authActions.signIn(values.email, values.password, "staff")
+              // );
+            }}
+            validationSchema={RegisterSchema}
+          >
+            {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+              <View style={styles.keyboardContainer}>
+                <Logo />
+                <CustomTextInput
+                  label="Name"
+                  returnKeyType="next"
+                  value={values.name}
+                  onChangeText={handleChange("name")}
+                  onBlur={handleBlur("name")}
+                  error={!!errors.name}
+                  errorText={errors.name}
+                  accessoryRight={(props) => {
+                    return (
+                      !!errors.name && (
+                        <Icon
+                          {...props}
+                          name={"alert-circle-outline"}
+                          fill={theme["color-danger-700"]}
+                        />
+                      )
+                    );
+                  }}
+                />
+                <CustomTextInput
+                  label="Email"
+                  returnKeyType="next"
+                  value={values.email}
+                  onChangeText={handleChange("email")}
+                  onBlur={handleBlur("email")}
+                  error={!!errors.email}
+                  errorText={errors.email}
+                  autoCapitalize="none"
+                  autoCompleteType="email"
+                  textContentType="emailAddress"
+                  keyboardType="email-address"
+                  accessoryRight={(props) => {
+                    return (
+                      !!errors.email && (
+                        <Icon
+                          {...props}
+                          name={"alert-circle-outline"}
+                          fill={theme["color-danger-700"]}
+                        />
+                      )
+                    );
+                  }}
+                />
+                <CustomTextInput
+                  label="Password"
+                  returnKeyType="done"
+                  value={values.password}
+                  onChangeText={handleChange("password")}
+                  onBlur={handleBlur("password")}
+                  error={!!errors.password}
+                  errorText={errors.password}
+                  secureTextEntry={secureTextEntry}
+                  accessoryRight={renderSecureIcon}
+                />
+                <View style={styles.buttonContainer}>
+                  <Button onPress={handleSubmit} style={{ marginTop: 24 }}>
+                    Sign Up
+                  </Button>
+                </View>
               </View>
-            </View>
-          )}
-        </Formik>
-        <View style={styles.row}>
-          <Text>Already have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.replace("Login")}>
-            <Text style={styles.link}>Login</Text>
-          </TouchableOpacity>
-        </View>
-      </Layout>
-    </KeyboardAvoidingView>
+            )}
+          </Formik>
+          <View style={styles.row}>
+            <Text>Already have an account? </Text>
+            <TouchableOpacity onPress={() => navigation.replace("Login")}>
+              <Text style={styles.link}>Login</Text>
+            </TouchableOpacity>
+          </View>
+        </Layout>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleService.create({
   keyboardContainer: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "flex-end",
     width: "100%",
-    padding: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   row: {
     flexDirection: "row",
-    marginTop: 4,
+    marginBottom: 20,
+  },
+  buttonContainer: {
+    flex: 1,
+    width: "100%",
+    marginBottom: 20,
+    justifyContent: "flex-end",
   },
   link: {
     fontWeight: "bold",

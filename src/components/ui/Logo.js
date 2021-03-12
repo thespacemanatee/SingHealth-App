@@ -3,11 +3,12 @@ import { Image, Dimensions } from "react-native";
 
 const Logo = () => {
   const WINDOW_WIDTH = Dimensions.get("window").width;
+  const IMAGE_WIDTH = Dimensions.get("window").width / 1.5;
 
   return (
     <Image
       source={require("../../../assets/singhealth.png")}
-      style={{ height: WINDOW_WIDTH * 0.525, width: WINDOW_WIDTH }}
+      style={{ height: IMAGE_WIDTH * 0.525, width: IMAGE_WIDTH }}
     />
   );
 };

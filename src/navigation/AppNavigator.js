@@ -30,27 +30,28 @@ const AppNavigator = () => {
     dispatch(authActions.restoreToken());
   }, []);
 
+  console.log(authStore.userToken, authStore.userType);
+
   return (
     <NavigationContainer>
-      {authStore.userToken == null ? (
+      {authStore.userToken === null ? (
         <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
           <Navigator headerMode="none">
-            <>
-              <Screen name="Auth" component={AuthScreen} />
-              <Screen name="Login" component={LoginScreen} />
-              <Screen name="Register" component={RegisterScreen} />
-              <Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-            </>
+            <Screen name="Auth" component={AuthScreen} />
+            <Screen name="Login" component={LoginScreen} />
+            <Screen name="Register" component={RegisterScreen} />
+            <Screen name="ForgotPassword" component={ForgotPasswordScreen} />
           </Navigator>
         </SafeAreaView>
-      ) : (
+      ) : authStore.userType === "staff" ? (
         <Navigator headerMode="none">
-          <>
-            <Screen name="StaffNavigator" component={StaffNavigator} />
-            <Screen name="TenantNavigator" component={TenantNavigator} />
-          </>
+          <Screen name="StaffNavigator" component={StaffNavigator} />
         </Navigator>
-      )}
+      ) : authStore.userType === "tenant" ? (
+        <Navigator headerMode="none">
+          <Screen name="TenantNavigator" component={TenantNavigator} />
+        </Navigator>
+      ) : null}
     </NavigationContainer>
   );
 };

@@ -16,20 +16,26 @@ if (Platform.OS === "android") {
 
 export const restoreToken = () => {
   return async (dispatch, getState) => {
-    let userToken;
+    let userData;
+    let jsonData;
 
     try {
-      userToken = await AsyncStorage.getItem("userToken");
+      userData = await AsyncStorage.getItem("userData");
+      jsonData = JSON.parse(userData);
+
+      // After restoring token, we may need to validate it in production apps
+
+      // This will switch to the App screen or Auth screen and this loading
+      // screen will be unmounted and thrown away.
+      dispatch({
+        type: RESTORE_TOKEN,
+        userType: jsonData.userType,
+        token: jsonData.userToken,
+      });
     } catch (e) {
       // Restoring token failed
       console.log("RESTORE_TOKEN: no token found in local storage");
     }
-
-    // After restoring token, we may need to validate it in production apps
-
-    // This will switch to the App screen or Auth screen and this loading
-    // screen will be unmounted and thrown away.
-    dispatch({ type: RESTORE_TOKEN, token: userToken });
   };
 };
 
@@ -49,10 +55,10 @@ export const signIn = (email, password, userType) => {
         console.error(err);
       });
 
-    let token = "dummy-auth-token";
+    let userToken = "dummy-auth-token";
 
-    dispatch({ type: SIGN_IN, token: token });
-    saveTokenToStorage(token);
+    dispatch({ type: SIGN_IN, userType: userType, userToken: userToken });
+    saveUserDataToStorage(userToken, userType);
   };
 };
 
@@ -79,12 +85,13 @@ export const signOut = () => {
   };
 };
 
-const saveTokenToStorage = async (token) => {
+const saveUserDataToStorage = async (userToken, userType) => {
   try {
     await AsyncStorage.setItem(
-      "userToken",
+      "userData",
       JSON.stringify({
-        token: token,
+        userToken: userToken,
+        userType: userType,
       })
     );
   } catch (err) {
@@ -94,7 +101,7 @@ const saveTokenToStorage = async (token) => {
 
 const removeTokenToStorage = async (token) => {
   try {
-    await AsyncStorage.removeItem("userToken");
+    await AsyncStorage.removeItem("userData");
   } catch (err) {
     console.error(err);
   }

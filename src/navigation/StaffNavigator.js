@@ -1,5 +1,4 @@
-import React, { Fragment, useState } from "react";
-import { StyleSheet } from "react-native";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -9,13 +8,12 @@ import {
   Drawer,
   DrawerItem,
   Divider,
-  Text,
   IndexPath,
   BottomNavigation,
   BottomNavigationTab,
   Icon,
+  StyleService,
 } from "@ui-kitten/components";
-import axios from "axios";
 
 import StaffDashboardScreen from "../screens/staff/StaffDashboardScreen";
 import DirectoryScreen from "../screens/staff/DirectoryScreens/DirectoryScreen";
@@ -142,7 +140,7 @@ const StaffDirectoryStackNavigator = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = StyleService.create({
   bottomNavigation: {
     paddingVertical: 8,
   },

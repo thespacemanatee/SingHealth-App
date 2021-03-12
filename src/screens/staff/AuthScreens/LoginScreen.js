@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import {
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
   View,
   KeyboardAvoidingView,
   Platform,
@@ -16,6 +18,7 @@ import {
   Icon,
   StyleService,
   useTheme,
+  Toggle,
 } from "@ui-kitten/components";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -27,6 +30,7 @@ const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const LoginScreen = ({ navigation }) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
+  const [checked, setChecked] = useState(false);
   const theme = useTheme();
 
   const dispatch = useDispatch();
@@ -60,110 +64,140 @@ const LoginScreen = ({ navigation }) => {
   );
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
     >
-      <TopNavigation
-        title="Login"
-        alignment="center"
-        accessoryLeft={BackAction}
-      />
-      <Divider />
-      <Layout
-        style={{
-          flex: 1,
-          alignItems: "center",
-        }}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <Logo />
-        <Formik
-          initialValues={{ email: "", password: "" }}
-          onSubmit={(values) => {
-            console.log(values);
-            dispatch(
-              authActions.signIn(values.email, values.password, "staff")
-            );
+        <TopNavigation
+          style={{ zIndex: 5 }}
+          title="Login"
+          alignment="center"
+          accessoryLeft={BackAction}
+        />
+        <Divider />
+        <Layout
+          style={{
+            flex: 1,
+            justifyContent: "flex-end",
+            alignItems: "center",
           }}
-          validationSchema={LoginSchema}
         >
-          {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
-            <View style={styles.keyboardContainer}>
-              <CustomTextInput
-                label="Email"
-                returnKeyType="next"
-                value={values.email}
-                onChangeText={handleChange("email")}
-                onBlur={handleBlur("email")}
-                error={!!errors.email}
-                errorText={errors.email}
-                autoCapitalize="none"
-                autoCompleteType="email"
-                textContentType="emailAddress"
-                keyboardType="email-address"
-                accessoryRight={(props) => {
-                  return (
-                    !!errors.email && (
-                      <Icon
-                        {...props}
-                        name={"alert-circle-outline"}
-                        fill={theme["color-danger-700"]}
-                      />
-                    )
-                  );
-                }}
-              />
-              <CustomTextInput
-                label="Password"
-                returnKeyType="done"
-                value={values.password}
-                onChangeText={handleChange("password")}
-                onBlur={handleBlur("password")}
-                error={!!errors.password}
-                errorText={errors.password}
-                secureTextEntry={secureTextEntry}
-                accessoryRight={renderSecureIcon}
-              />
-              <View style={styles.forgotPassword}>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("ForgotPassword")}
-                >
-                  <Text style={styles.forgot}>Forgot your password?</Text>
-                </TouchableOpacity>
+          <Formik
+            initialValues={{ email: "", password: "" }}
+            onSubmit={(values) => {
+              console.log(values);
+              dispatch(
+                authActions.signIn(
+                  values.email,
+                  values.password,
+                  checked ? "staff" : "tenant"
+                )
+              );
+            }}
+            validationSchema={LoginSchema}
+          >
+            {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+              <View style={styles.keyboardContainer}>
+                <Logo />
+                <CustomTextInput
+                  label="Email"
+                  returnKeyType="next"
+                  value={values.email}
+                  onChangeText={handleChange("email")}
+                  onBlur={handleBlur("email")}
+                  error={!!errors.email}
+                  errorText={errors.email}
+                  autoCapitalize="none"
+                  autoCompleteType="email"
+                  textContentType="emailAddress"
+                  keyboardType="email-address"
+                  accessoryRight={(props) => {
+                    return (
+                      !!errors.email && (
+                        <Icon
+                          {...props}
+                          name={"alert-circle-outline"}
+                          fill={theme["color-danger-700"]}
+                        />
+                      )
+                    );
+                  }}
+                />
+                <CustomTextInput
+                  label="Password"
+                  returnKeyType="done"
+                  value={values.password}
+                  onChangeText={handleChange("password")}
+                  onBlur={handleBlur("password")}
+                  error={!!errors.password}
+                  errorText={errors.password}
+                  secureTextEntry={secureTextEntry}
+                  accessoryRight={renderSecureIcon}
+                />
+                <View style={styles.forgotPassword}>
+                  <Toggle
+                    checked={checked}
+                    onChange={(isChecked) => {
+                      setChecked(isChecked);
+                    }}
+                  >
+                    {`Login as ${checked ? "Staff" : "Tenant"}`}
+                  </Toggle>
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate("ForgotPassword")}
+                  >
+                    <Text style={styles.forgot}>Forgot your password?</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.buttonContainer}>
+                  <Button mode="contained" onPress={handleSubmit}>
+                    Login
+                  </Button>
+                </View>
               </View>
-              <View style={{ flex: 1, justifyContent: "flex-end" }}>
-                <Button mode="contained" onPress={handleSubmit}>
-                  Login
-                </Button>
-              </View>
-            </View>
-          )}
-        </Formik>
-        <View style={styles.row}>
-          <Text>Don’t have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.replace("Register")}>
-            <Text style={styles.link}>Sign up</Text>
-          </TouchableOpacity>
-        </View>
-      </Layout>
-    </KeyboardAvoidingView>
+            )}
+          </Formik>
+          <View style={styles.row}>
+            <Text>Don’t have an account? </Text>
+            <TouchableOpacity onPress={() => navigation.replace("Register")}>
+              <Text style={styles.link}>Sign up</Text>
+            </TouchableOpacity>
+          </View>
+        </Layout>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleService.create({
   forgotPassword: {
     width: "100%",
-    alignItems: "flex-end",
-    marginBottom: 24,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   keyboardContainer: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "flex-end",
     width: "100%",
-    padding: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   row: {
     flexDirection: "row",
-    marginTop: 4,
+    marginBottom: 20,
+  },
+  buttonContainer: {
+    flex: 1,
+    width: "100%",
+    marginBottom: 20,
+    justifyContent: "flex-end",
   },
   forgot: {
     fontSize: 13,

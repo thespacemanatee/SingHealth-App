@@ -1,24 +1,23 @@
-import React, { Fragment, useState } from "react";
-import { StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Drawer,
   DrawerItem,
-  Layout,
-  Text,
   IndexPath,
   BottomNavigation,
   BottomNavigationTab,
   Icon,
+  Divider,
+  StyleService,
 } from "@ui-kitten/components";
 
 import TenantDashboardScreen from "../screens/tenant/TenantDashboardScreen";
-// import DirectoryScreen from "../screens/staff/directory/DirectoryScreen";
+import * as authActions from "../store/actions/authActions";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
-
-// const DirectoryIcon = (props) => <Icon {...props} name="folder-outline" />;
 
 const useBottomNavigationState = (initialState = 0) => {
   const [selectedIndex, setSelectedIndex] = useState(initialState);
@@ -44,22 +43,43 @@ export const BottomNavigationAccessoriesShowcase = ({ navigation, state }) => {
 const TenantTabNavigator = () => {
   const { Navigator, Screen } = createBottomTabNavigator();
   return (
-    <Navigator
-      tabBar={(props) => <BottomNavigationAccessoriesShowcase {...props} />}
-    >
-      <Screen name="TenantDashboard" component={TenantDashboardScreen} />
-      {/* <Screen name="Directory" component={DirectoryScreen} /> */}
-    </Navigator>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      <Navigator
+        tabBar={(props) => <BottomNavigationAccessoriesShowcase {...props} />}
+      >
+        <Screen name="TenantDashboard" component={TenantDashboardScreen} />
+        {/* <Screen name="Directory" component={DirectoryScreen} /> */}
+      </Navigator>
+    </SafeAreaView>
+  );
+};
+
+const Footer = () => {
+  const dispatch = useDispatch();
+
+  return (
+    <React.Fragment>
+      <DrawerItem
+        title="Logout"
+        onPress={() => {
+          dispatch(authActions.signOut());
+        }}
+      />
+      <Divider />
+    </React.Fragment>
   );
 };
 
 const DrawerContent = ({ navigation, state }) => (
-  <Drawer
-    selectedIndex={new IndexPath(state.index)}
-    onSelect={(index) => navigation.navigate(state.routeNames[index.row])}
-  >
-    <DrawerItem title="Tenant" />
-  </Drawer>
+  <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+    <Drawer
+      footer={Footer}
+      selectedIndex={new IndexPath(state.index)}
+      onSelect={(index) => navigation.navigate(state.routeNames[index.row])}
+    >
+      <DrawerItem title="Tenant" />
+    </Drawer>
+  </SafeAreaView>
 );
 
 const TenantNavigator = () => {
@@ -71,7 +91,7 @@ const TenantNavigator = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = StyleService.create({
   bottomNavigation: {
     paddingVertical: 8,
   },
