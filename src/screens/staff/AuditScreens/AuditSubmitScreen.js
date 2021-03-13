@@ -116,6 +116,7 @@ const AuditSubmitScreen = ({ navigation }) => {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
+      withCredentials: true,
       data: audit_data,
     };
 
@@ -126,6 +127,7 @@ const AuditSubmitScreen = ({ navigation }) => {
         Accept: "application/json",
         "Content-Type": "multipart/form-data",
       },
+      withCredentials: true,
       data:
         Platform.OS === "android"
           ? formData._parts.length > 0
@@ -133,14 +135,6 @@ const AuditSubmitScreen = ({ navigation }) => {
             : null
           : formData,
     };
-
-    // axios(post_audit)
-    //   .then((response) => {
-    //     console.log(JSON.stringify(response));
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //   });
 
     axios
       .all([axios(post_audit), axios(post_images)])

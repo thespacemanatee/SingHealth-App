@@ -46,6 +46,7 @@ export const signIn = (email, password, userType) => {
     const loginOptions = {
       url: `${endpoint}test_login/${userType}`,
       method: "get",
+      withCredentials: true,
     };
     axios(loginOptions)
       .then((res) => {
@@ -69,6 +70,7 @@ export const signOut = () => {
     const signOutOptions = {
       url: `${endpoint}logout`,
       method: "get",
+      withCredentials: true,
     };
     axios(signOutOptions)
       .then((res) => {

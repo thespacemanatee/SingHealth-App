@@ -13,10 +13,10 @@ app = Flask(__name__)
 app.config["MONGO_URI"] = MONGODB_URI
 app.config["SECRET_KEY"] = secrets.token_urlsafe(nbytes=32)
 mongo = PyMongo(app)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 
-@app.route('/')
+@ app.route('/')
 def hello_world():
     return successMsg("Yes this endpoint is working"), 200
 
