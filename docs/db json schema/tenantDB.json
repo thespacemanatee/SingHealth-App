@@ -25,11 +25,6 @@
             "description": "The institution where a tenant operates under",
             "type": "string"
         },
-        "demeritPoints": {
-            "description": "If tenant consistently scores low for certain number of times, they get 1 demerit. Too many demerit points and they might have to end tenantship",
-            "type": "integer",
-            "minimum": 0
-        },
         "stall": {
             "description": "All the info regarding their stall",
             "type": "object",
@@ -57,10 +52,6 @@
                     },
                     "required": ["name", "email"]
                 },
-                "group":{
-                    "description": "If tenant is part of a food court or similar grouping of stalls, this will be the name of the food court",
-                    "type": "string"
-                },
                 "address": {
                     "description": "Name of the company the stall is representing",
                     "type": "object",
@@ -83,10 +74,6 @@
                         },
                         "zipcode": {
                             "type": "integer"
-                        },
-                        "stall": {
-                            "description": "Stall number. For F&B outlets within a food court",
-                            "type": "string"
                         }
                     },
                     "required": [ "unitNo" ]
@@ -103,17 +90,17 @@
             "type": "string"
         },
         "dateCreated": {
-            "description": "Date when the account was created.",
+            "description": "Date when the account was created",
             "type": "string"
         },
         "tenantDateStart": {
-            "description": "Date when tenantship started.",
+            "description": "Date when tenantship started, without including exact date.",
             "type": "string"
         },
         "tenantDateEnd": {
-            "description": "Date when tenantship ended.",
+            "description": "Date when tenantship ends, without including exact date.",
             "type": "string"
         }
     },
-    "required": [ "_id", "name", "email", "pswd", "institutionId", "demeritPoints", "stall", "createdBy", "dateCreated", "tenantDateStart", "tenantDateEnd"]
+    "required": [ "_id", "name", "email", "pswd", "institutionId", "stall", "createdBy", "dateCreated", "tenantDateStart", "tenantDateEnd"]
   }
