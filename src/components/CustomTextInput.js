@@ -17,11 +17,11 @@ const CustomTextInput = ({ errorText, description, ...props }) => {
             },
           ]}
         >
-          {description}
+          {description ? description : " "}
         </Text>
       ) : null}
       <Text style={[styles.error, { color: theme["color-danger-700"] }]}>
-        {errorText}
+        {errorText ? errorText : " "}
       </Text>
     </View>
   );
