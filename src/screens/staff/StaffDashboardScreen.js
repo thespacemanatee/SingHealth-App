@@ -75,19 +75,16 @@ const StaffDashboardScreen = ({ navigation }) => {
       />
       <Divider />
       <Layout style={styles.screen}>
-        <View style={styles.graphContainer}>
-          <Graph />
-        </View>
+        <Graph />
+        <Divider />
         <View style={styles.textContainer}>
           <Text style={styles.text}>Rectification Progress</Text>
         </View>
-        <View style={styles.listContainer}>
-          <List
-            contentContainerStyle={styles.contentContainer}
-            data={databaseStore.audits.active_audits}
-            renderItem={renderActiveAudits}
-          />
-        </View>
+        <List
+          contentContainerStyle={styles.contentContainer}
+          data={databaseStore.audits.active_audits}
+          renderItem={renderActiveAudits}
+        />
 
         <FAB.Group
           open={open}
@@ -125,18 +122,12 @@ const styles = StyleService.create({
   screen: {
     flex: 1,
   },
-  graphContainer: {
-    flex: 0.35,
-  },
   textContainer: {
     marginLeft: 20,
     marginBottom: 20,
   },
   text: {
     fontSize: 26,
-  },
-  listContainer: {
-    flex: 0.65,
   },
   contentContainer: {
     paddingHorizontal: 8,

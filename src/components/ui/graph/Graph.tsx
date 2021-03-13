@@ -15,7 +15,6 @@ import {
 } from "../../../components/AnimatedHelpers";
 
 import Cursor from "./Cursor";
-import Label from "./Label";
 
 const { width } = Dimensions.get("window");
 const height = width / 3;
@@ -57,10 +56,13 @@ const path = parsePath(d);
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    // justifyContent: "center",
-    alignItems: "center",
+    // flex: 1,
+    height: height,
+    marginBottom: 20,
+    justifyContent: "flex-end",
+    // alignItems: "center",
     backgroundColor: "white",
+    overflow: "hidden",
   },
 });
 
@@ -103,7 +105,6 @@ const Graph = () => {
         </Svg>
         <Cursor {...{ path, length, point }} />
       </View>
-      {/* <Label {...{ data, point }} /> */}
     </View>
   );
 };

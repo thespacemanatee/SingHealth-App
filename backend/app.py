@@ -16,7 +16,7 @@ mongo = PyMongo(app)
 CORS(app, supports_credentials=True)
 
 
-@ app.route('/')
+@app.route('/')
 def hello_world():
     return successMsg("Yes this endpoint is working"), 200
 
@@ -24,5 +24,14 @@ def hello_world():
 addAuditsEndpoint(app, mongo)
 addImagesEndpoint(app)
 addLoginEndpointsForTenantAndStaff(app, mongo)
+
+
+# @app.after_request
+# def after_request_func(response):
+#     response.headers["Access-Control-Allow-Origin"] = "http://localhost:19006"
+#     response.headers["Access-Control-Allow-Credentials"] = true
+#     print("after_request is running!", response)
+#     return response
+
 
 app.run(debug=True)
