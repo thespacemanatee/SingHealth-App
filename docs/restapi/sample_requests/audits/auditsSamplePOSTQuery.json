@@ -12,34 +12,64 @@
         "fnb": {
             "_id": "fnb2021",
             "type": "fnb",
-            "questions": [
-                {
-                    "question": "Store is clean",
-                    "answer": true
-                },
-                {
-                    "question": "Store is covid-free",
-                    "answer": false,
-                    "images": ["image001" , "image002", "image001"],
-                    "rectificationImages" : null,
-                    "remarks": "Case #36475 traced back here",
-                    "deadline": "06032021",
-                    "rectified": false,
-                    "requestedForExt": false,
-                    "acceptedRequest": null
-                },
-                {
-                    "question": "Personnel observed personal hygiene",
-                    "answer": false,
-                    "images": ["image001" , "image002"],
-                    "rectificationImages" : [ "img654","img863" ],
-                    "remarks": "Ill personal came back to work",
-                    "deadline": "06032021",
-                    "rectified": true,
-                    "requestedForExt": true,
-                    "acceptedRequest": true
-                }
-            ]
+            "questions": {
+                "hygiene": [
+                    {
+                        "question": "Store is clean",
+                        "answer": true
+                    },
+                    {
+                        "question": "Store is covid-free",
+                        "answer": false,
+                        "images": ["image001" , "image002"],
+                        "rectificationImages" : null,
+                        "remarks": "Case #36475 traced back here",
+                        "deadline": "06032021",
+                        "rectified": false,
+                        "requestedForExt": false,
+                        "acceptedRequest": null
+                    },
+                    {
+                        "question": "Personnel observed personal hygiene",
+                        "answer": false,
+                        "images": ["image001" , "image002"],
+                        "rectificationImages" : [ "img654","img863" ],
+                        "remarks": "Ill personal came back to work",
+                        "deadline": "06032021",
+                        "rectified": true,
+                        "requestedForExt": true,
+                        "acceptedRequest": true
+                    }
+                ],
+                "safety": [
+                    {
+                        "question": "Store is clean",
+                        "answer": true
+                    },
+                    {
+                        "question": "Store is covid-free",
+                        "answer": false,
+                        "images": ["image001" , "image002"],
+                        "rectificationImages" : null,
+                        "remarks": "Case #36475 traced back here",
+                        "deadline": "06032021",
+                        "rectified": false,
+                        "requestedForExt": false,
+                        "acceptedRequest": null
+                    },
+                    {
+                        "question": "Personnel observed personal hygiene",
+                        "answer": false,
+                        "images": ["image001" , "image002"],
+                        "rectificationImages" : [ "img654","img863" ],
+                        "remarks": "Ill personal came back to work",
+                        "deadline": "06032021",
+                        "rectified": true,
+                        "requestedForExt": true,
+                        "acceptedRequest": true
+                    }
+                ]
+            }
         }
     }
 }
