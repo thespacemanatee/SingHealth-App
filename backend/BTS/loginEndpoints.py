@@ -2,7 +2,7 @@ from flask import Flask, request, session
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_pymongo import PyMongo
 from .login import User
-from .utils import successMsg, failureMsg
+from .utils import successMsg, failureMsg, successResponse, failureResponse
 
 def addLoginEndpointsForTenantAndStaff(app, mongo):
     login_manager = LoginManager()
@@ -50,7 +50,7 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
     @login_required
     def logout():
         logout_user()
-        return successMsg("You are now logged out"), 200
+        return successResponse(successMsg("You are now logged out"))
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -67,11 +67,11 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
         user = User("staff developer login")
         session['account_type'] = "staff"
         login_user(user)
-        return successMsg("You are logged in as a staff for testing purposes"), 200
+        return successResponse(successMsg("You are logged in as a staff for testing purposes"))
 
     @app.route('/test_login/tenant')
     def test_login_tenant():
         user = User("tenant developer login")
         session['account_type'] = "tenant"
         login_user(user)
-        return successMsg("You are logged in as a tenant for testing purposes"), 200
+        return successResponse(successMsg("You are logged in as a tenant for testing purposes"))

@@ -16,6 +16,7 @@ docs/uml/*.pdf
 # backend code
 **/__pycache__
 backend/backend/**
+**/.vscode
 
 
 # macOS

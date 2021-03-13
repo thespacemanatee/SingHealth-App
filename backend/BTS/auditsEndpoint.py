@@ -1,4 +1,4 @@
-from .utils import failureMsg, successMsg
+from .utils import failureMsg, successMsg, successResponse, failureResponse
 from .constants import MAX_NUM_IMAGES_PER_NC
 from flask import request
 from flask_login import login_required
@@ -41,7 +41,7 @@ def validateFilledAuditForm(filledAuditForm):
             if numFilenames > numUniqueFilenames:
                 return False, f"Item at index {index} has duplicate filenames"
 
-        if not answer["answer"] and len(answer["remarks"]) == 0:
+        if not answer["answer"] and len(answer.get("remarks",[])) == 0:
             return False, f"Item at index {index} non-compliant but no remarks were given"
     
     return True, "Form is valid and ready for uploading"
@@ -52,14 +52,12 @@ def createIDForFilledForm(formTemplate, metadata):
     typeOfForm = formTemplate["type"]
     return date + tenant + typeOfForm
 
-
 def createIDForAuditMetaData(auditMetadata):
     staffID = auditMetadata["staffID"]
     tenantID = auditMetadata["tenantID"]
     institutionID = auditMetadata["institutionID"]
     date = auditMetadata["date"]
     return staffID + tenantID + institutionID + date
-
 
 def processAuditdata(auditData):
     auditMetaData = auditData["auditMetadata"]
@@ -98,14 +96,14 @@ def addAuditsEndpoint(app, mongo):
             allFormsAreValid = validateFilledAuditForms(filledAuditForms)
             
             if not allFormsAreValid[0]:
-                return failureMsg(allFormsAreValid[1], 400), 400
+                return failureResponse(failureMsg(allFormsAreValid[1], 400), 400)
                 
             try:
                 mongo.db.audits.insert_one(auditMetaData)
                 for filledForm in filledAuditForms.values():
                     mongo.db.filledAuditForms.insert_one(filledForm)
             except DuplicateKeyError:
-                return failureMsg("Form has already been uploaded", 400), 400
+                return failureResponse(failureMsg("Form has already been uploaded", 400), 400)
 
-            return successMsg("Forms have been submitted"), 200
+            return successResponse(successMsg("Forms have been submitted"))
 

@@ -1,6 +1,6 @@
 from flask_login import login_required
 from flask import request
-from .utils import successMsg, failureMsg
+from .utils import successMsg, failureMsg, failureResponse, successResponse
 from .constants import S3BUCKETNAME
 from base64 import b64decode, b64encode
 from botocore.exceptions import ClientError
@@ -41,44 +41,56 @@ def list_images(bucket):
 
     return contents
 
-#TODO: Add defence against duplicate file names
 def addImagesEndpoint(app):
     @app.route("/images", methods=["GET", 'POST'])
     @login_required
     def images():
         if request.method == 'POST':
-            if len(request.files) > 0:
+            if len(request.json.get("images", [])) > 0:
+                requestData = request.json["images"]
+
+                imageFilenames = []
+                for image in requestData:
+                    imageFilenames.append(image["fileName"])
+
+                detected_Duplicate_filenames = len(imageFilenames) > len(set(imageFilenames))
+                if detected_Duplicate_filenames:
+                    return failureResponse(failureMsg("Duplicate image names found", 400), 400)
+
+
+                for image in requestData:
+                    imageName = image["fileName"]
+                    imageData = image["uri"]
+                    imageBytes = io.BytesIO(b64decode(imageData))
+                    upload_image(imageBytes, S3BUCKETNAME, imageName)
+                return successResponse(successMsg("Pictures have successfully been uploaded"), 200)
+            
+            elif len(request.files) > 0:
                 formdata = request.files
                 images = formdata.getlist("images")
+
+
+                detected_Duplicate_filenames = len(images) > len(set(images))
+                if detected_Duplicate_filenames:
+                    return failureResponse(failureMsg("Duplicate image names found", 400), 400)
 
                 for image in images:
                     imgName = image.filename
                     upload_image(image, S3BUCKETNAME, imgName)
 
-                return successMsg("Pictures have successfully been uploaded"), 200
-
-            requestData = request.json
-            if len(requestData["images"]) > 0:
-                for image in requestData["images"]:
-                    imageName = image["fileName"]
-                    imageData = image["uri"]
-                    imageBytes = io.BytesIO(b64decode(imageData))
-                    upload_image(imageBytes, S3BUCKETNAME, imageName)
-                return successMsg("Pictures have successfully been uploaded"), 200
-            
-            return failureMsg("No image data received", 400), 400
+                return successResponse(successMsg("Pictures have successfully been uploaded"), 200)
+            return failureResponse(failureMsg("No image data received", 400), 400)
 
 
         elif request.method == "GET":
             details = request.json
-            filenames = details["filenames"]
+            filenames = details["fileNames"]
             output = []
             n = 0
             m = 0
             o = 0
             failed = []
             for index, filename in enumerate(filenames):
-                #TODO: What kind of error does boto 3 return if image is not found
                 try:
                     imageObject = download_image(filename, S3BUCKETNAME)
                     imageBase64 = b64encode(imageObject.getvalue()).decode()
@@ -92,10 +104,8 @@ def addImagesEndpoint(app):
                 except:
                     o += 1
 
-
-            
             serverResponse = successMsg(f"{n} images successfully downloaded, {m} images failed to download and {o} failed due to other reasons")
             serverResponse["uri"] = output
             serverResponse["notFound"] = failed
 
-            return serverResponse
+            return successResponse(serverResponse)

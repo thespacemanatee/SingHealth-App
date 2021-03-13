@@ -1,8 +1,9 @@
 from BTS.auditsEndpoint import addAuditsEndpoint
 from BTS.loginEndpoints import addLoginEndpointsForTenantAndStaff
 from BTS.imagesEndpoint import addImagesEndpoint
+from BTS.auditsEndpoint_wx import addWenXinEndpoints
 from BTS.constants import MONGODB_URI
-from BTS.utils import successMsg
+from BTS.utils import successMsg, successResponse
 from flask import Flask
 from flask_pymongo import PyMongo
 from flask_cors import CORS
@@ -18,9 +19,10 @@ CORS(app, supports_credentials=True)
 
 @app.route('/')
 def hello_world():
-    return successMsg("Yes this endpoint is working"), 200
+    return successResponse(successMsg("Yes this endpoint is working"))
 
 
+addWenXinEndpoints(app, mongo)
 addAuditsEndpoint(app, mongo)
 addImagesEndpoint(app)
 addLoginEndpointsForTenantAndStaff(app, mongo)
