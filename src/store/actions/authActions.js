@@ -67,7 +67,7 @@ export const signOut = () => {
     // dispatch({ action: SIGN_OUT, token: token ? token : null });
     console.log("Signing out!");
     const signOutOptions = {
-      url: `${endpoint}/logout`,
+      url: `${endpoint}logout`,
       method: "get",
     };
     axios(signOutOptions)
