@@ -1,4 +1,5 @@
 import json
+from flask import make_response, jsonify
 
 def printJ(data):
     print(json.dumps(data, indent=4, sort_keys=False))
@@ -14,3 +15,13 @@ def failureMsg(msg, code):
     output["status"] = code
     output["description"] = msg
     return output
+
+def successResponse(jsonMsg):
+    response = make_response(jsonify(jsonMsg), 200)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
+
+def failureResponse(jsonMsg, code):
+    response = make_response(jsonify(jsonMsg), code)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
