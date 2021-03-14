@@ -61,11 +61,15 @@ def addImagesEndpoint(app):
 
 
                     for image in requestData:
-                        imageName = image["fileName"]
-                        imageData = image["uri"]
+                        try:
+                            imageName = image["fileName"]
+                            imageData = image["uri"]
+                        except KeyError:
+                            failureResponse(failureMsg("Wrong request format. Make sure every Image object has a 'fileName' & a 'uri' field", 400), 400)
+
                         imageBytes = io.BytesIO(b64decode(imageData))
                         upload_image(imageBytes, S3BUCKETNAME, imageName)
-                    return successResponse(successMsg("Pictures have successfully been uploaded"), 200)
+                    return successResponse(successMsg("Pictures have successfully been uploaded"))
             
             elif len(request.files) > 0:
                 formdata = request.files
@@ -80,7 +84,7 @@ def addImagesEndpoint(app):
                     imgName = image.filename
                     upload_image(image, S3BUCKETNAME, imgName)
 
-                return successResponse(successMsg("Pictures have successfully been uploaded"), 200)
+                return successResponse(successMsg("Pictures have successfully been uploaded"))
             return failureResponse(failureMsg("No image data received", 400), 400)
 
 
