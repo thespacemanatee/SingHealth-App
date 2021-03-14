@@ -18,10 +18,12 @@ def failureMsg(msg, code):
 
 def successResponse(jsonMsg):
     response = make_response(jsonify(jsonMsg), 200)
-    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Origin"] = "http://localhost:19006"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
     return response
 
 def failureResponse(jsonMsg, code):
     response = make_response(jsonify(jsonMsg), code)
-    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Origin"] = "http://localhost:19006"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
     return response

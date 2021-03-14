@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View, StyleSheet, Dimensions, Platform } from "react-native";
 import {
   PanGestureHandler,
@@ -18,6 +18,14 @@ import { Path } from "../../../components/AnimatedHelpers";
 
 import Label, { DataPoint } from "./Label";
 
+function useForceUpdate() {
+  const [, forceUpdate] = React.useState();
+
+  return React.useCallback(() => {
+    forceUpdate((s) => !s);
+  }, []);
+}
+
 const { width } = Dimensions.get("window");
 const CURSOR = Platform.OS === "web" ? 30 : 150;
 const styles = StyleSheet.create({
@@ -36,10 +44,15 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     backgroundColor: "white",
   },
+  line: {
+    left: Platform.OS === "web" ? CURSOR / 2 : undefined,
+    height: 1000,
+    width: 1,
+    backgroundColor: "grey",
+  },
   label: {
     position: "absolute",
     top: 25,
-    // left: 0,
   },
 });
 
@@ -50,26 +63,40 @@ interface CursorProps {
 }
 
 const Cursor = ({ path, length, point }: CursorProps) => {
-  let opacity: Animated.Node<number>;
-  if (Platform.OS !== "web") {
-    opacity = useState(new Animated.Value(0.5))[0];
-  }
+  const opacity = useState(new Animated.Value(0))[0];
+  const [webOpacity, setWebOpacity] = useState(0);
 
   const fadeIn = () => {
-    Animated.timing(opacity, {
-      toValue: 1,
-      duration: 200,
-      easing: EasingNode.ease,
-    }).start();
+    if (Platform.OS === "web") {
+      console.log("fading in");
+      setWebOpacity(1);
+    } else {
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 200,
+        easing: EasingNode.ease,
+      }).start();
+    }
   };
 
   const fadeOut = () => {
-    Animated.timing(opacity, {
-      toValue: 0.5,
-      duration: 200,
-      easing: EasingNode.ease,
-    }).start();
+    if (Platform.OS === "web") {
+      console.log("fading out");
+      setWebOpacity(0);
+    } else {
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: 200,
+        easing: EasingNode.ease,
+      }).start();
+    }
   };
+
+  const forceUpdate = useForceUpdate();
+
+  const reRender = useCallback(() => {
+    forceUpdate();
+  }, [forceUpdate]);
 
   const onGestureEvent = useAnimatedGestureHandler<
     PanGestureHandlerGestureEvent,
@@ -79,8 +106,9 @@ const Cursor = ({ path, length, point }: CursorProps) => {
     }
   >({
     onStart: (_event, ctx) => {
+      runOnJS(fadeIn)();
       if (Platform.OS !== "web") {
-        runOnJS(fadeIn)();
+        runOnJS(reRender)();
       }
       ctx.offsetX = interpolate(
         length.value,
@@ -90,6 +118,9 @@ const Cursor = ({ path, length, point }: CursorProps) => {
       );
     },
     onActive: (event, ctx) => {
+      if (Platform.OS === "web") {
+        runOnJS(reRender)();
+      }
       length.value = interpolate(
         ctx.offsetX + event.translationX,
         [0, width],
@@ -98,8 +129,9 @@ const Cursor = ({ path, length, point }: CursorProps) => {
       );
     },
     onEnd: ({ velocityX }) => {
+      runOnJS(fadeOut)();
       if (Platform.OS !== "web") {
-        runOnJS(fadeOut)();
+        runOnJS(reRender)();
       }
       length.value = withDecay({
         velocity: velocityX,
@@ -116,13 +148,25 @@ const Cursor = ({ path, length, point }: CursorProps) => {
       transform: [{ translateX }, { translateY }],
     };
   });
+  const lineStyle = useAnimatedStyle(() => {
+    const { coord } = point.value;
+    const translateX = coord.x - CURSOR / 2;
+    return {
+      transform: [{ translateX }],
+    };
+  });
   const labelStyle = useAnimatedStyle(() => {
     const { coord } = point.value;
     const translateX = coord.x - CURSOR / 2;
-    const translateY = coord.y - CURSOR / 2;
     return {
-      transform: [{ translateX }, { translateY }],
-      left: Platform.OS !== "web" ? (coord.x > width / 2 ? -150 : 100) : -85,
+      transform: [
+        {
+          translateX:
+            (coord.x > width / 2 ? -150 : 100) +
+            translateX -
+            (Platform.OS === "web" ? 60 : 0),
+        },
+      ],
     };
   });
 
@@ -130,10 +174,32 @@ const Cursor = ({ path, length, point }: CursorProps) => {
     <View style={StyleSheet.absoluteFill}>
       <PanGestureHandler {...{ onGestureEvent }}>
         <Animated.View>
-          <Animated.View style={[{ ...styles.cursorContainer }, cursorStyle]}>
+          <Animated.View
+            style={[{ ...styles.cursorContainer, zIndex: 1 }, cursorStyle]}
+          >
             <View style={styles.cursor} />
           </Animated.View>
-          <Animated.View style={[{ ...styles.label, opacity }, labelStyle]}>
+          <Animated.View
+            style={[
+              {
+                ...styles.cursorContainer,
+                position: "absolute",
+                opacity: Platform.OS === "web" ? webOpacity : opacity,
+              },
+              lineStyle,
+            ]}
+          >
+            <View style={styles.line} />
+          </Animated.View>
+          <Animated.View
+            style={[
+              {
+                ...styles.label,
+                opacity: Platform.OS === "web" ? webOpacity : opacity,
+              },
+              labelStyle,
+            ]}
+          >
             <View style={styles.label}>
               <Label {...{ point }} />
             </View>

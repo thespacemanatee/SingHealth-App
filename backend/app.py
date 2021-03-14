@@ -27,4 +27,13 @@ addAuditsEndpoint(app, mongo)
 addImagesEndpoint(app)
 addLoginEndpointsForTenantAndStaff(app, mongo)
 
+
+# @app.after_request
+# def after_request_func(response):
+#     response.headers["Access-Control-Allow-Origin"] = "http://localhost:19006"
+#     response.headers["Access-Control-Allow-Credentials"] = true
+#     print("after_request is running!", response)
+#     return response
+
+
 app.run(debug=True)
