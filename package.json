@@ -6,7 +6,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix reactFolderName && npm run build --prefix reactFolderName"
   },
   "dependencies": {
     "@eva-design/eva": "^2.0.0",
