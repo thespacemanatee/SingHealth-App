@@ -7,7 +7,6 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "postinstall": "patch-package",
-    "build": "expo build:web"
   },
   "dependencies": {
     "@eva-design/eva": "^2.0.0",
