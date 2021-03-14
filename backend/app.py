@@ -4,7 +4,7 @@ from BTS.imagesEndpoint import addImagesEndpoint
 from BTS.auditsEndpoint_wx import addWenXinEndpoints
 from BTS.constants import MONGODB_URI
 from BTS.utils import successMsg, successResponse
-from flask import Flask
+from flask import Flask, request
 from flask_pymongo import PyMongo
 from flask_cors import CORS
 import secrets
@@ -17,7 +17,7 @@ mongo = PyMongo(app)
 CORS(app, supports_credentials=True)
 
 
-@ app.route('/')
+@ app.route('/', methods = ["GET", "POST"])
 def hello_world():
     return successResponse(successMsg("Yes this endpoint is working"))
 
