@@ -32,6 +32,7 @@ const AuditSubmitScreen = ({ navigation }) => {
     let covid19_checklist_images = [];
 
     const formData = new FormData();
+    const base64images = { images: [] };
     temp_chosen_checklist.questions.forEach((element, index) => {
       if (element.image) {
         element.image.forEach((image, index) => {
@@ -43,6 +44,7 @@ const AuditSubmitScreen = ({ navigation }) => {
             Math.round(Date.now() * Math.random())
           }.jpg`;
           if (Platform.OS === "web") {
+            base64images.images.push({ fileName: fileName, uri: image });
           } else {
             formData.append("images", {
               uri: image,
@@ -68,6 +70,7 @@ const AuditSubmitScreen = ({ navigation }) => {
             Math.round(Date.now() * Math.random())
           }.jpg`;
           if (Platform.OS === "web") {
+            base64images.images.push({ fileName: fileName, uri: image });
           } else {
             formData.append("images", {
               uri: image,
@@ -136,8 +139,22 @@ const AuditSubmitScreen = ({ navigation }) => {
           : formData,
     };
 
+    const post_images_web = {
+      url: `${endpoint}images`,
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+      data: base64images,
+    };
+
     axios
-      .all([axios(post_audit), axios(post_images)])
+      .all([
+        axios(post_audit),
+        axios(Platform.OS === "web" ? post_images_web : post_images),
+      ])
       .then(
         axios.spread((req1, req2) => {
           console.log(req1.data, "req1");
