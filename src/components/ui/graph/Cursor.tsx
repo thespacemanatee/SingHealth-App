@@ -27,7 +27,7 @@ function useForceUpdate() {
 }
 
 const { width } = Dimensions.get("window");
-const CURSOR = Platform.OS === "web" ? 30 : 150;
+const CURSOR = Platform.OS === "web" ? 20 : 150;
 const styles = StyleSheet.create({
   cursorContainer: {
     width: CURSOR,
@@ -37,8 +37,8 @@ const styles = StyleSheet.create({
     // backgroundColor: "rgba(100, 200, 300, 0.4)",
   },
   cursor: {
-    width: 30,
-    height: 30,
+    width: 20,
+    height: 20,
     borderRadius: 15,
     borderColor: "#367be2",
     borderWidth: 4,
