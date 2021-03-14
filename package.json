@@ -6,7 +6,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "postinstall": "patch-package",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@eva-design/eva": "^2.0.0",
