@@ -24,3 +24,6 @@ backend/test_backend_wx.py
 
 # macOS
 .DS_Store
+
+# jest
+.jest/cache
