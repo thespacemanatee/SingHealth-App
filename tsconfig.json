@@ -5,6 +5,7 @@
     "lib": [
       "esnext"
     ],
+    "types": ["jest"],
     "allowJs": true,
     "skipLibCheck": true,
     "noEmit": true,
