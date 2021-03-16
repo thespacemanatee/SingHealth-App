@@ -1,0 +1,15 @@
+835d62eae5f2149026d486f747f0d187
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "default", {
+  enumerable: true,
+  get: function get() {
+    return _asyncStorageMock["default"];
+  }
+});
+
+var _asyncStorageMock = _interopRequireDefault(require("@react-native-async-storage/async-storage/jest/async-storage-mock"));
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsInNvdXJjZXNDb250ZW50IjpbXX0=

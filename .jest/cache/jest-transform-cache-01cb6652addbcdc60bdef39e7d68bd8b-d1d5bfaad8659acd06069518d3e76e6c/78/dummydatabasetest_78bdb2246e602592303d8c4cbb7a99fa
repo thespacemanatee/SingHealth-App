@@ -1,0 +1,8 @@
+dc83ef119c59478f4fdbde5680829891
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const dummy_database_1 = require("../src/data/dummy-database");
+test('test json', () => {
+    expect(dummy_database_1.database).toBeUndefined;
+});
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFxQSElcXFNpbmdIZWFsdGgtQXBwXFxfX3Rlc3RzX19cXGR1bW15LWRhdGFiYXNlLnRlc3QudHMiLCJtYXBwaW5ncyI6Ijs7QUFBQSwrREFBbUQ7QUFFbkQsSUFBSSxDQUFDLFdBQVcsRUFBRSxHQUFHLEVBQUU7SUFDbkIsTUFBTSxDQUFDLHlCQUFRLENBQUMsQ0FBQyxhQUFhLENBQUM7QUFDakMsQ0FBQyxDQUFDLENBQUMiLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiQzpcXFVzZXJzXFxQSElcXFNpbmdIZWFsdGgtQXBwXFxfX3Rlc3RzX19cXGR1bW15LWRhdGFiYXNlLnRlc3QudHMiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHtkYXRhYmFzZX0gZnJvbSAnLi4vc3JjL2RhdGEvZHVtbXktZGF0YWJhc2UnXHJcblxyXG50ZXN0KCd0ZXN0IGpzb24nLCAoKSA9PiB7XHJcbiAgICBleHBlY3QoZGF0YWJhc2UpLnRvQmVVbmRlZmluZWQ7XHJcbiAgfSk7Il0sInZlcnNpb24iOjN9

@@ -1,0 +1,9 @@
+741dd6cf21f3ec9780a90a45bc887fd7
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const authActions_1 = require("../src/store/actions/authActions");
+test('TOKEN test', () => {
+    const something = authActions_1.restoreToken();
+    expect(1).not.toBeUndefined;
+});
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFxQSElcXFNpbmdIZWFsdGgtQXBwXFxfX3Rlc3RzX19cXGF1dGhBY3Rpb24udGVzdC50cyIsIm1hcHBpbmdzIjoiOztBQUFBLGtFQUE2RDtBQUU3RCxJQUFJLENBQUMsWUFBWSxFQUFFLEdBQUcsRUFBRTtJQUNwQixNQUFNLFNBQVMsR0FBRywwQkFBWSxFQUFFLENBQUM7SUFDakMsTUFBTSxDQUFDLENBQUMsQ0FBQyxDQUFDLEdBQUcsQ0FBQyxhQUFhLENBQUM7QUFDOUIsQ0FBQyxDQUFDLENBQUMiLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiQzpcXFVzZXJzXFxQSElcXFNpbmdIZWFsdGgtQXBwXFxfX3Rlc3RzX19cXGF1dGhBY3Rpb24udGVzdC50cyJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQge3Jlc3RvcmVUb2tlbn0gZnJvbSAnLi4vc3JjL3N0b3JlL2FjdGlvbnMvYXV0aEFjdGlvbnMnXHJcblxyXG50ZXN0KCdUT0tFTiB0ZXN0JywgKCkgPT4ge1xyXG4gICAgY29uc3Qgc29tZXRoaW5nID0gcmVzdG9yZVRva2VuKCk7XHJcbiAgICBleHBlY3QoMSkubm90LnRvQmVVbmRlZmluZWQ7XHJcbiAgfSk7Il0sInZlcnNpb24iOjN9

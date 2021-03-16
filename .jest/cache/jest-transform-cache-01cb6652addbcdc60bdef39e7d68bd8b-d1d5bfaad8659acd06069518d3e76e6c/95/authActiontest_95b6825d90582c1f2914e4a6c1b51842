@@ -1,0 +1,8 @@
+1ce921aaa1b37cb3362ebf9793fbeada
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const authActions_1 = require("../src/store/actions/authActions");
+test('TOKEN test', () => {
+    expect(authActions_1.RESTORE_TOKEN).toEqual("RESTORE_TOKEN");
+});
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFxQSElcXFNpbmdIZWFsdGgtQXBwXFxfX3Rlc3RzX19cXGF1dGhBY3Rpb24udGVzdC50cyIsIm1hcHBpbmdzIjoiOztBQUFBLGtFQUFpRjtBQUVqRixJQUFJLENBQUMsWUFBWSxFQUFFLEdBQUcsRUFBRTtJQUNwQixNQUFNLENBQUMsMkJBQWEsQ0FBQyxDQUFDLE9BQU8sQ0FBQyxlQUFlLENBQUMsQ0FBQztBQUNqRCxDQUFDLENBQUMsQ0FBQyIsIm5hbWVzIjpbXSwic291cmNlcyI6WyJDOlxcVXNlcnNcXFBISVxcU2luZ0hlYWx0aC1BcHBcXF9fdGVzdHNfX1xcYXV0aEFjdGlvbi50ZXN0LnRzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7UkVTVE9SRV9UT0tFTiwgU0lHTl9JTiwgU0lHTl9PVVR9IGZyb20gJy4uL3NyYy9zdG9yZS9hY3Rpb25zL2F1dGhBY3Rpb25zJ1xyXG5cclxudGVzdCgnVE9LRU4gdGVzdCcsICgpID0+IHtcclxuICAgIGV4cGVjdChSRVNUT1JFX1RPS0VOKS50b0VxdWFsKFwiUkVTVE9SRV9UT0tFTlwiKTtcclxuICB9KTsiXSwidmVyc2lvbiI6M30=
