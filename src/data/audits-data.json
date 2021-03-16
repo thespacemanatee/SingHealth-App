@@ -1,14 +1,5 @@
 {
-  "active_audits": [
-    "audit1",
-    "audit2",
-    "audit3",
-    "audit4",
-    "audit5",
-    "audit6",
-    "audit7",
-    "audit8"
-  ],
+  "active_audits": ["audit1", "audit2", "audit3", "audit4", "audit5", "audit6", "audit7", "audit8"],
   "audits": {
     "audit1": {
       "auditorID": "staff1",

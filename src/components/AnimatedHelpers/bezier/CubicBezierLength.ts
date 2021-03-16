@@ -7,15 +7,8 @@ type CtrlPoint = [number, number, number, number];
 const tValues = [
   [],
   [],
-  [
-    -0.5773502691896257645091487805019574556476,
-    0.5773502691896257645091487805019574556476,
-  ],
-  [
-    0,
-    -0.7745966692414833770358530799564799221665,
-    0.7745966692414833770358530799564799221665,
-  ],
+  [-0.5773502691896257645091487805019574556476, 0.5773502691896257645091487805019574556476],
+  [0, -0.7745966692414833770358530799564799221665, 0.7745966692414833770358530799564799221665],
   [
     -0.3399810435848562648026657591032446872005,
     0.3399810435848562648026657591032446872005,
@@ -758,12 +751,7 @@ const getArcLength = (xs: CtrlPoint, ys: CtrlPoint, t = 1, n = 20) => {
   return z * sum;
 };
 
-export const cubicBezierLength = (
-  p0: Vector,
-  p1: Vector,
-  p2: Vector,
-  p3: Vector
-): number => {
+export const cubicBezierLength = (p0: Vector, p1: Vector, p2: Vector, p3: Vector): number => {
   const xs: CtrlPoint = [p0.x, p1.x, p2.x, p3.x];
   const ys: CtrlPoint = [p0.y, p1.y, p2.y, p3.y];
   return getArcLength(xs, ys);

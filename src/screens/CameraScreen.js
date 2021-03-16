@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  ImageBackground,
-  TouchableOpacity,
-  Dimensions,
-} from "react-native";
+import { View, ImageBackground, TouchableOpacity, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Camera } from "expo-camera";
 import { Button, StyleService, Icon } from "@ui-kitten/components";
@@ -65,8 +60,7 @@ const CameraScreen = ({ route, navigation }) => {
           backgroundColor: "black",
           height: TOOLBAR_TOP_HEIGHT,
           // justifyContent: "space-between",
-        }}
-      >
+        }}>
         <Button
           //   style={styles.button}
           appearance="ghost"
@@ -90,8 +84,7 @@ const CameraScreen = ({ route, navigation }) => {
             style={{ height: CAMERA_VIEW_HEIGHT }}
             ref={(r) => {
               camera = r;
-            }}
-          ></Camera>
+            }}></Camera>
         </View>
       )}
       <View
@@ -101,16 +94,14 @@ const CameraScreen = ({ route, navigation }) => {
           backgroundColor: "black",
           justifyContent: "center",
           alignItems: "center",
-        }}
-      >
+        }}>
         {previewVisible && capturedImage ? (
           <View
             style={{
               flexGrow: 1,
               flexDirection: "row",
               justifyContent: "space-around",
-            }}
-          >
+            }}>
             <Button
               //   style={styles.button}
               appearance="ghost"
@@ -136,8 +127,7 @@ const CameraScreen = ({ route, navigation }) => {
               flexGrow: 1,
               flexDirection: "row",
               justifyContent: "space-around",
-            }}
-          >
+            }}>
             <View style={{ width: WINDOW_WIDTH / 3 }}>
               <Button
                 //   style={styles.button}
@@ -145,23 +135,13 @@ const CameraScreen = ({ route, navigation }) => {
                 status="control"
                 onPress={__handleFlashMode}
                 accessoryLeft={
-                  flashMode === "on" || flashMode === "auto"
-                    ? FlashOnIcon
-                    : FlashOffIcon
-                }
-              >
-                {flashMode === "on"
-                  ? "ON"
-                  : flashMode === "auto"
-                  ? "AUTO"
-                  : "OFF"}
+                  flashMode === "on" || flashMode === "auto" ? FlashOnIcon : FlashOffIcon
+                }>
+                {flashMode === "on" ? "ON" : flashMode === "auto" ? "AUTO" : "OFF"}
               </Button>
             </View>
 
-            <TouchableOpacity
-              onPress={__takePicture}
-              style={styles.takePictureButton}
-            />
+            <TouchableOpacity onPress={__takePicture} style={styles.takePictureButton} />
 
             <View style={{ width: WINDOW_WIDTH / 3 }}>
               <Button
@@ -169,8 +149,7 @@ const CameraScreen = ({ route, navigation }) => {
                 appearance="ghost"
                 status="control"
                 onPress={__switchCamera}
-                accessoryLeft={CameraIcon}
-              >
+                accessoryLeft={CameraIcon}>
                 {cameraType === "front" ? "FRONT" : "REAR"}
               </Button>
             </View>

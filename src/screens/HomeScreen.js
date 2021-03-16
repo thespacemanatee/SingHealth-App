@@ -29,6 +29,16 @@ const HomeScreen = ({ navigation }) => {
     dispatch(databaseActions.storeDatabase(database));
   }, [database, dispatch]);
 
+  const handleStaffLogin = () => {
+    login("staff");
+    navigation.navigate("StaffNavigator");
+  };
+
+  const handleTenantLogin = () => {
+    login("tenant");
+    navigation.navigate("TenantNavigator");
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <TopNavigation title="SingHealth" alignment="center" />
@@ -40,22 +50,8 @@ const HomeScreen = ({ navigation }) => {
           alignItems: "center",
         }}
       >
-        <Button
-          onPress={() => {
-            login("staff");
-            navigation.navigate("StaffNavigator");
-          }}
-        >
-          STAFF
-        </Button>
-        <Button
-          onPress={() => {
-            login("tenant");
-            navigation.navigate("TenantNavigator");
-          }}
-        >
-          TENANT
-        </Button>
+        <Button onPress={handleStaffLogin}>STAFF</Button>
+        <Button onPress={handleTenantLogin}>TENANT</Button>
       </Layout>
     </SafeAreaView>
   );

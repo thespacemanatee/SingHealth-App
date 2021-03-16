@@ -62,7 +62,7 @@ const StaffDashboardScreen = ({ navigation }) => {
         </Card>
       );
     },
-    [databaseStore]
+    [databaseStore],
   );
 
   return (

@@ -85,10 +85,7 @@ export const checklistReducer = (state = initialState, action) => {
       } else {
         newChecklist = _.cloneDeep(state.chosen_checklist);
       }
-      newChecklist.questions[action.index].image.splice(
-        action.selectedIndex,
-        1
-      );
+      newChecklist.questions[action.index].image.splice(action.selectedIndex, 1);
 
       // console.log(newChecklist.questions[action.index].image.uri);
       if (action.section === COVID_SECTION) {

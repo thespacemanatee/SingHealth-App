@@ -1,15 +1,7 @@
 import React, { useCallback, useState, useEffect, useRef } from "react";
 import { Dimensions, Platform, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  Button,
-  Text,
-  Card,
-  StyleService,
-  CheckBox,
-  Icon,
-  useTheme,
-} from "@ui-kitten/components";
+import { Button, Text, Card, StyleService, CheckBox, Icon, useTheme } from "@ui-kitten/components";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 
 import * as checklistActions from "../store/actions/checklistActions";
@@ -18,9 +10,7 @@ const TrashIcon = (props) => <Icon {...props} name="trash" />;
 const UndoIcon = (props) => <Icon {...props} name="undo" />;
 
 const QuestionCard = (props) => {
-  const checklistTypeStore = useSelector(
-    (state) => state.checklist.chosen_checklist_type
-  );
+  const checklistTypeStore = useSelector((state) => state.checklist.chosen_checklist_type);
   const [checked, setChecked] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const { index } = props;
@@ -56,20 +46,12 @@ const QuestionCard = (props) => {
   const leftComponent = useCallback(
     (progress, dragX) => {
       return (
-        <View
-          style={[
-            styles.deleteBox,
-            { backgroundColor: theme["color-primary-100"] },
-          ]}
-        >
-          <Button
-            appearance="ghost"
-            accessoryLeft={deleted ? UndoIcon : TrashIcon}
-          />
+        <View style={[styles.deleteBox, { backgroundColor: theme["color-primary-100"] }]}>
+          <Button appearance="ghost" accessoryLeft={deleted ? UndoIcon : TrashIcon} />
         </View>
       );
     },
-    [deleted, checked]
+    [deleted, checked],
   );
 
   const rightSwipe = useCallback(() => {
@@ -87,7 +69,7 @@ const QuestionCard = (props) => {
       dispatch(checklistActions.changeCurrentScore(nextChecked));
       dispatch(checklistActions.changeAnswer(section, index, deleted, nextChecked));
     },
-    [section, index, deleted, checked]
+    [section, index, deleted, checked],
   );
 
   return (
@@ -95,23 +77,17 @@ const QuestionCard = (props) => {
       ref={leftSwipeable}
       renderLeftActions={leftComponent}
       onSwipeableOpen={rightSwipe}
-      friction={2}
-    >
+      friction={2}>
       <View>
         <Card onPress={onClickDetailHandler} header={Header}>
           <View style={styles.questionContainer}>
-            <CheckBox
-              checked={checked}
-              onChange={onChangeHandler}
-              disabled={deleted}
-            />
+            <CheckBox checked={checked} onChange={onChangeHandler} disabled={deleted} />
             <View style={styles.questionTextContainer}>
               <Text
                 style={{
                   width: Platform.OS === "web" ? SCREEN_WIDTH - 100 : null,
                   textDecorationLine: deleted ? "line-through" : null,
-                }}
-              >
+                }}>
                 {itemData.item.question}
               </Text>
             </View>

@@ -42,22 +42,18 @@ const ChooseTenantScreen = ({ navigation }) => {
           onPress={() => {
             dispatch(checklistActions.addAuditTenantSelection(itemData.item));
             navigation.navigate("Checklist");
-          }}
-        >
+          }}>
           <Text>{itemData.item[Object.keys(itemData.item)[0]].name}</Text>
         </Card>
       );
     },
-    [relevantTenants]
+    [relevantTenants],
   );
 
   useEffect(() => {
     const tempArray = [];
     Object.keys(databaseStore.tenants).forEach(function (key) {
-      if (
-        databaseStore.tenants[key].institution ==
-        databaseStore.current_institution
-      ) {
+      if (databaseStore.tenants[key].institution == databaseStore.current_institution) {
         tempArray.push({ [key]: databaseStore.tenants[key] });
       }
     });
@@ -66,17 +62,12 @@ const ChooseTenantScreen = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <TopNavigation
-        title="Tenant Selection"
-        alignment="center"
-        accessoryLeft={BackAction}
-      />
+      <TopNavigation title="Tenant Selection" alignment="center" accessoryLeft={BackAction} />
       <Divider />
       <Layout
         style={{
           flex: 1,
-        }}
-      >
+        }}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Choose a Tenant to Audit</Text>
         </View>

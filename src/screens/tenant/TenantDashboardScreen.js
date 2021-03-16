@@ -35,9 +35,7 @@ const TenantDashboardScreen = ({ navigation }) => {
         accessoryRight={NotificationAction}
       />
       <Divider />
-      <Layout
-        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-      >
+      <Layout style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text category="h1">TENANT</Text>
       </Layout>
     </SafeAreaView>

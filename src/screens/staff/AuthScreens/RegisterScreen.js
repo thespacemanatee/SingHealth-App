@@ -36,24 +36,18 @@ const RegisterScreen = ({ navigation }) => {
 
   const RegisterSchema = Yup.object().shape({
     name: Yup.string().required("Please enter your name!"),
-    email: Yup.string()
-      .email("Invalid email!")
-      .required("Please enter your email!"),
+    email: Yup.string().email("Invalid email!").required("Please enter your email!"),
     password: Yup.string()
       .required("Please enter your password!")
       .min(8, "Password is too short - should be 8 chars minimum."),
-    passwordConfirmation: Yup.string().oneOf(
-      [Yup.ref("password"), null],
-      "Passwords must match"
-    ),
+    passwordConfirmation: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match"),
   });
 
   const renderSecureIcon = (props) => (
     <TouchableOpacity
       onPress={() => {
         setSecureTextEntry(!secureTextEntry);
-      }}
-    >
+      }}>
       <Icon {...props} name={secureTextEntry ? "eye-off" : "eye"} />
     </TouchableOpacity>
   );
@@ -73,12 +67,10 @@ const RegisterScreen = ({ navigation }) => {
         if (Platform.OS !== "web") {
           Keyboard.dismiss();
         }
-      }}
-    >
+      }}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
+        behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <TopNavigation
           style={{ zIndex: 5 }}
           title="Register"
@@ -90,8 +82,7 @@ const RegisterScreen = ({ navigation }) => {
           style={{
             flex: 1,
             alignItems: "center",
-          }}
-        >
+          }}>
           <Formik
             initialValues={{ name: "", email: "", password: "" }}
             onSubmit={(values) => {
@@ -100,8 +91,7 @@ const RegisterScreen = ({ navigation }) => {
               //   authActions.signIn(values.email, values.password, "staff")
               // );
             }}
-            validationSchema={RegisterSchema}
-          >
+            validationSchema={RegisterSchema}>
             {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
               <View style={styles.keyboardContainer}>
                 <Logo />

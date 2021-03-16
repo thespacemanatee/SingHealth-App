@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, Fragment } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   SafeAreaView,
   View,
@@ -15,7 +15,6 @@ import {
   TopNavigationAction,
   Icon,
   Text,
-  Card,
   StyleService,
   Radio,
   RadioGroup,

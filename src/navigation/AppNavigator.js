@@ -53,9 +53,7 @@ const AppNavigator = () => {
           <Screen name="TenantNavigator" component={TenantNavigator} />
         </Navigator>
       ) : (
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
           <Text style={{ fontWeight: "bold" }}>
             A serious error has occurred. You should never see this page.
           </Text>

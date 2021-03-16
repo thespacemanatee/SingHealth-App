@@ -31,10 +31,7 @@ export const parsePath = (d: string): Path => {
   const [move, ...rawCurves]: SVGPath = normalizeSVG(absSVG(parseSVG(d)));
   const curves: BezierCurve[] = rawCurves.map((curve, index) => {
     const prevCurve = rawCurves[index - 1];
-    const from =
-      index === 0
-        ? { x: move[1], y: move[2] }
-        : { x: prevCurve[5], y: prevCurve[6] };
+    const from = index === 0 ? { x: move[1], y: move[2] } : { x: prevCurve[5], y: prevCurve[6] };
     const c1 = { x: curve[1], y: curve[2] };
     const c2 = { x: curve[3], y: curve[4] };
     const to = { x: curve[5], y: curve[6] };
@@ -60,17 +57,15 @@ export const serializePath = (path: Path) =>
   path.curves
     .map(
       (c, index) =>
-        `${index === 0 ? `M${c.from.x},${c.from.y}` : ""}C${c.c1.x},${c.c1.y},${
-          c.c2.x
-        },${c.c2.y},${c.to.x},${c.to.y}`
+        `${index === 0 ? `M${c.from.x},${c.from.y}` : ""}C${c.c1.x},${c.c1.y},${c.c2.x},${c.c2.y},${
+          c.to.x
+        },${c.to.y}`,
     )
     .join("");
 
 export const getPointAtLength = (path: Path, length: number) => {
   "worklet";
-  const c = path.curves.find(
-    (curve) => length >= curve.start && length <= curve.end
-  );
+  const c = path.curves.find((curve) => length >= curve.start && length <= curve.end);
   if (!c) {
     throw new Error("Curve not found");
   }

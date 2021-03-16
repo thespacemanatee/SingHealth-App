@@ -28,9 +28,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
   const theme = useTheme();
 
   const ForgotSchema = Yup.object().shape({
-    email: Yup.string()
-      .email("Invalid email!")
-      .required("Please enter your email!"),
+    email: Yup.string().email("Invalid email!").required("Please enter your email!"),
   });
 
   const BackAction = () => (
@@ -48,12 +46,10 @@ const ForgotPasswordScreen = ({ navigation }) => {
         if (Platform.OS !== "web") {
           Keyboard.dismiss();
         }
-      }}
-    >
+      }}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
+        behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <TopNavigation
           style={{ zIndex: 5 }}
           title="Login"
@@ -65,8 +61,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
           style={{
             flex: 1,
             alignItems: "center",
-          }}
-        >
+          }}>
           <Formik
             initialValues={{ email: "" }}
             onSubmit={(values) => {
@@ -76,8 +71,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
               // );
               navigation.navigate("Login");
             }}
-            validationSchema={ForgotSchema}
-          >
+            validationSchema={ForgotSchema}>
             {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
               <View style={styles.keyboardContainer}>
                 <Logo />

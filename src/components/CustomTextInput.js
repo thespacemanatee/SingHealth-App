@@ -15,8 +15,7 @@ const CustomTextInput = ({ errorText, description, ...props }) => {
             {
               color: theme["color-basic-600"],
             },
-          ]}
-        >
+          ]}>
           {description ? description : " "}
         </Text>
       ) : null}

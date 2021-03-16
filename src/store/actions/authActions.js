@@ -94,7 +94,7 @@ const saveUserDataToStorage = async (userToken, userType) => {
       JSON.stringify({
         userToken: userToken,
         userType: userType,
-      })
+      }),
     );
   } catch (err) {
     console.error(err);
