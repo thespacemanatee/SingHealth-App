@@ -2,9 +2,17 @@ import React from "react";
 import { View, Dimensions, StyleSheet } from "react-native";
 import Svg, { Path, Defs, Stop, LinearGradient } from "react-native-svg";
 import * as shape from "d3-shape";
-import { useSharedValue, useDerivedValue, interpolate, Extrapolate } from "react-native-reanimated";
+import {
+  useSharedValue,
+  useDerivedValue,
+  interpolate,
+  Extrapolate,
+} from "react-native-reanimated";
 
-import { parsePath, getPointAtLength } from "../../../components/AnimatedHelpers";
+import {
+  parsePath,
+  getPointAtLength,
+} from "../../../components/AnimatedHelpers";
 
 import Cursor from "./Cursor";
 
@@ -84,8 +92,16 @@ const Graph = () => {
               <Stop stopColor="#FEFFFF" offset="100%" />
             </LinearGradient>
           </Defs>
-          <Path fill="transparent" stroke="#367be2" strokeWidth={5} {...{ d }} />
-          <Path d={`${d}  L ${width} ${height} L 0 ${height}`} fill="url(#gradient)" />
+          <Path
+            fill="transparent"
+            stroke="#367be2"
+            strokeWidth={5}
+            {...{ d }}
+          />
+          <Path
+            d={`${d}  L ${width} ${height} L 0 ${height}`}
+            fill="url(#gradient)"
+          />
         </Svg>
         <Cursor {...{ path, length, point }} />
       </View>

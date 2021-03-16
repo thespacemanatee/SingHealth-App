@@ -1,6 +1,9 @@
 import React, { useCallback, useState } from "react";
 import { View, StyleSheet, Dimensions, Platform } from "react-native";
-import { PanGestureHandler, PanGestureHandlerGestureEvent } from "react-native-gesture-handler";
+import {
+  PanGestureHandler,
+  PanGestureHandlerGestureEvent,
+} from "react-native-gesture-handler";
 import Animated, {
   useAnimatedGestureHandler,
   Extrapolate,
@@ -107,7 +110,12 @@ const Cursor = ({ path, length, point }: CursorProps) => {
       if (Platform.OS !== "web") {
         runOnJS(reRender)();
       }
-      ctx.offsetX = interpolate(length.value, [0, path.length], [0, width], Extrapolate.CLAMP);
+      ctx.offsetX = interpolate(
+        length.value,
+        [0, path.length],
+        [0, width],
+        Extrapolate.CLAMP
+      );
     },
     onActive: (event, ctx) => {
       if (Platform.OS === "web") {
@@ -117,7 +125,7 @@ const Cursor = ({ path, length, point }: CursorProps) => {
         ctx.offsetX + event.translationX,
         [0, width],
         [0, path.length],
-        Extrapolate.CLAMP,
+        Extrapolate.CLAMP
       );
     },
     onEnd: ({ velocityX }) => {
@@ -154,7 +162,9 @@ const Cursor = ({ path, length, point }: CursorProps) => {
       transform: [
         {
           translateX:
-            (coord.x > width / 2 ? -150 : 100) + translateX - (Platform.OS === "web" ? 60 : 0),
+            (coord.x > width / 2 ? -150 : 100) +
+            translateX -
+            (Platform.OS === "web" ? 60 : 0),
         },
       ],
     };
@@ -164,7 +174,9 @@ const Cursor = ({ path, length, point }: CursorProps) => {
     <View style={StyleSheet.absoluteFill}>
       <PanGestureHandler {...{ onGestureEvent }}>
         <Animated.View>
-          <Animated.View style={[{ ...styles.cursorContainer, zIndex: 1 }, cursorStyle]}>
+          <Animated.View
+            style={[{ ...styles.cursorContainer, zIndex: 1 }, cursorStyle]}
+          >
             <View style={styles.cursor} />
           </Animated.View>
           <Animated.View
@@ -175,7 +187,8 @@ const Cursor = ({ path, length, point }: CursorProps) => {
                 opacity: Platform.OS === "web" ? webOpacity : opacity,
               },
               lineStyle,
-            ]}>
+            ]}
+          >
             <View style={styles.line} />
           </Animated.View>
           <Animated.View
@@ -185,7 +198,8 @@ const Cursor = ({ path, length, point }: CursorProps) => {
                 opacity: Platform.OS === "web" ? webOpacity : opacity,
               },
               labelStyle,
-            ]}>
+            ]}
+          >
             <View style={styles.label}>
               <Label {...{ point }} />
             </View>
