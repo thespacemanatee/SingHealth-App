@@ -87,7 +87,7 @@ export const signOut = () => {
   };
 };
 
-const saveUserDataToStorage = async (userToken, userType) => {
+export const saveUserDataToStorage = async (userToken, userType) => {
   try {
     await AsyncStorage.setItem(
       "userData",
@@ -101,7 +101,7 @@ const saveUserDataToStorage = async (userToken, userType) => {
   }
 };
 
-const removeTokenToStorage = async (token) => {
+export const removeTokenToStorage = async (token) => {
   try {
     await AsyncStorage.removeItem("userData");
   } catch (err) {
