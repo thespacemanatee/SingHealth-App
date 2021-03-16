@@ -14,7 +14,7 @@ import {
   useTheme,
 } from "@ui-kitten/components";
 
-import { Styles as directoryStyles } from "../DirectoryScreens/StyleGuide";
+import { Styles as directoryStyles } from "./StyleGuide";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
@@ -41,16 +41,22 @@ const DirectoryScreen = ({ navigation }) => {
   const renderInstitutions = useCallback((itemData) => {
     return (
       <Card
-        style={[directoryStyles.item, { backgroundColor: theme["color-info-100"] }]}
+        style={[
+          directoryStyles.item,
+          { backgroundColor: theme["color-info-100"] },
+        ]}
         status="info"
         activeOpacity={0.5}
         onPress={() => {
           navigation.navigate("TenantsDirectory", {
             chosenInstitution: itemData.item[0],
           });
-        }}>
+        }}
+      >
         <View>
-          <Text style={directoryStyles.listContentText}>{itemData.item[1].name}</Text>
+          <Text style={directoryStyles.listContentText}>
+            {itemData.item[1].name}
+          </Text>
         </View>
       </Card>
     );
@@ -76,7 +82,8 @@ const DirectoryScreen = ({ navigation }) => {
       <Layout
         style={{
           flex: 1,
-        }}>
+        }}
+      >
         <List
           data={institutions}
           renderItem={renderInstitutions}

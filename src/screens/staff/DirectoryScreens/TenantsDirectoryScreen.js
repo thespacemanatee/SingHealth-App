@@ -14,7 +14,7 @@ import {
   useTheme,
 } from "@ui-kitten/components";
 
-import { Styles as directoryStyles } from "../DirectoryScreens/StyleGuide";
+import { Styles as directoryStyles } from "./StyleGuide";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -38,12 +38,18 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
   const renderInstitutions = useCallback((itemData) => {
     return (
       <Card
-        style={[directoryStyles.item, { backgroundColor: theme["color-info-100"] }]}
+        style={[
+          directoryStyles.item,
+          { backgroundColor: theme["color-info-100"] },
+        ]}
         status="info"
         activeOpacity={0.5}
-        onPress={() => {}}>
+        onPress={() => {}}
+      >
         <View>
-          <Text style={directoryStyles.listContentText}>{itemData.item[1].name}</Text>
+          <Text style={directoryStyles.listContentText}>
+            {itemData.item[1].name}
+          </Text>
         </View>
       </Card>
     );
@@ -59,12 +65,17 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <TopNavigation title="Directory" alignment="center" accessoryLeft={BackAction} />
+      <TopNavigation
+        title="Directory"
+        alignment="center"
+        accessoryLeft={BackAction}
+      />
       <Divider />
       <Layout
         style={{
           flex: 1,
-        }}>
+        }}
+      >
         <List
           data={tenants}
           renderItem={renderInstitutions}

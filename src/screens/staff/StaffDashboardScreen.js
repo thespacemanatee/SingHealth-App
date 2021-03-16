@@ -46,7 +46,7 @@ const StaffDashboardScreen = ({ navigation }) => {
   const renderActiveAudits = useCallback(
     (itemData) => {
       const auditID = `${itemData.item}`;
-      const tenantID = databaseStore.audits.audits[auditID].tenantID;
+      const { tenantID } = databaseStore.audits.audits[auditID];
       const tenantInfo = databaseStore.tenants[tenantID];
       return (
         <Card
@@ -62,7 +62,7 @@ const StaffDashboardScreen = ({ navigation }) => {
         </Card>
       );
     },
-    [databaseStore],
+    [databaseStore]
   );
 
   return (

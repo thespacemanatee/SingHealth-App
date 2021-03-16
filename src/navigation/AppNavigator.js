@@ -8,8 +8,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { database } from "../data/dummy-database";
 import * as databaseActions from "../store/actions/databaseActions";
 import * as authActions from "../store/actions/authActions";
-import StaffNavigator from "../navigation/StaffNavigator";
-import TenantNavigator from "../navigation/TenantNavigator";
+import StaffNavigator from "./StaffNavigator";
+import TenantNavigator from "./TenantNavigator";
 import AuthScreen from "../screens/staff/AuthScreens/AuthScreen";
 import LoginScreen from "../screens/staff/AuthScreens/LoginScreen";
 import RegisterScreen from "../screens/staff/AuthScreens/RegisterScreen";
@@ -53,7 +53,9 @@ const AppNavigator = () => {
           <Screen name="TenantNavigator" component={TenantNavigator} />
         </Navigator>
       ) : (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
           <Text style={{ fontWeight: "bold" }}>
             A serious error has occurred. You should never see this page.
           </Text>

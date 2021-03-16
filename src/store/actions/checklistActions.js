@@ -14,69 +14,69 @@ export const TYPE_NON_FNB = "non_fnb";
 export const TYPE_COVID = "covid19";
 
 export const addAuditTenantSelection = (tenant) => {
-  return { type: ADD_AUDIT_TENANT_SELECTION, tenant: tenant };
+  return { type: ADD_AUDIT_TENANT_SELECTION, tenant };
 };
 
 export const addChosenChecklist = (checklist_type, checklist) => {
   return {
     type: ADD_CHOSEN_CHECKLIST,
-    checklist_type: checklist_type,
-    checklist: checklist,
+    checklist_type,
+    checklist,
   };
 };
 
 export const addCovidChecklist = (checklist) => {
   return {
     type: ADD_COVID_CHECKLIST,
-    checklist: checklist,
+    checklist,
   };
 };
 
 export const addImage = (section, index, imageUri) => {
   return {
     type: ADD_IMAGE,
-    section: section,
-    index: index,
-    imageUri: imageUri,
+    section,
+    index,
+    imageUri,
   };
 };
 
 export const deleteImage = (section, index, selectedIndex) => {
   return {
     type: DELETE_IMAGE,
-    section: section,
-    index: index,
-    selectedIndex: selectedIndex,
+    section,
+    index,
+    selectedIndex,
   };
 };
 
 export const addRemarks = (section, index, remarks) => {
   return {
     type: ADD_REMARKS,
-    section: section,
-    index: index,
-    remarks: remarks,
+    section,
+    index,
+    remarks,
   };
 };
 
 export const setMaximumScore = (score) => {
-  return { type: SET_MAXIMUM_SCORE, score: score };
+  return { type: SET_MAXIMUM_SCORE, score };
 };
 
 export const changeCurrentScore = (change) => {
-  return { type: CHANGE_CURRENT_SCORE, change: change };
+  return { type: CHANGE_CURRENT_SCORE, change };
 };
 
 export const changeMaximumScore = (deleted, checked) => {
-  return { type: CHANGE_MAXIMUM_SCORE, deleted: deleted, checked: checked };
+  return { type: CHANGE_MAXIMUM_SCORE, deleted, checked };
 };
 
 export const changeAnswer = (section, index, deleted, checked) => {
   return {
     type: CHANGE_ANSWER,
-    section: section,
-    index: index,
-    deleted: deleted,
-    checked: checked,
+    section,
+    index,
+    deleted,
+    checked,
   };
 };

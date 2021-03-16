@@ -5,9 +5,9 @@ import * as staffs from "./staffs-data.json";
 import * as tenants from "./tenants-data.json";
 
 export const database = {
-  audit_forms: audit_forms,
-  audits: audits,
-  institutions: institutions,
-  staffs: staffs,
-  tenants: tenants,
+  audit_forms,
+  audits,
+  institutions,
+  staffs,
+  tenants,
 };

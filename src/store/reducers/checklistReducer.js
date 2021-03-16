@@ -53,7 +53,7 @@ export const checklistReducer = (state = initialState, action) => {
       };
     }
 
-    //TODO:
+    // TODO:
     case ADD_IMAGE: {
       let newChecklist;
       if (action.section === COVID_SECTION) {
@@ -85,7 +85,10 @@ export const checklistReducer = (state = initialState, action) => {
       } else {
         newChecklist = _.cloneDeep(state.chosen_checklist);
       }
-      newChecklist.questions[action.index].image.splice(action.selectedIndex, 1);
+      newChecklist.questions[action.index].image.splice(
+        action.selectedIndex,
+        1
+      );
 
       // console.log(newChecklist.questions[action.index].image.uri);
       if (action.section === COVID_SECTION) {
@@ -172,12 +175,10 @@ export const checklistReducer = (state = initialState, action) => {
       }
       if (action.deleted) {
         newChecklist.questions[action.index].answer = null;
+      } else if (action.checked) {
+        newChecklist.questions[action.index].answer = true;
       } else {
-        if (action.checked) {
-          newChecklist.questions[action.index].answer = true;
-        } else {
-          newChecklist.questions[action.index].answer = false;
-        }
+        newChecklist.questions[action.index].answer = false;
       }
 
       console.log(newChecklist);

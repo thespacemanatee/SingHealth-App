@@ -3,9 +3,9 @@ import { useDispatch } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, Divider, Layout, TopNavigation } from "@ui-kitten/components";
 
+import axios from "axios";
 import { database } from "../data/dummy-database";
 import * as databaseActions from "../store/actions/databaseActions";
-import axios from "axios";
 
 const HomeScreen = ({ navigation }) => {
   // const [status, setStatus] = useState(null);

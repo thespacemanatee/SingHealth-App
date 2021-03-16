@@ -42,7 +42,8 @@ export const BottomNavigationAccessoriesShowcase = ({ navigation, state }) => {
       style={styles.bottomNavigation}
       {...topState}
       selectedIndex={state.index}
-      onSelect={(index) => navigation.navigate(state.routeNames[index])}>
+      onSelect={(index) => navigation.navigate(state.routeNames[index])}
+    >
       <BottomNavigationTab title="DASHBOARD" icon={DashboardIcon} />
       <BottomNavigationTab title="DIRECTORY" icon={DirectoryIcon} />
     </BottomNavigation>
@@ -70,7 +71,8 @@ const DrawerContent = ({ navigation, state }) => (
     <Drawer
       footer={Footer}
       selectedIndex={new IndexPath(state.index)}
-      onSelect={(index) => navigation.navigate(state.routeNames[index.row])}>
+      onSelect={(index) => navigation.navigate(state.routeNames[index.row])}
+    >
       <DrawerItem title="Staff" />
     </Drawer>
   </SafeAreaView>
@@ -99,9 +101,17 @@ const StaffTabNavigator = () => {
   const { Navigator, Screen } = createBottomTabNavigator();
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <Navigator tabBar={(props) => <BottomNavigationAccessoriesShowcase {...props} />}>
-        <Screen name="StaffDashboardStack" component={StaffDashboardStackNavigator} />
-        <Screen name="StaffDirectoryStack" component={StaffDirectoryStackNavigator} />
+      <Navigator
+        tabBar={(props) => <BottomNavigationAccessoriesShowcase {...props} />}
+      >
+        <Screen
+          name="StaffDashboardStack"
+          component={StaffDashboardStackNavigator}
+        />
+        <Screen
+          name="StaffDirectoryStack"
+          component={StaffDirectoryStackNavigator}
+        />
       </Navigator>
     </SafeAreaView>
   );
