@@ -17,10 +17,10 @@ export const addAuditTenantSelection = (tenant) => {
   return { type: ADD_AUDIT_TENANT_SELECTION, tenant };
 };
 
-export const addChosenChecklist = (checklist_type, checklist) => {
+export const addChosenChecklist = (checklistType, checklist) => {
   return {
     type: ADD_CHOSEN_CHECKLIST,
-    checklist_type,
+    checklist_type: checklistType,
     checklist,
   };
 };

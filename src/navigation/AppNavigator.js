@@ -5,7 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { database } from "../data/dummy-database";
+import database from "../data/dummy-database";
 import * as databaseActions from "../store/actions/databaseActions";
 import * as authActions from "../store/actions/authActions";
 import StaffNavigator from "./StaffNavigator";
@@ -24,13 +24,13 @@ const AppNavigator = () => {
 
   useEffect(() => {
     dispatch(databaseActions.storeDatabase(database));
-  }, [database, dispatch]);
+  }, [dispatch]);
 
   useEffect(() => {
-    console.log(authStore);
     dispatch(authActions.restoreToken());
-  }, []);
+  }, [dispatch]);
 
+  console.log(authStore);
   console.log(authStore.userToken, authStore.userType);
 
   return (

@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { SafeAreaView, View, ImageBackground } from "react-native";
+import { View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  Button,
   Divider,
   Layout,
   TopNavigation,
@@ -48,14 +47,14 @@ const ChooseTenantScreen = ({ navigation }) => {
         </Card>
       );
     },
-    [relevantTenants]
+    [dispatch, navigation]
   );
 
   useEffect(() => {
     const tempArray = [];
     Object.keys(databaseStore.tenants).forEach((key) => {
       if (
-        databaseStore.tenants[key].institution ==
+        databaseStore.tenants[key].institution ===
         databaseStore.current_institution
       ) {
         tempArray.push({ [key]: databaseStore.tenants[key] });

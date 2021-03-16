@@ -1,5 +1,6 @@
 module.exports = {
   env: {
+    browser: true,
     es2021: true,
     node: true,
     jest: true,
@@ -37,8 +38,8 @@ module.exports = {
     "react-native/no-unused-styles": 2,
     "react-native/split-platform-components": 2,
     "react-native/no-inline-styles": 2,
-    "react-native/no-color-literals": 2,
-    "react-native/no-raw-text": 2,
+    "react-native/no-color-literals": 1,
     "react-native/no-single-element-style-arrays": 2,
+    "react/jsx-props-no-spreading": 1,
   },
 };

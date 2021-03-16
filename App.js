@@ -9,9 +9,9 @@ import { Provider } from "react-redux";
 import ReduxThunk from "redux-thunk";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 
-import { databaseReducer } from "./src/store/reducers/databaseReducer";
-import { checklistReducer } from "./src/store/reducers/checklistReducer";
-import { authReducer } from "./src/store/reducers/authReducer";
+import databaseReducer from "./src/store/reducers/databaseReducer";
+import checklistReducer from "./src/store/reducers/checklistReducer";
+import authReducer from "./src/store/reducers/authReducer";
 import AppNavigator from "./src/navigation/AppNavigator";
 import { default as theme } from "./src/theme/theme.json";
 

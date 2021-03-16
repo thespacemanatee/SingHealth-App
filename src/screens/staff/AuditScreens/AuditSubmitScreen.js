@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Platform, View } from "react-native";
 import { useSelector } from "react-redux";
 import {
@@ -21,7 +21,7 @@ const AuditSubmitScreen = ({ navigation }) => {
   const [submitting, setSubmitting] = useState(true);
   const [error, setError] = useState(false);
 
-  const submitHandler = async () => {
+  const submitHandler = useCallback(async () => {
     setError(false);
     const tempChosenChecklist = { ...checklistStore.chosen_checklist };
     const tempCovid19Checklist = { ...checklistStore.covid19 };
@@ -171,11 +171,16 @@ const AuditSubmitScreen = ({ navigation }) => {
       });
 
     setSubmitting(false);
-  };
+  }, [
+    checklistStore.chosen_checklist,
+    checklistStore.chosen_checklist_type,
+    checklistStore.chosen_tenant,
+    checklistStore.covid19,
+  ]);
 
   useEffect(() => {
     submitHandler();
-  }, [checklistStore]);
+  }, [checklistStore, submitHandler]);
 
   const handleGoHome = () => {
     navigation.dispatch(

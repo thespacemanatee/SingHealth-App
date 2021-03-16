@@ -39,8 +39,8 @@ const QuestionCard = (props) => {
     setDeleted(false);
   }, [checklistTypeStore]);
 
-  const Header = (props) => (
-    <View {...props}>
+  const Header = (headerProps) => (
+    <View {...headerProps}>
       <Text>{index + 1}</Text>
     </View>
   );
@@ -53,24 +53,21 @@ const QuestionCard = (props) => {
     });
   };
 
-  const leftComponent = useCallback(
-    (progress, dragX) => {
-      return (
-        <View
-          style={[
-            styles.deleteBox,
-            { backgroundColor: theme["color-primary-100"] },
-          ]}
-        >
-          <Button
-            appearance="ghost"
-            accessoryLeft={deleted ? UndoIcon : TrashIcon}
-          />
-        </View>
-      );
-    },
-    [deleted, checked]
-  );
+  const leftComponent = useCallback(() => {
+    return (
+      <View
+        style={[
+          styles.deleteBox,
+          { backgroundColor: theme["color-primary-100"] },
+        ]}
+      >
+        <Button
+          appearance="ghost"
+          accessoryLeft={deleted ? UndoIcon : TrashIcon}
+        />
+      </View>
+    );
+  }, [theme, deleted]);
 
   const rightSwipe = useCallback(() => {
     console.log(section, index, deleted, checked);
@@ -78,7 +75,7 @@ const QuestionCard = (props) => {
     dispatch(checklistActions.changeMaximumScore(!deleted, checked));
     dispatch(checklistActions.changeAnswer(section, index, !deleted, checked));
     leftSwipeable.current.close();
-  }, [section, index, deleted, checked]);
+  }, [section, index, deleted, checked, dispatch]);
 
   const onChangeHandler = useCallback(
     (nextChecked) => {
@@ -89,7 +86,7 @@ const QuestionCard = (props) => {
         checklistActions.changeAnswer(section, index, deleted, nextChecked)
       );
     },
-    [section, index, deleted, checked]
+    [section, index, deleted, checked, dispatch]
   );
 
   return (

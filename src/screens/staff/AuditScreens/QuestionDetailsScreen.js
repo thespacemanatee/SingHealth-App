@@ -50,7 +50,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     dispatch(checklistActions.addRemarks(section, index, val));
   };
 
-  const handleAlert = () => {
+  const handleAlert = useCallback(() => {
     alert("Delete Image", "Are you sure?", [
       { text: "Cancel", style: "cancel" },
       {
@@ -61,57 +61,58 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
         },
       },
     ]);
-  };
+  }, [dispatch, index, section, selectedIndex]);
 
   const renderImages = useCallback(
-    imageArray.map((imageUri, pagerIndex) => {
-      return (
-        <View
-          key={pagerIndex}
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            height: Platform.OS === "web" ? "100%" : null,
-          }}
-        >
+    () =>
+      imageArray.map((imageUri, pagerIndex) => {
+        return (
           <View
-            style={[
-              styles.shadowContainer,
-              { height: Platform.OS === "web" ? "100%" : null },
-            ]}
+            key={pagerIndex}
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              height: Platform.OS === "web" ? "100%" : null,
+            }}
           >
             <View
               style={[
-                styles.imageContainer,
+                styles.shadowContainer,
                 { height: Platform.OS === "web" ? "100%" : null },
               ]}
             >
-              <Image
-                style={{
-                  ...styles.image,
-                  height: IMAGE_HEIGHT,
-                  width: IMAGE_WIDTH,
-                }}
-                source={{
-                  uri: imageUri,
-                }}
-              />
-              <Button
-                style={{ position: "absolute", right: 0, bottom: 0 }}
-                appearance="ghost"
-                status="control"
-                size="giant"
-                onPress={handleAlert}
+              <View
+                style={[
+                  styles.imageContainer,
+                  { height: Platform.OS === "web" ? "100%" : null },
+                ]}
               >
-                Delete
-              </Button>
+                <Image
+                  style={{
+                    ...styles.image,
+                    height: IMAGE_HEIGHT,
+                    width: IMAGE_WIDTH,
+                  }}
+                  source={{
+                    uri: imageUri,
+                  }}
+                />
+                <Button
+                  style={{ position: "absolute", right: 0, bottom: 0 }}
+                  appearance="ghost"
+                  status="control"
+                  size="giant"
+                  onPress={handleAlert}
+                >
+                  Delete
+                </Button>
+              </View>
             </View>
           </View>
-        </View>
-      );
-    }),
-    [selectedIndex, imageArray]
+        );
+      }),
+    [imageArray, IMAGE_HEIGHT, IMAGE_WIDTH, handleAlert]
   );
 
   // useEffect(() => {
@@ -143,7 +144,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     if (storeRemarks) {
       setValue(storeRemarks);
     }
-  }, [checklistStore]);
+  }, [checklistStore, index, section]);
 
   const onSave = async (imageData) => {
     if (imageArray.length > 2) {

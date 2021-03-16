@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { SafeAreaView, View } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   Divider,
   Icon,
@@ -14,7 +14,7 @@ import {
   useTheme,
 } from "@ui-kitten/components";
 
-import { Styles as directoryStyles } from "./StyleGuide";
+import directoryStyles from "./StyleGuide";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -35,25 +35,28 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
     />
   );
 
-  const renderInstitutions = useCallback((itemData) => {
-    return (
-      <Card
-        style={[
-          directoryStyles.item,
-          { backgroundColor: theme["color-info-100"] },
-        ]}
-        status="info"
-        activeOpacity={0.5}
-        onPress={() => {}}
-      >
-        <View>
-          <Text style={directoryStyles.listContentText}>
-            {itemData.item[1].name}
-          </Text>
-        </View>
-      </Card>
-    );
-  }, []);
+  const renderInstitutions = useCallback(
+    (itemData) => {
+      return (
+        <Card
+          style={[
+            directoryStyles.item,
+            { backgroundColor: theme["color-info-100"] },
+          ]}
+          status="info"
+          activeOpacity={0.5}
+          onPress={() => {}}
+        >
+          <View>
+            <Text style={directoryStyles.listContentText}>
+              {itemData.item[1].name}
+            </Text>
+          </View>
+        </Card>
+      );
+    },
+    [theme]
+  );
 
   useEffect(() => {
     const tempArray = Object.entries(databaseStore.tenants);

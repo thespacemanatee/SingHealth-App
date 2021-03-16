@@ -13,6 +13,8 @@ if (Platform.OS === "web") {
   Lottie = LottieView;
 }
 
+const sourceFile = require("../../../assets/cross.json");
+
 class CrossAnimation extends React.Component {
   componentDidMount() {
     this.animation.play();
@@ -24,8 +26,9 @@ class CrossAnimation extends React.Component {
         ref={(animation) => {
           this.animation = animation;
         }}
+        // eslint-disable-next-line react/destructuring-assignment
         loop={this.props.loading}
-        source={require("../../../assets/cross.json")}
+        source={sourceFile}
       />
     );
     // }
