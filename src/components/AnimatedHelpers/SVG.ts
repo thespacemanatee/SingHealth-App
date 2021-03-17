@@ -68,6 +68,7 @@ export const serializePath = (path: Path) =>
 
 export const getPointAtLength = (path: Path, length: number) => {
   "worklet";
+
   const c = path.curves.find(
     (curve) => length >= curve.start && length <= curve.end
   );

@@ -34,7 +34,11 @@ const styles = StyleSheet.create({
     height: CURSOR,
     justifyContent: "center",
     alignItems: "center",
+    zIndex: 1,
     // backgroundColor: "rgba(100, 200, 300, 0.4)",
+  },
+  lineContainer: {
+    position: "absolute",
   },
   cursor: {
     width: 20,
@@ -172,20 +176,17 @@ const Cursor = ({ path, length, point }: CursorProps) => {
 
   return (
     <View style={StyleSheet.absoluteFill}>
-      <PanGestureHandler {...{ onGestureEvent }}>
+      <PanGestureHandler onGestureEvent={onGestureEvent}>
         <Animated.View>
-          <Animated.View
-            style={[{ ...styles.cursorContainer, zIndex: 1 }, cursorStyle]}
-          >
+          <Animated.View style={[styles.cursorContainer, cursorStyle]}>
             <View style={styles.cursor} />
           </Animated.View>
           <Animated.View
             style={[
-              {
-                ...styles.cursorContainer,
-                position: "absolute",
-                opacity: Platform.OS === "web" ? webOpacity : opacity,
-              },
+              [
+                styles.lineContainer,
+                { opacity: Platform.OS === "web" ? webOpacity : opacity },
+              ],
               lineStyle,
             ]}
           >
@@ -193,10 +194,10 @@ const Cursor = ({ path, length, point }: CursorProps) => {
           </Animated.View>
           <Animated.View
             style={[
-              {
-                ...styles.label,
-                opacity: Platform.OS === "web" ? webOpacity : opacity,
-              },
+              [
+                styles.label,
+                { opacity: Platform.OS === "web" ? webOpacity : opacity },
+              ],
               labelStyle,
             ]}
           >
