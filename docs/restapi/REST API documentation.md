@@ -8,7 +8,7 @@
 - [x] [`POST /audits`](#`POST-/audits`)
 - [ ] [`GET /audits`](#`POST-/audits`)
 - [x] [`POST /images`](#`POST-/images`)
-- [ ] [`GET /images`](#`GET-/images`)
+- [x] [`GET /images`](#`GET-/images`)
 ---
 
 
@@ -19,7 +19,7 @@
 
 ### Sample request
 ```
-curl GET "localhost:5000/tenants/{institutionId}"
+localhost:5000/tenants/{institutionId}
 ```
 
 ### Sample success response
@@ -40,48 +40,11 @@ curl GET "localhost:5000/tenants/{institutionId}"
   
 }
 ```
-
-## `GET /auditForm/{type_of_form}`
-### Parameters
-`type_of_form`
-~ Unique identifier for type of form
-
-### Sample request
-```
-curl GET "localhost:5000/auditForm/{fnb}"
-```
-
-### Sample success response
-```
-{
-  "status": 200,
-  "description": "success",
-  "data": [
-      {
-        "formID" : "1234",
-        "type" : "fnb",
-        "checklist" : [
-        {"category": "name of category_1",
-         "questions" : ["question 1.1", "question 1.2"]
-        },
-        
-        {"category" : "name of category_2",
-         "questions" : ["question 2.1", "question 2.2"]
-        }
-        ]
-      }
-  ]
-  
-}
-```
-
 ### Response definitions
-`formID`
-~ Unique identifier for auditForm
-`type`
-~ type of audit form
-`checklist`
-~ a list containing all the questions in its category
+`tenantID`
+~ Unique identifier for tenant
+`stallName`
+~ Name of the stall the tenant is from
 
 <br>
 <br>
@@ -95,8 +58,30 @@ curl GET "localhost:5000/auditForm/{fnb}"
 ~ JSON containing all the QnA, photos, deadlines, remarks, etc
 
 ### Sample request
-```
-curl POST "localhost:5000/audits" Content-type "application/json" "{"auditMetadata":\{staffId, tenantId, institutionID,...\}, \"auditForm\": \{\"fnb\":\{type, questions, id\}\} }"
+```python
+{
+  "auditMetadata": {
+    ...
+  },
+  "auditForm": {
+    "fnb": {
+      "hygiene": [
+        ...
+      ],
+      "professionalism": [
+        ...
+      ]
+    },
+    "covid19": {
+      "cleanliness": [
+        ...
+      ],
+      "safety": [
+        ...
+      ]
+    }
+  } 
+}
 ```
 
 ### Sample response
@@ -120,7 +105,12 @@ curl POST "localhost:5000/audits" Content-type "application/json" "{"auditMetada
 
 ## `POST /images`
 ---
-### JSON Query string parameters
+There are 2 ways to send in images to this endpoint:
+- by json in base64 encoded format
+- by Multipart/formdata
+
+
+### JSON Query string parameters (for sending images in base64 str format)
 `images`
 ~ An array of image objects each containing `fileName` & `uri`.
 `fileName`
@@ -128,22 +118,43 @@ curl POST "localhost:5000/audits" Content-type "application/json" "{"auditMetada
 `uri`
 ~ The actual image as a base64 string.
 
+
+#### Dummy request
+```js
+{
+    "images": [
+        {
+            "fileName": "...",
+            "uri": "..."
+        },
+        {
+            "fileName": "...",
+            "uri": "..."
+        }
+    ]
+}
+```
+
 ### Multipart/formdata parameters
 Category | Name
 -|-
 Mimetype | `image/jpg` / `image/png`
 Key | `images`
 
+
+!!!note
+Out of base64(JSON) or formdata, **only use 1** of them per request~
+!!!
 ### Sample response
 #### Success
-```
+```js
 {
   "status": 200,
   "description": "Images have successfully been uploaded"
 }
 ```
 #### Failure
-```
+```js
 {
   "status": 400,
   "description": "Image filenames not unique"
@@ -157,9 +168,9 @@ Key | `images`
 ~ The name and file extension of the image. Must be globally unique.
 
 ### Sample request
-```
+```js
 {
-  "filenames": [
+  "fileNames": [
     "image1.png",
     "image2.png",
     "image3.png"
@@ -169,7 +180,7 @@ Key | `images`
 
 ### Sample response
 #### Success
-```
+```js
 {
   "status": 200,
   "description": "Images have successfully been uploaded"
@@ -182,7 +193,7 @@ Key | `images`
 ```
 #### Failure
 ##### Partial failure
-```
+```js
 {
   "status": 200,
   "description": "Image3 does not exist",
@@ -192,6 +203,19 @@ Key | `images`
   ],
   "notFound": [
     "image3 in base64"
+  ]
+}
+```
+
+##### Complete failure
+```js
+{
+  "status": 404,
+  "description": "Image3 does not exist",
+  "notFound": [
+    "image3 in base64",
+    "image1 in base64",
+    "image2 in base64"
   ]
 }
 ```
