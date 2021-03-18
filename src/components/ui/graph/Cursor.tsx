@@ -27,18 +27,22 @@ function useForceUpdate() {
 }
 
 const { width } = Dimensions.get("window");
-const CURSOR = Platform.OS === "web" ? 30 : 150;
+const CURSOR = Platform.OS === "web" ? 20 : 150;
 const styles = StyleSheet.create({
   cursorContainer: {
     width: CURSOR,
     height: CURSOR,
     justifyContent: "center",
     alignItems: "center",
+    zIndex: 1,
     // backgroundColor: "rgba(100, 200, 300, 0.4)",
   },
+  lineContainer: {
+    position: "absolute",
+  },
   cursor: {
-    width: 30,
-    height: 30,
+    width: 20,
+    height: 20,
     borderRadius: 15,
     borderColor: "#367be2",
     borderWidth: 4,
@@ -172,20 +176,17 @@ const Cursor = ({ path, length, point }: CursorProps) => {
 
   return (
     <View style={StyleSheet.absoluteFill}>
-      <PanGestureHandler {...{ onGestureEvent }}>
+      <PanGestureHandler onGestureEvent={onGestureEvent}>
         <Animated.View>
-          <Animated.View
-            style={[{ ...styles.cursorContainer, zIndex: 1 }, cursorStyle]}
-          >
+          <Animated.View style={[styles.cursorContainer, cursorStyle]}>
             <View style={styles.cursor} />
           </Animated.View>
           <Animated.View
             style={[
-              {
-                ...styles.cursorContainer,
-                position: "absolute",
-                opacity: Platform.OS === "web" ? webOpacity : opacity,
-              },
+              [
+                styles.lineContainer,
+                { opacity: Platform.OS === "web" ? webOpacity : opacity },
+              ],
               lineStyle,
             ]}
           >
@@ -193,10 +194,10 @@ const Cursor = ({ path, length, point }: CursorProps) => {
           </Animated.View>
           <Animated.View
             style={[
-              {
-                ...styles.label,
-                opacity: Platform.OS === "web" ? webOpacity : opacity,
-              },
+              [
+                styles.label,
+                { opacity: Platform.OS === "web" ? webOpacity : opacity },
+              ],
               labelStyle,
             ]}
           >

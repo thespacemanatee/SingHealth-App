@@ -7,6 +7,7 @@ from botocore.exceptions import ClientError
 import boto3
 import io
 
+
 def upload_image(file_obj, bucket, file_name):
     """
     Function to upload a file to an S3 bucket
@@ -41,12 +42,13 @@ def list_images(bucket):
 
     return contents
 
+
 def addImagesEndpoint(app):
     @app.route("/images", methods=["GET", 'POST'])
     @login_required
     def images():
         if request.method == 'POST':
-            if (requestJson := request.get_json(silent = True)) != None:
+            if (requestJson := request.get_json(silent=True)) != None:
                 allImages = requestJson.get("images", [])
                 if len(allImages) > 0:
                     requestData = allImages
@@ -55,26 +57,26 @@ def addImagesEndpoint(app):
                     for image in requestData:
                         imageFilenames.append(image["fileName"])
 
-                    detected_Duplicate_filenames = len(imageFilenames) > len(set(imageFilenames))
+                    detected_Duplicate_filenames = len(
+                        imageFilenames) > len(set(imageFilenames))
                     if detected_Duplicate_filenames:
                         return failureResponse(failureMsg("Duplicate image names found", 400), 400)
-
 
                     for image in requestData:
                         try:
                             imageName = image["fileName"]
                             imageData = image["uri"]
                         except KeyError:
-                            failureResponse(failureMsg("Wrong request format. Make sure every Image object has a 'fileName' & a 'uri' field", 400), 400)
+                            failureResponse(failureMsg(
+                                "Wrong request format. Make sure every Image object has a 'fileName' & a 'uri' field", 400), 400)
 
-                        imageBytes = io.BytesIO(b64decode(imageData))
+                        imageBytes = io.BytesIO(b64decode(imageData + '==='))
                         upload_image(imageBytes, S3BUCKETNAME, imageName)
                     return successResponse(successMsg("Pictures have successfully been uploaded"))
-            
+
             elif len(request.files) > 0:
                 formdata = request.files
                 images = formdata.getlist("images")
-
 
                 detected_Duplicate_filenames = len(images) > len(set(images))
                 if detected_Duplicate_filenames:
@@ -86,7 +88,6 @@ def addImagesEndpoint(app):
 
                 return successResponse(successMsg("Pictures have successfully been uploaded"))
             return failureResponse(failureMsg("No image data received", 400), 400)
-
 
         elif request.method == "GET":
             details = request.json
@@ -110,7 +111,8 @@ def addImagesEndpoint(app):
                 except:
                     o += 1
 
-            serverResponse = successMsg(f"{n} images successfully downloaded, {m} images failed to download and {o} failed due to other reasons")
+            serverResponse = successMsg(
+                f"{n} images successfully downloaded, {m} images failed to download and {o} failed due to other reasons")
             serverResponse["uri"] = output
             serverResponse["notFound"] = failed
 

@@ -54,7 +54,7 @@ const Footer = () => {
   const dispatch = useDispatch();
 
   return (
-    <React.Fragment>
+    <>
       <DrawerItem
         title="Logout"
         onPress={() => {
@@ -62,7 +62,7 @@ const Footer = () => {
         }}
       />
       <Divider />
-    </React.Fragment>
+    </>
   );
 };
 

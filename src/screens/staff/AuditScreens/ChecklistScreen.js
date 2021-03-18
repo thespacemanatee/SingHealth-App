@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, Fragment } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   SafeAreaView,
   View,
@@ -15,7 +15,6 @@ import {
   TopNavigationAction,
   Icon,
   Text,
-  Card,
   StyleService,
   Radio,
   RadioGroup,
@@ -81,7 +80,7 @@ const ChecklistScreen = ({ navigation }) => {
         />
       );
     },
-    [selectedIndex]
+    [navigation]
   );
 
   const renderSectionHeader = useCallback(
@@ -97,11 +96,11 @@ const ChecklistScreen = ({ navigation }) => {
         </Text>
       );
     },
-    [selectedIndex]
+    [theme]
   );
 
   useEffect(() => {
-    if (selectedIndex == 0) {
+    if (selectedIndex === 0) {
       dispatch(
         checklistActions.addChosenChecklist(
           checklistActions.TYPE_FNB,
@@ -141,7 +140,7 @@ const ChecklistScreen = ({ navigation }) => {
     });
     dispatch(checklistActions.setMaximumScore(max));
     setLoading(false);
-  }, [selectedIndex, databaseStore]);
+  }, [selectedIndex, databaseStore, dispatch]);
 
   if (loading) {
     return (

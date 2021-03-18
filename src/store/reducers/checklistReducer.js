@@ -23,7 +23,7 @@ const initialState = {
   current_score: 0,
 };
 
-export const checklistReducer = (state = initialState, action) => {
+const checklistReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_AUDIT_TENANT_SELECTION:
       return {
@@ -53,7 +53,7 @@ export const checklistReducer = (state = initialState, action) => {
       };
     }
 
-    //TODO:
+    // TODO:
     case ADD_IMAGE: {
       let newChecklist;
       if (action.section === COVID_SECTION) {
@@ -134,36 +134,36 @@ export const checklistReducer = (state = initialState, action) => {
       };
     }
     case CHANGE_CURRENT_SCORE: {
-      let new_current_score;
+      let newCurrentScore;
       if (action.change) {
-        new_current_score = state.current_score + 1;
+        newCurrentScore = state.current_score + 1;
       } else {
-        new_current_score = state.current_score - 1;
+        newCurrentScore = state.current_score - 1;
       }
       return {
         ...state,
-        current_score: new_current_score,
+        current_score: newCurrentScore,
       };
     }
     case CHANGE_MAXIMUM_SCORE: {
       console.log(action.deleted);
-      let new_maximum_score;
-      let new_current_score = state.current_score;
+      let newMaximumScore;
+      let newCurrentScore = state.current_score;
       if (action.deleted) {
-        new_maximum_score = state.maximum_score - 1;
+        newMaximumScore = state.maximum_score - 1;
         if (action.checked) {
-          new_current_score--;
+          newCurrentScore -= 1;
         }
       } else {
-        new_maximum_score = state.maximum_score + 1;
+        newMaximumScore = state.maximum_score + 1;
         if (action.checked) {
-          new_current_score++;
+          newCurrentScore -= 1;
         }
       }
       return {
         ...state,
-        maximum_score: new_maximum_score,
-        current_score: new_current_score,
+        maximum_score: newMaximumScore,
+        current_score: newCurrentScore,
       };
     }
     case CHANGE_ANSWER: {
@@ -175,12 +175,10 @@ export const checklistReducer = (state = initialState, action) => {
       }
       if (action.deleted) {
         newChecklist.questions[action.index].answer = null;
+      } else if (action.checked) {
+        newChecklist.questions[action.index].answer = true;
       } else {
-        if (action.checked) {
-          newChecklist.questions[action.index].answer = true;
-        } else {
-          newChecklist.questions[action.index].answer = false;
-        }
+        newChecklist.questions[action.index].answer = false;
       }
 
       console.log(newChecklist);
@@ -201,3 +199,5 @@ export const checklistReducer = (state = initialState, action) => {
       return state;
   }
 };
+
+export default checklistReducer;

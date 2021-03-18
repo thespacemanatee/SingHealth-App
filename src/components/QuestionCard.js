@@ -39,38 +39,35 @@ const QuestionCard = (props) => {
     setDeleted(false);
   }, [checklistTypeStore]);
 
-  const Header = (props) => (
-    <View {...props}>
+  const Header = (headerProps) => (
+    <View {...headerProps}>
       <Text>{index + 1}</Text>
     </View>
   );
 
   const onClickDetailHandler = () => {
     props.navigation.navigate("QuestionDetails", {
-      index: index,
+      index,
       item: itemData.item,
-      section: section,
+      section,
     });
   };
 
-  const leftComponent = useCallback(
-    (progress, dragX) => {
-      return (
-        <View
-          style={[
-            styles.deleteBox,
-            { backgroundColor: theme["color-primary-100"] },
-          ]}
-        >
-          <Button
-            appearance="ghost"
-            accessoryLeft={deleted ? UndoIcon : TrashIcon}
-          />
-        </View>
-      );
-    },
-    [deleted, checked]
-  );
+  const leftComponent = useCallback(() => {
+    return (
+      <View
+        style={[
+          styles.deleteBox,
+          { backgroundColor: theme["color-primary-100"] },
+        ]}
+      >
+        <Button
+          appearance="ghost"
+          accessoryLeft={deleted ? UndoIcon : TrashIcon}
+        />
+      </View>
+    );
+  }, [theme, deleted]);
 
   const rightSwipe = useCallback(() => {
     console.log(section, index, deleted, checked);
@@ -78,16 +75,18 @@ const QuestionCard = (props) => {
     dispatch(checklistActions.changeMaximumScore(!deleted, checked));
     dispatch(checklistActions.changeAnswer(section, index, !deleted, checked));
     leftSwipeable.current.close();
-  }, [section, index, deleted, checked]);
+  }, [section, index, deleted, checked, dispatch]);
 
   const onChangeHandler = useCallback(
     (nextChecked) => {
       console.log(section, index, deleted, checked);
       setChecked(nextChecked);
       dispatch(checklistActions.changeCurrentScore(nextChecked));
-      dispatch(checklistActions.changeAnswer(section, index, deleted, nextChecked));
+      dispatch(
+        checklistActions.changeAnswer(section, index, deleted, nextChecked)
+      );
     },
-    [section, index, deleted, checked]
+    [section, index, deleted, checked, dispatch]
   );
 
   return (
@@ -126,7 +125,7 @@ const areEqual = (prevProps, nextProps) => {
   const { itemData } = nextProps;
   const { itemData: prevItemData } = prevProps;
 
-  /*if the props are equal, it won't update*/
+  /* if the props are equal, it won't update */
   const isSelectedEqual = itemData.item.question === prevItemData.item.question;
 
   return isSelectedEqual;

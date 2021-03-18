@@ -22,25 +22,24 @@ const CameraScreen = ({ route, navigation }) => {
   const [cameraType, setCameraType] = useState("back");
 
   const WINDOW_WIDTH = Dimensions.get("window").width;
-  const WINDOW_HEIGHT = Dimensions.get("window").height;
   const CAMERA_VIEW_HEIGHT = (WINDOW_WIDTH / 3) * 4;
   const TOOLBAR_TOP_HEIGHT = 64;
 
-  const __takePicture = async () => {
+  const takePicture = async () => {
     const photo = await camera.takePictureAsync();
     console.log(photo);
     setPreviewVisible(true);
     setCapturedImage(photo);
   };
-  const __savePhoto = () => {
+  const savePhoto = () => {
     route.params.onSave(capturedImage);
     navigation.goBack();
   };
-  const __retakePicture = () => {
+  const retakePicture = () => {
     setCapturedImage(null);
     setPreviewVisible(false);
   };
-  const __handleFlashMode = () => {
+  const handleFlashMode = () => {
     if (flashMode === "on") {
       setFlashMode("off");
     } else if (flashMode === "off") {
@@ -49,7 +48,7 @@ const CameraScreen = ({ route, navigation }) => {
       setFlashMode("on");
     }
   };
-  const __switchCamera = () => {
+  const switchCamera = () => {
     if (cameraType === "back") {
       setCameraType("front");
     } else {
@@ -91,7 +90,7 @@ const CameraScreen = ({ route, navigation }) => {
             ref={(r) => {
               camera = r;
             }}
-          ></Camera>
+          />
         </View>
       )}
       <View
@@ -115,7 +114,7 @@ const CameraScreen = ({ route, navigation }) => {
               //   style={styles.button}
               appearance="ghost"
               status="control"
-              onPress={__retakePicture}
+              onPress={retakePicture}
               //   accessoryLeft={StarIcon}
             >
               RETAKE
@@ -124,7 +123,7 @@ const CameraScreen = ({ route, navigation }) => {
               //   style={styles.button}
               appearance="ghost"
               status="control"
-              onPress={__savePhoto}
+              onPress={savePhoto}
               //   accessoryLeft={StarIcon}
             >
               SAVE
@@ -143,7 +142,7 @@ const CameraScreen = ({ route, navigation }) => {
                 //   style={styles.button}
                 appearance="ghost"
                 status="control"
-                onPress={__handleFlashMode}
+                onPress={handleFlashMode}
                 accessoryLeft={
                   flashMode === "on" || flashMode === "auto"
                     ? FlashOnIcon
@@ -159,7 +158,7 @@ const CameraScreen = ({ route, navigation }) => {
             </View>
 
             <TouchableOpacity
-              onPress={__takePicture}
+              onPress={takePicture}
               style={styles.takePictureButton}
             />
 
@@ -168,7 +167,7 @@ const CameraScreen = ({ route, navigation }) => {
                 //   style={styles.button}
                 appearance="ghost"
                 status="control"
-                onPress={__switchCamera}
+                onPress={switchCamera}
                 accessoryLeft={CameraIcon}
               >
                 {cameraType === "front" ? "FRONT" : "REAR"}

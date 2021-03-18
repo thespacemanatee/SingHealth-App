@@ -18,6 +18,12 @@ docs/uml/*.pdf
 backend/backend/**
 **/.vscode
 
+# wx test files
+backend/test_backend_wx.py
+
 
 # macOS
 .DS_Store
+
+# jest
+.jest/cache

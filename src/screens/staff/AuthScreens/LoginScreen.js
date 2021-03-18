@@ -63,6 +63,10 @@ const LoginScreen = ({ navigation }) => {
     />
   );
 
+  const handleUserToggle = (isChecked) => {
+    setChecked(isChecked);
+  };
+
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -123,7 +127,7 @@ const LoginScreen = ({ navigation }) => {
                       !!errors.email && (
                         <Icon
                           {...props}
-                          name={"alert-circle-outline"}
+                          name="alert-circle-outline"
                           fill={theme["color-danger-700"]}
                         />
                       )
@@ -142,12 +146,7 @@ const LoginScreen = ({ navigation }) => {
                   accessoryRight={renderSecureIcon}
                 />
                 <View style={styles.forgotPassword}>
-                  <Toggle
-                    checked={checked}
-                    onChange={(isChecked) => {
-                      setChecked(isChecked);
-                    }}
-                  >
+                  <Toggle checked={checked} onChange={handleUserToggle}>
                     {`Login as ${checked ? "Staff" : "Tenant"}`}
                   </Toggle>
                   <TouchableOpacity

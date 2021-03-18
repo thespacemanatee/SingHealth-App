@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   View,
   KeyboardAvoidingView,
@@ -6,7 +6,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import { useDispatch } from "react-redux";
+
 import {
   Button,
   Divider,
@@ -99,7 +99,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
                       !!errors.email && (
                         <Icon
                           {...props}
-                          name={"alert-circle-outline"}
+                          name="alert-circle-outline"
                           fill={theme["color-danger-700"]}
                         />
                       )

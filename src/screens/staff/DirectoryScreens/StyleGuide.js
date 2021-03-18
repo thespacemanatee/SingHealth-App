@@ -1,6 +1,6 @@
 import { StyleService } from "@ui-kitten/components";
 
-export const Styles = StyleService.create({
+const Styles = StyleService.create({
   contentContainer: {
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -12,3 +12,5 @@ export const Styles = StyleService.create({
     fontSize: 30,
   },
 });
+
+export default Styles;

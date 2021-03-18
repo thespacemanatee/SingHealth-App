@@ -9,7 +9,7 @@ const initialState = {
   tenants: null,
 };
 
-export const databaseReducer = (state = initialState, action) => {
+const databaseReducer = (state = initialState, action) => {
   switch (action.type) {
     case STORE_DATABASE:
       return {
@@ -24,3 +24,5 @@ export const databaseReducer = (state = initialState, action) => {
       return state;
   }
 };
+
+export default databaseReducer;

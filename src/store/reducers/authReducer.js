@@ -7,7 +7,7 @@ const initialState = {
   userType: null,
 };
 
-export const authReducer = (state = initialState, action) => {
+const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case RESTORE_TOKEN:
       return {
@@ -34,3 +34,5 @@ export const authReducer = (state = initialState, action) => {
       return state;
   }
 };
+
+export default authReducer;
