@@ -20,7 +20,7 @@ mongo = PyMongo(app)
 
 
 def return_find_data_json(result):
-    output = {};
+    output = {}
     
     #if data is found
     if len(result) > 0 :
