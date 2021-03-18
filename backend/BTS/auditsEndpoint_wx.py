@@ -41,7 +41,8 @@ def addWenXinEndpoints(app, mongo):
                     "data" : []}
         
         response = make_response(jsonify(output), output['status'])
-        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Origin"] = "http://localhost:19006"
+        response.headers["Access-Control-Allow-Credentials"] = "true"
         return response
 
     @app.route("/auditForms/<form_type>", methods = ["GET"])
@@ -85,6 +86,7 @@ def addWenXinEndpoints(app, mongo):
                     "data" : []}
         
         response = make_response(jsonify(output), output['status'])
-        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Origin"] = "http://localhost:19006"
+        response.headers["Access-Control-Allow-Credentials"] = "true"
         return response
 
