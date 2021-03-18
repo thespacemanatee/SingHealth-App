@@ -3,12 +3,14 @@
 
 ## Endpoints
 - [x] [`GET /tenants/{institutionId}`](#`GET-/tenants/{institutionId}`)
-- [ ] [`POST /tenants/{institutionId}`](#`POST-/tenants/{institutionId}`)
 - [x] [`GET /auditFormTemplates`](#`GET-/auditFormTemplates`)
 - [x] [`POST /audits`](#`POST-/audits`)
 - [ ] [`GET /audits`](#`POST-/audits`)
 - [x] [`POST /images`](#`POST-/images`)
 - [x] [`GET /images`](#`GET-/images`)
+- [ ] [`GET /login/tenant`](#`GET-/login/tenant`)
+- [ ] [`GET /login/staff`](#`GET-/login/staff`)
+
 ---
 
 
@@ -217,5 +219,68 @@ Out of base64(JSON) or formdata, **only use 1** of them per request~
     "image1 in base64",
     "image2 in base64"
   ]
+}
+```
+
+## `GET /login/tenant`
+### JSON Query string parameters
+`user`
+~ The user email tagged to the account
+`pswd`
+~ The password(may be hashed) security
+
+### Sample request
+```js
+{
+    "user": "something_else@gg.com",
+    "pswd": "mujnyhbt4gyh7uj5n6yhb5t4g56yh7u6"
+}
+```
+### Sample response
+#### Success
+```js
+{
+    "status": "200",
+    "description": "You are now logged in"
+}
+```
+#### Failure
+```js
+{
+    "status": "400",
+    "description": "User or pswd is incorrect"
+}
+```
+
+## `GET /login/staff`
+!!!note
+Uses exactly the same request and response format as `/login/tenant`
+!!!
+
+`user`
+~ The user email tagged to the account
+`pswd`
+~ The password(may be hashed) security
+
+### Sample request
+```js
+{
+    "user": "something_else@gg.com",
+    "pswd": "mujnyhbt4gyh7uj5n6yhb5t4g56yh7u6"
+}
+```
+### Sample response
+#### Success
+```js
+{
+    "status": "200",
+    "description": "You are now logged in"
+}
+```
+#### Failure
+```js
+{
+    "status": "400",
+    "description": "User or pswd is incorrect"
 }
 ```

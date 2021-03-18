@@ -19,7 +19,8 @@ CORS(app, supports_credentials=True)
 
 @ app.route('/', methods = ["GET", "POST"])
 def hello_world0():
-    return successResponse(successMsg("Yes this endpoint is working"))
+    return successResponse(successMsg("""Yes this endpoint is working
+        Remember to disable any @login_required decorators before testing that endpoint"""))
 
 @ app.route('/<num>', methods = ["GET", "POST"])
 def hello_world1(num):
