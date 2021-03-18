@@ -22,6 +22,30 @@ const AppNavigator = () => {
 
   const dispatch = useDispatch();
 
+  const renderNavigator = () => {
+    if (authStore.userType === "staff") {
+      return (
+        <Navigator headerMode="none">
+          <Screen name="StaffNavigator" component={StaffNavigator} />
+        </Navigator>
+      );
+    }
+    if (authStore.userType === "tenant") {
+      return (
+        <Navigator headerMode="none">
+          <Screen name="TenantNavigator" component={TenantNavigator} />
+        </Navigator>
+      );
+    }
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text style={{ fontWeight: "bold" }}>
+          A serious error has occurred. You should never see this page.
+        </Text>
+      </View>
+    );
+  };
+
   useEffect(() => {
     dispatch(databaseActions.storeDatabase(database));
   }, [dispatch]);
@@ -44,22 +68,8 @@ const AppNavigator = () => {
             <Screen name="ForgotPassword" component={ForgotPasswordScreen} />
           </Navigator>
         </SafeAreaView>
-      ) : authStore.userType === "staff" ? (
-        <Navigator headerMode="none">
-          <Screen name="StaffNavigator" component={StaffNavigator} />
-        </Navigator>
-      ) : authStore.userType === "tenant" ? (
-        <Navigator headerMode="none">
-          <Screen name="TenantNavigator" component={TenantNavigator} />
-        </Navigator>
       ) : (
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <Text style={{ fontWeight: "bold" }}>
-            A serious error has occurred. You should never see this page.
-          </Text>
-        </View>
+        renderNavigator()
       )}
     </NavigationContainer>
   );
