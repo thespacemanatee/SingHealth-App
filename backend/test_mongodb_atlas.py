@@ -11,7 +11,7 @@ from pymongo import MongoClient, errors
 try:
     # try to instantiate a client instance
     
-    client = MongoClient("mongodb+srv://admin:admin@bts.vjyxq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+    client = MongoClient("mongodb+srv://admin:admin@bts.vjyxq.mongodb.net/BTS?retryWrites=true&w=majority")
     db = client.BTS
 
 
