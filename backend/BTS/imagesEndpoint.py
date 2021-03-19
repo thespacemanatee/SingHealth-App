@@ -6,7 +6,7 @@ from base64 import b64decode, b64encode
 from botocore.exceptions import ClientError
 import boto3
 import io
-
+import traceback
 
 def upload_image(file_obj, bucket, file_name):
     """
@@ -34,11 +34,8 @@ def list_images(bucket):
     """
     s3 = boto3.client('s3')
     contents = []
-    # try:
     for item in s3.list_objects(Bucket=bucket)['Contents']:
         contents.append(item)
-    # except Exception as e:
-    #     pass
 
     return contents
 
@@ -90,30 +87,35 @@ def addImagesEndpoint(app):
             return failureResponse(failureMsg("No image data received", 400), 400)
 
         elif request.method == "GET":
-            details = request.json
-            filenames = details["fileNames"]
-            output = []
-            n = 0
-            m = 0
-            o = 0
-            failed = []
-            for index, filename in enumerate(filenames):
-                try:
-                    imageObject = download_image(filename, S3BUCKETNAME)
-                    imageBase64 = b64encode(imageObject.getvalue()).decode()
-                    output.append(imageBase64)
-                    n += 1
-                except ClientError as e:
-                    msg = str(e)
-                    if "Not Found" in msg:
-                        m += 1
-                        failed.append(filename)
-                except:
-                    o += 1
+            try:
+                details = request.json
+                filenames = details["fileNames"]
+                output = []
+                n = 0
+                m = 0
+                o = 0
+                failed = []
+                for index, filename in enumerate(filenames):
+                    try:
+                        #TODO: Might need to strip the header before sending it back to the client
+                        imageObject = download_image(filename, S3BUCKETNAME)
+                        imageBase64 = b64encode(imageObject.getvalue()).decode()
+                        output.append(imageBase64)
+                        n += 1
+                    except ClientError as e:
+                        msg = str(e)
+                        if "Not Found" in msg:
+                            m += 1
+                            failed.append(filename)
+                    except:
+                        o += 1
 
-            serverResponse = successMsg(
-                f"{n} images successfully downloaded, {m} images failed to download and {o} failed due to other reasons")
-            serverResponse["uri"] = output
-            serverResponse["notFound"] = failed
+                serverResponse = successMsg(
+                    f"{n} images successfully downloaded, {m} images failed to download and {o} failed due to other reasons")
+                serverResponse["uri"] = output
+                serverResponse["notFound"] = failed
 
-            return successResponse(serverResponse)
+                return successResponse(serverResponse)
+            except Exception as e:
+                traceback.print_exc()
+                return failureResponse(failureMsg("LOL", 503), 503)

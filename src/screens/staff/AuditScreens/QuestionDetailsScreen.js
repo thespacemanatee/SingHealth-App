@@ -1,12 +1,5 @@
-import React, { useState, useEffect, Fragment, useCallback } from "react";
-import {
-  View,
-  Image,
-  Alert,
-  Platform,
-  ScrollView,
-  Dimensions,
-} from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import { View, Image, Alert, Platform, Dimensions } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -28,7 +21,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 import alert from "../../../components/CustomAlert";
 import * as checklistActions from "../../../store/actions/checklistActions";
-import { COVID_SECTION } from "../AuditScreens/ChecklistScreen";
+import { COVID_SECTION } from "./ChecklistScreen";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
@@ -51,92 +44,72 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   const IMAGE_HEIGHT = SCREEN_HEIGHT * 0.5;
   const IMAGE_WIDTH = (IMAGE_HEIGHT / 4) * 3;
 
-  const changeTextHandler = (value) => {
-    setValue(value);
-    console.log(value);
-    dispatch(checklistActions.addRemarks(section, index, value));
+  const changeTextHandler = (val) => {
+    setValue(val);
+    console.log(val);
+    dispatch(checklistActions.addRemarks(section, index, val));
   };
 
-  const renderImages = useCallback(
-    imageArray.map((imageUri, pager_index) => {
-      return (
+  const handleAlert = useCallback(() => {
+    alert("Delete Image", "Are you sure?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: () => {
+          dispatch(checklistActions.deleteImage(section, index, selectedIndex));
+        },
+      },
+    ]);
+  }, [dispatch, index, section, selectedIndex]);
+
+  const renderImages = imageArray.map((imageUri, pagerIndex) => {
+    return (
+      <View
+        key={pagerIndex}
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          height: Platform.OS === "web" ? "100%" : null,
+        }}
+      >
         <View
-          key={pager_index}
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            height: Platform.OS === "web" ? "100%" : null,
-          }}
+          style={[
+            styles.shadowContainer,
+            { height: Platform.OS === "web" ? "100%" : null },
+          ]}
         >
           <View
             style={[
-              styles.shadowContainer,
+              styles.imageContainer,
               { height: Platform.OS === "web" ? "100%" : null },
             ]}
           >
-            <View
-              style={[
-                styles.imageContainer,
-                { height: Platform.OS === "web" ? "100%" : null },
-              ]}
+            <Image
+              style={{
+                ...styles.image,
+                height: IMAGE_HEIGHT,
+                width: IMAGE_WIDTH,
+              }}
+              source={{
+                uri: imageUri,
+              }}
+            />
+            <Button
+              style={{ position: "absolute", right: 0, bottom: 0 }}
+              appearance="ghost"
+              status="control"
+              size="giant"
+              onPress={handleAlert}
             >
-              <Image
-                style={{
-                  ...styles.image,
-                  height: IMAGE_HEIGHT,
-                  width: IMAGE_WIDTH,
-                }}
-                source={{
-                  uri: imageUri,
-                }}
-              />
-              <Button
-                style={{ position: "absolute", right: 0, bottom: 0 }}
-                appearance="ghost"
-                status="control"
-                size="giant"
-                onPress={() => {
-                  alert("Delete Image", "Are you sure?", [
-                    { text: "Cancel", style: "cancel" },
-                    {
-                      text: "Delete",
-                      style: "destructive",
-                      onPress: () => {
-                        dispatch(
-                          checklistActions.deleteImage(
-                            section,
-                            index,
-                            selectedIndex
-                          )
-                        );
-                      },
-                    },
-                  ]);
-                }}
-              >
-                Delete
-              </Button>
-            </View>
+              Delete
+            </Button>
           </View>
         </View>
-      );
-    }),
-    [selectedIndex, imageArray]
-  );
-
-  useEffect(() => {
-    async () => {
-      if (Platform.OS !== "web") {
-        const {
-          status,
-        } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== "granted") {
-          alert("Sorry, we need camera roll permissions to make this work!");
-        }
-      }
-    };
-  }, []);
+      </View>
+    );
+  });
 
   useEffect(() => {
     let storeImageUri;
@@ -154,7 +127,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     if (storeRemarks) {
       setValue(storeRemarks);
     }
-  }, [checklistStore]);
+  }, [checklistStore, index, section]);
 
   const onSave = async (imageData) => {
     if (imageArray.length > 2) {
@@ -180,17 +153,17 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     }
   };
 
-  const __startCamera = async () => {
+  const startCamera = async () => {
     const { status } = await Camera.requestPermissionsAsync();
     if (status === "granted") {
-      navigation.navigate("CameraModal", { onSave: onSave });
+      navigation.navigate("CameraModal", { onSave });
     } else {
       Alert.alert("Access denied");
     }
   };
 
   const imagePickerHandler = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [3, 4],
@@ -218,9 +191,9 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
       icon={CameraIcon}
       onPress={() => {
         if (Platform.OS === "web") {
-          navigation.navigate("CameraModal", { onSave: onSave });
+          navigation.navigate("CameraModal", { onSave });
         } else {
-          __startCamera();
+          startCamera();
         }
       }}
     />
@@ -241,10 +214,10 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
 
   const renderRightActions = () => {
     return (
-      <Fragment>
+      <>
         <CameraAction />
         <ImageAction />
-      </Fragment>
+      </>
     );
   };
 
@@ -274,7 +247,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           <ViewPager
             style={{ flex: 1, marginTop: 20 }}
             selectedIndex={selectedIndex}
-            onSelect={(index) => setSelectedIndex(index)}
+            onSelect={(i) => setSelectedIndex(i)}
           >
             {imageArray.length > 0 ? (
               renderImages
@@ -325,7 +298,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
             <Text category="h6">Remarks:</Text>
             <Input
               height={SCREEN_HEIGHT * 0.1}
-              multiline={true}
+              multiline
               textStyle={{ minHeight: 64 }}
               placeholder="Enter your remarks here"
               value={value}

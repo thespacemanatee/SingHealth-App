@@ -18,9 +18,21 @@ CORS(app, supports_credentials=True)
 
 
 @ app.route('/', methods = ["GET", "POST"])
-def hello_world():
-    return successResponse(successMsg("Yes this endpoint is working"))
+def hello_world0():
+    return successResponse(successMsg("""Yes this endpoint is working
+        Remember to disable any @login_required decorators before testing that endpoint"""))
 
+@ app.route('/<num>', methods = ["GET", "POST"])
+def hello_world1(num):
+    return successResponse(successMsg(f"Yes. Num endpoint received: {num}"))
+
+@ app.route('/<num>/suffix', methods = ["GET", "POST"])
+def hello_world2(num):
+    return successResponse(successMsg(f"Yes. Num suffix endpoint received: {num}"))
+
+@app.route('/<int:year>/<int:month>/<title>')
+def article(year, month, title):
+    return successResponse(successMsg(f"Yes. Num endpoint received: {year}, {month}, {title}"))
 
 addWenXinEndpoints(app, mongo)
 addAuditsEndpoint(app, mongo)

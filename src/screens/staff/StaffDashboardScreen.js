@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { View } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   Divider,
   Icon,
@@ -15,7 +15,7 @@ import {
 } from "@ui-kitten/components";
 import { FAB } from "react-native-paper";
 
-import Graph from "../../components/ui/graph/Graph";
+import Graph from "../../components/ui/graph/Graph.tsx";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
@@ -46,7 +46,7 @@ const StaffDashboardScreen = ({ navigation }) => {
   const renderActiveAudits = useCallback(
     (itemData) => {
       const auditID = `${itemData.item}`;
-      const tenantID = databaseStore.audits.audits[auditID].tenantID;
+      const { tenantID } = databaseStore.audits.audits[auditID];
       const tenantInfo = databaseStore.tenants[tenantID];
       return (
         <Card

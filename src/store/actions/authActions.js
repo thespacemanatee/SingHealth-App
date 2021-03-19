@@ -56,9 +56,9 @@ export const signIn = (email, password, userType) => {
         console.error(err);
       });
 
-    let userToken = "dummy-auth-token";
+    const userToken = "dummy-auth-token";
 
-    dispatch({ type: SIGN_IN, userType: userType, userToken: userToken });
+    dispatch({ type: SIGN_IN, userType, userToken });
     saveUserDataToStorage(userToken, userType);
   };
 };
@@ -80,7 +80,7 @@ export const signOut = () => {
         console.error(err);
       });
 
-    let token = "dummy-auth-token";
+    const token = "dummy-auth-token";
 
     dispatch({ type: SIGN_OUT });
     removeTokenToStorage(token);
@@ -92,8 +92,8 @@ export const saveUserDataToStorage = async (userToken, userType) => {
     await AsyncStorage.setItem(
       "userData",
       JSON.stringify({
-        userToken: userToken,
-        userType: userType,
+        userToken,
+        userType,
       })
     );
   } catch (err) {
@@ -101,7 +101,7 @@ export const saveUserDataToStorage = async (userToken, userType) => {
   }
 };
 
-export const removeTokenToStorage = async (token) => {
+const removeTokenToStorage = async () => {
   try {
     await AsyncStorage.removeItem("userData");
   } catch (err) {
