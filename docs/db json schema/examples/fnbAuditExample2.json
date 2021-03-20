@@ -2,7 +2,8 @@
     "_id": "yhjb3yv859042nt85931nu40c-mur302-gu8502-vn",
     "type": "fnb",
     "formTemplateID": "fnb2021",
-    "answers": [
+    "answers": {
+      "Professionalism and Staff Hygiene": [
         {
           "answer": false,
           "images": [
@@ -51,7 +52,9 @@
         },
         {
           "answer": true
-        },
+        }
+      ],
+      "Housekeeping & General Cleanliness": [
         {
           "answer": true
         },
@@ -102,94 +105,9 @@
         },
         {
           "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
+        }
+      ],
+      "Food Hygiene": [
         {
           "answer": true
         },
@@ -301,5 +219,97 @@
         {
           "answer": true
         }
-       ]
+      ],
+      "Healthier Choice in line with HPB's Healthy Eating's Initiative": [
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        }
+      ],
+      "Workplace Safety & Health": [
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        }
+      ]
+    }
 }
