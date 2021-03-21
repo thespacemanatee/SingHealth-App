@@ -46,11 +46,11 @@ const styles = StyleSheet.create({
     // backgroundColor: "red",
   },
   cursor: {
-    width: 20,
-    height: 20,
+    width: 15,
+    height: 15,
     borderRadius: 15,
     borderColor: "#367be2",
-    borderWidth: 4,
+    borderWidth: 3,
     backgroundColor: "white",
   },
   line: {
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
   label: {
     position: "absolute",
-    top: 25,
+    top: 20,
   },
 });
 
