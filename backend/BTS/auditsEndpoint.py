@@ -36,7 +36,7 @@ def validateFilledAuditForm(filledAuditForm):
                 return False, f"Item at index {index} does not have an 'answer' attribute"
 
             if "images" in answer.keys():
-                if len(answer["images"]) > MAX_NUM_IMAGES_PER_NC:
+                if len(answer.get("images",[])) > MAX_NUM_IMAGES_PER_NC:
                     return False, f"Item at index {index} has > {MAX_NUM_IMAGES_PER_NC} images (Max is {MAX_NUM_IMAGES_PER_NC})"
 
                 numUniqueFilenames = len(set(answer["images"]))
@@ -44,7 +44,7 @@ def validateFilledAuditForm(filledAuditForm):
                 if numFilenames > numUniqueFilenames:
                     return False, f"Item at index {index} has duplicate filenames"
 
-            if not answer["answer"] and len(answer["remarks"]) == 0:
+            if not answer["answer"] and len(answer.get("remarks",[])) == 0:
                 return False, f"Item at index {index} non-compliant but no remarks were given"
 
     return True, "Form is valid and ready for uploading"
@@ -98,7 +98,7 @@ def validateFilledAuditForms(filledAuditForms):
 
 def addAuditsEndpoint(app, mongo):
     @app.route("/audits", methods=['POST'])
-    # @login_required
+    @login_required
     def audits():
         if request.method == 'POST':
             auditData = request.json
