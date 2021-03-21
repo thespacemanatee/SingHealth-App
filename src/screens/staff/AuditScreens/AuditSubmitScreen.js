@@ -32,48 +32,58 @@ const AuditSubmitScreen = ({ navigation }) => {
 
     const formData = new FormData();
     const base64images = { images: [] };
-    tempChosenChecklist.questions.forEach((element, index) => {
-      if (element.image) {
-        element.image.forEach((image, imageIndex) => {
-          const fileName = `${`${chosenTenant}_${imageIndex}_${Math.round(
-            Date.now() * Math.random()
-          )}`}.jpg`;
-          if (Platform.OS === "web") {
-            base64images.images.push({ fileName, uri: image });
-          } else {
-            formData.append("images", {
-              uri: image,
-              name: fileName,
-              type: "image/jpg",
-            });
-          }
-          chosenChecklistImages.push(fileName);
-        });
-        tempChosenChecklist.questions[index].image = chosenChecklistImages;
-        chosenChecklistImages = [];
-      }
+    const chosenKeys = Object.keys(checklistStore.chosen_checklist.questions);
+    chosenKeys.forEach((section) => {
+      tempChosenChecklist.questions[section].forEach((element, index) => {
+        if (element.image) {
+          element.image.forEach((image, imageIndex) => {
+            const fileName = `${`${chosenTenant}_${imageIndex}_${Math.round(
+              Date.now() * Math.random()
+            )}`}.jpg`;
+            if (Platform.OS === "web") {
+              base64images.images.push({ fileName, uri: image });
+            } else {
+              formData.append("images", {
+                uri: image,
+                name: fileName,
+                type: "image/jpg",
+              });
+            }
+            chosenChecklistImages.push(fileName);
+          });
+          tempChosenChecklist.questions[section][
+            index
+          ].image = chosenChecklistImages;
+          chosenChecklistImages = [];
+        }
+      });
     });
 
-    tempCovid19Checklist.questions.forEach((element, index) => {
-      if (element.image) {
-        element.image.forEach((image, imageIndex) => {
-          const fileName = `${`${chosenTenant}_${imageIndex}_${Math.round(
-            Date.now() * Math.random()
-          )}`}.jpg`;
-          if (Platform.OS === "web") {
-            base64images.images.push({ fileName, uri: image });
-          } else {
-            formData.append("images", {
-              uri: image,
-              name: fileName,
-              type: "image/jpeg",
-            });
-          }
-          covid19ChecklistImages.push(fileName);
-        });
-        tempCovid19Checklist.questions[index].image = covid19ChecklistImages;
-        covid19ChecklistImages = [];
-      }
+    const covid19Keys = Object.keys(checklistStore.covid19.questions);
+    covid19Keys.forEach((section) => {
+      tempCovid19Checklist.questions[section].forEach((element, index) => {
+        if (element.image) {
+          element.image.forEach((image, imageIndex) => {
+            const fileName = `${`${chosenTenant}_${imageIndex}_${Math.round(
+              Date.now() * Math.random()
+            )}`}.jpg`;
+            if (Platform.OS === "web") {
+              base64images.images.push({ fileName, uri: image });
+            } else {
+              formData.append("images", {
+                uri: image,
+                name: fileName,
+                type: "image/jpeg",
+              });
+            }
+            covid19ChecklistImages.push(fileName);
+          });
+          tempCovid19Checklist.questions[section][
+            index
+          ].image = covid19ChecklistImages;
+          covid19ChecklistImages = [];
+        }
+      });
     });
 
     console.log(formData);

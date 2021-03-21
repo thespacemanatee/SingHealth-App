@@ -74,7 +74,7 @@ const QuestionCard = (props) => {
   const rightSwipe = useCallback(() => {
     console.log(section, index, deleted, checked);
     setDeleted(!deleted);
-    dispatch(checklistActions.changeMaximumScore(!deleted, checked));
+    // dispatch(checklistActions.changeMaximumScore(!deleted, checked));
     dispatch(checklistActions.changeAnswer(section, index, !deleted, checked));
     leftSwipeable.current.close();
   }, [section, index, deleted, checked, dispatch]);
@@ -83,7 +83,7 @@ const QuestionCard = (props) => {
     (nextChecked) => {
       console.log(section, index, deleted, checked);
       setChecked(nextChecked);
-      dispatch(checklistActions.changeCurrentScore(nextChecked));
+      // dispatch(checklistActions.changeCurrentScore(nextChecked));
       dispatch(
         checklistActions.changeAnswer(section, index, deleted, nextChecked)
       );
