@@ -72,19 +72,22 @@ def get_audit_form(form_type):
     
     try:
         form = mongo.db.auditFormTemplate.find_one(
-            {"type": form_type, "currentForm": True})  
+            {"type": form_type})  
         
-        checklist = []
+        checklist = {}
         if form is not None:
-            #access the questions with each categories
-            for key, value in form["categories"].items():
-                value = {
-                    "category" : value,
-                    "questions" : form[key]["questions"]
-                    }
-                checklist.append(value)
-                
-        output = return_find_data_json(checklist)
+            for category in form["questions"]:
+                checklist[category] = form["questions"][category]
+            
+            result = [{
+                "_id" : form["_id"],
+                "type" : form["type"],
+                "questions" : checklist
+                }]
+        else:
+            result = []
+
+        output = return_find_data_json(result)
         
         
     except:
