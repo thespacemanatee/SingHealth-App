@@ -28,7 +28,7 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
             if user:
                 if user["pswd"] == credentials["pswd"]: #check_password_hash(user["pswd"], credentials["pswd"]):
                     user_obj = User(userEmail=user['email'])
-                    login_user(user_obj)
+                    login_user(user_obj, remember=True)
                     session['account_type'] = "staff"
                     return successResponse(successMsg(f"You are now logged in as a staff under: {user['email']}"))
                 else:
@@ -50,7 +50,7 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
             if user:
                 if user["pswd"] == credentials["pswd"]:#check_password_hash(user["pswd"], credentials["pswd"]):
                     user_obj = User(userEmail=user['email'])
-                    login_user(user_obj)
+                    login_user(user_obj, remember=True)
                     session['account_type'] = "tenant"
                     return successResponse(successMsg(f"You are now logged in as a tenant under: {user['email']}"))
                 else:
