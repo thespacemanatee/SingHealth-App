@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { View, Image, Alert, Platform, Dimensions } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Alert, Platform, Dimensions } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -12,7 +12,6 @@ import {
   Input,
   Text,
   useTheme,
-  Button,
 } from "@ui-kitten/components";
 import { Camera } from "expo-camera";
 import * as FileSystem from "expo-file-system";
@@ -21,7 +20,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 import alert from "../../../components/CustomAlert";
 import * as checklistActions from "../../../store/actions/checklistActions";
-import { COVID_SECTION } from "./ChecklistScreen";
+import ImageViewPager from "../../../components/ImageViewPager";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
@@ -41,75 +40,12 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
 
   const SCREEN_HEIGHT = Dimensions.get("window").height;
-  const IMAGE_HEIGHT = SCREEN_HEIGHT * 0.5;
-  const IMAGE_WIDTH = (IMAGE_HEIGHT / 4) * 3;
 
   const changeTextHandler = (val) => {
     setValue(val);
     console.log(val);
     dispatch(checklistActions.addRemarks(section, index, val));
   };
-
-  const handleAlert = useCallback(() => {
-    alert("Delete Image", "Are you sure?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: () => {
-          dispatch(checklistActions.deleteImage(section, index, selectedIndex));
-        },
-      },
-    ]);
-  }, [dispatch, index, section, selectedIndex]);
-
-  const renderImages = imageArray.map((imageUri, pagerIndex) => {
-    return (
-      <View
-        key={pagerIndex}
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          height: Platform.OS === "web" ? "100%" : null,
-        }}
-      >
-        <View
-          style={[
-            styles.shadowContainer,
-            { height: Platform.OS === "web" ? "100%" : null },
-          ]}
-        >
-          <View
-            style={[
-              styles.imageContainer,
-              { height: Platform.OS === "web" ? "100%" : null },
-            ]}
-          >
-            <Image
-              style={{
-                ...styles.image,
-                height: IMAGE_HEIGHT,
-                width: IMAGE_WIDTH,
-              }}
-              source={{
-                uri: imageUri,
-              }}
-            />
-            <Button
-              style={{ position: "absolute", right: 0, bottom: 0 }}
-              appearance="ghost"
-              status="control"
-              size="giant"
-              onPress={handleAlert}
-            >
-              Delete
-            </Button>
-          </View>
-        </View>
-      </View>
-    );
-  });
 
   useEffect(() => {
     let storeImageUri;
@@ -229,7 +165,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.screen}>
       <TopNavigation
         title="SingHealth"
         alignment="center"
@@ -237,11 +173,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
         accessoryRight={renderRightActions}
       />
       <Divider />
-      <Layout
-        style={{
-          flex: 1,
-        }}
-      >
+      <Layout style={styles.screen}>
         <View
           style={[
             styles.titleContainer,
@@ -256,52 +188,18 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
             selectedIndex={selectedIndex}
             onSelect={(i) => setSelectedIndex(i)}
           >
-            {imageArray.length > 0 ? (
+            {/* {imageArray.length > 0 ? (
               renderImages
-            ) : (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: Platform.OS === "web" ? "100%" : null,
-                }}
-              >
-                <View
-                  style={[
-                    styles.shadowContainer,
-                    { height: Platform.OS === "web" ? "100%" : null },
-                  ]}
-                >
-                  <View
-                    style={[
-                      styles.imageContainer,
-                      { height: Platform.OS === "web" ? "100%" : null },
-                    ]}
-                  >
-                    <View
-                      style={{
-                        ...styles.image,
-                        height: IMAGE_HEIGHT,
-                        width: IMAGE_WIDTH,
-                      }}
-                    >
-                      <Text style={{ textAlign: "center" }}>
-                        No Images. Start adding some!
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            )}
+            ) : ( */}
+            <ImageViewPager
+              imageArray={imageArray}
+              index={index}
+              section={section}
+            />
+            {/* )} */}
           </ViewPager>
 
-          <View
-            style={[
-              styles.inputContainer,
-              { marginTop: Platform.OS === "web" ? 40 : null },
-            ]}
-          >
+          <View style={styles.inputContainer}>
             <Text category="h6">Remarks:</Text>
             <Input
               height={SCREEN_HEIGHT * 0.1}
@@ -321,32 +219,9 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
 export default QuestionDetailsScreen;
 
 const styles = StyleService.create({
+  screen: { flex: 1 },
   titleContainer: {
     padding: 20,
-  },
-  shadowContainer: {
-    // margin: 20,
-  },
-  imageContainer: {
-    // position: "absolute",
-    elevation: 10,
-    shadowOffset: { width: 5, height: 5 },
-    shadowColor: "grey",
-    shadowOpacity: 0.7,
-    borderRadius: 20,
-    alignItems: "center",
-  },
-  image: {
-    backgroundColor: "white",
-    shadowColor: "black",
-    shadowOpacity: 0.26,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 10,
-    borderRadius: 10,
-    overflow: "hidden",
-    justifyContent: "center",
-    alignContent: "center",
-    // padding: 50,
   },
   inputContainer: {
     margin: 20,

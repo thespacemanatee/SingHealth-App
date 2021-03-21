@@ -86,14 +86,10 @@ const ChecklistScreen = ({ navigation }) => {
   const renderSectionHeader = useCallback(
     ({ section: { title } }) => {
       return (
-        <Text
-          style={[
-            styles.header,
-            { backgroundColor: theme["color-primary-300"] },
-          ]}
-        >
-          {title}
-        </Text>
+        <View style={{ backgroundColor: theme["color-primary-300"] }}>
+          <Text style={styles.header}>{title}</Text>
+          <Divider />
+        </View>
       );
     },
     [theme]
@@ -239,6 +235,7 @@ const ChecklistScreen = ({ navigation }) => {
           renderItem={renderChosenChecklist}
           initialNumToRender={40}
           renderSectionHeader={renderSectionHeader}
+          SectionSeparatorComponent={() => <Divider />}
         />
         <View style={styles.bottomContainer}>
           {/* <Text>
@@ -273,8 +270,9 @@ const styles = StyleService.create({
     flexWrap: "wrap",
   },
   header: {
-    fontSize: 32,
+    fontSize: 24,
     padding: 10,
+    fontWeight: "bold",
   },
   bottomContainer: {
     flexDirection: "row-reverse",
