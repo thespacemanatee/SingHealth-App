@@ -149,36 +149,49 @@ const AuditSubmitScreen = ({ navigation }) => {
       data: base64images,
     };
 
-    axios
-      .all([
+    const handleErrorResponse = (err) => {
+      setError(true);
+      if (err.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error(err.response.data);
+        console.error(err.response.status);
+        console.error(err.response.headers);
+      } else if (err.request) {
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+        // http.ClientRequest in node.js
+        console.error(err.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error", err.message);
+      }
+      console.error(err.config);
+    };
+
+    if (formData._parts.length === 0) {
+      axios(postAudit)
+        .then((req) => {
+          console.log(req.data, "req");
+        })
+        .catch((err) => {
+          handleErrorResponse(err);
+        });
+    } else {
+      Promise.all([
         axios(postAudit),
         axios(Platform.OS === "web" ? postImagesWeb : postImages),
       ])
-      .then(
-        axios.spread((req1, req2) => {
-          console.log(req1.data, "req1");
-          console.log(req2.data, "req2");
-        })
-      )
-      .catch((err) => {
-        setError(true);
-        if (err.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          console.error(err.response.data);
-          console.error(err.response.status);
-          console.error(err.response.headers);
-        } else if (err.request) {
-          // The request was made but no response was received
-          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-          // http.ClientRequest in node.js
-          console.error(err.request);
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          console.error("Error", err.message);
-        }
-        console.error(err.config);
-      });
+        .then(
+          axios.spread((req1, req2) => {
+            console.log(req1.data, "req1");
+            console.log(req2.data, "req2");
+          })
+        )
+        .catch((err) => {
+          handleErrorResponse(err);
+        });
+    }
 
     setSubmitting(false);
   }, [

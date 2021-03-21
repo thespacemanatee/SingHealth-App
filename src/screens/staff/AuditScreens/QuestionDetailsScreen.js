@@ -114,7 +114,12 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   useEffect(() => {
     let storeImageUri;
     let storeRemarks;
-    if (section === COVID_SECTION) {
+    if (
+      Object.prototype.hasOwnProperty.call(
+        checklistStore.covid19.questions,
+        section
+      )
+    ) {
       storeImageUri = checklistStore.covid19.questions[section][index].image;
       storeRemarks = checklistStore.covid19.questions[section][index].remarks;
     } else {
