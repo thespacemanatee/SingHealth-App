@@ -29,6 +29,7 @@ const AuditSubmitScreen = ({ navigation }) => {
     const chosenChecklistType = checklistStore.chosen_checklist_type;
     let chosenChecklistImages = [];
     let covid19ChecklistImages = [];
+    let imageAdded = false;
 
     const formData = new FormData();
     const base64images = { images: [] };
@@ -36,6 +37,7 @@ const AuditSubmitScreen = ({ navigation }) => {
     chosenKeys.forEach((section) => {
       tempChosenChecklist.questions[section].forEach((element, index) => {
         if (element.image) {
+          imageAdded = true;
           element.image.forEach((image, imageIndex) => {
             const fileName = `${`${chosenTenant}_${imageIndex}_${Math.round(
               Date.now() * Math.random()
@@ -63,6 +65,7 @@ const AuditSubmitScreen = ({ navigation }) => {
     covid19Keys.forEach((section) => {
       tempCovid19Checklist.questions[section].forEach((element, index) => {
         if (element.image) {
+          imageAdded = true;
           element.image.forEach((image, imageIndex) => {
             const fileName = `${`${chosenTenant}_${imageIndex}_${Math.round(
               Date.now() * Math.random()
@@ -130,12 +133,7 @@ const AuditSubmitScreen = ({ navigation }) => {
         "Content-Type": "multipart/form-data",
       },
       withCredentials: true,
-      data:
-        Platform.OS === "android"
-          ? formData._parts.length > 0
-            ? formData
-            : null
-          : formData,
+      data: imageAdded ? formData : null,
     };
 
     const postImagesWeb = {
@@ -169,15 +167,7 @@ const AuditSubmitScreen = ({ navigation }) => {
       console.error(err.config);
     };
 
-    if (formData._parts.length === 0) {
-      axios(postAudit)
-        .then((req) => {
-          console.log(req.data, "req");
-        })
-        .catch((err) => {
-          handleErrorResponse(err);
-        });
-    } else {
+    if (imageAdded) {
       Promise.all([
         axios(postAudit),
         axios(Platform.OS === "web" ? postImagesWeb : postImages),
@@ -188,6 +178,14 @@ const AuditSubmitScreen = ({ navigation }) => {
             console.log(req2.data, "req2");
           })
         )
+        .catch((err) => {
+          handleErrorResponse(err);
+        });
+    } else {
+      axios(postAudit)
+        .then((req) => {
+          console.log(req.data, "req");
+        })
         .catch((err) => {
           handleErrorResponse(err);
         });
