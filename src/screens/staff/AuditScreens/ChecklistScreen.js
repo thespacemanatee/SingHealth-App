@@ -119,26 +119,61 @@ const ChecklistScreen = ({ navigation }) => {
     dispatch(
       checklistActions.addCovidChecklist(databaseStore.audit_forms.covid19)
     );
+
+    // const temp = databaseStore.audit_forms.fnb.questions.map((e) => {
+    //   const key = Object.keys(e)[0];
+    //   return { title: key, data: e.key };
+    // });
+
+    // console.log(temp);
+
     const checklist = [
       {
         title: selectedIndex === 0 ? FNB_SECTION : NON_FNB_SECTION,
-        data:
-          selectedIndex === 0
-            ? databaseStore.audit_forms.fnb.questions
-            : databaseStore.audit_forms.non_fnb.questions,
-      },
-      {
-        title: COVID_SECTION,
-        data: databaseStore.audit_forms.covid19.questions,
+        data: [],
+        // data:
+        //   selectedIndex === 0
+        //     ? databaseStore.audit_forms.fnb.questions
+        //     : databaseStore.audit_forms.non_fnb.questions,
       },
     ];
+
+    if (selectedIndex === 0) {
+      const temp = Object.keys(databaseStore.audit_forms.fnb.questions);
+      temp.forEach((title) => {
+        checklist.push({
+          title,
+          data: databaseStore.audit_forms.fnb.questions[title],
+        });
+      });
+    }
+    if (selectedIndex === 1) {
+      const temp = Object.keys(databaseStore.audit_forms.non_fnb.questions);
+      temp.forEach((title) => {
+        checklist.push({
+          title,
+          data: databaseStore.audit_forms.non_fnb.questions[title],
+        });
+      });
+    }
+    checklist.push({ title: COVID_SECTION, data: [] });
+    const temp = Object.keys(databaseStore.audit_forms.covid19.questions);
+    temp.forEach((title) => {
+      checklist.push({
+        title,
+        data: databaseStore.audit_forms.covid19.questions[title],
+      });
+    });
+
+    // console.log(checklist);
+
     setCompleteChecklist(checklist);
 
-    let max = 0;
-    checklist.forEach((section) => {
-      max += section.data.length;
-    });
-    dispatch(checklistActions.setMaximumScore(max));
+    // let max = 0;
+    // checklist.forEach((section) => {
+    //   max += section.data.length;
+    // });
+    // dispatch(checklistActions.setMaximumScore(max));
     setLoading(false);
   }, [selectedIndex, databaseStore, dispatch]);
 
@@ -206,10 +241,10 @@ const ChecklistScreen = ({ navigation }) => {
           renderSectionHeader={renderSectionHeader}
         />
         <View style={styles.bottomContainer}>
-          <Text>
+          {/* <Text>
             Current Score: {checklistStore.current_score}/
             {checklistStore.maximum_score}
-          </Text>
+          </Text> */}
           <Button
             //   style={styles.button}
             // appearance="filled"
@@ -242,7 +277,7 @@ const styles = StyleService.create({
     padding: 10,
   },
   bottomContainer: {
-    flexDirection: "row",
+    flexDirection: "row-reverse",
     padding: 20,
     borderColor: "grey",
     borderTopWidth: 1,

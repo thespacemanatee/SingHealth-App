@@ -32,48 +32,58 @@ const AuditSubmitScreen = ({ navigation }) => {
 
     const formData = new FormData();
     const base64images = { images: [] };
-    tempChosenChecklist.questions.forEach((element, index) => {
-      if (element.image) {
-        element.image.forEach((image, imageIndex) => {
-          const fileName = `${`${chosenTenant}_${imageIndex}_${Math.round(
-            Date.now() * Math.random()
-          )}`}.jpg`;
-          if (Platform.OS === "web") {
-            base64images.images.push({ fileName, uri: image });
-          } else {
-            formData.append("images", {
-              uri: image,
-              name: fileName,
-              type: "image/jpg",
-            });
-          }
-          chosenChecklistImages.push(fileName);
-        });
-        tempChosenChecklist.questions[index].image = chosenChecklistImages;
-        chosenChecklistImages = [];
-      }
+    const chosenKeys = Object.keys(checklistStore.chosen_checklist.questions);
+    chosenKeys.forEach((section) => {
+      tempChosenChecklist.questions[section].forEach((element, index) => {
+        if (element.image) {
+          element.image.forEach((image, imageIndex) => {
+            const fileName = `${`${chosenTenant}_${imageIndex}_${Math.round(
+              Date.now() * Math.random()
+            )}`}.jpg`;
+            if (Platform.OS === "web") {
+              base64images.images.push({ fileName, uri: image });
+            } else {
+              formData.append("images", {
+                uri: image,
+                name: fileName,
+                type: "image/jpg",
+              });
+            }
+            chosenChecklistImages.push(fileName);
+          });
+          tempChosenChecklist.questions[section][
+            index
+          ].image = chosenChecklistImages;
+          chosenChecklistImages = [];
+        }
+      });
     });
 
-    tempCovid19Checklist.questions.forEach((element, index) => {
-      if (element.image) {
-        element.image.forEach((image, imageIndex) => {
-          const fileName = `${`${chosenTenant}_${imageIndex}_${Math.round(
-            Date.now() * Math.random()
-          )}`}.jpg`;
-          if (Platform.OS === "web") {
-            base64images.images.push({ fileName, uri: image });
-          } else {
-            formData.append("images", {
-              uri: image,
-              name: fileName,
-              type: "image/jpeg",
-            });
-          }
-          covid19ChecklistImages.push(fileName);
-        });
-        tempCovid19Checklist.questions[index].image = covid19ChecklistImages;
-        covid19ChecklistImages = [];
-      }
+    const covid19Keys = Object.keys(checklistStore.covid19.questions);
+    covid19Keys.forEach((section) => {
+      tempCovid19Checklist.questions[section].forEach((element, index) => {
+        if (element.image) {
+          element.image.forEach((image, imageIndex) => {
+            const fileName = `${`${chosenTenant}_${imageIndex}_${Math.round(
+              Date.now() * Math.random()
+            )}`}.jpg`;
+            if (Platform.OS === "web") {
+              base64images.images.push({ fileName, uri: image });
+            } else {
+              formData.append("images", {
+                uri: image,
+                name: fileName,
+                type: "image/jpeg",
+              });
+            }
+            covid19ChecklistImages.push(fileName);
+          });
+          tempCovid19Checklist.questions[section][
+            index
+          ].image = covid19ChecklistImages;
+          covid19ChecklistImages = [];
+        }
+      });
     });
 
     console.log(formData);
@@ -139,36 +149,49 @@ const AuditSubmitScreen = ({ navigation }) => {
       data: base64images,
     };
 
-    axios
-      .all([
+    const handleErrorResponse = (err) => {
+      setError(true);
+      if (err.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error(err.response.data);
+        console.error(err.response.status);
+        console.error(err.response.headers);
+      } else if (err.request) {
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+        // http.ClientRequest in node.js
+        console.error(err.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error", err.message);
+      }
+      console.error(err.config);
+    };
+
+    if (formData._parts.length === 0) {
+      axios(postAudit)
+        .then((req) => {
+          console.log(req.data, "req");
+        })
+        .catch((err) => {
+          handleErrorResponse(err);
+        });
+    } else {
+      Promise.all([
         axios(postAudit),
         axios(Platform.OS === "web" ? postImagesWeb : postImages),
       ])
-      .then(
-        axios.spread((req1, req2) => {
-          console.log(req1.data, "req1");
-          console.log(req2.data, "req2");
-        })
-      )
-      .catch((err) => {
-        setError(true);
-        if (err.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          console.error(err.response.data);
-          console.error(err.response.status);
-          console.error(err.response.headers);
-        } else if (err.request) {
-          // The request was made but no response was received
-          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-          // http.ClientRequest in node.js
-          console.error(err.request);
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          console.error("Error", err.message);
-        }
-        console.error(err.config);
-      });
+        .then(
+          axios.spread((req1, req2) => {
+            console.log(req1.data, "req1");
+            console.log(req2.data, "req2");
+          })
+        )
+        .catch((err) => {
+          handleErrorResponse(err);
+        });
+    }
 
     setSubmitting(false);
   }, [

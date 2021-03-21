@@ -27,7 +27,7 @@ function useForceUpdate() {
 }
 
 const { width } = Dimensions.get("window");
-const CURSOR = Platform.OS === "web" ? 20 : 150;
+const CURSOR = 150;
 const styles = StyleSheet.create({
   cursorContainer: {
     width: CURSOR,
@@ -39,6 +39,11 @@ const styles = StyleSheet.create({
   },
   lineContainer: {
     position: "absolute",
+    width: CURSOR,
+    height: CURSOR,
+    justifyContent: "center",
+    alignItems: "center",
+    // backgroundColor: "red",
   },
   cursor: {
     width: 20,
@@ -49,7 +54,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   line: {
-    left: Platform.OS === "web" ? CURSOR / 2 : undefined,
     height: 1000,
     width: 1,
     backgroundColor: "grey",
@@ -165,10 +169,7 @@ const Cursor = ({ path, length, point }: CursorProps) => {
     return {
       transform: [
         {
-          translateX:
-            (coord.x > width / 2 ? -150 : 100) +
-            translateX -
-            (Platform.OS === "web" ? 60 : 0),
+          translateX: (coord.x > width / 2 ? -150 : 100) + translateX,
         },
       ],
     };
