@@ -101,7 +101,7 @@ export const saveUserDataToStorage = async (userToken, userType) => {
   }
 };
 
-const removeTokenToStorage = async () => {
+export const removeTokenToStorage = async () => {
   try {
     await AsyncStorage.removeItem("userData");
   } catch (err) {

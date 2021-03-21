@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {restoreToken, signIn, signOut, saveUserDataToStorage, removeTokenToStorage} from '../src/store/actions/authActions'
 
@@ -49,10 +49,3 @@ import {restoreToken, signIn, signOut, saveUserDataToStorage, removeTokenToStora
   });
 
 
-=======
-import { restoreToken } from "../src/store/actions/authActions";
-
-test("TOKEN test", () => {
-  expect(restoreToken).not.toBeUndefined();
-});
->>>>>>> 5c8a9bc64cb3999e70b1debde9a4a5cb946ed91e
