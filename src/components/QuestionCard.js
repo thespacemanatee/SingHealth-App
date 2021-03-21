@@ -28,6 +28,8 @@ const QuestionCard = (props) => {
   const section = itemData.section.title;
   const leftSwipeable = useRef(null);
 
+  console.log(section);
+
   const theme = useTheme();
 
   const dispatch = useDispatch();

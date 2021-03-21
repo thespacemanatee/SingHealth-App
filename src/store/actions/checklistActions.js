@@ -59,17 +59,17 @@ export const addRemarks = (section, index, remarks) => {
   };
 };
 
-export const setMaximumScore = (score) => {
-  return { type: SET_MAXIMUM_SCORE, score };
-};
+// export const setMaximumScore = (score) => {
+//   return { type: SET_MAXIMUM_SCORE, score };
+// };
 
-export const changeCurrentScore = (change) => {
-  return { type: CHANGE_CURRENT_SCORE, change };
-};
+// export const changeCurrentScore = (change) => {
+//   return { type: CHANGE_CURRENT_SCORE, change };
+// };
 
-export const changeMaximumScore = (deleted, checked) => {
-  return { type: CHANGE_MAXIMUM_SCORE, deleted, checked };
-};
+// export const changeMaximumScore = (deleted, checked) => {
+//   return { type: CHANGE_MAXIMUM_SCORE, deleted, checked };
+// };
 
 export const changeAnswer = (section, index, deleted, checked) => {
   return {
