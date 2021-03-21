@@ -24,6 +24,7 @@ awscli = "*"
 pillow = "*"
 requests = "*"
 flask-cors = "*"
+dnspython = "*"
 
 [dev-packages]
 
