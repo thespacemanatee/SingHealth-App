@@ -10,6 +10,7 @@ import {
   TopNavigation,
 } from "@ui-kitten/components";
 import axios from "axios";
+import _ from "lodash";
 
 import { CommonActions } from "@react-navigation/routers";
 import SuccessAnimation from "../../../components/ui/SuccessAnimation";
@@ -23,8 +24,8 @@ const AuditSubmitScreen = ({ navigation }) => {
 
   const submitHandler = useCallback(async () => {
     setError(false);
-    const tempChosenChecklist = { ...checklistStore.chosen_checklist };
-    const tempCovid19Checklist = { ...checklistStore.covid19 };
+    const tempChosenChecklist = _.cloneDeep(checklistStore.chosen_checklist);
+    const tempCovid19Checklist = _.cloneDeep(checklistStore.covid19);
     const chosenTenant = Object.keys(checklistStore.chosen_tenant)[0];
     const chosenChecklistType = checklistStore.chosen_checklist_type;
     let chosenChecklistImages = [];
@@ -213,24 +214,18 @@ const AuditSubmitScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
+    <View style={styles.screen}>
       <TopNavigation title="SingHealth" alignment="center" />
       <Divider />
-      <Layout
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <View style={{ height: 200, width: 200 }}>
+      <Layout style={styles.layout}>
+        <View style={styles.animationContainer}>
           {submitting && <SuccessAnimation loading={submitting} />}
           {!submitting && !error && <SuccessAnimation loading={submitting} />}
           {!submitting && error && <CrossAnimation loading={submitting} />}
         </View>
         {!submitting && (
           <View>
-            <Text style={{ fontWeight: "bold" }}>
+            <Text style={styles.text}>
               Audit submitted on: {new Date().toLocaleDateString()}
             </Text>
             <Button onPress={handleGoHome}>GO HOME</Button>
@@ -241,6 +236,23 @@ const AuditSubmitScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleService.create({});
+const styles = StyleService.create({
+  screen: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  layout: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  animationContainer: {
+    height: 200,
+    width: 200,
+  },
+  text: {
+    fontWeight: "bold",
+  },
+});
 
 export default AuditSubmitScreen;

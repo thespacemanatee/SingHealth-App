@@ -5,7 +5,14 @@ module.exports = {
     node: true,
     jest: true,
   },
-  extends: ["plugin:react/recommended", "airbnb", "prettier"],
+  extends: [
+    "plugin:react/recommended",
+    "airbnb",
+    "prettier",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript",
+  ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaFeatures: {
@@ -15,6 +22,7 @@ module.exports = {
     sourceType: "module",
   },
   plugins: [
+    "import",
     "react",
     "react-hooks",
     "react-native",
@@ -41,5 +49,6 @@ module.exports = {
     // "react-native/no-color-literals": 1,
     "react-native/no-single-element-style-arrays": 2,
     "react/jsx-props-no-spreading": 1,
+    "import/extensions": "off",
   },
 };

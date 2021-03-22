@@ -64,21 +64,17 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
       return e[1].institution === chosenInstitution;
     });
     setTenants(newTempArray);
-  }, [databaseStore.tenants]);
+  }, [chosenInstitution, databaseStore.tenants]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.screen}>
       <TopNavigation
         title="Directory"
         alignment="center"
         accessoryLeft={BackAction}
       />
       <Divider />
-      <Layout
-        style={{
-          flex: 1,
-        }}
-      >
+      <Layout style={styles.layout}>
         <List
           data={tenants}
           renderItem={renderInstitutions}
@@ -89,6 +85,13 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
   );
 };
 
-const styles = StyleService.create({});
+const styles = StyleService.create({
+  screen: {
+    flex: 1,
+  },
+  layout: {
+    flex: 1,
+  },
+});
 
 export default TenantsDirectoryScreen;

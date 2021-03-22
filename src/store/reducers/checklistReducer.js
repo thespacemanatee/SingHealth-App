@@ -161,45 +161,6 @@ const checklistReducer = (state = initialState, action) => {
         chosen_checklist: newChecklist,
       };
     }
-    // case SET_MAXIMUM_SCORE: {
-    //   return {
-    //     ...state,
-    //     maximum_score: action.score,
-    //   };
-    // }
-    // case CHANGE_CURRENT_SCORE: {
-    //   let newCurrentScore;
-    //   if (action.change) {
-    //     newCurrentScore = state.current_score + 1;
-    //   } else {
-    //     newCurrentScore = state.current_score - 1;
-    //   }
-    //   return {
-    //     ...state,
-    //     current_score: newCurrentScore,
-    //   };
-    // }
-    // case CHANGE_MAXIMUM_SCORE: {
-    //   console.log(action.deleted);
-    //   let newMaximumScore;
-    //   let newCurrentScore = state.current_score;
-    //   if (action.deleted) {
-    //     newMaximumScore = state.maximum_score - 1;
-    //     if (action.checked) {
-    //       newCurrentScore -= 1;
-    //     }
-    //   } else {
-    //     newMaximumScore = state.maximum_score + 1;
-    //     if (action.checked) {
-    //       newCurrentScore -= 1;
-    //     }
-    //   }
-    //   return {
-    //     ...state,
-    //     maximum_score: newMaximumScore,
-    //     current_score: newCurrentScore,
-    //   };
-    // }
     case CHANGE_ANSWER: {
       let newChecklist;
       if (

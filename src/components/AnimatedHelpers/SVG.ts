@@ -6,7 +6,7 @@ import absSVG from "abs-svg-path";
 import normalizeSVG from "normalize-svg-path";
 import { Vector, cubicBezier } from "react-native-redash";
 
-import { cubicBezierLength } from "./bezier";
+import cubicBezierLength from "./bezier/CubicBezierLength";
 
 type SVGMove = ["M", number, number];
 type SVGCurve = ["C", number, number, number, number, number, number];

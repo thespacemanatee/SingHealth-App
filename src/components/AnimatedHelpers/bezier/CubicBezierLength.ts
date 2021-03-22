@@ -758,7 +758,7 @@ const getArcLength = (xs: CtrlPoint, ys: CtrlPoint, t = 1, n = 20) => {
   return z * sum;
 };
 
-export const cubicBezierLength = (
+const cubicBezierLength = (
   p0: Vector,
   p1: Vector,
   p2: Vector,
@@ -768,3 +768,5 @@ export const cubicBezierLength = (
   const ys: CtrlPoint = [p0.y, p1.y, p2.y, p3.y];
   return getArcLength(xs, ys);
 };
+
+export default cubicBezierLength;

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleService } from "@ui-kitten/components";
 
 import database from "../data/dummy-database";
 import * as databaseActions from "../store/actions/databaseActions";
@@ -38,8 +39,8 @@ const AppNavigator = () => {
       );
     }
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text style={{ fontWeight: "bold" }}>
+      <View style={styles.textContainer}>
+        <Text style={styles.text}>
           A serious error has occurred. You should never see this page.
         </Text>
       </View>
@@ -60,7 +61,7 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       {authStore.userToken === null ? (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+        <SafeAreaView style={styles.screen}>
           <Navigator headerMode="none">
             <Screen name="Auth" component={AuthScreen} />
             <Screen name="Login" component={LoginScreen} />
@@ -76,3 +77,18 @@ const AppNavigator = () => {
 };
 
 export default AppNavigator;
+
+const styles = StyleService.create({
+  screen: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  textContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  text: {
+    fontWeight: "bold",
+  },
+});

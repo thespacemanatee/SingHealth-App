@@ -8,7 +8,6 @@ import {
   TopNavigationAction,
   Icon,
   StyleService,
-  ViewPager,
   Input,
   Text,
   useTheme,
@@ -173,38 +172,28 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
         accessoryRight={renderRightActions}
       />
       <Divider />
-      <Layout style={styles.screen}>
+      <Layout style={styles.layout}>
         <View
           style={[
             styles.titleContainer,
             { backgroundColor: theme["color-primary-400"] },
           ]}
         >
-          <Text style={{ fontWeight: "bold" }}>{item.question}</Text>
+          <Text style={styles.text}>{item.question}</Text>
         </View>
         <KeyboardAwareScrollView extraHeight={200}>
-          <ViewPager
-            style={{ flex: 1, marginTop: 20 }}
-            selectedIndex={selectedIndex}
-            onSelect={(i) => setSelectedIndex(i)}
-          >
-            {/* {imageArray.length > 0 ? (
-              renderImages
-            ) : ( */}
-            <ImageViewPager
-              imageArray={imageArray}
-              index={index}
-              section={section}
-            />
-            {/* )} */}
-          </ViewPager>
+          <ImageViewPager
+            imageArray={imageArray}
+            index={index}
+            section={section}
+          />
 
           <View style={styles.inputContainer}>
             <Text category="h6">Remarks:</Text>
             <Input
               height={SCREEN_HEIGHT * 0.1}
               multiline
-              textStyle={{ minHeight: 64 }}
+              textStyle={styles.input}
               placeholder="Enter your remarks here"
               value={value}
               onChangeText={changeTextHandler}
@@ -219,11 +208,23 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
 export default QuestionDetailsScreen;
 
 const styles = StyleService.create({
-  screen: { flex: 1 },
+  screen: {
+    flex: 1,
+  },
+  layout: {
+    flex: 1,
+  },
   titleContainer: {
     padding: 20,
   },
+  text: {
+    fontWeight: "bold",
+  },
+  viewPager: { flex: 1, marginTop: 20 },
   inputContainer: {
     margin: 20,
+  },
+  input: {
+    minHeight: 64,
   },
 });
