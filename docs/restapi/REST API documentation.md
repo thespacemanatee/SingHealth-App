@@ -5,12 +5,13 @@
 - [x] [`GET /tenants/{institutionId}`](#`GET-/tenants/{institutionId}`)
 - [x] [`GET /auditForms/<form_type>`](#`GET-/auditForms/<form_type>`)
 - [x] [`POST /audits`](#`POST-/audits`)
-- [ ] [`GET /audits`](#`POST-/audits`)
 - [x] [`POST /images`](#`POST-/images`)
 - [x] [`GET /images`](#`GET-/images`)
 - [x] [`GET /login/tenant`](#`GET-/login/tenant`)
 - [x] [`GET /login/staff`](#`GET-/login/staff`)
-
+- [ ] [`GET /audits/saved`](#`GET-/audits/saved`)
+- [ ] [`GET /audits/recent/staff`](#GET-/audits/recent/staff`)
+- [ ] [`GET /audits/recent/staff`](#GET-/audits/recent/tenant`)
 ---
 
 
@@ -98,6 +99,9 @@ localhost:5000/auditForms/fnb
 
 ## `POST /audits`
 ---
+### Side effects
+- Checks `savedAudits` & `savedFilledauditForms` for any data with matching IDs and deletes them.
+- Checks `staff` DB under a `savedAudits` list attribute and erases any audit ID that matches those that have just been submitted.
 ### Query string parameters
 `auditMetadata`
 ~ JSON containing metadata about the audit
@@ -327,5 +331,201 @@ Uses exactly the same request and response format as `/login/tenant`
 {
     "status": "400",
     "description": "User or pswd is incorrect"
+}
+```
+
+## `POST /audits/saved`
+### Description of use case
+When staff leave the app halfway through an audit, usually to go back to the office to sort out the photos and remarks, the audit will be sent to the database for archival just in case the data is lost on the staff's phone.
+The data is stored in a separate collection called `savedAudits` & `savedfilledAuditForms` and **must be deleted manually.**
+Similar query format to `POST /audits` but data is not checked for validity.
+Questions will not be removed from each audit line item.
+The audit ID will also be saved in the Staff profile in the DB.
+
+### JSON Query string parameters
+`auditMetadata`
+~ JSON containing metadata about the audit
+`auditForms`
+~ JSON containing all the QnA, photos, deadlines, remarks, etc
+
+### Sample request
+```python
+{
+  "auditMetadata": {
+    ...
+  },
+  "auditForm": {
+    "fnb": {
+      "hygiene": [
+        ...
+      ],
+      "professionalism": [
+        ...
+      ]
+    },
+    "covid19": {
+      "cleanliness": [
+        ...
+      ],
+      "safety": [
+        ...
+      ]
+    }
+  } 
+}
+```
+### Sample response
+#### Success response
+```js
+{
+  "status": 200,
+  "description": "Forms have successfully been saved",
+  "data": {
+      "_id": "tbry56j68%^&^&%%^YH^Y%6y5"
+  }
+}
+```
+#### Failure response
+```js
+{
+  "status": 502,
+  "description": "Perhaps the connection to the database is lost"
+}
+```
+## `GET /audits/saved`
+### JSON Query string parameters
+`_id`
+~ The unique identifier for the audit
+
+### Sample request
+```js
+{ "_id": "vyh5h757j4^UJyh5" }
+```
+### Sample response
+```js
+{
+  "status": 200,
+  "description": "Forms have successfully been retrieved",
+  "data": {
+      "auditMetadata": {
+          ...
+      },
+      "auditForm": {
+          "fnb": {
+              "hygiene": [
+                  {
+                    "question":"Are you okay?",
+                    "answer": true
+                  },
+                  { ... },
+                  ...
+              ],
+              "professionalism": [
+                ...
+              ]
+          },
+          "covid19": {
+              "cleanliness": [
+                ...
+              ],
+              "safety": [
+                ...
+              ]
+          }
+      } 
+  }
+}
+```
+#### Success
+#### Failure
+
+## `GET /audits/unrectified/recent/staff`
+### Description of use case
+The staff app has a dashboard which displays recent audits that have not been fully rectified. The staff needs to see audits from all the tenants under his/her charge.
+### JSON Query string parameters
+`institutionID`
+~ the unique identifier for the current institution. Case sensitive 
+~ I.e. `CGH`, `SGH`
+`daysBefore`
+~ An integer indicating how early the audits to query from.
+~ If `null`, all unrectified audits regardless of time will be returned.
+### Sample request
+#### With date range
+```js
+{
+    "institutionID": "CGH",
+    "daysBefore": 3
+}
+```
+#### Without date range
+```js
+{
+    "institutionID": "CGH"
+}
+```
+### Sample response
+#### Success
+```js
+{
+    "status": 200,
+    "description": "Forms found",
+    "data": [
+        <Audit object>,
+        <Audit object>
+    ]
+}
+```
+
+#### Failure
+```js
+{
+    "status": 404,
+    "description": "No matching Forms",
+    "data": []
+}
+```
+
+## `GET /audits/unrectified/recent/tenant`
+### Description of use case
+The tenant is interested in seeing any past audits that have not been rectified and needs to query only his own audits.
+### JSON Query string parameters
+`tenantID`
+~ The unique identifier for the tenant account
+`daysBefore`
+~ An integer indicating how early the audits to query from.
+~ If `null`, all unrectified audits regardless of time will be returned.
+### Sample request
+#### With date range
+```js
+{
+    "tenantID": "CGH",
+    "daysBefore": 3
+}
+```
+#### Without date range
+```js
+{
+    "tenantID": "CGH"
+}
+```
+### Sample response
+#### Success
+```js
+{
+    "status": 200,
+    "description": "Forms found",
+    "data": [
+        <Audit object>,
+        <Audit object>
+    ]
+}
+```
+
+#### Failure
+```js
+{
+    "status": 404,
+    "description": "No matching Forms",
+    "data": []
 }
 ```
