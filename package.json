@@ -30,7 +30,7 @@
     "d3-shape": "^2.1.0",
     "expo": "^40.0.1",
     "expo-app-loading": "^1.0.1",
-    "expo-camera": "~9.1.0",
+    "expo-camera": "~10.0.0",
     "expo-document-picker": "~9.0.1",
     "expo-file-system": "~10.0.0",
     "expo-font": "~8.4.0",
