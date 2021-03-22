@@ -34,7 +34,7 @@
     "expo-camera": "~10.0.0",
     "expo-document-picker": "~9.0.1",
     "expo-file-system": "~10.0.0",
-    "expo-font": "~8.4.0",
+    "expo-font": "~9.0.0",
     "expo-image-picker": "~10.0.0",
     "expo-location": "~11.0.0",
     "expo-notifications": "~0.9.0",
