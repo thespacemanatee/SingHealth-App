@@ -1,6 +1,7 @@
 export const ADD_AUDIT_TENANT_SELECTION = "ADD_AUDIT_TENANT_SELECTION";
 export const ADD_CHOSEN_CHECKLIST = "ADD_CHOSEN_CHECKLIST";
 export const ADD_COVID_CHECKLIST = "ADD_COVID_CHECKLIST";
+export const ADD_SAVED_CHECKLIST = "ADD_SAVED_CHECKLIST";
 export const ADD_IMAGE = "ADD_IMAGE";
 export const DELETE_IMAGE = "DELETE_IMAGE";
 export const ADD_REMARKS = "ADD_REMARKS";
@@ -28,6 +29,12 @@ export const addCovidChecklist = (checklist) => {
   return {
     type: ADD_COVID_CHECKLIST,
     checklist,
+  };
+};
+export const addSavedChecklist = (data) => {
+  return {
+    type: ADD_SAVED_CHECKLIST,
+    data,
   };
 };
 

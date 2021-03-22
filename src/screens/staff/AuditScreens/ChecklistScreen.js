@@ -20,6 +20,7 @@ import {
   RadioGroup,
   useTheme,
 } from "@ui-kitten/components";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import * as checklistActions from "../../../store/actions/checklistActions";
 import QuestionCard from "../../../components/QuestionCard";
@@ -30,15 +31,17 @@ export const NON_FNB_SECTION = "Non-F&B Checklist";
 export const COVID_SECTION = "COVID-19 Checklist";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
+const SaveIcon = (props) => <Icon {...props} name="save-outline" />;
 
-const ChecklistScreen = ({ navigation }) => {
+const ChecklistScreen = ({ route, navigation }) => {
   const databaseStore = useSelector((state) => state.database);
   const checklistStore = useSelector((state) => state.checklist);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [completeChecklist, setCompleteChecklist] = useState([]);
   const [loading, setLoading] = useState(true);
+  const covid19Keys = Object.keys(databaseStore.audit_forms.covid19.questions);
 
-  // console.log(checklistStore);
+  const { auditID } = route.params;
 
   const theme = useTheme();
 
@@ -48,17 +51,69 @@ const ChecklistScreen = ({ navigation }) => {
     <TopNavigationAction
       icon={BackIcon}
       onPress={() => {
-        navigation.goBack();
+        alert(
+          "Are you sure?",
+          "Your progress will be lost if you go back. Consider saving first.",
+          [
+            { text: "Cancel", style: "cancel" },
+            {
+              text: "Confirm",
+              onPress: () => {
+                navigation.goBack();
+              },
+              style: "destructive",
+            },
+          ]
+        );
       }}
     />
   );
+
+  const saveChecklists = async () => {
+    try {
+      AsyncStorage.removeItem("savedChecklists");
+      const toSave = {
+        chosen_tenant: checklistStore.chosen_tenant,
+        time: auditID,
+        data: checklistStore,
+      };
+
+      const value = await AsyncStorage.getItem("savedChecklists");
+      if (value === null) {
+        // value previously stored
+        AsyncStorage.setItem(
+          "savedChecklists",
+          JSON.stringify({ [auditID]: toSave })
+        );
+      } else {
+        const temp = JSON.parse(value);
+        temp[auditID] = toSave;
+        // console.log(temp);
+        AsyncStorage.setItem("savedChecklists", JSON.stringify(temp));
+      }
+    } catch (e) {
+      // error reading value
+      console.error(e);
+    }
+  };
+
+  const handleSaveChecklist = () => {
+    alert(
+      "Save checklist",
+      "Save progress your current progress. WARNING: un-submitted checklists will expire after a few days.",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Save", onPress: saveChecklists },
+      ]
+    );
+  };
 
   const onSubmitHandler = () => {
     if (Platform.OS === "web") {
       navigation.navigate("AuditSubmit");
     } else {
       alert("Confirm Submission", "Are you sure you want to submit?", [
-        { text: "Cancel" },
+        { text: "Cancel", style: "cancel" },
         {
           text: "Submit",
           onPress: () => {
@@ -72,15 +127,18 @@ const ChecklistScreen = ({ navigation }) => {
   const renderChosenChecklist = useCallback(
     (itemData) => {
       // console.log(itemData.section);
+
       return (
         <QuestionCard
-          itemData={itemData}
           index={itemData.index}
+          question={itemData.item.question}
+          section={itemData.section.title}
           navigation={navigation}
+          covid19={covid19Keys.includes(itemData.section.title)}
         />
       );
     },
-    [navigation]
+    [covid19Keys, navigation]
   );
 
   const renderSectionHeader = useCallback(
@@ -93,6 +151,10 @@ const ChecklistScreen = ({ navigation }) => {
       );
     },
     [theme]
+  );
+
+  const SaveAction = () => (
+    <TopNavigationAction icon={SaveIcon} onPress={handleSaveChecklist} />
   );
 
   useEffect(() => {
@@ -116,21 +178,10 @@ const ChecklistScreen = ({ navigation }) => {
       checklistActions.addCovidChecklist(databaseStore.audit_forms.covid19)
     );
 
-    // const temp = databaseStore.audit_forms.fnb.questions.map((e) => {
-    //   const key = Object.keys(e)[0];
-    //   return { title: key, data: e.key };
-    // });
-
-    // console.log(temp);
-
     const checklist = [
       {
         title: selectedIndex === 0 ? FNB_SECTION : NON_FNB_SECTION,
         data: [],
-        // data:
-        //   selectedIndex === 0
-        //     ? databaseStore.audit_forms.fnb.questions
-        //     : databaseStore.audit_forms.non_fnb.questions,
       },
     ];
 
@@ -165,11 +216,6 @@ const ChecklistScreen = ({ navigation }) => {
 
     setCompleteChecklist(checklist);
 
-    // let max = 0;
-    // checklist.forEach((section) => {
-    //   max += section.data.length;
-    // });
-    // dispatch(checklistActions.setMaximumScore(max));
     setLoading(false);
   }, [selectedIndex, databaseStore, dispatch]);
 
@@ -198,6 +244,7 @@ const ChecklistScreen = ({ navigation }) => {
         title="Checklist"
         alignment="center"
         accessoryLeft={BackAction}
+        accessoryRight={SaveAction}
       />
       <Divider />
       <Layout style={styles.screen}>

@@ -3,6 +3,7 @@ import _ from "lodash";
 import {
   ADD_AUDIT_TENANT_SELECTION,
   ADD_CHOSEN_CHECKLIST,
+  ADD_SAVED_CHECKLIST,
   ADD_IMAGE,
   DELETE_IMAGE,
   ADD_REMARKS,
@@ -45,6 +46,12 @@ const checklistReducer = (state = initialState, action) => {
         covid19: _.cloneDeep(action.checklist),
         // maximum_score: 0,
         // current_score: 0,
+      };
+    }
+
+    case ADD_SAVED_CHECKLIST: {
+      return {
+        ...action.data,
       };
     }
 
