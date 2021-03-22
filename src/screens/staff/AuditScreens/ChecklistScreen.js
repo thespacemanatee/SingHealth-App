@@ -40,6 +40,7 @@ const ChecklistScreen = ({ route, navigation }) => {
   const [completeChecklist, setCompleteChecklist] = useState([]);
   const [loading, setLoading] = useState(true);
   const covid19Keys = Object.keys(databaseStore.audit_forms.covid19.questions);
+  console.log(checklistStore);
 
   const { auditID } = route.params;
 
@@ -71,7 +72,7 @@ const ChecklistScreen = ({ route, navigation }) => {
 
   const saveChecklists = async () => {
     try {
-      AsyncStorage.removeItem("savedChecklists");
+      // AsyncStorage.removeItem("savedChecklists");
       const toSave = {
         chosen_tenant: checklistStore.chosen_tenant,
         time: auditID,

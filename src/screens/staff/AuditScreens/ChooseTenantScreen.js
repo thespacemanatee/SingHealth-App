@@ -100,14 +100,16 @@ const ChooseTenantScreen = ({ navigation }) => {
       }
     });
     let data = await AsyncStorage.getItem("savedChecklists");
-    data = JSON.parse(data);
+    if (data !== null) {
+      data = JSON.parse(data);
+    }
 
     const tempChecklists = [
       {
         title: "Available Tenants",
         data: tempArray,
       },
-      { title: "Saved Checklists", data: Object.values(data) },
+      { title: "Saved Checklists", data: data ? Object.values(data) : [] },
     ];
     setSectionData(tempChecklists);
   }, [databaseStore.current_institution, databaseStore.tenants]);
