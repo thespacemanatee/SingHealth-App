@@ -71,7 +71,7 @@ const DirectoryScreen = ({ navigation }) => {
   }, [databaseStore.institutions]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.screen}>
       <TopNavigation
         title="Directory"
         alignment="center"
@@ -79,11 +79,7 @@ const DirectoryScreen = ({ navigation }) => {
         accessoryRight={NotificationAction}
       />
       <Divider />
-      <Layout
-        style={{
-          flex: 1,
-        }}
-      >
+      <Layout style={styles.layout}>
         <List
           data={institutions}
           renderItem={renderInstitutions}
@@ -94,6 +90,13 @@ const DirectoryScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleService.create({});
+const styles = StyleService.create({
+  screen: {
+    flex: 1,
+  },
+  layout: {
+    flex: 1,
+  },
+});
 
 export default DirectoryScreen;

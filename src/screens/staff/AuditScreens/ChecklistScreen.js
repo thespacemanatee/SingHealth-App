@@ -175,19 +175,14 @@ const ChecklistScreen = ({ navigation }) => {
 
   if (loading) {
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={styles.screen}>
         <TopNavigation
           title="Checklist"
           alignment="center"
           accessoryLeft={BackAction}
         />
         <Divider />
-        <Layout
-          style={{
-            flex: 1,
-            justifyContent: "center",
-          }}
-        >
+        <Layout style={styles.layout}>
           <ActivityIndicator
             size="large"
             color={theme["color-primary-default"]}
@@ -198,18 +193,14 @@ const ChecklistScreen = ({ navigation }) => {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.screen}>
       <TopNavigation
         title="Checklist"
         alignment="center"
         accessoryLeft={BackAction}
       />
       <Divider />
-      <Layout
-        style={{
-          flex: 1,
-        }}
-      >
+      <Layout style={styles.screen}>
         <View
           style={[
             styles.titleContainer,
@@ -257,6 +248,13 @@ const ChecklistScreen = ({ navigation }) => {
 };
 
 const styles = StyleService.create({
+  screen: {
+    flex: 1,
+  },
+  layout: {
+    flex: 1,
+    justifyContent: "center",
+  },
   titleContainer: {
     padding: 20,
   },

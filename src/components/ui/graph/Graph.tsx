@@ -9,10 +9,7 @@ import {
   Extrapolate,
 } from "react-native-reanimated";
 
-import {
-  parsePath,
-  getPointAtLength,
-} from "../../../components/AnimatedHelpers";
+import { parsePath, getPointAtLength } from "../../AnimatedHelpers";
 
 import Cursor from "./Cursor";
 

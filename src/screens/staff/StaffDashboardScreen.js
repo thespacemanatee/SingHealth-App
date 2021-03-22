@@ -66,7 +66,7 @@ const StaffDashboardScreen = ({ navigation }) => {
   );
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.screen}>
       <TopNavigation
         title="Dashboard"
         alignment="center"
@@ -74,7 +74,7 @@ const StaffDashboardScreen = ({ navigation }) => {
         accessoryRight={NotificationAction}
       />
       <Divider />
-      <Layout style={styles.screen}>
+      <Layout style={styles.layout}>
         <Graph />
         <Divider />
         <View style={styles.textContainer}>
@@ -120,6 +120,9 @@ export default StaffDashboardScreen;
 
 const styles = StyleService.create({
   screen: {
+    flex: 1,
+  },
+  layout: {
     flex: 1,
   },
   textContainer: {

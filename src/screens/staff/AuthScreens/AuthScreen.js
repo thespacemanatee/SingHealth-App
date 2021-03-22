@@ -18,19 +18,13 @@ const LoginScreen = ({ navigation }) => {
     navigation.navigate("Register");
   };
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.screen}>
       <TopNavigation title="Authentication" alignment="center" />
       <Divider />
-      <Layout
-        style={{
-          flex: 1,
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <Layout style={styles.layout}>
         <Logo />
         <View style={styles.buttonsContainer}>
-          <Button style={{ marginBottom: 10 }} onPress={handleLogin}>
+          <Button style={styles.button} onPress={handleLogin}>
             Login
           </Button>
           <Button appearance="outline" onPress={handleRegister}>
@@ -43,9 +37,20 @@ const LoginScreen = ({ navigation }) => {
 };
 
 const styles = StyleService.create({
+  screen: {
+    flex: 1,
+  },
+  layout: {
+    flex: 1,
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   buttonsContainer: {
     width: "100%",
     padding: 20,
+  },
+  button: {
+    marginBottom: 10,
   },
 });
 

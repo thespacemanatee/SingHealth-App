@@ -7,6 +7,7 @@ import {
   Text,
   TopNavigation,
   TopNavigationAction,
+  StyleService,
 } from "@ui-kitten/components";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
@@ -27,7 +28,7 @@ const TenantDashboardScreen = ({ navigation }) => {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.screen}>
       <TopNavigation
         title="Home"
         alignment="center"
@@ -35,9 +36,7 @@ const TenantDashboardScreen = ({ navigation }) => {
         accessoryRight={NotificationAction}
       />
       <Divider />
-      <Layout
-        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-      >
+      <Layout style={styles.layout}>
         <Text category="h1">TENANT</Text>
       </Layout>
     </SafeAreaView>
@@ -45,3 +44,14 @@ const TenantDashboardScreen = ({ navigation }) => {
 };
 
 export default TenantDashboardScreen;
+
+const styles = StyleService.create({
+  screen: {
+    flex: 1,
+  },
+  layout: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

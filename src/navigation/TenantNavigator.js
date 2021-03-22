@@ -43,7 +43,7 @@ export const BottomNavigationAccessoriesShowcase = ({ navigation, state }) => {
 const TenantTabNavigator = () => {
   const { Navigator, Screen } = createBottomTabNavigator();
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+    <SafeAreaView style={styles.screen}>
       <Navigator
         tabBar={(props) => <BottomNavigationAccessoriesShowcase {...props} />}
       >
@@ -71,7 +71,7 @@ const Footer = () => {
 };
 
 const DrawerContent = ({ navigation, state }) => (
-  <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+  <SafeAreaView style={styles.screen}>
     <Drawer
       footer={Footer}
       selectedIndex={new IndexPath(state.index)}
@@ -92,6 +92,10 @@ const TenantNavigator = () => {
 };
 
 const styles = StyleService.create({
+  screen: {
+    flex: 1,
+    backgroundColor: "white",
+  },
   bottomNavigation: {
     paddingVertical: 8,
   },

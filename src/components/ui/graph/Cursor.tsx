@@ -14,7 +14,7 @@ import Animated, {
   EasingNode,
 } from "react-native-reanimated";
 
-import { Path } from "../../../components/AnimatedHelpers";
+import { Path } from "../../AnimatedHelpers";
 
 import Label, { DataPoint } from "./Label";
 
@@ -129,6 +129,7 @@ const Cursor = ({ path, length, point }: CursorProps) => {
       if (Platform.OS === "web") {
         runOnJS(reRender)();
       }
+      // eslint-disable-next-line no-param-reassign
       length.value = interpolate(
         ctx.offsetX + event.translationX,
         [0, width],
@@ -141,6 +142,7 @@ const Cursor = ({ path, length, point }: CursorProps) => {
       if (Platform.OS !== "web") {
         runOnJS(reRender)();
       }
+      // eslint-disable-next-line no-param-reassign
       length.value = withDecay({
         velocity: velocityX,
         clamp: [0, path.length],

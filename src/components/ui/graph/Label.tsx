@@ -4,7 +4,7 @@ import Animated, { useDerivedValue } from "react-native-reanimated";
 import { ReText, round } from "react-native-redash";
 import { Card, Text } from "@ui-kitten/components";
 
-import { StyleGuide } from "../../../components";
+import StyleGuide from "../../StyleGuide";
 
 const styles = StyleSheet.create({
   date: {

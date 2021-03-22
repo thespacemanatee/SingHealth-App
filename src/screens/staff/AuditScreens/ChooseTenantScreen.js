@@ -64,18 +64,14 @@ const ChooseTenantScreen = ({ navigation }) => {
   }, [databaseStore]);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.screen}>
       <TopNavigation
         title="Tenant Selection"
         alignment="center"
         accessoryLeft={BackAction}
       />
       <Divider />
-      <Layout
-        style={{
-          flex: 1,
-        }}
-      >
+      <Layout style={styles.screen}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Choose a Tenant to Audit</Text>
         </View>
@@ -90,6 +86,9 @@ const ChooseTenantScreen = ({ navigation }) => {
 };
 
 const styles = StyleService.create({
+  screen: {
+    flex: 1,
+  },
   titleContainer: {
     margin: 20,
   },

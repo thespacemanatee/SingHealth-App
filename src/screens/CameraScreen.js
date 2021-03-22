@@ -57,15 +57,8 @@ const CameraScreen = ({ route, navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-      <View
-        style={{
-          flexDirection: "row",
-          backgroundColor: "black",
-          height: TOOLBAR_TOP_HEIGHT,
-          // justifyContent: "space-between",
-        }}
-      >
+    <SafeAreaView style={styles.screen}>
+      <View style={[styles.topContainer, { height: TOOLBAR_TOP_HEIGHT }]}>
         <Button
           //   style={styles.button}
           appearance="ghost"
@@ -93,23 +86,9 @@ const CameraScreen = ({ route, navigation }) => {
           />
         </View>
       )}
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          backgroundColor: "black",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <View style={styles.bottomContainer}>
         {previewVisible && capturedImage ? (
-          <View
-            style={{
-              flexGrow: 1,
-              flexDirection: "row",
-              justifyContent: "space-around",
-            }}
-          >
+          <View style={styles.buttonContainer}>
             <Button
               //   style={styles.button}
               appearance="ghost"
@@ -130,13 +109,7 @@ const CameraScreen = ({ route, navigation }) => {
             </Button>
           </View>
         ) : (
-          <View
-            style={{
-              flexGrow: 1,
-              flexDirection: "row",
-              justifyContent: "space-around",
-            }}
-          >
+          <View style={styles.buttonContainer}>
             <View style={{ width: WINDOW_WIDTH / 3 }}>
               <Button
                 //   style={styles.button}
@@ -149,11 +122,14 @@ const CameraScreen = ({ route, navigation }) => {
                     : FlashOffIcon
                 }
               >
-                {flashMode === "on"
-                  ? "ON"
-                  : flashMode === "auto"
-                  ? "AUTO"
-                  : "OFF"}
+                {
+                  // eslint-disable-next-line no-nested-ternary
+                  flashMode === "on"
+                    ? "ON"
+                    : flashMode === "auto"
+                    ? "AUTO"
+                    : "OFF"
+                }
               </Button>
             </View>
 
@@ -183,6 +159,26 @@ const CameraScreen = ({ route, navigation }) => {
 export default CameraScreen;
 
 const styles = StyleService.create({
+  screen: {
+    flex: 1,
+    backgroundColor: "black",
+  },
+  topContainer: {
+    flexDirection: "row",
+    backgroundColor: "black",
+  },
+  bottomContainer: {
+    flex: 1,
+    flexDirection: "row",
+    backgroundColor: "black",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonContainer: {
+    flexGrow: 1,
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
   takePictureButton: {
     width: 70,
     height: 70,

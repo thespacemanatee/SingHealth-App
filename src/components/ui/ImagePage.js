@@ -15,7 +15,6 @@ const ImagePage = (props) => {
   const { index } = props;
   const { section } = props;
   const { selectedIndex } = props;
-  const { pagerIndex } = props;
 
   const dispatch = useDispatch();
 
@@ -33,7 +32,7 @@ const ImagePage = (props) => {
   }, [dispatch, index, section, selectedIndex]);
 
   return (
-    <View key={pagerIndex} style={styles.screen}>
+    <View style={styles.screen}>
       <View style={styles.imageContainer}>
         {imageUri ? (
           <View>

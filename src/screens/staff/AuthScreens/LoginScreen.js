@@ -76,23 +76,17 @@ const LoginScreen = ({ navigation }) => {
       }}
     >
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={styles.screen}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <TopNavigation
-          style={{ zIndex: 5 }}
+          style={styles.topNavigation}
           title="Login"
           alignment="center"
           accessoryLeft={BackAction}
         />
         <Divider />
-        <Layout
-          style={{
-            flex: 1,
-            justifyContent: "flex-end",
-            alignItems: "center",
-          }}
-        >
+        <Layout style={styles.layout}>
           <Formik
             initialValues={{ email: "", password: "" }}
             onSubmit={(values) => {
@@ -176,6 +170,17 @@ const LoginScreen = ({ navigation }) => {
 };
 
 const styles = StyleService.create({
+  screen: {
+    flex: 1,
+  },
+  topNavigation: {
+    zIndex: 5,
+  },
+  layout: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
   forgotPassword: {
     width: "100%",
     flexDirection: "row",
