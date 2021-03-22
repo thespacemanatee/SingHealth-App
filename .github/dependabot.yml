@@ -11,6 +11,6 @@ updates:
       interval: "daily"
     ignore:
       - dependency-name: "expo-font"
-        versions: ["9.0.0"]
+        versions: ["9.x"]
       - dependency-name: "react-native-safe-area-context"
-        versions: ["3.2.0"]
+        versions: ["3.2.x"]
