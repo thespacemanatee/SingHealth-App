@@ -5137,10 +5137,10 @@ expo-constants@~9.3.3:
     fbjs "1.0.0"
     uuid "^3.3.2"
 
-expo-document-picker@~8.4.1:
-  version "8.4.1"
-  resolved "https://registry.yarnpkg.com/expo-document-picker/-/expo-document-picker-8.4.1.tgz#20fc07328ea6155c65fdefecf4b531c6681ca004"
-  integrity sha512-/Si7pSa6dheygGhQA/Ig7XD1uLAFYJaLKXTi0V51+KmHA41F1KeAnoViUAzyKaNSV/bCu6FmiQNosN6OYAV1Hg==
+expo-document-picker@~9.0.1:
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/expo-document-picker/-/expo-document-picker-9.0.1.tgz#d423c6dc1936e716e3ca7722253921599926cce9"
+  integrity sha512-JvsDEz6JII/aSzyjOBWZzQxURHOktNA3djkqEPWyKfVcQ5Ohye8sQhRxSHR2o26Sz5gEZTnORzoCEC28fSsyVQ==
   dependencies:
     uuid "^3.3.2"
 
@@ -11335,10 +11335,8 @@ watchpack@^1.6.1:
   resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-1.7.5.tgz#1267e6c55e0b9b5be44c2023aed5437a2c26c453"
   integrity sha512-9P3MWk6SrKjHsGkLT2KHXdQ/9SNkyoJbabxnKOoJepsvJjJG8uYTR3yTPxPQvNDI3w4Nz1xnE0TLHK4RIVe/MQ==
   dependencies:
-    chokidar "^3.4.1"
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
-    watchpack-chokidar2 "^2.0.1"
   optionalDependencies:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"
