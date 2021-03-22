@@ -10,8 +10,8 @@
 - [x] [`GET /login/tenant`](#`GET-/login/tenant`)
 - [x] [`GET /login/staff`](#`GET-/login/staff`)
 - [ ] [`GET /audits/saved`](#`GET-/audits/saved`)
-- [ ] [`GET /audits/recent/staff`](#GET-/audits/recent/staff`)
-- [ ] [`GET /audits/recent/staff`](#GET-/audits/recent/tenant`)
+- [x] [`GET /audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`)
+- [x] [`GET /audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`)
 ---
 
 
@@ -439,29 +439,24 @@ The audit ID will also be saved in the Staff profile in the DB.
 #### Success
 #### Failure
 
-## `GET /audits/unrectified/recent/staff`
+## `GET /audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`
 ### Description of use case
 The staff app has a dashboard which displays recent audits that have not been fully rectified. The staff needs to see audits from all the tenants under his/her charge.
-### JSON Query string parameters
+### JSON parameters
 `institutionID`
 ~ the unique identifier for the current institution. Case sensitive 
 ~ I.e. `CGH`, `SGH`
 `daysBefore`
 ~ An integer indicating how early the audits to query from.
-~ If `null`, all unrectified audits regardless of time will be returned.
+~ If 0, all unrectified audits regardless of time will be returned.
 ### Sample request
 #### With date range
 ```js
-{
-    "institutionID": "CGH",
-    "daysBefore": 3
-}
+localhost:5000/audits/unrectified/recent/staff/grwrbgbgbewvw/4
 ```
 #### Without date range
 ```js
-{
-    "institutionID": "CGH"
-}
+localhost:5000/audits/unrectified/recent/staff/grwrbgbgbewvw/4
 ```
 ### Sample response
 #### Success
@@ -485,28 +480,23 @@ The staff app has a dashboard which displays recent audits that have not been fu
 }
 ```
 
-## `GET /audits/unrectified/recent/tenant`
+## `GET /audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`
 ### Description of use case
 The tenant is interested in seeing any past audits that have not been rectified and needs to query only his own audits.
-### JSON Query string parameters
+### URL parameters
 `tenantID`
 ~ The unique identifier for the tenant account
 `daysBefore`
 ~ An integer indicating how early the audits to query from.
-~ If `null`, all unrectified audits regardless of time will be returned.
+~ If 0, all unrectified audits regardless of time will be returned.
 ### Sample request
 #### With date range
 ```js
-{
-    "tenantID": "CGH",
-    "daysBefore": 3
-}
+localhost:5000/audits/unrectified/recent/tenant/grwrbgbgbewvw/4
 ```
 #### Without date range
 ```js
-{
-    "tenantID": "CGH"
-}
+localhost:5000/audits/unrectified/recent/tenant/grwrbgbgbewvw/0
 ```
 ### Sample response
 #### Success

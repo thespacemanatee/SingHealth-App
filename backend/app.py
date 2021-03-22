@@ -2,7 +2,8 @@ from BTS.auditsEndpoint import addAuditsEndpoint
 from BTS.loginEndpoints import addLoginEndpointsForTenantAndStaff
 from BTS.imagesEndpoint import addImagesEndpoint
 from BTS.auditsEndpoint_wx import addWenXinEndpoints
-from BTS.constants import CLOUD_MONGODB_URI
+from BTS.recentAuditsEndpoints import addRecentAuditsEndpoints
+from BTS.constants import CLOUD_MONGODB_URI, LOCAL_MONGODB_URI
 from BTS.utils import successMsg, successResponse
 from flask import Flask, request
 from flask_pymongo import PyMongo
@@ -38,5 +39,6 @@ addWenXinEndpoints(app, mongo)
 addAuditsEndpoint(app, mongo)
 addImagesEndpoint(app)
 addLoginEndpointsForTenantAndStaff(app, mongo)
+addRecentAuditsEndpoints(app, mongo)
 
 app.run(debug=True)
