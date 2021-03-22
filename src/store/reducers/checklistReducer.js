@@ -6,11 +6,9 @@ import {
   ADD_IMAGE,
   DELETE_IMAGE,
   ADD_REMARKS,
-  // SET_MAXIMUM_SCORE,
-  // CHANGE_CURRENT_SCORE,
-  // CHANGE_MAXIMUM_SCORE,
   ADD_COVID_CHECKLIST,
   CHANGE_ANSWER,
+  CHANGE_DEADLINE,
 } from "../actions/checklistActions";
 
 const initialState = {
@@ -18,8 +16,6 @@ const initialState = {
   chosen_checklist_type: null,
   chosen_checklist: null,
   covid19: null,
-  // maximum_score: 0,
-  // current_score: 0,
 };
 
 const checklistReducer = (state = initialState, action) => {
@@ -200,6 +196,42 @@ const checklistReducer = (state = initialState, action) => {
         chosen_checklist: newChecklist,
       };
     }
+    case CHANGE_DEADLINE: {
+      let newChecklist;
+      if (
+        Object.prototype.hasOwnProperty.call(
+          state.covid19.questions,
+          action.section
+        )
+      ) {
+        newChecklist = _.cloneDeep(state.covid19);
+      } else {
+        newChecklist = _.cloneDeep(state.chosen_checklist);
+      }
+
+      newChecklist.questions[action.section][action.index].deadline =
+        action.date;
+
+      console.log(newChecklist);
+
+      if (
+        Object.prototype.hasOwnProperty.call(
+          state.covid19.questions,
+          action.section
+        )
+      ) {
+        return {
+          ...state,
+          covid19: newChecklist,
+        };
+      }
+
+      return {
+        ...state,
+        chosen_checklist: newChecklist,
+      };
+    }
+
     default:
       return state;
   }

@@ -37,6 +37,10 @@ const AuditSubmitScreen = ({ navigation }) => {
     const chosenKeys = Object.keys(checklistStore.chosen_checklist.questions);
     chosenKeys.forEach((section) => {
       tempChosenChecklist.questions[section].forEach((element, index) => {
+        if (element.answer !== false) {
+          // eslint-disable-next-line no-param-reassign
+          delete element.deadline;
+        }
         if (element.image) {
           imageAdded = true;
           element.image.forEach((image, imageIndex) => {
@@ -61,6 +65,7 @@ const AuditSubmitScreen = ({ navigation }) => {
         }
       });
     });
+    console.log(tempChosenChecklist);
 
     const covid19Keys = Object.keys(checklistStore.covid19.questions);
     covid19Keys.forEach((section) => {

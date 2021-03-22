@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ViewPager, StyleService } from "@ui-kitten/components";
+import { ViewPager } from "@ui-kitten/components";
 
 import ImagePage from "./ui/ImagePage";
 
@@ -24,7 +24,6 @@ const ImageViewPager = (props) => {
 
   return (
     <ViewPager
-      style={styles.viewPager}
       selectedIndex={selectedIndex}
       onSelect={(i) => setSelectedIndex(i)}
     >
@@ -34,7 +33,3 @@ const ImageViewPager = (props) => {
 };
 
 export default ImageViewPager;
-
-const styles = StyleService.create({
-  viewPager: { flex: 1, marginTop: 20 },
-});
