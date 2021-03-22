@@ -9,3 +9,8 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    ignore:
+      - dependency-name: "expo-font"
+        versions: ["9.0.0"]
+      - dependency-name: "react-native-safe-area-context"
+        versions: ["3.2.0"]
