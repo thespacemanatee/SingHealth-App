@@ -35,7 +35,7 @@
     "expo-file-system": "~10.0.0",
     "expo-font": "~8.4.0",
     "expo-image-picker": "~10.0.0",
-    "expo-location": "~10.0.0",
+    "expo-location": "~11.0.0",
     "expo-notifications": "~0.8.2",
     "expo-permissions": "~10.0.0",
     "expo-screen-capture": "^3.0.0",
