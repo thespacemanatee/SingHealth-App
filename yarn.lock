@@ -5245,6 +5245,13 @@ expo-location@~10.0.0:
   resolved "https://registry.yarnpkg.com/expo-location/-/expo-location-10.0.0.tgz#2923411649434f2f079343b163b13c5c9eee8b2d"
   integrity sha512-QLEb0iaBv4/blLxxfKRj2/HPisY+1t+g6MgegqZ1j1U/0qih4dvzUQrxie9ZOZyQB9gnXFCRnZv3QzHEb52dcA==
 
+expo-location@~11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/expo-location/-/expo-location-11.0.0.tgz#07df5b1e72cdabdbd9cf53fce985a1ec664dcbd0"
+  integrity sha512-Md/KQiCwED6bHw1kSZt4q0DaAYbabY1N2V0gn/Sj3z8r3dB3+rxWR7KqOAsnnRlQSiQl2qRpMq2HC6v1DtNnsg==
+  dependencies:
+    "@expo/config-plugins" "~1.0.13"
+
 expo-notifications@~0.8.2:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/expo-notifications/-/expo-notifications-0.8.2.tgz#69e04a4e48ec6bafaeb354d284fbc23c26f2d62d"
