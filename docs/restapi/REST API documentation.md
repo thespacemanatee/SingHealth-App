@@ -3,13 +3,13 @@
 
 ## Endpoints
 - [x] [`GET /tenants/{institutionId}`](#`GET-/tenants/{institutionId}`)
-- [x] [`GET /auditFormTemplates`](#`GET-/auditFormTemplates`)
+- [x] [`GET /auditForms/<form_type>`](#`GET-/auditForms/<form_type>`)
 - [x] [`POST /audits`](#`POST-/audits`)
 - [ ] [`GET /audits`](#`POST-/audits`)
 - [x] [`POST /images`](#`POST-/images`)
 - [x] [`GET /images`](#`GET-/images`)
-- [ ] [`GET /login/tenant`](#`GET-/login/tenant`)
-- [ ] [`GET /login/staff`](#`GET-/login/staff`)
+- [x] [`GET /login/tenant`](#`GET-/login/tenant`)
+- [x] [`GET /login/staff`](#`GET-/login/staff`)
 
 ---
 
@@ -49,6 +49,51 @@ localhost:5000/tenants/{institutionId}
 ~ Name of the stall the tenant is from
 
 <br>
+
+## `GET /auditForms/<form_type>`
+### Query parameters
+`<form_type>`
+~ Just the type. Not the ID. The endpoint will fetch the latest version of the form.
+~ Examples: `fnb`, `non_fnb`, `covid19`
+### Sample Request
+```
+localhost:5000/auditForms/fnb
+```
+### Sample Response
+```js
+{
+  "description": "Success",
+  "status": 200,
+  "data": {
+    "_id": "fnb2021",
+    "type": "fnb",
+    "questions": {
+      "category1": [
+        {
+          "question": "...",
+          "answer": false
+        },
+        {
+          "question": "...",
+          "answer": false
+        }
+      ],
+      "category2": [
+        {
+          "question": "...",
+          "answer": false
+        },
+        {
+          "question": "...",
+          "answer": false
+        }
+      ]
+    }
+  }
+}
+```
+
+
 <br>
 
 ## `POST /audits`
