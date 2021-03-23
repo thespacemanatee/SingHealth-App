@@ -6,9 +6,7 @@ import { MomentDateService } from "@ui-kitten/moment";
 
 const dateService = new MomentDateService();
 
-const CustomDatepicker = (props) => {
-  const { deadline } = props;
-  const { onSelect } = props;
+const CustomDatepicker = ({ deadline, onSelect }) => {
   const [date, setDate] = useState(
     moment(
       new Date(
@@ -18,11 +16,8 @@ const CustomDatepicker = (props) => {
       )
     )
   );
-
   useEffect(() => {
-    if (deadline) {
-      setDate(deadline);
-    }
+    setDate(moment(deadline));
   }, [deadline]);
 
   const now = new Date();

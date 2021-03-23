@@ -32,13 +32,18 @@ export const COVID_SECTION = "COVID-19 Checklist";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const SaveIcon = (props) => <Icon {...props} name="save-outline" />;
+const RetryIcon = (props) => <Icon {...props} name="refresh-outline" />;
 
 const ChecklistScreen = ({ route, navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
-  const [selectedIndex, setSelectedIndex] = useState(0);
   const [completeChecklist, setCompleteChecklist] = useState([]);
   const [loading, setLoading] = useState(true);
-  const covid19Keys = Object.keys(checklistStore.covid19.questions);
+  const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const { type } = route.params;
+  const [selectedIndex, setSelectedIndex] = useState(
+    type === "non_fnb" ? 1 : 0
+  );
 
   const { auditID } = route.params;
   const tenant = checklistStore.chosen_tenant;
@@ -70,14 +75,22 @@ const ChecklistScreen = ({ route, navigation }) => {
   );
 
   const loadForm = (index) => {
-    console.log(index);
     setSelectedIndex(index);
-    const type = index === 0 ? "fnb" : "non_fnb";
+    const checklistType = index === 0 ? "fnb" : "non_fnb";
+    setError(false);
+    setErrorMsg("");
     setLoading(true);
-    dispatch(checklistActions.getChecklist(type, tenant)).then(() => {
-      createNewSections();
-      setLoading(false);
-    });
+    dispatch(checklistActions.getChecklist(checklistType, tenant))
+      .then(() => {
+        createNewSections();
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError(true);
+        setErrorMsg(err.message);
+        setLoading(false);
+      });
   };
 
   const handleChangeFormType = (index) => {
@@ -117,9 +130,11 @@ const ChecklistScreen = ({ route, navigation }) => {
         // console.log(temp);
         AsyncStorage.setItem("savedChecklists", JSON.stringify(temp));
       }
-    } catch (e) {
+    } catch (err) {
       // error reading value
-      console.error(e);
+      console.error(err);
+      setError(true);
+      setErrorMsg(err.message);
     }
   };
 
@@ -156,13 +171,13 @@ const ChecklistScreen = ({ route, navigation }) => {
         <QuestionCard
           index={itemData.index}
           question={itemData.item.question}
+          answer={itemData.item.answer}
           section={itemData.section.title}
           navigation={navigation}
-          covid19={covid19Keys.includes(itemData.section.title)}
         />
       );
     },
-    [covid19Keys, navigation]
+    [navigation]
   );
 
   const renderSectionHeader = useCallback(
@@ -225,7 +240,7 @@ const ChecklistScreen = ({ route, navigation }) => {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.screen}>
+      <View style={styles.screen}>
         <TopNavigation
           title="Checklist"
           alignment="center"
@@ -238,7 +253,35 @@ const ChecklistScreen = ({ route, navigation }) => {
             color={theme["color-primary-default"]}
           />
         </Layout>
-      </SafeAreaView>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.screen}>
+        <TopNavigation
+          title="Checklist"
+          alignment="center"
+          accessoryLeft={BackAction}
+        />
+        <Divider />
+        <Layout style={styles.layout}>
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>{errorMsg}</Text>
+            <View>
+              <Button
+                accessoryLeft={RetryIcon}
+                onPress={() => {
+                  loadForm();
+                }}
+              >
+                Retry
+              </Button>
+            </View>
+          </View>
+        </Layout>
+      </View>
     );
   }
 
@@ -280,16 +323,7 @@ const ChecklistScreen = ({ route, navigation }) => {
           SectionSeparatorComponent={() => <Divider />}
         />
         <View style={styles.bottomContainer}>
-          {/* <Text>
-            Current Score: {checklistStore.current_score}/
-            {checklistStore.maximum_score}
-          </Text> */}
-          <Button
-            //   style={styles.button}
-            // appearance="filled"
-            status="primary"
-            onPress={onSubmitHandler}
-          >
+          <Button status="primary" onPress={onSubmitHandler}>
             SUBMIT
           </Button>
         </View>
@@ -330,6 +364,16 @@ const styles = StyleService.create({
     borderTopWidth: 1,
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  errorContainer: {
+    alignItems: "center",
+    justifyContent: "space-around",
+  },
+  errorText: {
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 26,
+    marginBottom: 20,
   },
 });
 

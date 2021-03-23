@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect, useRef } from "react";
 import { Dimensions, Platform, View } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   Button,
   Text,
@@ -22,26 +22,10 @@ const QuestionCard = (props) => {
   const [deleted, setDeleted] = useState(false);
   const { index } = props;
   const { question } = props;
+  const { answer } = props;
   const { section } = props;
-  const { covid19 } = props;
+
   const leftSwipeable = useRef(null);
-
-  // const checklistTypeStore = useSelector(
-  //   (state) => state.checklist.chosen_checklist_type
-  // );
-  // let answerStore;
-  // if (covid19) {
-  //   answerStore = useSelector(
-  //     (state) => state.checklist.covid19.questions[section][index].answer
-  //   );
-  // } else {
-  //   answerStore = useSelector(
-  //     (state) =>
-  //       state.checklist.chosen_checklist.questions[section][index].answer
-  //   );
-  // }
-
-  // console.log(answerStore);
 
   const theme = useTheme();
 
@@ -49,15 +33,15 @@ const QuestionCard = (props) => {
 
   const SCREEN_WIDTH = Dimensions.get("window").width;
 
-  // useEffect(() => {
-  //   if (answerStore === null) {
-  //     setChecked(false);
-  //     setDeleted(true);
-  //   } else {
-  //     setChecked(answerStore);
-  //     setDeleted(false);
-  //   }
-  // }, [answerStore]);
+  useEffect(() => {
+    if (answer === null) {
+      setChecked(false);
+      setDeleted(true);
+    } else {
+      setChecked(answer);
+      setDeleted(false);
+    }
+  }, [answer]);
 
   const Header = (headerProps) => (
     <View {...headerProps}>
@@ -141,9 +125,6 @@ const QuestionCard = (props) => {
 };
 
 const areEqual = (prevProps, nextProps) => {
-  // const { itemData } = nextProps;
-  // const { itemData: prevItemData } = prevProps;
-
   /* if the props are equal, it won't update */
   const isSelectedEqual = nextProps.question === prevProps.question;
 

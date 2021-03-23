@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { SectionList, View } from "react-native";
+import { SectionList, View, ActivityIndicator } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -13,18 +13,21 @@ import {
 } from "@ui-kitten/components";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import * as checklistActions from "../../../store/actions/checklistActions";
 import SavedChecklistCard from "../../../components/SavedChecklistCard";
 import NewChecklistCard from "../../../components/NewChecklistCard";
+import alert from "../../../components/CustomAlert";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const ChooseTenantScreen = ({ navigation }) => {
   const databaseStore = useSelector((state) => state.database);
   const [sectionData, setSectionData] = useState([]);
-
-  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
 
   const theme = useTheme();
+
+  const dispatch = useDispatch();
 
   const BackAction = () => (
     <TopNavigationAction
@@ -51,6 +54,21 @@ const ChooseTenantScreen = ({ navigation }) => {
     [theme]
   );
 
+  const handleError = (err, retryFunction) => {
+    alert("Request timeout", "Check your internet connection.", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Confirm",
+        style: "default",
+        onPress: retryFunction,
+      },
+    ]);
+  };
+
+  const handleLoading = (load) => {
+    setLoading(load);
+  };
+
   const renderSectionList = useCallback(
     (itemData) => {
       if (itemData.item.data) {
@@ -59,11 +77,20 @@ const ChooseTenantScreen = ({ navigation }) => {
             itemData={itemData}
             navigation={navigation}
             deleteSave={handleDeleteSavedChecklist}
+            onError={handleError}
+            onLoading={handleLoading}
           />
         );
       }
 
-      return <NewChecklistCard itemData={itemData} navigation={navigation} />;
+      return (
+        <NewChecklistCard
+          itemData={itemData}
+          navigation={navigation}
+          onError={handleError}
+          onLoading={handleLoading}
+        />
+      );
     },
     [handleDeleteSavedChecklist, navigation]
   );
@@ -96,6 +123,7 @@ const ChooseTenantScreen = ({ navigation }) => {
         });
       }
     }
+    setLoading(false);
     setSectionData(tempChecklists);
   }, [databaseStore.current_institution, databaseStore.tenants]);
 
@@ -103,6 +131,9 @@ const ChooseTenantScreen = ({ navigation }) => {
     // Subscribe for the focus Listener
     const unsubscribe = navigation.addListener("focus", () => {
       getSectionData();
+      setTimeout(() => {
+        dispatch(checklistActions.resetChecklistStore());
+      }, 500);
     });
 
     return () => {
@@ -110,7 +141,26 @@ const ChooseTenantScreen = ({ navigation }) => {
       // eslint-disable-next-line no-unused-expressions
       unsubscribe;
     };
-  }, [getSectionData, navigation]);
+  }, [dispatch, getSectionData, navigation]);
+
+  if (loading) {
+    return (
+      <View style={styles.screen}>
+        <TopNavigation
+          title="Checklist"
+          alignment="center"
+          accessoryLeft={BackAction}
+        />
+        <Divider />
+        <Layout style={styles.layout}>
+          <ActivityIndicator
+            size="large"
+            color={theme["color-primary-default"]}
+          />
+        </Layout>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.screen}>
@@ -141,6 +191,10 @@ const styles = StyleService.create({
   screen: {
     flex: 1,
   },
+  layout: {
+    flex: 1,
+    justifyContent: "center",
+  },
   header: {
     fontSize: 24,
     padding: 10,
@@ -155,9 +209,6 @@ const styles = StyleService.create({
   contentContainer: {
     paddingHorizontal: 8,
     paddingVertical: 4,
-  },
-  item: {
-    marginVertical: 4,
   },
 });
 
