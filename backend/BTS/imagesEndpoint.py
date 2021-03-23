@@ -54,8 +54,7 @@ def addImagesEndpoint(app):
                     for image in requestData:
                         imageFilenames.append(image["fileName"])
 
-                    detected_Duplicate_filenames = len(
-                        imageFilenames) > len(set(imageFilenames))
+                    detected_Duplicate_filenames = len(imageFilenames) > len(set(imageFilenames))
                     if detected_Duplicate_filenames:
                         return failureResponse(failureMsg("Duplicate image names found", 400), 400)
 
@@ -64,7 +63,7 @@ def addImagesEndpoint(app):
                             imageName = image["fileName"]
                             imageData = image["uri"]
                         except KeyError:
-                            failureResponse(failureMsg(
+                            return failureResponse(failureMsg(
                                 "Wrong request format. Make sure every Image object has a 'fileName' & a 'uri' field", 400), 400)
 
                         imageBytes = io.BytesIO(b64decode(imageData + '==='))
