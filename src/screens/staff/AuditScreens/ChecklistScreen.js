@@ -34,19 +34,18 @@ const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const SaveIcon = (props) => <Icon {...props} name="save-outline" />;
 
 const ChecklistScreen = ({ route, navigation }) => {
-  const databaseStore = useSelector((state) => state.database);
   const checklistStore = useSelector((state) => state.checklist);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [completeChecklist, setCompleteChecklist] = useState([]);
   const [loading, setLoading] = useState(true);
-  const covid19Keys = Object.keys(databaseStore.audit_forms.covid19.questions);
-  console.log(checklistStore);
+  const covid19Keys = Object.keys(checklistStore.covid19.questions);
 
   const { auditID } = route.params;
-
-  const theme = useTheme();
+  const tenant = checklistStore.chosen_tenant;
 
   const dispatch = useDispatch();
+
+  const theme = useTheme();
 
   const BackAction = () => (
     <TopNavigationAction
@@ -69,6 +68,32 @@ const ChecklistScreen = ({ route, navigation }) => {
       }}
     />
   );
+
+  const loadForm = (index) => {
+    console.log(index);
+    setSelectedIndex(index);
+    const type = index === 0 ? "fnb" : "non_fnb";
+    setLoading(true);
+    dispatch(checklistActions.getChecklist(type, tenant)).then(() => {
+      createNewSections();
+      setLoading(false);
+    });
+  };
+
+  const handleChangeFormType = (index) => {
+    alert(
+      "WARNING!",
+      "If you change the form type, your progress will be erased.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Confirm",
+          style: "destructive",
+          onPress: () => loadForm(index),
+        },
+      ]
+    );
+  };
 
   const saveChecklists = async () => {
     try {
@@ -127,8 +152,6 @@ const ChecklistScreen = ({ route, navigation }) => {
 
   const renderChosenChecklist = useCallback(
     (itemData) => {
-      // console.log(itemData.section);
-
       return (
         <QuestionCard
           index={itemData.index}
@@ -158,67 +181,47 @@ const ChecklistScreen = ({ route, navigation }) => {
     <TopNavigationAction icon={SaveIcon} onPress={handleSaveChecklist} />
   );
 
-  useEffect(() => {
-    if (selectedIndex === 0) {
-      dispatch(
-        checklistActions.addChosenChecklist(
-          checklistActions.TYPE_FNB,
-          databaseStore.audit_forms.fnb
-        )
-      );
-    } else {
-      dispatch(
-        checklistActions.addChosenChecklist(
-          checklistActions.TYPE_NON_FNB,
-          databaseStore.audit_forms.non_fnb
-        )
-      );
-    }
-
-    dispatch(
-      checklistActions.addCovidChecklist(databaseStore.audit_forms.covid19)
-    );
-
+  const createNewSections = useCallback(() => {
     const checklist = [
       {
-        title: selectedIndex === 0 ? FNB_SECTION : NON_FNB_SECTION,
+        title:
+          checklistStore.chosen_checklist_type === "fnb"
+            ? FNB_SECTION
+            : NON_FNB_SECTION,
         data: [],
       },
     ];
 
-    if (selectedIndex === 0) {
-      const temp = Object.keys(databaseStore.audit_forms.fnb.questions);
-      temp.forEach((title) => {
-        checklist.push({
-          title,
-          data: databaseStore.audit_forms.fnb.questions[title],
-        });
-      });
-    }
-    if (selectedIndex === 1) {
-      const temp = Object.keys(databaseStore.audit_forms.non_fnb.questions);
-      temp.forEach((title) => {
-        checklist.push({
-          title,
-          data: databaseStore.audit_forms.non_fnb.questions[title],
-        });
-      });
-    }
-    checklist.push({ title: COVID_SECTION, data: [] });
-    const temp = Object.keys(databaseStore.audit_forms.covid19.questions);
+    let temp;
+    temp = Object.keys(checklistStore.chosen_checklist.questions);
     temp.forEach((title) => {
       checklist.push({
         title,
-        data: databaseStore.audit_forms.covid19.questions[title],
+        data: checklistStore.chosen_checklist.questions[title],
+      });
+    });
+
+    checklist.push({ title: COVID_SECTION, data: [] });
+    temp = Object.keys(checklistStore.covid19.questions);
+    temp.forEach((title) => {
+      checklist.push({
+        title,
+        data: checklistStore.covid19.questions[title],
       });
     });
 
     // console.log(checklist);
-
     setCompleteChecklist(checklist);
+  }, [
+    checklistStore.chosen_checklist.questions,
+    checklistStore.chosen_checklist_type,
+    checklistStore.covid19.questions,
+  ]);
 
+  useEffect(() => {
+    createNewSections();
     setLoading(false);
-  }, [selectedIndex, databaseStore, dispatch]);
+  }, [createNewSections]);
 
   if (loading) {
     return (
@@ -262,7 +265,7 @@ const ChecklistScreen = ({ route, navigation }) => {
         </View>
         <RadioGroup
           selectedIndex={selectedIndex}
-          onChange={(index) => setSelectedIndex(index)}
+          onChange={handleChangeFormType}
           style={styles.radioGroup}
         >
           <Radio>F&B</Radio>

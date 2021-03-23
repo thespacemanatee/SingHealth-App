@@ -26,22 +26,22 @@ const QuestionCard = (props) => {
   const { covid19 } = props;
   const leftSwipeable = useRef(null);
 
-  const checklistTypeStore = useSelector(
-    (state) => state.checklist.chosen_checklist_type
-  );
-  let answerStore;
-  if (covid19) {
-    answerStore = useSelector(
-      (state) => state.checklist.covid19.questions[section][index].answer
-    );
-  } else {
-    answerStore = useSelector(
-      (state) =>
-        state.checklist.chosen_checklist.questions[section][index].answer
-    );
-  }
+  // const checklistTypeStore = useSelector(
+  //   (state) => state.checklist.chosen_checklist_type
+  // );
+  // let answerStore;
+  // if (covid19) {
+  //   answerStore = useSelector(
+  //     (state) => state.checklist.covid19.questions[section][index].answer
+  //   );
+  // } else {
+  //   answerStore = useSelector(
+  //     (state) =>
+  //       state.checklist.chosen_checklist.questions[section][index].answer
+  //   );
+  // }
 
-  console.log(answerStore);
+  // console.log(answerStore);
 
   const theme = useTheme();
 
@@ -49,15 +49,15 @@ const QuestionCard = (props) => {
 
   const SCREEN_WIDTH = Dimensions.get("window").width;
 
-  useEffect(() => {
-    if (answerStore === null) {
-      setChecked(false);
-      setDeleted(true);
-    } else {
-      setChecked(answerStore);
-      setDeleted(false);
-    }
-  }, [answerStore, checklistTypeStore, covid19]);
+  // useEffect(() => {
+  //   if (answerStore === null) {
+  //     setChecked(false);
+  //     setDeleted(true);
+  //   } else {
+  //     setChecked(answerStore);
+  //     setDeleted(false);
+  //   }
+  // }, [answerStore]);
 
   const Header = (headerProps) => (
     <View {...headerProps}>
