@@ -13,6 +13,7 @@ import Swipeable from "react-native-gesture-handler/Swipeable";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import * as checklistActions from "../store/actions/checklistActions";
+import alert from "./CustomAlert";
 
 const TrashIcon = (props) => <Icon {...props} name="trash" />;
 
@@ -41,7 +42,7 @@ const SavedChecklistCard = ({ itemData, navigation, deleteSave }) => {
     delete data[itemData.item.time];
     console.log(data);
     AsyncStorage.setItem("savedChecklists", JSON.stringify(data));
-    leftSwipeable.current.close();
+
     deleteSave();
   }, [deleteSave, itemData.item.time]);
 
@@ -62,7 +63,20 @@ const SavedChecklistCard = ({ itemData, navigation, deleteSave }) => {
     <Swipeable
       ref={leftSwipeable}
       renderLeftActions={leftComponent}
-      onSwipeableOpen={rightSwipe}
+      onSwipeableOpen={() => {
+        leftSwipeable.current.close();
+        alert(
+          "Delete checklist",
+          "Are you sure you want to delete this forever?",
+          [
+            {
+              text: "Cancel",
+              style: "cancel",
+            },
+            { text: "Confirm", style: "destructive", onPress: rightSwipe },
+          ]
+        );
+      }}
       friction={2}
     >
       <Card
@@ -83,7 +97,7 @@ export default SavedChecklistCard;
 
 const styles = StyleService.create({
   item: {
-    marginVertical: 4,
+    // marginVertical: 4,
   },
   deleteBox: {
     // flex: 1,

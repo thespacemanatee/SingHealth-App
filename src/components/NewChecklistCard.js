@@ -3,29 +3,24 @@ import { useDispatch } from "react-redux";
 import { Card, StyleService, Text } from "@ui-kitten/components";
 
 import * as checklistActions from "../store/actions/checklistActions";
-import alert from "./CustomAlert";
 
-const NewChecklistCard = ({ itemData, navigation }) => {
+const NewChecklistCard = ({ itemData, navigation, onError, onLoading }) => {
   const dispatch = useDispatch();
 
   const tenantID = Object.keys(itemData.item)[0];
 
   const handleCreateNewChecklist = () => {
+    onLoading(true);
     dispatch(checklistActions.getChecklist(null, itemData.item))
       .then(() => {
+        onLoading(false);
         const now = new Date().toISOString();
         navigation.navigate("Checklist", { auditID: now });
       })
       .catch((err) => {
         console.error(err);
-        alert(err.message, "Try again!", [
-          { text: "Cancel", style: "cancel" },
-          {
-            text: "Confirm",
-            style: "default",
-            onPress: handleCreateNewChecklist,
-          },
-        ]);
+        onLoading(false);
+        onError(err, handleCreateNewChecklist);
       });
   };
 
@@ -40,6 +35,6 @@ export default NewChecklistCard;
 
 const styles = StyleService.create({
   item: {
-    marginVertical: 4,
+    // marginVertical: 4,
   },
 });

@@ -240,7 +240,7 @@ const ChecklistScreen = ({ route, navigation }) => {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.screen}>
+      <View style={styles.screen}>
         <TopNavigation
           title="Checklist"
           alignment="center"
@@ -253,13 +253,13 @@ const ChecklistScreen = ({ route, navigation }) => {
             color={theme["color-primary-default"]}
           />
         </Layout>
-      </SafeAreaView>
+      </View>
     );
   }
 
   if (error) {
     return (
-      <SafeAreaView style={styles.screen}>
+      <View style={styles.screen}>
         <TopNavigation
           title="Checklist"
           alignment="center"
@@ -267,9 +267,9 @@ const ChecklistScreen = ({ route, navigation }) => {
         />
         <Divider />
         <Layout style={styles.layout}>
-          <View>
-            <Text style={{ textAlign: "center" }}>{errorMsg}</Text>
-            <View style={{ alignItems: "center" }}>
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>{errorMsg}</Text>
+            <View>
               <Button
                 accessoryLeft={RetryIcon}
                 onPress={() => {
@@ -281,7 +281,7 @@ const ChecklistScreen = ({ route, navigation }) => {
             </View>
           </View>
         </Layout>
-      </SafeAreaView>
+      </View>
     );
   }
 
@@ -364,6 +364,16 @@ const styles = StyleService.create({
     borderTopWidth: 1,
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  errorContainer: {
+    alignItems: "center",
+    justifyContent: "space-around",
+  },
+  errorText: {
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 26,
+    marginBottom: 20,
   },
 });
 

@@ -19,6 +19,10 @@ export const TYPE_FNB = "fnb";
 export const TYPE_NON_FNB = "non_fnb";
 export const TYPE_COVID = "covid19";
 
+const httpClient = axios.create();
+
+httpClient.defaults.timeout = 10000;
+
 let endpoint;
 
 if (Platform.OS === "android") {
@@ -29,6 +33,7 @@ if (Platform.OS === "android") {
 
 export const getChecklist = (checklistType, tenant) => async (dispatch) => {
   console.log(checklistType);
+
   await Promise.all([
     dispatch(addChosenChecklist(checklistType)),
     dispatch(addCovidChecklist()),
@@ -54,7 +59,7 @@ export const addChosenChecklist = (checklistType) => async (
     withCredentials: true,
   };
 
-  const res = await axios(options);
+  const res = await httpClient(options);
 
   const checklist = res.data.data;
   console.log(`Done fetching ${checklistType} checklist`);
@@ -68,7 +73,7 @@ export const addCovidChecklist = () => async (dispatch, getState) => {
     withCredentials: true,
   };
 
-  const res = await axios(options);
+  const res = await httpClient(options);
 
   const checklist = res.data.data;
   console.log("Done fetching covid checklist");
