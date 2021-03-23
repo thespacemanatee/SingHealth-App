@@ -31,7 +31,23 @@ export const COVID_SECTION = "COVID-19 Checklist";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
-const ChecklistScreen = ({ navigation }) => {
+  export const onSubmitHandler = () => {
+    if (Platform.OS === "web") {
+      navigation.navigate("AuditSubmit");
+    } else {
+      alert("Confirm Submission", "Are you sure you want to submit?", [
+        { text: "Cancel" },
+        {
+          text: "Submit",
+          onPress: () => {
+            navigation.navigate("AuditSubmit");
+          },
+        },
+      ]);
+    }
+  };
+
+export const ChecklistScreen = ({ navigation }) => {
   const databaseStore = useSelector((state) => state.database);
   const checklistStore = useSelector((state) => state.checklist);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -53,21 +69,7 @@ const ChecklistScreen = ({ navigation }) => {
     />
   );
 
-  const onSubmitHandler = () => {
-    if (Platform.OS === "web") {
-      navigation.navigate("AuditSubmit");
-    } else {
-      alert("Confirm Submission", "Are you sure you want to submit?", [
-        { text: "Cancel" },
-        {
-          text: "Submit",
-          onPress: () => {
-            navigation.navigate("AuditSubmit");
-          },
-        },
-      ]);
-    }
-  };
+  
 
   const renderChosenChecklist = useCallback(
     (itemData) => {
