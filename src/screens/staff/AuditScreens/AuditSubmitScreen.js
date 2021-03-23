@@ -26,7 +26,7 @@ const AuditSubmitScreen = ({ navigation }) => {
     setError(false);
     const tempChosenChecklist = _.cloneDeep(checklistStore.chosen_checklist);
     const tempCovid19Checklist = _.cloneDeep(checklistStore.covid19);
-    const chosenTenant = Object.keys(checklistStore.chosen_tenant)[0];
+    const chosenTenant = checklistStore.chosen_tenant.tenantID;
     const chosenChecklistType = checklistStore.chosen_checklist_type;
     let chosenChecklistImages = [];
     let covid19ChecklistImages = [];
