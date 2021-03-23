@@ -44,15 +44,10 @@ export const getChecklist = (checklistType, tenant) => async (dispatch) => {
 export const addAuditTenantSelection = (tenant) => {
   return { type: ADD_AUDIT_TENANT_SELECTION, tenant };
 };
-export const addChosenChecklist = (checklistType) => async (
+export const addChosenChecklist = (checklistType = "fnb") => async (
   dispatch,
   getState
 ) => {
-  if (!checklistType) {
-    // eslint-disable-next-line no-param-reassign
-    checklistType = "fnb";
-  }
-
   const options = {
     url: `${endpoint}auditForms/${checklistType}`,
     method: "get",

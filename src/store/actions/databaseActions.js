@@ -8,7 +8,7 @@ export const storeDatabase = (database) => {
 };
 
 export const getRelevantTenants = (institutionID) => {
-  return async (dispatch, getState) => {
+  return async () => {
     // dispatch({ action: SIGN_IN, token: token ? token : null });
 
     const options = {
@@ -17,6 +17,23 @@ export const getRelevantTenants = (institutionID) => {
       withCredentials: true,
     };
     console.log(institutionID);
+    const response = await httpClient(options);
+    return response;
+  };
+};
+
+export const getTenantActiveAudits = (tenantID, daysBefore = 0) => {
+  return async () => {
+    // dispatch({ action: SIGN_IN, token: token ? token : null });
+    console.log(
+      `${endpoint}audits/unrectified/recent/tenant/${tenantID}/${daysBefore}`
+    );
+    const options = {
+      url: `${endpoint}audits/unrectified/recent/tenant/${tenantID}/${daysBefore}`,
+      method: "get",
+      withCredentials: true,
+    };
+    console.log(tenantID);
     const response = await httpClient(options);
     return response;
   };

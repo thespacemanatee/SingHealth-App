@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 import { View } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
   Icon,
@@ -14,13 +14,18 @@ import {
   useTheme,
 } from "@ui-kitten/components";
 
+import * as databaseActions from "../../store/actions/databaseActions";
+
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 
 const StaffDashboardScreen = ({ navigation }) => {
+  const authStore = useSelector((state) => state.auth);
   const databaseStore = useSelector((state) => state.database);
 
   const theme = useTheme();
+
+  const dispatch = useDispatch();
 
   const DrawerAction = () => (
     <TopNavigationAction
@@ -56,6 +61,20 @@ const StaffDashboardScreen = ({ navigation }) => {
     },
     [databaseStore.audits.audits, databaseStore.tenants, theme]
   );
+
+  const getListData = useCallback(() => {
+    dispatch(databaseActions.getTenantActiveAudits(authStore._id))
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [dispatch]);
+
+  useEffect(() => {
+    getListData();
+  }, [getListData]);
 
   return (
     <View style={styles.screen}>
