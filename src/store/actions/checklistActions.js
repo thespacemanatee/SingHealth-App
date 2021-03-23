@@ -56,7 +56,7 @@ export const addChosenChecklist = (checklistType) => async (
   try {
     const res = await axios(options);
 
-    const checklist = res.data.data[0];
+    const checklist = res.data.data;
     console.log(`Done fetching ${checklistType} checklist`);
     return dispatch({ type: ADD_CHOSEN_CHECKLIST, checklistType, checklist });
   } catch (err) {
@@ -85,7 +85,7 @@ export const addCovidChecklist = () => async (dispatch, getState) => {
   try {
     const res = await axios(options);
 
-    const checklist = res.data.data[0];
+    const checklist = res.data.data;
     console.log("Done fetching covid checklist");
     return dispatch({ type: ADD_COVID_CHECKLIST, checklist });
   } catch (err) {

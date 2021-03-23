@@ -5,7 +5,6 @@ import { Card, StyleService, Text } from "@ui-kitten/components";
 import * as checklistActions from "../store/actions/checklistActions";
 
 const NewChecklistCard = ({ itemData, navigation }) => {
-  const checklist = useSelector((state) => state.checklist);
   const dispatch = useDispatch();
 
   const tenantID = Object.keys(itemData.item)[0];
@@ -14,7 +13,6 @@ const NewChecklistCard = ({ itemData, navigation }) => {
     dispatch(checklistActions.getChecklist(null, itemData.item)).then(() => {
       const now = new Date().toISOString();
       navigation.navigate("Checklist", { auditID: now });
-      //   console.log(checklist);
     });
   };
 
