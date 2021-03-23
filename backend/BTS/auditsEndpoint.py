@@ -5,10 +5,11 @@ from flask_login import login_required
 from pymongo.errors import DuplicateKeyError
 import iso8601
 
+compliant = lambda answer: answer["answer"]
+percentageCompliant = lambda ls : ls.count(True) / len(ls)
+
 # does not give ID to converted form
 # TODO: Add random integer or smth to the IDs
-
-
 def convertToFilledAuditForm(filledAuditFormTemplate):
     filledAuditForm = dict()
     filledAuditForm["formTemplateID"] = filledAuditFormTemplate.get("_id")
@@ -81,9 +82,25 @@ def convertTimeStr2UTC(filledAuditForm):
     filledAuditForm_copy["answers"] = answers
     return filledAuditForm_copy
 
+def calculateAuditScore(filledAuditForm) -> float:
+    
+    if filledAuditForm["type"] == "fnb":
+        c1 = percentageCompliant(list(map(compliant,filledAuditForm["answers"]["Professionalism and Staff Hygiene"]))) * 0.1
+        c2 = percentageCompliant(list(map(compliant,filledAuditForm["answers"]["Housekeeping & General Cleanliness"]))) * 0.2
+        c3 = percentageCompliant(list(map(compliant,filledAuditForm["answers"]["Food Hygiene"]))) * 0.35
+        c4 = percentageCompliant(list(map(compliant,filledAuditForm["answers"]["Healthier Choice in line with HPB's Healthy Eating's Initiative"]))) * 0.15
+        c5 = percentageCompliant(list(map(compliant,filledAuditForm["answers"]["Workplace Safety & Health"]))) * 0.2
+        auditScore = c1 + c2 + c3 + c4 + c5
+    
+    elif filledAuditForm["type"] == "non_fnb":
+        c1 = percentageCompliant(list(map(compliant,filledAuditForm["answers"]["Professionalism and Staff Hygiene"]))) * 0.2
+        c2 = percentageCompliant(list(map(compliant,filledAuditForm["answers"]["Housekeeping & General Cleanliness"]))) * 0.4
+        c3 = percentageCompliant(list(map(compliant,filledAuditForm["answers"]["Workplace Safety & Health"]))) * 0.4
+        auditScore = c1 + c2 + c3
+    
+    return auditScore
 
-
-
+        
 
 def processAuditdata(auditData):
     auditMetaData = auditData["auditMetadata"]
@@ -104,6 +121,16 @@ def processAuditdata(auditData):
         filledAuditForm["_id"] = id
         filledAuditForms[filledAuditForm["type"]] = filledAuditForm
         auditMetaData["auditChecklists"][filledAuditForm["type"]] = id
+
+        #TODO: investigate further if DB structure can be flattened further for data integrity
+        # This works for now because we only have 2 forms: 1 covid, 1 non-covid
+        # Otherwise, maintain data integrity by writing checks on the incoming data and make sure they have only 2 specific forms
+        if formType != "covid19":
+            auditScore = calculateAuditScore(filledAuditForm)
+            auditMetaData["score"] = auditScore
+            
+
+
 
     auditMetaData['date'] = iso8601.parse_date(auditMetaData['date'])
     return filledAuditForms, auditMetaData
