@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { SectionList, View } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
   Layout,
@@ -13,6 +13,7 @@ import {
 } from "@ui-kitten/components";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import * as checklistActions from "../../../store/actions/checklistActions";
 import SavedChecklistCard from "../../../components/SavedChecklistCard";
 import NewChecklistCard from "../../../components/NewChecklistCard";
 
@@ -23,6 +24,8 @@ const ChooseTenantScreen = ({ navigation }) => {
   const [sectionData, setSectionData] = useState([]);
 
   const theme = useTheme();
+
+  const dispatch = useDispatch();
 
   const BackAction = () => (
     <TopNavigationAction
@@ -101,6 +104,9 @@ const ChooseTenantScreen = ({ navigation }) => {
     // Subscribe for the focus Listener
     const unsubscribe = navigation.addListener("focus", () => {
       getSectionData();
+      setTimeout(() => {
+        dispatch(checklistActions.resetChecklistStore());
+      }, 500);
     });
 
     return () => {
@@ -108,7 +114,7 @@ const ChooseTenantScreen = ({ navigation }) => {
       // eslint-disable-next-line no-unused-expressions
       unsubscribe;
     };
-  }, [getSectionData, navigation]);
+  }, [dispatch, getSectionData, navigation]);
 
   return (
     <View style={styles.screen}>

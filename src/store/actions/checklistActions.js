@@ -13,6 +13,7 @@ export const CHANGE_CURRENT_SCORE = "CHANGE_CURRENT_SCORE";
 export const CHANGE_MAXIMUM_SCORE = "CHANGE_MAXIMUM_SCORE";
 export const CHANGE_ANSWER = "CHANGE_ANSWER";
 export const CHANGE_DEADLINE = "CHANGE_DEADLINE";
+export const RESET_CHECKLIST_STORE = "RESET_CHECKLIST_STORE";
 
 export const TYPE_FNB = "fnb";
 export const TYPE_NON_FNB = "non_fnb";
@@ -53,26 +54,11 @@ export const addChosenChecklist = (checklistType) => async (
     withCredentials: true,
   };
 
-  try {
-    const res = await axios(options);
+  const res = await axios(options);
 
-    const checklist = res.data.data;
-    console.log(`Done fetching ${checklistType} checklist`);
-    return dispatch({ type: ADD_CHOSEN_CHECKLIST, checklistType, checklist });
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
-  // axios(options)
-  //   .then((res) => {
-  //     // eslint-disable-next-line prefer-destructuring
-  //     checklist = res.data.data[0];
-  //     console.log(checklist);
-  //     dispatch({ type: ADD_CHOSEN_CHECKLIST, checklistType, checklist });
-  //   })
-  //   .catch((err) => {
-  //     console.error(err);
-  //   });
+  const checklist = res.data.data;
+  console.log(`Done fetching ${checklistType} checklist`);
+  return dispatch({ type: ADD_CHOSEN_CHECKLIST, checklistType, checklist });
 };
 
 export const addCovidChecklist = () => async (dispatch, getState) => {
@@ -82,29 +68,11 @@ export const addCovidChecklist = () => async (dispatch, getState) => {
     withCredentials: true,
   };
 
-  try {
-    const res = await axios(options);
+  const res = await axios(options);
 
-    const checklist = res.data.data;
-    console.log("Done fetching covid checklist");
-    return dispatch({ type: ADD_COVID_CHECKLIST, checklist });
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
-
-  // let checklist;
-  // axios(options)
-  //   .then((res) => {
-  //     // eslint-disable-next-line prefer-destructuring
-  //     checklist = res.data.data[0];
-  //     console.log(checklist);
-  //     return dispatch({ type: ADD_COVID_CHECKLIST, checklist });
-  //   })
-  //   .catch((err) => {
-  //     console.error(err);
-  //     return null;
-  //   });
+  const checklist = res.data.data;
+  console.log("Done fetching covid checklist");
+  return dispatch({ type: ADD_COVID_CHECKLIST, checklist });
 };
 
 export const addSavedChecklist = (data) => {
@@ -154,4 +122,7 @@ export const changeDeadline = (section, index, date) => {
     index,
     date,
   };
+};
+export const resetChecklistStore = () => {
+  return { type: RESET_CHECKLIST_STORE };
 };

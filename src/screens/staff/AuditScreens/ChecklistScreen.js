@@ -32,11 +32,14 @@ export const COVID_SECTION = "COVID-19 Checklist";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const SaveIcon = (props) => <Icon {...props} name="save-outline" />;
+const RetryIcon = (props) => <Icon {...props} name="refresh-outline" />;
 
 const ChecklistScreen = ({ route, navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
   const [completeChecklist, setCompleteChecklist] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const { type } = route.params;
   const [selectedIndex, setSelectedIndex] = useState(
     type === "non_fnb" ? 1 : 0
@@ -74,11 +77,20 @@ const ChecklistScreen = ({ route, navigation }) => {
   const loadForm = (index) => {
     setSelectedIndex(index);
     const checklistType = index === 0 ? "fnb" : "non_fnb";
+    setError(false);
+    setErrorMsg("");
     setLoading(true);
-    dispatch(checklistActions.getChecklist(checklistType, tenant)).then(() => {
-      createNewSections();
-      setLoading(false);
-    });
+    dispatch(checklistActions.getChecklist(checklistType, tenant))
+      .then(() => {
+        createNewSections();
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError(true);
+        setErrorMsg(err.message);
+        setLoading(false);
+      });
   };
 
   const handleChangeFormType = (index) => {
@@ -118,9 +130,11 @@ const ChecklistScreen = ({ route, navigation }) => {
         // console.log(temp);
         AsyncStorage.setItem("savedChecklists", JSON.stringify(temp));
       }
-    } catch (e) {
+    } catch (err) {
       // error reading value
-      console.error(e);
+      console.error(err);
+      setError(true);
+      setErrorMsg(err.message);
     }
   };
 
@@ -238,6 +252,34 @@ const ChecklistScreen = ({ route, navigation }) => {
             size="large"
             color={theme["color-primary-default"]}
           />
+        </Layout>
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.screen}>
+        <TopNavigation
+          title="Checklist"
+          alignment="center"
+          accessoryLeft={BackAction}
+        />
+        <Divider />
+        <Layout style={styles.layout}>
+          <View>
+            <Text style={{ textAlign: "center" }}>{errorMsg}</Text>
+            <View style={{ alignItems: "center" }}>
+              <Button
+                accessoryLeft={RetryIcon}
+                onPress={() => {
+                  loadForm();
+                }}
+              >
+                Retry
+              </Button>
+            </View>
+          </View>
         </Layout>
       </SafeAreaView>
     );
