@@ -74,9 +74,9 @@ const ChecklistScreen = ({ route, navigation }) => {
 
   const loadForm = (index) => {
     setSelectedIndex(index);
-    const type = index === 0 ? "fnb" : "non_fnb";
+    const checklistType = index === 0 ? "fnb" : "non_fnb";
     setLoading(true);
-    dispatch(checklistActions.getChecklist(type, tenant)).then(() => {
+    dispatch(checklistActions.getChecklist(checklistType, tenant)).then(() => {
       createNewSections();
       setLoading(false);
     });
