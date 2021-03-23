@@ -116,28 +116,26 @@ const QuestionCard = (props) => {
       onSwipeableOpen={rightSwipe}
       friction={2}
     >
-      <View>
-        <Card onPress={onClickDetailHandler} header={Header}>
-          <View style={styles.questionContainer}>
-            <CheckBox
-              checked={checked}
-              onChange={onChangeHandler}
-              disabled={deleted}
-            />
-            <View style={styles.questionTextContainer}>
-              <Text
-                // eslint-disable-next-line react-native/no-inline-styles
-                style={{
-                  width: Platform.OS === "web" ? SCREEN_WIDTH - 100 : null,
-                  textDecorationLine: deleted ? "line-through" : null,
-                }}
-              >
-                {question}
-              </Text>
-            </View>
+      <Card onPress={onClickDetailHandler} header={Header}>
+        <View style={styles.questionContainer}>
+          <CheckBox
+            checked={checked}
+            onChange={onChangeHandler}
+            disabled={deleted}
+          />
+          <View style={styles.questionTextContainer}>
+            <Text
+              // eslint-disable-next-line react-native/no-inline-styles
+              style={{
+                width: Platform.OS === "web" ? SCREEN_WIDTH - 100 : null,
+                textDecorationLine: deleted ? "line-through" : null,
+              }}
+            >
+              {question}
+            </Text>
           </View>
-        </Card>
-      </View>
+        </View>
+      </Card>
     </Swipeable>
   );
 };
