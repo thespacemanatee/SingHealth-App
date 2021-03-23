@@ -18,17 +18,30 @@ const TrashIcon = (props) => <Icon {...props} name="trash" />;
 const UndoIcon = (props) => <Icon {...props} name="undo" />;
 
 const QuestionCard = (props) => {
-  const checklistTypeStore = useSelector(
-    (state) => state.checklist.chosen_checklist_type
-  );
   const [checked, setChecked] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const { index } = props;
-  const { itemData } = props;
-  const section = itemData.section.title;
+  const { question } = props;
+  const { section } = props;
+  const { covid19 } = props;
   const leftSwipeable = useRef(null);
 
-  console.log(section);
+  const checklistTypeStore = useSelector(
+    (state) => state.checklist.chosen_checklist_type
+  );
+  let answerStore;
+  if (covid19) {
+    answerStore = useSelector(
+      (state) => state.checklist.covid19.questions[section][index].answer
+    );
+  } else {
+    answerStore = useSelector(
+      (state) =>
+        state.checklist.chosen_checklist.questions[section][index].answer
+    );
+  }
+
+  console.log(answerStore);
 
   const theme = useTheme();
 
@@ -37,9 +50,14 @@ const QuestionCard = (props) => {
   const SCREEN_WIDTH = Dimensions.get("window").width;
 
   useEffect(() => {
-    setChecked(false);
-    setDeleted(false);
-  }, [checklistTypeStore]);
+    if (answerStore === null) {
+      setChecked(false);
+      setDeleted(true);
+    } else {
+      setChecked(answerStore);
+      setDeleted(false);
+    }
+  }, [answerStore, checklistTypeStore, covid19]);
 
   const Header = (headerProps) => (
     <View {...headerProps}>
@@ -50,7 +68,7 @@ const QuestionCard = (props) => {
   const onClickDetailHandler = () => {
     props.navigation.navigate("QuestionDetails", {
       index,
-      item: itemData.item,
+      question,
       section,
     });
   };
@@ -114,7 +132,7 @@ const QuestionCard = (props) => {
                   textDecorationLine: deleted ? "line-through" : null,
                 }}
               >
-                {itemData.item.question}
+                {question}
               </Text>
             </View>
           </View>
@@ -125,11 +143,11 @@ const QuestionCard = (props) => {
 };
 
 const areEqual = (prevProps, nextProps) => {
-  const { itemData } = nextProps;
-  const { itemData: prevItemData } = prevProps;
+  // const { itemData } = nextProps;
+  // const { itemData: prevItemData } = prevProps;
 
   /* if the props are equal, it won't update */
-  const isSelectedEqual = itemData.item.question === prevItemData.item.question;
+  const isSelectedEqual = nextProps.question === prevProps.question;
 
   return isSelectedEqual;
 };

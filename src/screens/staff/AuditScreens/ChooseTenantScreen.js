@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View } from "react-native";
+import { SectionList, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -10,8 +10,9 @@ import {
   Text,
   Card,
   StyleService,
-  List,
+  useTheme,
 } from "@ui-kitten/components";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import * as checklistActions from "../../../store/actions/checklistActions";
 
@@ -19,9 +20,11 @@ const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const ChooseTenantScreen = ({ navigation }) => {
   const databaseStore = useSelector((state) => state.database);
-  const [relevantTenants, setRelevantTenants] = useState([]);
+  const [sectionData, setSectionData] = useState([]);
 
   const dispatch = useDispatch();
+
+  const theme = useTheme();
 
   const BackAction = () => (
     <TopNavigationAction
@@ -32,25 +35,61 @@ const ChooseTenantScreen = ({ navigation }) => {
     />
   );
 
-  const renderRelevantTenants = useCallback(
+  const renderSectionHeader = useCallback(
+    ({ section: { title } }) => {
+      return (
+        <View style={{ backgroundColor: theme["color-primary-300"] }}>
+          <Text style={styles.header}>{title}</Text>
+          <Divider />
+        </View>
+      );
+    },
+    [theme]
+  );
+
+  const renderSectionList = useCallback(
     (itemData) => {
+      if (itemData.item.data) {
+        const tenantID = Object.keys(itemData.item.data.chosen_tenant)[0];
+        console.log(itemData.item.time);
+        return (
+          <Card
+            style={styles.item}
+            status="basic"
+            onPress={() => {
+              dispatch(checklistActions.addSavedChecklist(itemData.item.data));
+              navigation.navigate("Checklist", {
+                auditID: itemData.item.time,
+                savedChecklist: itemData.item.data,
+              });
+            }}
+          >
+            <View>
+              <Text>{itemData.item.data.chosen_tenant[tenantID].name}</Text>
+              <Text>{itemData.item.time}</Text>
+            </View>
+          </Card>
+        );
+      }
+      const tenantID = Object.keys(itemData.item)[0];
       return (
         <Card
           style={styles.item}
           status="basic"
           onPress={() => {
+            const now = new Date().toISOString();
             dispatch(checklistActions.addAuditTenantSelection(itemData.item));
-            navigation.navigate("Checklist");
+            navigation.navigate("Checklist", { auditID: now });
           }}
         >
-          <Text>{itemData.item[Object.keys(itemData.item)[0]].name}</Text>
+          <Text>{itemData.item[tenantID].name}</Text>
         </Card>
       );
     },
     [dispatch, navigation]
   );
 
-  useEffect(() => {
+  const getSectionData = useCallback(async () => {
     const tempArray = [];
     Object.keys(databaseStore.tenants).forEach((key) => {
       if (
@@ -60,8 +99,22 @@ const ChooseTenantScreen = ({ navigation }) => {
         tempArray.push({ [key]: databaseStore.tenants[key] });
       }
     });
-    setRelevantTenants(tempArray);
-  }, [databaseStore]);
+    let data = await AsyncStorage.getItem("savedChecklists");
+    data = JSON.parse(data);
+
+    const tempChecklists = [
+      {
+        title: "Available Tenants",
+        data: tempArray,
+      },
+      { title: "Saved Checklists", data: Object.values(data) },
+    ];
+    setSectionData(tempChecklists);
+  }, [databaseStore.current_institution, databaseStore.tenants]);
+
+  useEffect(() => {
+    getSectionData();
+  }, [getSectionData]);
 
   return (
     <View style={styles.screen}>
@@ -75,10 +128,13 @@ const ChooseTenantScreen = ({ navigation }) => {
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Choose a Tenant to Audit</Text>
         </View>
-        <List
-          data={relevantTenants}
-          renderItem={renderRelevantTenants}
+        <SectionList
+          sections={sectionData}
+          keyExtractor={(item, index) => item + index}
+          renderItem={renderSectionList}
           contentContainerStyle={styles.contentContainer}
+          renderSectionHeader={renderSectionHeader}
+          SectionSeparatorComponent={() => <Divider />}
         />
       </Layout>
     </View>
@@ -88,6 +144,11 @@ const ChooseTenantScreen = ({ navigation }) => {
 const styles = StyleService.create({
   screen: {
     flex: 1,
+  },
+  header: {
+    fontSize: 24,
+    padding: 10,
+    fontWeight: "bold",
   },
   titleContainer: {
     margin: 20,

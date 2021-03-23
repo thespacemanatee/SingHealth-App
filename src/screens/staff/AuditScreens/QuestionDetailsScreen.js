@@ -30,7 +30,7 @@ const ImageIcon = (props) => <Icon {...props} name="image-outline" />;
 const QuestionDetailsScreen = ({ route, navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
   const { index } = route.params;
-  const { item } = route.params;
+  const { question } = route.params;
   const { section } = route.params;
   const [value, setValue] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -208,7 +208,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           { backgroundColor: theme["color-primary-400"] },
         ]}
       >
-        <Text style={styles.text}>{item.question}</Text>
+        <Text style={styles.text}>{question}</Text>
       </View>
       <Layout style={styles.layout}>
         <KeyboardAwareScrollView extraHeight={200}>
