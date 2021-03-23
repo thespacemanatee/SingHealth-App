@@ -147,7 +147,9 @@ localhost:5000/auditForms/fnb
 ```
 {
   "status": 400,
-  "description": "Item at index 3 has duplicate images"
+  "description": "Duplicate image filenames found",
+  "category": "Professionalism",
+  "index": 0
 }
 ```
 
@@ -271,7 +273,7 @@ Out of base64(JSON) or formdata, **only use 1** of them per request~
 }
 ```
 
-## `GET /login/tenant`
+## `POST /login/tenant`
 ### JSON Query string parameters
 `user`
 ~ The user email tagged to the account
@@ -290,7 +292,8 @@ Out of base64(JSON) or formdata, **only use 1** of them per request~
 ```js
 {
     "status": "200",
-    "description": "You are now logged in"
+    "description": "You are now logged in",
+    "data": <User credentials>
 }
 ```
 #### Failure
@@ -301,7 +304,7 @@ Out of base64(JSON) or formdata, **only use 1** of them per request~
 }
 ```
 
-## `GET /login/staff`
+## `POST /login/staff`
 !!!note
 Uses exactly the same request and response format as `/login/tenant`
 !!!
@@ -323,7 +326,8 @@ Uses exactly the same request and response format as `/login/tenant`
 ```js
 {
     "status": "200",
-    "description": "You are now logged in"
+    "description": "You are now logged in",
+    "data": <User credentials>
 }
 ```
 #### Failure

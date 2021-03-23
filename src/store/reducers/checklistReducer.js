@@ -10,6 +10,7 @@ import {
   ADD_COVID_CHECKLIST,
   CHANGE_ANSWER,
   CHANGE_DEADLINE,
+  RESET_CHECKLIST_STORE,
 } from "../actions/checklistActions";
 
 const initialState = {
@@ -20,32 +21,28 @@ const initialState = {
 };
 
 const checklistReducer = (state = initialState, action) => {
+  let covidKeys;
+  if (state.covid19) {
+    covidKeys = Object.keys(state.covid19.questions);
+  }
   switch (action.type) {
     case ADD_AUDIT_TENANT_SELECTION:
       return {
         ...state,
         chosen_tenant: action.tenant,
-        chosen_checklist_type: null,
-        chosen_checklist: null,
-        // maximum_score: 0,
-        // current_score: 0,
       };
     case ADD_CHOSEN_CHECKLIST: {
       return {
         ...state,
-        chosen_checklist_type: action.checklist_type,
-        chosen_checklist: _.cloneDeep(action.checklist),
-        // maximum_score: 0,
-        // current_score: 0,
+        chosen_checklist_type: action.checklistType,
+        chosen_checklist: action.checklist,
       };
     }
 
     case ADD_COVID_CHECKLIST: {
       return {
         ...state,
-        covid19: _.cloneDeep(action.checklist),
-        // maximum_score: 0,
-        // current_score: 0,
+        covid19: action.checklist,
       };
     }
 
@@ -94,12 +91,7 @@ const checklistReducer = (state = initialState, action) => {
     }
     case DELETE_IMAGE: {
       let newChecklist;
-      if (
-        Object.prototype.hasOwnProperty.call(
-          state.covid19.questions,
-          action.section
-        )
-      ) {
+      if (covidKeys.includes(action.section)) {
         newChecklist = _.cloneDeep(state.covid19);
       } else {
         newChecklist = _.cloneDeep(state.chosen_checklist);
@@ -110,12 +102,7 @@ const checklistReducer = (state = initialState, action) => {
       );
 
       // console.log(newChecklist.questions[action.index].image.uri);
-      if (
-        Object.prototype.hasOwnProperty.call(
-          state.covid19.questions,
-          action.section
-        )
-      ) {
+      if (covidKeys.includes(action.section)) {
         return {
           ...state,
           covid19: newChecklist,
@@ -129,12 +116,7 @@ const checklistReducer = (state = initialState, action) => {
     }
     case ADD_REMARKS: {
       let newChecklist;
-      if (
-        Object.prototype.hasOwnProperty.call(
-          state.covid19.questions,
-          action.section
-        )
-      ) {
+      if (covidKeys.includes(action.section)) {
         newChecklist = _.cloneDeep(state.covid19);
       } else {
         newChecklist = _.cloneDeep(state.chosen_checklist);
@@ -166,12 +148,7 @@ const checklistReducer = (state = initialState, action) => {
     }
     case CHANGE_ANSWER: {
       let newChecklist;
-      if (
-        Object.prototype.hasOwnProperty.call(
-          state.covid19.questions,
-          action.section
-        )
-      ) {
+      if (covidKeys.includes(action.section)) {
         newChecklist = _.cloneDeep(state.covid19);
       } else {
         newChecklist = _.cloneDeep(state.chosen_checklist);
@@ -186,12 +163,7 @@ const checklistReducer = (state = initialState, action) => {
 
       console.log(newChecklist);
 
-      if (
-        Object.prototype.hasOwnProperty.call(
-          state.covid19.questions,
-          action.section
-        )
-      ) {
+      if (covidKeys.includes(action.section)) {
         return {
           ...state,
           covid19: newChecklist,
@@ -205,12 +177,7 @@ const checklistReducer = (state = initialState, action) => {
     }
     case CHANGE_DEADLINE: {
       let newChecklist;
-      if (
-        Object.prototype.hasOwnProperty.call(
-          state.covid19.questions,
-          action.section
-        )
-      ) {
+      if (covidKeys.includes(action.section)) {
         newChecklist = _.cloneDeep(state.covid19);
       } else {
         newChecklist = _.cloneDeep(state.chosen_checklist);
@@ -221,12 +188,7 @@ const checklistReducer = (state = initialState, action) => {
 
       console.log(newChecklist);
 
-      if (
-        Object.prototype.hasOwnProperty.call(
-          state.covid19.questions,
-          action.section
-        )
-      ) {
+      if (covidKeys.includes(action.section)) {
         return {
           ...state,
           covid19: newChecklist,
@@ -236,6 +198,14 @@ const checklistReducer = (state = initialState, action) => {
       return {
         ...state,
         chosen_checklist: newChecklist,
+      };
+    }
+    case RESET_CHECKLIST_STORE: {
+      return {
+        chosen_tenant: null,
+        chosen_checklist_type: null,
+        chosen_checklist: null,
+        covid19: null,
       };
     }
 

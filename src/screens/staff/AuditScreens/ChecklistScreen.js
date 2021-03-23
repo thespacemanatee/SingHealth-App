@@ -1,11 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  SafeAreaView,
-  View,
-  SectionList,
-  ActivityIndicator,
-  Platform,
-} from "react-native";
+import { View, SectionList, ActivityIndicator, Platform } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Button,
@@ -32,21 +26,25 @@ export const COVID_SECTION = "COVID-19 Checklist";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const SaveIcon = (props) => <Icon {...props} name="save-outline" />;
+const RetryIcon = (props) => <Icon {...props} name="refresh-outline" />;
 
 const ChecklistScreen = ({ route, navigation }) => {
-  const databaseStore = useSelector((state) => state.database);
   const checklistStore = useSelector((state) => state.checklist);
-  const [selectedIndex, setSelectedIndex] = useState(0);
   const [completeChecklist, setCompleteChecklist] = useState([]);
   const [loading, setLoading] = useState(true);
-  const covid19Keys = Object.keys(databaseStore.audit_forms.covid19.questions);
-  console.log(checklistStore);
+  const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const { type } = route.params;
+  const [selectedIndex, setSelectedIndex] = useState(
+    type === "non_fnb" ? 1 : 0
+  );
 
   const { auditID } = route.params;
-
-  const theme = useTheme();
+  const tenant = checklistStore.chosen_tenant;
 
   const dispatch = useDispatch();
+
+  const theme = useTheme();
 
   const BackAction = () => (
     <TopNavigationAction
@@ -70,6 +68,40 @@ const ChecklistScreen = ({ route, navigation }) => {
     />
   );
 
+  const loadForm = (index) => {
+    setSelectedIndex(index);
+    const checklistType = index === 0 ? "fnb" : "non_fnb";
+    setError(false);
+    setErrorMsg("");
+    setLoading(true);
+    dispatch(checklistActions.getChecklist(checklistType, tenant))
+      .then(() => {
+        createNewSections();
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError(true);
+        setErrorMsg(err.message);
+        setLoading(false);
+      });
+  };
+
+  const handleChangeFormType = (index) => {
+    alert(
+      "WARNING!",
+      "If you change the form type, your progress will be erased.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Confirm",
+          style: "destructive",
+          onPress: () => loadForm(index),
+        },
+      ]
+    );
+  };
+
   const saveChecklists = async () => {
     try {
       // AsyncStorage.removeItem("savedChecklists");
@@ -92,9 +124,11 @@ const ChecklistScreen = ({ route, navigation }) => {
         // console.log(temp);
         AsyncStorage.setItem("savedChecklists", JSON.stringify(temp));
       }
-    } catch (e) {
+    } catch (err) {
       // error reading value
-      console.error(e);
+      console.error(err);
+      setError(true);
+      setErrorMsg(err.message);
     }
   };
 
@@ -127,19 +161,17 @@ const ChecklistScreen = ({ route, navigation }) => {
 
   const renderChosenChecklist = useCallback(
     (itemData) => {
-      // console.log(itemData.section);
-
       return (
         <QuestionCard
           index={itemData.index}
           question={itemData.item.question}
+          answer={itemData.item.answer}
           section={itemData.section.title}
           navigation={navigation}
-          covid19={covid19Keys.includes(itemData.section.title)}
         />
       );
     },
-    [covid19Keys, navigation]
+    [navigation]
   );
 
   const renderSectionHeader = useCallback(
@@ -158,71 +190,51 @@ const ChecklistScreen = ({ route, navigation }) => {
     <TopNavigationAction icon={SaveIcon} onPress={handleSaveChecklist} />
   );
 
-  useEffect(() => {
-    if (selectedIndex === 0) {
-      dispatch(
-        checklistActions.addChosenChecklist(
-          checklistActions.TYPE_FNB,
-          databaseStore.audit_forms.fnb
-        )
-      );
-    } else {
-      dispatch(
-        checklistActions.addChosenChecklist(
-          checklistActions.TYPE_NON_FNB,
-          databaseStore.audit_forms.non_fnb
-        )
-      );
-    }
-
-    dispatch(
-      checklistActions.addCovidChecklist(databaseStore.audit_forms.covid19)
-    );
-
+  const createNewSections = useCallback(() => {
     const checklist = [
       {
-        title: selectedIndex === 0 ? FNB_SECTION : NON_FNB_SECTION,
+        title:
+          checklistStore.chosen_checklist_type === "fnb"
+            ? FNB_SECTION
+            : NON_FNB_SECTION,
         data: [],
       },
     ];
 
-    if (selectedIndex === 0) {
-      const temp = Object.keys(databaseStore.audit_forms.fnb.questions);
-      temp.forEach((title) => {
-        checklist.push({
-          title,
-          data: databaseStore.audit_forms.fnb.questions[title],
-        });
-      });
-    }
-    if (selectedIndex === 1) {
-      const temp = Object.keys(databaseStore.audit_forms.non_fnb.questions);
-      temp.forEach((title) => {
-        checklist.push({
-          title,
-          data: databaseStore.audit_forms.non_fnb.questions[title],
-        });
-      });
-    }
-    checklist.push({ title: COVID_SECTION, data: [] });
-    const temp = Object.keys(databaseStore.audit_forms.covid19.questions);
+    let temp;
+    temp = Object.keys(checklistStore.chosen_checklist.questions);
     temp.forEach((title) => {
       checklist.push({
         title,
-        data: databaseStore.audit_forms.covid19.questions[title],
+        data: checklistStore.chosen_checklist.questions[title],
+      });
+    });
+
+    checklist.push({ title: COVID_SECTION, data: [] });
+    temp = Object.keys(checklistStore.covid19.questions);
+    temp.forEach((title) => {
+      checklist.push({
+        title,
+        data: checklistStore.covid19.questions[title],
       });
     });
 
     // console.log(checklist);
-
     setCompleteChecklist(checklist);
+  }, [
+    checklistStore.chosen_checklist.questions,
+    checklistStore.chosen_checklist_type,
+    checklistStore.covid19.questions,
+  ]);
 
+  useEffect(() => {
+    createNewSections();
     setLoading(false);
-  }, [selectedIndex, databaseStore, dispatch]);
+  }, [createNewSections]);
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.screen}>
+      <View style={styles.screen}>
         <TopNavigation
           title="Checklist"
           alignment="center"
@@ -235,7 +247,35 @@ const ChecklistScreen = ({ route, navigation }) => {
             color={theme["color-primary-default"]}
           />
         </Layout>
-      </SafeAreaView>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.screen}>
+        <TopNavigation
+          title="Checklist"
+          alignment="center"
+          accessoryLeft={BackAction}
+        />
+        <Divider />
+        <Layout style={styles.layout}>
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>{errorMsg}</Text>
+            <View>
+              <Button
+                accessoryLeft={RetryIcon}
+                onPress={() => {
+                  loadForm();
+                }}
+              >
+                Retry
+              </Button>
+            </View>
+          </View>
+        </Layout>
+      </View>
     );
   }
 
@@ -256,13 +296,13 @@ const ChecklistScreen = ({ route, navigation }) => {
           ]}
         >
           <Text style={styles.title}>
-            Audit: {Object.values(checklistStore.chosen_tenant)[0].name}
+            Audit: {checklistStore.chosen_tenant.stallName}
           </Text>
           <Text>{new Date().toDateString()}</Text>
         </View>
         <RadioGroup
           selectedIndex={selectedIndex}
-          onChange={(index) => setSelectedIndex(index)}
+          onChange={handleChangeFormType}
           style={styles.radioGroup}
         >
           <Radio>F&B</Radio>
@@ -277,16 +317,7 @@ const ChecklistScreen = ({ route, navigation }) => {
           SectionSeparatorComponent={() => <Divider />}
         />
         <View style={styles.bottomContainer}>
-          {/* <Text>
-            Current Score: {checklistStore.current_score}/
-            {checklistStore.maximum_score}
-          </Text> */}
-          <Button
-            //   style={styles.button}
-            // appearance="filled"
-            status="primary"
-            onPress={onSubmitHandler}
-          >
+          <Button status="primary" onPress={onSubmitHandler}>
             SUBMIT
           </Button>
         </View>
@@ -327,6 +358,16 @@ const styles = StyleService.create({
     borderTopWidth: 1,
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  errorContainer: {
+    alignItems: "center",
+    justifyContent: "space-around",
+  },
+  errorText: {
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 26,
+    marginBottom: 20,
   },
 });
 

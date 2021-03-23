@@ -62,7 +62,7 @@ const StaffDashboardScreen = ({ navigation }) => {
         </Card>
       );
     },
-    [databaseStore]
+    [databaseStore.audits.audits, databaseStore.tenants, theme]
   );
 
   return (
@@ -126,8 +126,7 @@ const styles = StyleService.create({
     flex: 1,
   },
   textContainer: {
-    marginLeft: 20,
-    marginBottom: 20,
+    margin: 20,
   },
   text: {
     fontSize: 26,

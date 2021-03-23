@@ -56,7 +56,6 @@ const AppNavigator = () => {
   }, [dispatch]);
 
   console.log(authStore);
-  console.log(authStore.userToken, authStore.userType);
 
   return (
     <NavigationContainer>

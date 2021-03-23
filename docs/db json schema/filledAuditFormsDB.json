@@ -56,7 +56,7 @@
                             "requestForExt": {"type": "boolean"},
                             "acceptedRequest": {"type": "boolean"}
                         },
-                        "required": [ "answer" , "questionTags"]
+                        "required": [ "answer"]
                     }
                 }
             },

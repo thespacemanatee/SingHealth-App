@@ -8,6 +8,7 @@ import boto3
 import io
 import traceback
 
+
 def upload_image(file_obj, bucket, file_name):
     """
     Function to upload a file to an S3 bucket
@@ -54,8 +55,7 @@ def addImagesEndpoint(app):
                     for image in requestData:
                         imageFilenames.append(image["fileName"])
 
-                    detected_Duplicate_filenames = len(
-                        imageFilenames) > len(set(imageFilenames))
+                    detected_Duplicate_filenames = len(imageFilenames) > len(set(imageFilenames))
                     if detected_Duplicate_filenames:
                         return failureResponse(failureMsg("Duplicate image names found", 400), 400)
 
@@ -63,11 +63,16 @@ def addImagesEndpoint(app):
                         try:
                             imageName = image["fileName"]
                             imageData = image["uri"]
+                            imageData = imageData.partition(",")[2]
+                            imageData = imageData.encode('utf-8')
+                            pad = len(imageData) % 4
+                            imageData += b"="*pad
+
                         except KeyError:
-                            failureResponse(failureMsg(
+                            return failureResponse(failureMsg(
                                 "Wrong request format. Make sure every Image object has a 'fileName' & a 'uri' field", 400), 400)
 
-                        imageBytes = io.BytesIO(b64decode(imageData + '==='))
+                        imageBytes = io.BytesIO(b64decode(imageData))
                         upload_image(imageBytes, S3BUCKETNAME, imageName)
                     return successResponse(successMsg("Pictures have successfully been uploaded"))
 
@@ -97,9 +102,10 @@ def addImagesEndpoint(app):
                 failed = []
                 for index, filename in enumerate(filenames):
                     try:
-                        #TODO: Might need to strip the header before sending it back to the client
+                        # TODO: Might need to strip the header before sending it back to the client
                         imageObject = download_image(filename, S3BUCKETNAME)
-                        imageBase64 = b64encode(imageObject.getvalue()).decode()
+                        imageBase64 = b64encode(
+                            imageObject.getvalue()).decode()
                         output.append(imageBase64)
                         n += 1
                     except ClientError as e:
