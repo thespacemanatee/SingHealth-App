@@ -147,7 +147,9 @@ localhost:5000/auditForms/fnb
 ```
 {
   "status": 400,
-  "description": "Item at index 3 has duplicate images"
+  "description": "Duplicate image filenames found",
+  "category": "Professionalism",
+  "index": 0
 }
 ```
 
