@@ -15,6 +15,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import * as checklistActions from "../../../store/actions/checklistActions";
+import SavedChecklistCard from "../../../components/SavedChecklistCard";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -35,6 +36,10 @@ const ChooseTenantScreen = ({ navigation }) => {
     />
   );
 
+  const handleDeleteSavedChecklist = useCallback(() => {
+    getSectionData();
+  }, [getSectionData]);
+
   const renderSectionHeader = useCallback(
     ({ section: { title } }) => {
       return (
@@ -50,25 +55,12 @@ const ChooseTenantScreen = ({ navigation }) => {
   const renderSectionList = useCallback(
     (itemData) => {
       if (itemData.item.data) {
-        const tenantID = Object.keys(itemData.item.data.chosen_tenant)[0];
-        console.log(itemData.item.time);
         return (
-          <Card
-            style={styles.item}
-            status="basic"
-            onPress={() => {
-              dispatch(checklistActions.addSavedChecklist(itemData.item.data));
-              navigation.navigate("Checklist", {
-                auditID: itemData.item.time,
-                savedChecklist: itemData.item.data,
-              });
-            }}
-          >
-            <View>
-              <Text>{itemData.item.data.chosen_tenant[tenantID].name}</Text>
-              <Text>{itemData.item.time}</Text>
-            </View>
-          </Card>
+          <SavedChecklistCard
+            itemData={itemData}
+            navigation={navigation}
+            deleteSave={handleDeleteSavedChecklist}
+          />
         );
       }
       const tenantID = Object.keys(itemData.item)[0];
@@ -86,7 +78,7 @@ const ChooseTenantScreen = ({ navigation }) => {
         </Card>
       );
     },
-    [dispatch, navigation]
+    [dispatch, handleDeleteSavedChecklist, navigation]
   );
 
   const getSectionData = useCallback(async () => {
@@ -99,24 +91,39 @@ const ChooseTenantScreen = ({ navigation }) => {
         tempArray.push({ [key]: databaseStore.tenants[key] });
       }
     });
-    let data = await AsyncStorage.getItem("savedChecklists");
-    if (data !== null) {
-      data = JSON.parse(data);
-    }
 
     const tempChecklists = [
       {
         title: "Available Tenants",
         data: tempArray,
       },
-      { title: "Saved Checklists", data: data ? Object.values(data) : [] },
     ];
+
+    let data = await AsyncStorage.getItem("savedChecklists");
+    if (data !== null) {
+      data = JSON.parse(data);
+      if (Object.keys(data).length > 0) {
+        tempChecklists.push({
+          title: "Saved Checklists",
+          data: Object.values(data),
+        });
+      }
+    }
     setSectionData(tempChecklists);
   }, [databaseStore.current_institution, databaseStore.tenants]);
 
   useEffect(() => {
-    getSectionData();
-  }, [getSectionData]);
+    // Subscribe for the focus Listener
+    const unsubscribe = navigation.addListener("focus", () => {
+      getSectionData();
+    });
+
+    return () => {
+      // Unsubscribe for the focus Listener
+      // eslint-disable-next-line no-unused-expressions
+      unsubscribe;
+    };
+  }, [getSectionData, navigation]);
 
   return (
     <View style={styles.screen}>
