@@ -25,6 +25,8 @@ pillow = "*"
 requests = "*"
 flask-cors = "*"
 dnspython = "*"
+iso8601 = "*"
+pytz = "*"
 
 [dev-packages]
 
