@@ -41,7 +41,6 @@ const ChecklistScreen = ({ route, navigation }) => {
   const [selectedIndex, setSelectedIndex] = useState(
     type === "non_fnb" ? 1 : 0
   );
-  const covid19Keys = Object.keys(checklistStore.covid19.questions);
 
   const { auditID } = route.params;
   const tenant = checklistStore.chosen_tenant;
@@ -161,11 +160,10 @@ const ChecklistScreen = ({ route, navigation }) => {
           answer={itemData.item.answer}
           section={itemData.section.title}
           navigation={navigation}
-          covid19={covid19Keys.includes(itemData.section.title)}
         />
       );
     },
-    [covid19Keys, navigation]
+    [navigation]
   );
 
   const renderSectionHeader = useCallback(

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { SectionList, View } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   Divider,
   Layout,
@@ -21,8 +21,6 @@ const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const ChooseTenantScreen = ({ navigation }) => {
   const databaseStore = useSelector((state) => state.database);
   const [sectionData, setSectionData] = useState([]);
-
-  const dispatch = useDispatch();
 
   const theme = useTheme();
 
