@@ -9,7 +9,8 @@ const NewChecklistCard = ({ item, navigation, onError, onLoading }) => {
 
   const handleCreateNewChecklist = () => {
     onLoading(true);
-    dispatch(checklistActions.getChecklist(null, item))
+    console.log("ITEM:", item);
+    dispatch(checklistActions.getChecklist(undefined, item))
       .then(() => {
         onLoading(false);
         const now = new Date().toISOString();

@@ -50,5 +50,6 @@ module.exports = {
     "react-native/no-single-element-style-arrays": 2,
     "react/jsx-props-no-spreading": 1,
     "import/extensions": "off",
+    "no-underscore-dangle": "off",
   },
 };
