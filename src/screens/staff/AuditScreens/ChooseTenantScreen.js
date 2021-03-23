@@ -8,14 +8,13 @@ import {
   TopNavigationAction,
   Icon,
   Text,
-  Card,
   StyleService,
   useTheme,
 } from "@ui-kitten/components";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import * as checklistActions from "../../../store/actions/checklistActions";
 import SavedChecklistCard from "../../../components/SavedChecklistCard";
+import NewChecklistCard from "../../../components/NewChecklistCard";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -63,22 +62,10 @@ const ChooseTenantScreen = ({ navigation }) => {
           />
         );
       }
-      const tenantID = Object.keys(itemData.item)[0];
-      return (
-        <Card
-          style={styles.item}
-          status="basic"
-          onPress={() => {
-            const now = new Date().toISOString();
-            dispatch(checklistActions.addAuditTenantSelection(itemData.item));
-            navigation.navigate("Checklist", { auditID: now });
-          }}
-        >
-          <Text>{itemData.item[tenantID].name}</Text>
-        </Card>
-      );
+
+      return <NewChecklistCard itemData={itemData} navigation={navigation} />;
     },
-    [dispatch, handleDeleteSavedChecklist, navigation]
+    [handleDeleteSavedChecklist, navigation]
   );
 
   const getSectionData = useCallback(async () => {
@@ -141,7 +128,7 @@ const ChooseTenantScreen = ({ navigation }) => {
           sections={sectionData}
           keyExtractor={(item, index) => item + index}
           renderItem={renderSectionList}
-          contentContainerStyle={styles.contentContainer}
+          // contentContainerStyle={styles.contentContainer}
           renderSectionHeader={renderSectionHeader}
           SectionSeparatorComponent={() => <Divider />}
         />

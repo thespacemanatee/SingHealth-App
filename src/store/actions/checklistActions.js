@@ -1,3 +1,6 @@
+import { Platform } from "react-native";
+import axios from "axios";
+
 export const ADD_AUDIT_TENANT_SELECTION = "ADD_AUDIT_TENANT_SELECTION";
 export const ADD_CHOSEN_CHECKLIST = "ADD_CHOSEN_CHECKLIST";
 export const ADD_COVID_CHECKLIST = "ADD_COVID_CHECKLIST";
@@ -15,22 +18,95 @@ export const TYPE_FNB = "fnb";
 export const TYPE_NON_FNB = "non_fnb";
 export const TYPE_COVID = "covid19";
 
+let endpoint;
+
+if (Platform.OS === "android") {
+  endpoint = "http://10.0.2.2:5000/";
+} else {
+  endpoint = "http://localhost:5000/";
+}
+
+export const getChecklist = (checklistType, tenant) => async (dispatch) => {
+  console.log(checklistType);
+  await Promise.all([
+    dispatch(addChosenChecklist(checklistType)),
+    dispatch(addCovidChecklist()),
+    dispatch(addAuditTenantSelection(tenant)),
+  ]);
+};
+
 export const addAuditTenantSelection = (tenant) => {
   return { type: ADD_AUDIT_TENANT_SELECTION, tenant };
 };
-export const addChosenChecklist = (checklistType, checklist) => {
-  return {
-    type: ADD_CHOSEN_CHECKLIST,
-    checklist_type: checklistType,
-    checklist,
+export const addChosenChecklist = (checklistType) => async (
+  dispatch,
+  getState
+) => {
+  if (!checklistType) {
+    // eslint-disable-next-line no-param-reassign
+    checklistType = "fnb";
+  }
+
+  const options = {
+    url: `${endpoint}auditForms/${checklistType}`,
+    method: "get",
+    withCredentials: true,
   };
+
+  try {
+    const res = await axios(options);
+
+    const checklist = res.data.data[0];
+    console.log(`Done fetching ${checklistType} checklist`);
+    return dispatch({ type: ADD_CHOSEN_CHECKLIST, checklistType, checklist });
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+  // axios(options)
+  //   .then((res) => {
+  //     // eslint-disable-next-line prefer-destructuring
+  //     checklist = res.data.data[0];
+  //     console.log(checklist);
+  //     dispatch({ type: ADD_CHOSEN_CHECKLIST, checklistType, checklist });
+  //   })
+  //   .catch((err) => {
+  //     console.error(err);
+  //   });
 };
-export const addCovidChecklist = (checklist) => {
-  return {
-    type: ADD_COVID_CHECKLIST,
-    checklist,
+
+export const addCovidChecklist = () => async (dispatch, getState) => {
+  const options = {
+    url: `${endpoint}auditForms/covid19`,
+    method: "get",
+    withCredentials: true,
   };
+
+  try {
+    const res = await axios(options);
+
+    const checklist = res.data.data[0];
+    console.log("Done fetching covid checklist");
+    return dispatch({ type: ADD_COVID_CHECKLIST, checklist });
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+
+  // let checklist;
+  // axios(options)
+  //   .then((res) => {
+  //     // eslint-disable-next-line prefer-destructuring
+  //     checklist = res.data.data[0];
+  //     console.log(checklist);
+  //     return dispatch({ type: ADD_COVID_CHECKLIST, checklist });
+  //   })
+  //   .catch((err) => {
+  //     console.error(err);
+  //     return null;
+  //   });
 };
+
 export const addSavedChecklist = (data) => {
   return {
     type: ADD_SAVED_CHECKLIST,

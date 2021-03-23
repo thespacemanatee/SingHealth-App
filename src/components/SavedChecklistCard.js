@@ -1,12 +1,13 @@
 import React, { useCallback, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import {
   Card,
   StyleService,
   Button,
   useTheme,
   Icon,
+  Text,
 } from "@ui-kitten/components";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -23,6 +24,13 @@ const SavedChecklistCard = ({ itemData, navigation, deleteSave }) => {
 
   const tenantID = Object.keys(itemData.item.data.chosen_tenant)[0];
   console.log(itemData.item.time);
+
+  const handleOpenSavedChecklist = () => {
+    dispatch(checklistActions.addSavedChecklist(itemData.item.data));
+    navigation.navigate("Checklist", {
+      auditID: itemData.item.time,
+    });
+  };
 
   const rightSwipe = useCallback(async () => {
     let data = await AsyncStorage.getItem("savedChecklists");
@@ -59,13 +67,7 @@ const SavedChecklistCard = ({ itemData, navigation, deleteSave }) => {
       <Card
         style={styles.item}
         status="basic"
-        onPress={() => {
-          dispatch(checklistActions.addSavedChecklist(itemData.item.data));
-          navigation.navigate("Checklist", {
-            auditID: itemData.item.time,
-            savedChecklist: itemData.item.data,
-          });
-        }}
+        onPress={handleOpenSavedChecklist}
       >
         <View>
           <Text>{itemData.item.data.chosen_tenant[tenantID].name}</Text>

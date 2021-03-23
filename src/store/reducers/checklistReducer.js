@@ -25,27 +25,19 @@ const checklistReducer = (state = initialState, action) => {
       return {
         ...state,
         chosen_tenant: action.tenant,
-        chosen_checklist_type: null,
-        chosen_checklist: null,
-        // maximum_score: 0,
-        // current_score: 0,
       };
     case ADD_CHOSEN_CHECKLIST: {
       return {
         ...state,
-        chosen_checklist_type: action.checklist_type,
-        chosen_checklist: _.cloneDeep(action.checklist),
-        // maximum_score: 0,
-        // current_score: 0,
+        chosen_checklist_type: action.checklistType,
+        chosen_checklist: action.checklist,
       };
     }
 
     case ADD_COVID_CHECKLIST: {
       return {
         ...state,
-        covid19: _.cloneDeep(action.checklist),
-        // maximum_score: 0,
-        // current_score: 0,
+        covid19: action.checklist,
       };
     }
 
