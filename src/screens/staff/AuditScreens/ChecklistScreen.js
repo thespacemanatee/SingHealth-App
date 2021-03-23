@@ -1,11 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  SafeAreaView,
-  View,
-  SectionList,
-  ActivityIndicator,
-  Platform,
-} from "react-native";
+import { View, SectionList, ActivityIndicator, Platform } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Button,
@@ -302,7 +296,7 @@ const ChecklistScreen = ({ route, navigation }) => {
           ]}
         >
           <Text style={styles.title}>
-            Audit: {Object.values(checklistStore.chosen_tenant)[0].name}
+            Audit: {checklistStore.chosen_tenant.stallName}
           </Text>
           <Text>{new Date().toDateString()}</Text>
         </View>

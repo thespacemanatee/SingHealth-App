@@ -14,6 +14,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import * as checklistActions from "../../../store/actions/checklistActions";
+import * as databaseActions from "../../../store/actions/databaseActions";
 import SavedChecklistCard from "../../../components/SavedChecklistCard";
 import NewChecklistCard from "../../../components/NewChecklistCard";
 import alert from "../../../components/CustomAlert";
@@ -21,7 +22,7 @@ import alert from "../../../components/CustomAlert";
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const ChooseTenantScreen = ({ navigation }) => {
-  const databaseStore = useSelector((state) => state.database);
+  const authStore = useSelector((state) => state.auth);
   const [sectionData, setSectionData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -74,7 +75,7 @@ const ChooseTenantScreen = ({ navigation }) => {
       if (itemData.item.data) {
         return (
           <SavedChecklistCard
-            itemData={itemData}
+            item={itemData.item}
             navigation={navigation}
             deleteSave={handleDeleteSavedChecklist}
             onError={handleError}
@@ -85,7 +86,7 @@ const ChooseTenantScreen = ({ navigation }) => {
 
       return (
         <NewChecklistCard
-          itemData={itemData}
+          item={itemData.item}
           navigation={navigation}
           onError={handleError}
           onLoading={handleLoading}
@@ -96,36 +97,42 @@ const ChooseTenantScreen = ({ navigation }) => {
   );
 
   const getSectionData = useCallback(async () => {
-    const tempArray = [];
-    Object.keys(databaseStore.tenants).forEach((key) => {
-      if (
-        databaseStore.tenants[key].institution ===
-        databaseStore.current_institution
-      ) {
-        tempArray.push({ [key]: databaseStore.tenants[key] });
-      }
-    });
+    dispatch(databaseActions.getRelevantTenants(authStore.institutionID))
+      .then((res) => {
+        console.log("RESPONSE:", res.data.data);
 
-    const tempChecklists = [
-      {
-        title: "Available Tenants",
-        data: tempArray,
-      },
-    ];
+        // console.log(authStore.institutionID);
+        const tempChecklists = [
+          {
+            title: "Available Tenants",
+            data: res.data.data,
+          },
+        ];
 
-    let data = await AsyncStorage.getItem("savedChecklists");
-    if (data !== null) {
-      data = JSON.parse(data);
-      if (Object.keys(data).length > 0) {
-        tempChecklists.push({
-          title: "Saved Checklists",
-          data: Object.values(data),
-        });
-      }
-    }
-    setLoading(false);
-    setSectionData(tempChecklists);
-  }, [databaseStore.current_institution, databaseStore.tenants]);
+        AsyncStorage.getItem("savedChecklists")
+          .then((data) => {
+            if (data !== null) {
+              data = JSON.parse(data);
+              if (Object.keys(data).length > 0) {
+                tempChecklists.push({
+                  title: "Saved Checklists",
+                  data: Object.values(data),
+                });
+              }
+            }
+            setLoading(false);
+            setSectionData(tempChecklists);
+          })
+          .catch((err) => {
+            setLoading(false);
+            console.error(err);
+          });
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.error(err);
+      });
+  }, [authStore.institutionID, dispatch]);
 
   useEffect(() => {
     // Subscribe for the focus Listener

@@ -17,20 +17,20 @@ import alert from "./CustomAlert";
 
 const TrashIcon = (props) => <Icon {...props} name="trash" />;
 
-const SavedChecklistCard = ({ itemData, navigation, deleteSave }) => {
+const SavedChecklistCard = ({ item, navigation, deleteSave }) => {
   const leftSwipeable = useRef(null);
   const dispatch = useDispatch();
 
   const theme = useTheme();
 
-  const tenantID = Object.keys(itemData.item.data.chosen_tenant)[0];
-  console.log(itemData.item.time);
+  // const tenantID = Object.keys(itemData.item.data.chosen_tenant)[0];
+  // console.log(itemData.item.time);
 
   const handleOpenSavedChecklist = () => {
-    dispatch(checklistActions.addSavedChecklist(itemData.item.data));
+    dispatch(checklistActions.addSavedChecklist(item.data));
     navigation.navigate("Checklist", {
-      auditID: itemData.item.time,
-      type: itemData.item.data.chosen_checklist_type,
+      auditID: item.time,
+      type: item.data.chosen_checklist_type,
     });
   };
 
@@ -39,12 +39,12 @@ const SavedChecklistCard = ({ itemData, navigation, deleteSave }) => {
     if (data !== null) {
       data = JSON.parse(data);
     }
-    delete data[itemData.item.time];
+    delete data[item.time];
     console.log(data);
     AsyncStorage.setItem("savedChecklists", JSON.stringify(data));
 
     deleteSave();
-  }, [deleteSave, itemData.item.time]);
+  }, [deleteSave, item.time]);
 
   const leftComponent = useCallback(() => {
     return (
@@ -85,8 +85,8 @@ const SavedChecklistCard = ({ itemData, navigation, deleteSave }) => {
         onPress={handleOpenSavedChecklist}
       >
         <View>
-          <Text>{itemData.item.data.chosen_tenant[tenantID].name}</Text>
-          <Text>{itemData.item.time}</Text>
+          <Text>{item.data.chosen_tenant.stallName}</Text>
+          <Text>{item.time}</Text>
         </View>
       </Card>
     </Swipeable>
