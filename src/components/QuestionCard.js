@@ -22,6 +22,7 @@ const QuestionCard = (props) => {
   const [deleted, setDeleted] = useState(false);
   const { index } = props;
   const { question } = props;
+  const { answer } = props;
   const { section } = props;
   const { covid19 } = props;
   const leftSwipeable = useRef(null);
@@ -41,7 +42,7 @@ const QuestionCard = (props) => {
   //   );
   // }
 
-  // console.log(answerStore);
+  console.log(answer);
 
   const theme = useTheme();
 
@@ -49,15 +50,15 @@ const QuestionCard = (props) => {
 
   const SCREEN_WIDTH = Dimensions.get("window").width;
 
-  // useEffect(() => {
-  //   if (answerStore === null) {
-  //     setChecked(false);
-  //     setDeleted(true);
-  //   } else {
-  //     setChecked(answerStore);
-  //     setDeleted(false);
-  //   }
-  // }, [answerStore]);
+  useEffect(() => {
+    if (answer === null) {
+      setChecked(false);
+      setDeleted(true);
+    } else {
+      setChecked(answer);
+      setDeleted(false);
+    }
+  }, [answer]);
 
   const Header = (headerProps) => (
     <View {...headerProps}>

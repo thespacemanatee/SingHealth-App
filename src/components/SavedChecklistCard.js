@@ -29,6 +29,7 @@ const SavedChecklistCard = ({ itemData, navigation, deleteSave }) => {
     dispatch(checklistActions.addSavedChecklist(itemData.item.data));
     navigation.navigate("Checklist", {
       auditID: itemData.item.time,
+      type: itemData.item.data.chosen_checklist_type,
     });
   };
 

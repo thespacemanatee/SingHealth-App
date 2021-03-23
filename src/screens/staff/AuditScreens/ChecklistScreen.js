@@ -35,9 +35,12 @@ const SaveIcon = (props) => <Icon {...props} name="save-outline" />;
 
 const ChecklistScreen = ({ route, navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
-  const [selectedIndex, setSelectedIndex] = useState(0);
   const [completeChecklist, setCompleteChecklist] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { type } = route.params;
+  const [selectedIndex, setSelectedIndex] = useState(
+    type === "non_fnb" ? 1 : 0
+  );
   const covid19Keys = Object.keys(checklistStore.covid19.questions);
 
   const { auditID } = route.params;
@@ -70,7 +73,6 @@ const ChecklistScreen = ({ route, navigation }) => {
   );
 
   const loadForm = (index) => {
-    console.log(index);
     setSelectedIndex(index);
     const type = index === 0 ? "fnb" : "non_fnb";
     setLoading(true);
@@ -156,6 +158,7 @@ const ChecklistScreen = ({ route, navigation }) => {
         <QuestionCard
           index={itemData.index}
           question={itemData.item.question}
+          answer={itemData.item.answer}
           section={itemData.section.title}
           navigation={navigation}
           covid19={covid19Keys.includes(itemData.section.title)}
@@ -280,16 +283,7 @@ const ChecklistScreen = ({ route, navigation }) => {
           SectionSeparatorComponent={() => <Divider />}
         />
         <View style={styles.bottomContainer}>
-          {/* <Text>
-            Current Score: {checklistStore.current_score}/
-            {checklistStore.maximum_score}
-          </Text> */}
-          <Button
-            //   style={styles.button}
-            // appearance="filled"
-            status="primary"
-            onPress={onSubmitHandler}
-          >
+          <Button status="primary" onPress={onSubmitHandler}>
             SUBMIT
           </Button>
         </View>

@@ -21,7 +21,7 @@ const CustomDatepicker = (props) => {
 
   useEffect(() => {
     if (deadline) {
-      setDate(deadline);
+      setDate(moment(deadline));
     }
   }, [deadline]);
 
