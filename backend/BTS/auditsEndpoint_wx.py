@@ -23,7 +23,7 @@ def return_find_data_json(result):
         output = {
             "status" : 200,
             "description" : "no matching data",
-            "data" : []}
+            "data" : {}}
         
     return output     
 
@@ -65,13 +65,13 @@ def addWenXinEndpoints(app, mongo):
                 for category in form["questions"]:
                     checklist[category] = form["questions"][category]
                 
-                result = [{
+                result = {
                     "_id" : form["_id"],
                     "type" : form["type"],
                     "questions" : checklist
-                    }]
+                    }
             else:
-                result = []
+                result = {}
 
             output = return_find_data_json(result)
             
@@ -80,7 +80,7 @@ def addWenXinEndpoints(app, mongo):
             output = {
                     "status" : 404,
                     "description" : "unspecified connection/data error",
-                    "data" : []}
+                    "data" : {}}
         
         response = make_response(jsonify(output), output['status'])
         response.headers["Access-Control-Allow-Origin"] = "http://localhost:19006"
