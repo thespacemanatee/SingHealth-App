@@ -1,4 +1,3 @@
-import { Platform } from "react-native";
 import axios from "axios";
 
 export const httpClient = axios.create();
