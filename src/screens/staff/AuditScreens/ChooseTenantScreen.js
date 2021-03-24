@@ -137,6 +137,7 @@ const ChooseTenantScreen = ({ navigation }) => {
 
   useEffect(() => {
     // Subscribe for the focus Listener
+    getSectionData();
     const unsubscribe = navigation.addListener("focus", () => {
       getSectionData();
       setTimeout(() => {

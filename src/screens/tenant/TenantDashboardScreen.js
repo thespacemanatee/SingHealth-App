@@ -10,13 +10,10 @@ import {
   TopNavigation,
   TopNavigationAction,
   List,
-  Card,
-  useTheme,
 } from "@ui-kitten/components";
-import moment from "moment";
-import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 import * as databaseActions from "../../store/actions/databaseActions";
+import ActiveAuditCard from "../../components/ActiveAuditCard";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
@@ -24,8 +21,6 @@ const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 const StaffDashboardScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
   const [listData, setListData] = useState([]);
-
-  const theme = useTheme();
 
   const dispatch = useDispatch();
 
@@ -44,46 +39,9 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   const handleOpenAudit = () => {};
 
-  const renderActiveAudits = useCallback(
-    (itemData) => {
-      const { item } = itemData;
-      return (
-        <Card
-          style={{ backgroundColor: theme["color-info-100"] }}
-          status="info"
-          activeOpacity={0.5}
-          onPress={handleOpenAudit}
-        >
-          <View style={styles.cardContainer}>
-            <View style={{}}>
-              <Text style={{ fontWeight: "bold" }}>
-                {moment(item.date)
-                  .toLocaleString()
-                  .split(" ")
-                  .slice(0, 5)
-                  .join(" ")}
-              </Text>
-              <Text>{`You scored: ${item.score}`}</Text>
-            </View>
-            <View style={{}}>
-              <AnimatedCircularProgress
-                size={120}
-                width={15}
-                fill={
-                  item.rectificationProgress ? item.rectificationProgress : 1
-                }
-                duration={2000}
-                tintColor={theme["color-danger-600"]}
-                tintColorSecondary={theme["color-info-500"]}
-                backgroundColor="#3d5875"
-              />
-            </View>
-          </View>
-        </Card>
-      );
-    },
-    [theme]
-  );
+  const renderActiveAudits = useCallback(({ item }) => {
+    return <ActiveAuditCard item={item} onPress={handleOpenAudit} />;
+  }, []);
 
   const getListData = useCallback(() => {
     dispatch(databaseActions.getTenantActiveAudits(authStore._id))
@@ -98,6 +56,7 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   useEffect(() => {
     // Subscribe for the focus Listener
+    getListData();
     const unsubscribe = navigation.addListener("focus", () => {
       getListData();
     });

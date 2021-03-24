@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { View } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
   Icon,
@@ -10,21 +10,22 @@ import {
   TopNavigation,
   TopNavigationAction,
   List,
-  Card,
-  useTheme,
 } from "@ui-kitten/components";
 import { FAB } from "react-native-paper";
 
 import Graph from "../../components/ui/graph/Graph.tsx";
+import * as databaseActions from "../../store/actions/databaseActions";
+import ActiveAuditCard from "../../components/ActiveAuditCard";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 
 const StaffDashboardScreen = ({ navigation }) => {
-  const databaseStore = useSelector((state) => state.database);
+  const authStore = useSelector((state) => state.auth);
   const [state, setState] = useState({ open: false });
+  const [listData, setListData] = useState([]);
 
-  const theme = useTheme();
+  const dispatch = useDispatch();
 
   const onStateChange = ({ open }) => setState({ open });
 
@@ -43,27 +44,36 @@ const StaffDashboardScreen = ({ navigation }) => {
     <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
   );
 
-  const renderActiveAudits = useCallback(
-    (itemData) => {
-      const auditID = `${itemData.item}`;
-      const { tenantID } = databaseStore.audits.audits[auditID];
-      const tenantInfo = databaseStore.tenants[tenantID];
-      return (
-        <Card
-          style={[styles.item, { backgroundColor: theme["color-info-100"] }]}
-          status="info"
-          activeOpacity={0.5}
-          // header={itemData.item}
-          // footer={itemData.item}
-        >
-          <View>
-            <Text>{tenantInfo.name}</Text>
-          </View>
-        </Card>
-      );
-    },
-    [databaseStore.audits.audits, databaseStore.tenants, theme]
-  );
+  const handleOpenAudit = () => {};
+
+  const renderActiveAudits = useCallback(({ item }) => {
+    return <ActiveAuditCard item={item} onPress={handleOpenAudit} />;
+  }, []);
+
+  const getListData = useCallback(() => {
+    dispatch(databaseActions.getStaffActiveAudits(authStore.institutionID))
+      .then((res) => {
+        console.log(res);
+        setListData(res.data.data);
+      })
+      .catch((err) => {
+        handleErrorResponse(err);
+      });
+  }, [authStore.institutionID, dispatch]);
+
+  useEffect(() => {
+    // Subscribe for the focus Listener
+    getListData();
+    const unsubscribe = navigation.addListener("focus", () => {
+      getListData();
+    });
+
+    return () => {
+      // Unsubscribe for the focus Listener
+      // eslint-disable-next-line no-unused-expressions
+      unsubscribe;
+    };
+  }, [getListData, navigation]);
 
   return (
     <View style={styles.screen}>
@@ -82,7 +92,7 @@ const StaffDashboardScreen = ({ navigation }) => {
         </View>
         <List
           contentContainerStyle={styles.contentContainer}
-          data={databaseStore.audits.active_audits}
+          data={listData}
           renderItem={renderActiveAudits}
         />
 
@@ -116,6 +126,25 @@ const StaffDashboardScreen = ({ navigation }) => {
   );
 };
 
+const handleErrorResponse = (err) => {
+  if (err.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    console.error(err.response.data);
+    console.error(err.response.status);
+    console.error(err.response.headers);
+  } else if (err.request) {
+    // The request was made but no response was received
+    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+    // http.ClientRequest in node.js
+    console.error(err.request);
+  } else {
+    // Something happened in setting up the request that triggered an Error
+    console.error("Error", err.message);
+  }
+  console.error(err.config);
+};
+
 export default StaffDashboardScreen;
 
 const styles = StyleService.create({
@@ -135,7 +164,9 @@ const styles = StyleService.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
-  item: {
-    marginVertical: 4,
+  cardContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
   },
 });
