@@ -60,17 +60,6 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
         TODO:
         implement password hashing
         """
-        if request.method == "OPTIONS":
-            response = make_response(
-                jsonify("Let's hope this OPTIONS thing works."), 204)
-            response.headers["Access-Control-Allow-Origin"] = os.getenv(
-                'WEB_APP_URI', 'http://localhost:19006')
-            response.headers["Access-Control-Allow-Credentials"] = "true"
-            response.headers["Access-Control-Allow-Methods"] = "POST"
-            response.headers["Access-Control-Allow-Headers"] = "Content-Type"
-            response.headers["Access-Control-Max-Age"] = "3600"
-            return response
-
         if request.method == "POST":
             credentials = request.get_json(silent=True)
             user = mongo.db.tenant.find_one({"email": credentials["user"]})
