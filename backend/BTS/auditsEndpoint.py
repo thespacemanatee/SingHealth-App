@@ -130,8 +130,8 @@ def processAuditdata(auditData):
             auditMetaData["score"] = auditScore
             
 
-
-
+    if auditScore < 1:
+        auditMetaData['rectificationProgress'] = 0
     auditMetaData['date'] = iso8601.parse_date(auditMetaData['date'])
     return filledAuditForms, auditMetaData
 
