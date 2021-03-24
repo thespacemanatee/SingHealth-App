@@ -7,12 +7,10 @@ const alertPolyfill = (title, description, options) => {
 
   if (result) {
     const confirmOption = options.find(({ style }) => style !== "cancel");
-    // eslint-disable-next-line no-unused-expressions
-    confirmOption && confirmOption.onPress();
+    confirmOption?.onPress?.();
   } else {
     const cancelOption = options.find(({ style }) => style === "cancel");
-    // eslint-disable-next-line no-unused-expressions
-    cancelOption && cancelOption.onPress();
+    cancelOption?.onPress?.();
   }
 };
 

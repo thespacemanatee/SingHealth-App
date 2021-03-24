@@ -5,8 +5,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from .login import User
 from .utils import successMsg, failureMsg, successResponse, failureResponse, printJ
 
+
 def addLoginEndpointsForTenantAndStaff(app, mongo):
     login_manager = LoginManager()
+    login_manager.session_protection = None
     login_manager.init_app(app)
 
     if app.config.get("SECRET_KEY", None) == None:
@@ -36,17 +38,18 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
             credentials = request.json
             user = mongo.db.staff.find_one({"email": credentials["user"]})
             if user:
-                if user["pswd"] == credentials["pswd"]: #check_password_hash(user["pswd"], credentials["pswd"]):
+                # check_password_hash(user["pswd"], credentials["pswd"]):
+                if user["pswd"] == credentials["pswd"]:
                     user_obj = User(userEmail=user['email'])
                     login_user(user_obj, remember=True)
                     session['account_type'] = "staff"
-                    jsonMsg = successMsg(f"You are now logged in as a staff under: {user['email']}")
+                    jsonMsg = successMsg(
+                        f"You are now logged in as a staff under: {user['email']}")
                     jsonMsg["data"] = user
                     return successResponse(jsonMsg)
                 else:
                     return failureResponse(failureMsg("Either user email or pswd is wrong", 400), 400)
 
-            
             else:
                 return failureResponse(failureMsg(f"{credentials['user']} account does not exist", 404), 404)
 
@@ -60,20 +63,20 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
             credentials = request.get_json(silent=True)
             user = mongo.db.tenant.find_one({"email": credentials["user"]})
             if user:
-                if user["pswd"] == credentials["pswd"]:#check_password_hash(user["pswd"], credentials["pswd"]):
+                # check_password_hash(user["pswd"], credentials["pswd"]):
+                if user["pswd"] == credentials["pswd"]:
                     user_obj = User(userEmail=user['email'])
                     login_user(user_obj, remember=True)
                     session['account_type'] = "tenant"
-                    jsonMsg = successMsg(f"You are now logged in as a tenant under: {user['email']}")
+                    jsonMsg = successMsg(
+                        f"You are now logged in as a tenant under: {user['email']}")
                     jsonMsg['data'] = user
                     return successResponse(jsonMsg)
                 else:
                     return failureResponse(failureMsg("Either user email or pswd is wrong", 400), 400)
 
-            
             else:
                 return failureResponse(failureMsg(f"{credentials['user']} account does not exist", 404), 404)
-
 
     @app.route('/logout')
     @login_required
@@ -88,7 +91,6 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
         if not exists:
             return None
         return User(userEmail=exists["email"])
-
 
     @app.route('/test_login/staff')
     def test_login_staff():

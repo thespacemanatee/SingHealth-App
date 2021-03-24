@@ -27,6 +27,7 @@ flask-cors = "*"
 dnspython = "*"
 iso8601 = "*"
 pytz = "*"
+gunicorn = "*"
 
 [dev-packages]
 

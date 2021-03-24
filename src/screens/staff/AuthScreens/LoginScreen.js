@@ -39,9 +39,7 @@ const LoginScreen = ({ navigation }) => {
     email: Yup.string()
       .email("Invalid email!")
       .required("Please enter your email!"),
-    password: Yup.string()
-      .required("Please enter your password!")
-      .min(8, "Password is too short - should be 8 chars minimum."),
+    password: Yup.string().required("Please enter your password!"),
   });
 
   const renderSecureIcon = (props) => (
