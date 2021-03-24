@@ -10,7 +10,8 @@
               "img00011",
               "img00012",
               "img00013"
-          ]
+          ],
+          "rectified": false
         },
         {
           "answer": false,
@@ -18,7 +19,8 @@
               "img00004",
               "img00005",
               "img00006"
-          ]
+          ],
+          "rectified": false
         },
         {
           "answer": true

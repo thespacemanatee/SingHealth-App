@@ -7,7 +7,8 @@
         [
           {
             "answer": false,
-            "remarks": "No safe entry in the shop"
+            "remarks": "No safe entry in the shop",
+            "rectified": false
           },
           {
             "answer": true

@@ -9,7 +9,7 @@ def addRecentAuditsEndpoints(app, mongo):
     @login_required
     def unrectified_audits_tenant(tenantID, daysBefore = 0):
         if request.method == 'GET':
-            if session["account_type"] == "tenant":                
+            if session["account_type"] == "tenant": 
                 queryDict = {}
                 queryDict["tenantID"] = tenantID
                 queryDict["rectificationProgress"] = {"$lt": 1}
@@ -19,10 +19,8 @@ def addRecentAuditsEndpoints(app, mongo):
                 audits = mongo.db.audits.find(queryDict)
 
                 auditsList = []
-                for index, audit in enumerate(audits):
-                    temp = audit
-                    temp["date"] = temp["date"].isoformat()
-                    auditsList.append(temp)
+                for audit in audits:
+                    auditsList.append(audit)
                 
                 if len(auditsList) == 0:
                     return failureResponse(failureMsg("No matching forms", 404), 404)
@@ -48,10 +46,8 @@ def addRecentAuditsEndpoints(app, mongo):
                 
                 audits = mongo.db.audits.find(queryDict)
                 auditsList = []
-                for index, audit in enumerate(audits):
-                    temp = audit
-                    temp["date"] = temp["date"].isoformat()
-                    auditsList.append(temp)
+                for audit in audits:
+                    auditsList.append(audit)
                 
                 if len(auditsList) == 0:
                     return failureResponse(failureMsg("No matching forms", 404), 404)

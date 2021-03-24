@@ -7,7 +7,8 @@
         [
           {
             "answer": false,
-            "remarks": "Stall is dirty"
+            "remarks": "Stall is dirty",
+            "rectified": false
           },
           {
             "answer": false,
@@ -15,7 +16,8 @@
             "images": [
               "img01204205",
               "img01204201"
-            ]
+            ],
+            "rectified": false
           },
           {
             "answer": true
