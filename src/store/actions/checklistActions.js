@@ -38,7 +38,7 @@ export const addChosenChecklist = (checklistType = "fnb") => async (
   const options = {
     url: `${endpoint}auditForms/${checklistType}`,
     method: "get",
-    withCredentials: true,
+    // withCredentials: true,
   };
 
   const res = await httpClient(options);
@@ -52,7 +52,7 @@ export const addCovidChecklist = () => async (dispatch, getState) => {
   const options = {
     url: `${endpoint}auditForms/covid19`,
     method: "get",
-    withCredentials: true,
+    // withCredentials: true,
   };
 
   const res = await httpClient(options);

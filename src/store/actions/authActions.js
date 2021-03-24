@@ -35,7 +35,7 @@ export const signIn = (user, pswd, userType) => {
     const loginOptions = {
       url: `${endpoint}login/${userType}`,
       method: "post",
-      withCredentials: true,
+      // withCredentials: true,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -77,7 +77,7 @@ export const signOut = () => {
     const signOutOptions = {
       url: `${endpoint}logout`,
       method: "get",
-      withCredentials: true,
+      // withCredentials: true,
     };
     httpClient(signOutOptions)
       .then((res) => {

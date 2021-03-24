@@ -1,5 +1,6 @@
 import json
 from flask import make_response, jsonify
+import os
 
 
 def printJ(data):
@@ -22,13 +23,15 @@ def failureMsg(msg, code):
 
 def successResponse(jsonMsg):
     response = make_response(jsonify(jsonMsg), 200)
-    response.headers["Access-Control-Allow-Origin"] = "https://605afa1121137dd43cc96ac2--esc-group-10.netlify.app"
+    response.headers["Access-Control-Allow-Origin"] = os.getenv(
+        'WEB_APP_URI', 'http://localhost:19006')
     response.headers["Access-Control-Allow-Credentials"] = "true"
     return response
 
 
 def failureResponse(jsonMsg, code):
     response = make_response(jsonify(jsonMsg), code)
-    response.headers["Access-Control-Allow-Origin"] = "https://605afa1121137dd43cc96ac2--esc-group-10.netlify.app"
+    response.headers["Access-Control-Allow-Origin"] = os.getenv(
+        'WEB_APP_URI', 'http://localhost:19006')
     response.headers["Access-Control-Allow-Credentials"] = "true"
     return response

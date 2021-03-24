@@ -3,6 +3,7 @@ import axios from "axios";
 export const httpClient = axios.create();
 
 httpClient.defaults.timeout = 10000;
+httpClient.defaults.withCredentials = true;
 
 export const endpoint = "https://singhealth-backend-bts.herokuapp.com/";
 
