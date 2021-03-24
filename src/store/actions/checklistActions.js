@@ -1,5 +1,4 @@
-import { Platform } from "react-native";
-import axios from "axios";
+import { endpoint, httpClient } from "../../helpers/CustomHTTPClient";
 
 export const ADD_AUDIT_TENANT_SELECTION = "ADD_AUDIT_TENANT_SELECTION";
 export const ADD_CHOSEN_CHECKLIST = "ADD_CHOSEN_CHECKLIST";
@@ -18,18 +17,6 @@ export const RESET_CHECKLIST_STORE = "RESET_CHECKLIST_STORE";
 export const TYPE_FNB = "fnb";
 export const TYPE_NON_FNB = "non_fnb";
 export const TYPE_COVID = "covid19";
-
-const httpClient = axios.create();
-
-httpClient.defaults.timeout = 10000;
-
-let endpoint;
-
-if (Platform.OS === "android") {
-  endpoint = "http://10.0.2.2:5000/";
-} else {
-  endpoint = "http://localhost:5000/";
-}
 
 export const getChecklist = (checklistType, tenant) => async (dispatch) => {
   console.log(checklistType);

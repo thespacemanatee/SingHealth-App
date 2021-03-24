@@ -112,6 +112,7 @@ const ChooseTenantScreen = ({ navigation }) => {
         AsyncStorage.getItem("savedChecklists")
           .then((data) => {
             if (data !== null) {
+              // eslint-disable-next-line no-param-reassign
               data = JSON.parse(data);
               if (Object.keys(data).length > 0) {
                 tempChecklists.push({

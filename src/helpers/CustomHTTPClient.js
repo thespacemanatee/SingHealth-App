@@ -5,6 +5,7 @@ export const httpClient = axios.create();
 
 httpClient.defaults.timeout = 10000;
 
+// eslint-disable-next-line import/no-mutable-exports
 export let endpoint;
 
 if (Platform.OS === "android") {
