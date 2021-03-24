@@ -87,7 +87,6 @@ def convertTimeStr2UTC(filledAuditForm):
 
 
 def calculateAuditScore(filledAuditForm) -> float:
-    print(filledAuditForm)
     if filledAuditForm["type"] == "fnb":
         c1 = percentageCompliant(list(map(
             compliant, filledAuditForm["answers"]["Professionalism and Staff Hygiene"]))) * 0.1
