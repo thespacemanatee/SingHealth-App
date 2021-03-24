@@ -23,6 +23,8 @@ def failureMsg(msg, code):
 
 def successResponse(jsonMsg):
     response = make_response(jsonify(jsonMsg), 200)
+    response.headers.add('Access-Control-Allow-Headers',
+                         "Origin, X-Requested-With, Content-Type, Accept, x-auth")
     response.headers["Access-Control-Allow-Origin"] = os.getenv(
         'WEB_APP_URI', 'http://localhost:19006')
     response.headers["Access-Control-Allow-Credentials"] = "true"
@@ -31,6 +33,8 @@ def successResponse(jsonMsg):
 
 def failureResponse(jsonMsg, code):
     response = make_response(jsonify(jsonMsg), code)
+    response.headers.add('Access-Control-Allow-Headers',
+                         "Origin, X-Requested-With, Content-Type, Accept, x-auth")
     response.headers["Access-Control-Allow-Origin"] = os.getenv(
         'WEB_APP_URI', 'http://localhost:19006')
     response.headers["Access-Control-Allow-Credentials"] = "true"
