@@ -2,7 +2,7 @@
   "_id": "non_fnb2021",
   "type": "non_fnb",
   "questions": {
-    "Professionalism & Staff Hygiene": [
+    "Professionalism and Staff Hygiene": [
       {
         "question": "Shop is open and ready to service patients/visitors according to operating hours.",
         "answer": false
@@ -28,7 +28,7 @@
         "answer": false
       }
     ],
-    "Housekeeping & General Cleanliness": [
+    "Housekeeping and General Cleanliness": [
       {
         "question": "Adequate and regular pest control. Pest control record.",
         "answer": false
@@ -78,7 +78,7 @@
         "answer": false
       }
     ],
-    "Workplace Safety & Health": [
+    "Workplace Safety and Health": [
       {
         "question": "MSDS for all industrial chemicals are available and up to date.",
         "answer": false

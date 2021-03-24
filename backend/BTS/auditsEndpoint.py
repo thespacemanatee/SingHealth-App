@@ -1,6 +1,6 @@
 from .utils import failureMsg, successMsg, successResponse, failureResponse
 from .constants import MAX_NUM_IMAGES_PER_NC
-from flask import request
+from flask import request, make_response, jsonify
 from flask_login import login_required
 from pymongo.errors import DuplicateKeyError
 import iso8601
@@ -187,3 +187,41 @@ def addAuditsEndpoint(app, mongo):
                 return failureResponse(failureMsg("Form has already been uploaded", 400), 400)
 
             return successResponse(successMsg("Forms have been submitted"))
+
+    @app.route("/audits/<auditID>", methods=['GET'])
+    @login_required
+    def get_audit(auditID):
+        if request.method == "GET":
+            responseJson = {}
+            audit = mongo.db.audits.find_one({"_id": auditID})
+            if audit:
+                checklists = audit["auditChecklists"]
+                auditForms = {}
+                for formType, formID in checklists.items():
+                    filledAuditForm = mongo.db.filledAuditForms.find_one({"_id": formID})
+                    auditFormTemplate = mongo.db.auditFormTemplate.find_one({"_id": filledAuditForm["formTemplateID"]})
+                    questions = {}
+                    for category in filledAuditForm["answers"].keys():
+                        categoryQuestions = []
+                        for index, lineItem in enumerate(filledAuditForm["answers"][category]):
+                            lineItem["question"] = auditFormTemplate["questions"][category][index]["question"]
+                            categoryQuestions.append(lineItem)
+                        questions[category] = categoryQuestions
+                    
+                    filledAuditForm.pop("answers")
+                    filledAuditForm["questions"] = questions
+
+                    auditForms[formType] = filledAuditForm
+
+                        # auditFormTemplate[category]
+                    # auditForms[formType] = filledAuditForm
+
+                responseJson["auditMetadata"] = audit
+                responseJson["auditForms"] = auditForms
+
+                return make_response(jsonify(responseJson), 200)
+
+            else:
+
+                return make_response(jsonify(description="None found"), 404)
+            
