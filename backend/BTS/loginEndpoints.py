@@ -1,4 +1,4 @@
-from flask import Flask, request, session
+from flask import Flask, request, session, jsonify, make_response
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_pymongo import PyMongo
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -15,6 +15,16 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
             import secrets
             app.config["SECRET_KEY"] = secrets.token_urlsafe(nbytes=32)
             """)
+
+    @app.route('/login/status',  methods=["GET"])
+    def login_status():
+        if request.method == "GET":
+            loginStatus = current_user.is_authenticated
+            userEmail = current_user.userEmail
+            returnJson = {"userEmail": userEmail, "loginStatus": loginStatus}
+            return make_response(jsonify(returnJson), 200)
+
+
 
     @app.route('/login/staff',  methods=["POST"])
     def login_for_staff():
@@ -68,17 +78,16 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
     @app.route('/logout')
     @login_required
     def logout():
+        session.pop('account_type')
         logout_user()
         return successResponse(successMsg("You are now logged out"))
 
     @login_manager.user_loader
-    def load_user(user_id):
-        """
-        #TODO: Find a user in the db with with ID matching user_id, create a user object and return it.
-        If this user ID doesn't exist in the DB, return None. The user will not be logged in
-        """
-        print("Loading user")
-        return User(user_id)
+    def load_user(user_email):
+        exists = mongo.db.tenant.find_one({"email": user_email})
+        if not exists:
+            return None
+        return User(userEmail=exists["email"])
 
 
     @app.route('/test_login/staff')
