@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import { View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -13,6 +13,8 @@ import {
   Card,
   useTheme,
 } from "@ui-kitten/components";
+import moment from "moment";
+import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 import * as databaseActions from "../../store/actions/databaseActions";
 
@@ -21,7 +23,7 @@ const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 
 const StaffDashboardScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
-  const databaseStore = useSelector((state) => state.database);
+  const [listData, setListData] = useState([]);
 
   const theme = useTheme();
 
@@ -40,41 +42,72 @@ const StaffDashboardScreen = ({ navigation }) => {
     <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
   );
 
+  const handleOpenAudit = () => {};
+
   const renderActiveAudits = useCallback(
     (itemData) => {
-      const auditID = `${itemData.item}`;
-      const { tenantID } = databaseStore.audits.audits[auditID];
-      const tenantInfo = databaseStore.tenants[tenantID];
+      const { item } = itemData;
       return (
         <Card
-          style={[styles.item, { backgroundColor: theme["color-info-100"] }]}
+          style={{ backgroundColor: theme["color-info-100"] }}
           status="info"
           activeOpacity={0.5}
-          // header={itemData.item}
-          // footer={itemData.item}
+          onPress={handleOpenAudit}
         >
-          <View>
-            <Text>{tenantInfo.name}</Text>
+          <View style={styles.cardContainer}>
+            <View style={{}}>
+              <Text style={{ fontWeight: "bold" }}>
+                {moment(item.date)
+                  .toLocaleString()
+                  .split(" ")
+                  .slice(0, 5)
+                  .join(" ")}
+              </Text>
+              <Text>{`You scored: ${item.score}`}</Text>
+            </View>
+            <View style={{}}>
+              <AnimatedCircularProgress
+                size={120}
+                width={15}
+                fill={
+                  item.rectificationProgress ? item.rectificationProgress : 1
+                }
+                duration={2000}
+                tintColor={theme["color-danger-600"]}
+                tintColorSecondary={theme["color-info-500"]}
+                backgroundColor="#3d5875"
+              />
+            </View>
           </View>
         </Card>
       );
     },
-    [databaseStore.audits.audits, databaseStore.tenants, theme]
+    [theme]
   );
 
   const getListData = useCallback(() => {
     dispatch(databaseActions.getTenantActiveAudits(authStore._id))
       .then((res) => {
         console.log(res);
+        setListData(res.data.data);
       })
       .catch((err) => {
-        console.error(err);
+        handleErrorResponse(err);
       });
-  }, [dispatch]);
+  }, [authStore._id, dispatch]);
 
   useEffect(() => {
-    getListData();
-  }, [getListData]);
+    // Subscribe for the focus Listener
+    const unsubscribe = navigation.addListener("focus", () => {
+      getListData();
+    });
+
+    return () => {
+      // Unsubscribe for the focus Listener
+      // eslint-disable-next-line no-unused-expressions
+      unsubscribe;
+    };
+  }, [getListData, navigation]);
 
   return (
     <View style={styles.screen}>
@@ -91,12 +124,31 @@ const StaffDashboardScreen = ({ navigation }) => {
         </View>
         <List
           contentContainerStyle={styles.contentContainer}
-          data={databaseStore.audits.active_audits}
+          data={listData}
           renderItem={renderActiveAudits}
         />
       </Layout>
     </View>
   );
+};
+
+const handleErrorResponse = (err) => {
+  if (err.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    console.error(err.response.data);
+    console.error(err.response.status);
+    console.error(err.response.headers);
+  } else if (err.request) {
+    // The request was made but no response was received
+    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+    // http.ClientRequest in node.js
+    console.error(err.request);
+  } else {
+    // Something happened in setting up the request that triggered an Error
+    console.error("Error", err.message);
+  }
+  console.error(err.config);
 };
 
 export default StaffDashboardScreen;
@@ -118,7 +170,10 @@ const styles = StyleService.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
-  item: {
-    marginVertical: 4,
+  cardContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
   },
+  listItemContainer: {},
 });
