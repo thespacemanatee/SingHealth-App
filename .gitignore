@@ -20,7 +20,7 @@ backend/backend/**
 
 # wx test files
 backend/test_backend_wx.py
-backend/TestDeploy
+#backend/TestDeploy
 
 
 # macOS
