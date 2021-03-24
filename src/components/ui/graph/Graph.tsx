@@ -9,10 +9,7 @@ import {
   Extrapolate,
 } from "react-native-reanimated";
 
-import {
-  parsePath,
-  getPointAtLength,
-} from "../../../components/AnimatedHelpers";
+import { parsePath, getPointAtLength } from "../../AnimatedHelpers";
 
 import Cursor from "./Cursor";
 
@@ -39,11 +36,13 @@ const range = {
 
 const scale = (v: number, d: number[], r: number[]) => {
   "worklet";
+
   return interpolate(v, d, r, Extrapolate.CLAMP);
 };
 
 const scaleInvert = (y: number, d: number[], r: number[]) => {
   "worklet";
+
   return interpolate(y, r, d, Extrapolate.CLAMP);
 };
 
@@ -57,7 +56,7 @@ const path = parsePath(d);
 const styles = StyleSheet.create({
   container: {
     // flex: 1,
-    height: height,
+    height,
     marginBottom: 20,
     justifyContent: "flex-end",
     // alignItems: "center",

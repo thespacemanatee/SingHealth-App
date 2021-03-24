@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   View,
   KeyboardAvoidingView,
@@ -6,7 +6,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import { useDispatch } from "react-redux";
+
 import {
   Button,
   Divider,
@@ -51,22 +51,17 @@ const ForgotPasswordScreen = ({ navigation }) => {
       }}
     >
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={styles.screen}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <TopNavigation
-          style={{ zIndex: 5 }}
+          style={styles.topNavigation}
           title="Login"
           alignment="center"
           accessoryLeft={BackAction}
         />
         <Divider />
-        <Layout
-          style={{
-            flex: 1,
-            alignItems: "center",
-          }}
-        >
+        <Layout style={styles.layout}>
           <Formik
             initialValues={{ email: "" }}
             onSubmit={(values) => {
@@ -99,7 +94,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
                       !!errors.email && (
                         <Icon
                           {...props}
-                          name={"alert-circle-outline"}
+                          name="alert-circle-outline"
                           fill={theme["color-danger-700"]}
                         />
                       )
@@ -107,7 +102,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
                   }}
                 />
                 <View style={styles.buttonContainer}>
-                  <Button onPress={handleSubmit} style={{ marginTop: 16 }}>
+                  <Button onPress={handleSubmit} style={styles.button}>
                     Send Instructions
                   </Button>
                 </View>
@@ -121,6 +116,16 @@ const ForgotPasswordScreen = ({ navigation }) => {
 };
 
 const styles = StyleService.create({
+  screen: {
+    flex: 1,
+  },
+  topNavigation: {
+    zIndex: 5,
+  },
+  layout: {
+    flex: 1,
+    alignItems: "center",
+  },
   keyboardContainer: {
     flex: 1,
     alignItems: "center",
@@ -135,6 +140,9 @@ const styles = StyleService.create({
     width: "100%",
     marginBottom: 20,
     justifyContent: "flex-end",
+  },
+  button: {
+    marginTop: 16,
   },
 });
 

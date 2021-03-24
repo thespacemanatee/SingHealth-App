@@ -6,7 +6,7 @@ import absSVG from "abs-svg-path";
 import normalizeSVG from "normalize-svg-path";
 import { Vector, cubicBezier } from "react-native-redash";
 
-import { cubicBezierLength } from "./bezier";
+import cubicBezierLength from "./bezier/CubicBezierLength";
 
 type SVGMove = ["M", number, number];
 type SVGCurve = ["C", number, number, number, number, number, number];
@@ -68,6 +68,7 @@ export const serializePath = (path: Path) =>
 
 export const getPointAtLength = (path: Path, length: number) => {
   "worklet";
+
   const c = path.curves.find(
     (curve) => length >= curve.start && length <= curve.end
   );

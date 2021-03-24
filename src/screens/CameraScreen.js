@@ -22,25 +22,24 @@ const CameraScreen = ({ route, navigation }) => {
   const [cameraType, setCameraType] = useState("back");
 
   const WINDOW_WIDTH = Dimensions.get("window").width;
-  const WINDOW_HEIGHT = Dimensions.get("window").height;
   const CAMERA_VIEW_HEIGHT = (WINDOW_WIDTH / 3) * 4;
   const TOOLBAR_TOP_HEIGHT = 64;
 
-  const __takePicture = async () => {
+  const takePicture = async () => {
     const photo = await camera.takePictureAsync();
     console.log(photo);
     setPreviewVisible(true);
     setCapturedImage(photo);
   };
-  const __savePhoto = () => {
+  const savePhoto = () => {
     route.params.onSave(capturedImage);
     navigation.goBack();
   };
-  const __retakePicture = () => {
+  const retakePicture = () => {
     setCapturedImage(null);
     setPreviewVisible(false);
   };
-  const __handleFlashMode = () => {
+  const handleFlashMode = () => {
     if (flashMode === "on") {
       setFlashMode("off");
     } else if (flashMode === "off") {
@@ -49,7 +48,7 @@ const CameraScreen = ({ route, navigation }) => {
       setFlashMode("on");
     }
   };
-  const __switchCamera = () => {
+  const switchCamera = () => {
     if (cameraType === "back") {
       setCameraType("front");
     } else {
@@ -58,15 +57,8 @@ const CameraScreen = ({ route, navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-      <View
-        style={{
-          flexDirection: "row",
-          backgroundColor: "black",
-          height: TOOLBAR_TOP_HEIGHT,
-          // justifyContent: "space-between",
-        }}
-      >
+    <SafeAreaView style={styles.screen}>
+      <View style={[styles.topContainer, { height: TOOLBAR_TOP_HEIGHT }]}>
         <Button
           //   style={styles.button}
           appearance="ghost"
@@ -91,31 +83,17 @@ const CameraScreen = ({ route, navigation }) => {
             ref={(r) => {
               camera = r;
             }}
-          ></Camera>
+          />
         </View>
       )}
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          backgroundColor: "black",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <View style={styles.bottomContainer}>
         {previewVisible && capturedImage ? (
-          <View
-            style={{
-              flexGrow: 1,
-              flexDirection: "row",
-              justifyContent: "space-around",
-            }}
-          >
+          <View style={styles.buttonContainer}>
             <Button
               //   style={styles.button}
               appearance="ghost"
               status="control"
-              onPress={__retakePicture}
+              onPress={retakePicture}
               //   accessoryLeft={StarIcon}
             >
               RETAKE
@@ -124,42 +102,39 @@ const CameraScreen = ({ route, navigation }) => {
               //   style={styles.button}
               appearance="ghost"
               status="control"
-              onPress={__savePhoto}
+              onPress={savePhoto}
               //   accessoryLeft={StarIcon}
             >
               SAVE
             </Button>
           </View>
         ) : (
-          <View
-            style={{
-              flexGrow: 1,
-              flexDirection: "row",
-              justifyContent: "space-around",
-            }}
-          >
+          <View style={styles.buttonContainer}>
             <View style={{ width: WINDOW_WIDTH / 3 }}>
               <Button
                 //   style={styles.button}
                 appearance="ghost"
                 status="control"
-                onPress={__handleFlashMode}
+                onPress={handleFlashMode}
                 accessoryLeft={
                   flashMode === "on" || flashMode === "auto"
                     ? FlashOnIcon
                     : FlashOffIcon
                 }
               >
-                {flashMode === "on"
-                  ? "ON"
-                  : flashMode === "auto"
-                  ? "AUTO"
-                  : "OFF"}
+                {
+                  // eslint-disable-next-line no-nested-ternary
+                  flashMode === "on"
+                    ? "ON"
+                    : flashMode === "auto"
+                    ? "AUTO"
+                    : "OFF"
+                }
               </Button>
             </View>
 
             <TouchableOpacity
-              onPress={__takePicture}
+              onPress={takePicture}
               style={styles.takePictureButton}
             />
 
@@ -168,7 +143,7 @@ const CameraScreen = ({ route, navigation }) => {
                 //   style={styles.button}
                 appearance="ghost"
                 status="control"
-                onPress={__switchCamera}
+                onPress={switchCamera}
                 accessoryLeft={CameraIcon}
               >
                 {cameraType === "front" ? "FRONT" : "REAR"}
@@ -184,6 +159,26 @@ const CameraScreen = ({ route, navigation }) => {
 export default CameraScreen;
 
 const styles = StyleService.create({
+  screen: {
+    flex: 1,
+    backgroundColor: "black",
+  },
+  topContainer: {
+    flexDirection: "row",
+    backgroundColor: "black",
+  },
+  bottomContainer: {
+    flex: 1,
+    flexDirection: "row",
+    backgroundColor: "black",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonContainer: {
+    flexGrow: 1,
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
   takePictureButton: {
     width: 70,
     height: 70,

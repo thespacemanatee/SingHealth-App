@@ -1,8 +1,9 @@
 from flask import Flask, request, session
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_pymongo import PyMongo
+from werkzeug.security import generate_password_hash, check_password_hash
 from .login import User
-from .utils import successMsg, failureMsg, successResponse, failureResponse
+from .utils import successMsg, failureMsg, successResponse, failureResponse, printJ
 
 def addLoginEndpointsForTenantAndStaff(app, mongo):
     login_manager = LoginManager()
@@ -10,41 +11,59 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
 
     if app.config.get("SECRET_KEY", None) == None:
         raise Exception("""
-            Please set a valid session secret key with the following code:
+            Please set a valid session secret key with the following code into app.py:
             import secrets
             app.config["SECRET_KEY"] = secrets.token_urlsafe(nbytes=32)
             """)
 
-    @app.route('/login/staff')
+    @app.route('/login/staff',  methods=["POST"])
     def login_for_staff():
         """
         TODO:
-        go to mongodb, find user based on username. If it doesn't exist, return error 400 
-        Find the corresponding password from the db
-        compare it with the incoming password
-        if passwords match, apply login_user(user) function return successMsg
+        implement password hashing
         """
-        user = User("ZX staff")
-        print("Logging in user as staff")
-        session['account_type'] = "staff"
-        login_user(user)
-        return f"You are now logged in as {session['account_type']}!"
+        if request.method == "POST":
+            credentials = request.json
+            user = mongo.db.staff.find_one({"email": credentials["user"]})
+            if user:
+                if user["pswd"] == credentials["pswd"]: #check_password_hash(user["pswd"], credentials["pswd"]):
+                    user_obj = User(userEmail=user['email'])
+                    login_user(user_obj, remember=True)
+                    session['account_type'] = "staff"
+                    jsonMsg = successMsg(f"You are now logged in as a staff under: {user['email']}")
+                    jsonMsg["data"] = user
+                    return successResponse(jsonMsg)
+                else:
+                    return failureResponse(failureMsg("Either user email or pswd is wrong", 400), 400)
 
-    @app.route('/login/tenant')
+            
+            else:
+                return failureResponse(failureMsg(f"{credentials['user']} account does not exist", 404), 404)
+
+    @app.route('/login/tenant',  methods=["POST"])
     def login_for_tenant():
         """
         TODO:
-        go to mongodb, find user based on username. If it doesn't exist, return error 400 
-        Find the corresponding password from the db
-        compare it with the incoming password
-        if passwords match, apply login_user(user) function return successMsg
+        implement password hashing
         """
-        user = User("ZX tenant")
-        print("Logging in user as tenant")
-        session['account_type'] = "tenant"
-        print(type(session))
-        login_user(user)
-        return f"You are now logged in as {session['account_type']}!"
+        if request.method == "POST":
+            credentials = request.get_json(silent=True)
+            user = mongo.db.tenant.find_one({"email": credentials["user"]})
+            if user:
+                if user["pswd"] == credentials["pswd"]:#check_password_hash(user["pswd"], credentials["pswd"]):
+                    user_obj = User(userEmail=user['email'])
+                    login_user(user_obj, remember=True)
+                    session['account_type'] = "tenant"
+                    jsonMsg = successMsg(f"You are now logged in as a tenant under: {user['email']}")
+                    jsonMsg['data'] = user
+                    return successResponse(jsonMsg)
+                else:
+                    return failureResponse(failureMsg("Either user email or pswd is wrong", 400), 400)
+
+            
+            else:
+                return failureResponse(failureMsg(f"{credentials['user']} account does not exist", 404), 404)
+
 
     @app.route('/logout')
     @login_required

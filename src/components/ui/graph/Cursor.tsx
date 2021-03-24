@@ -14,7 +14,7 @@ import Animated, {
   EasingNode,
 } from "react-native-reanimated";
 
-import { Path } from "../../../components/AnimatedHelpers";
+import { Path } from "../../AnimatedHelpers";
 
 import Label, { DataPoint } from "./Label";
 
@@ -27,32 +27,40 @@ function useForceUpdate() {
 }
 
 const { width } = Dimensions.get("window");
-const CURSOR = Platform.OS === "web" ? 20 : 150;
+const CURSOR = 150;
 const styles = StyleSheet.create({
   cursorContainer: {
     width: CURSOR,
     height: CURSOR,
     justifyContent: "center",
     alignItems: "center",
+    zIndex: 1,
     // backgroundColor: "rgba(100, 200, 300, 0.4)",
   },
+  lineContainer: {
+    position: "absolute",
+    width: CURSOR,
+    height: CURSOR,
+    justifyContent: "center",
+    alignItems: "center",
+    // backgroundColor: "red",
+  },
   cursor: {
-    width: 20,
-    height: 20,
+    width: 15,
+    height: 15,
     borderRadius: 15,
     borderColor: "#367be2",
-    borderWidth: 4,
+    borderWidth: 3,
     backgroundColor: "white",
   },
   line: {
-    left: Platform.OS === "web" ? CURSOR / 2 : undefined,
     height: 1000,
     width: 1,
     backgroundColor: "grey",
   },
   label: {
     position: "absolute",
-    top: 25,
+    top: 20,
   },
 });
 
@@ -121,6 +129,7 @@ const Cursor = ({ path, length, point }: CursorProps) => {
       if (Platform.OS === "web") {
         runOnJS(reRender)();
       }
+      // eslint-disable-next-line no-param-reassign
       length.value = interpolate(
         ctx.offsetX + event.translationX,
         [0, width],
@@ -133,6 +142,7 @@ const Cursor = ({ path, length, point }: CursorProps) => {
       if (Platform.OS !== "web") {
         runOnJS(reRender)();
       }
+      // eslint-disable-next-line no-param-reassign
       length.value = withDecay({
         velocity: velocityX,
         clamp: [0, path.length],
@@ -161,10 +171,7 @@ const Cursor = ({ path, length, point }: CursorProps) => {
     return {
       transform: [
         {
-          translateX:
-            (coord.x > width / 2 ? -150 : 100) +
-            translateX -
-            (Platform.OS === "web" ? 60 : 0),
+          translateX: (coord.x > width / 2 ? -150 : 100) + translateX,
         },
       ],
     };
@@ -172,20 +179,17 @@ const Cursor = ({ path, length, point }: CursorProps) => {
 
   return (
     <View style={StyleSheet.absoluteFill}>
-      <PanGestureHandler {...{ onGestureEvent }}>
+      <PanGestureHandler onGestureEvent={onGestureEvent}>
         <Animated.View>
-          <Animated.View
-            style={[{ ...styles.cursorContainer, zIndex: 1 }, cursorStyle]}
-          >
+          <Animated.View style={[styles.cursorContainer, cursorStyle]}>
             <View style={styles.cursor} />
           </Animated.View>
           <Animated.View
             style={[
-              {
-                ...styles.cursorContainer,
-                position: "absolute",
-                opacity: Platform.OS === "web" ? webOpacity : opacity,
-              },
+              [
+                styles.lineContainer,
+                { opacity: Platform.OS === "web" ? webOpacity : opacity },
+              ],
               lineStyle,
             ]}
           >
@@ -193,10 +197,10 @@ const Cursor = ({ path, length, point }: CursorProps) => {
           </Animated.View>
           <Animated.View
             style={[
-              {
-                ...styles.label,
-                opacity: Platform.OS === "web" ? webOpacity : opacity,
-              },
+              [
+                styles.label,
+                { opacity: Platform.OS === "web" ? webOpacity : opacity },
+              ],
               labelStyle,
             ]}
           >

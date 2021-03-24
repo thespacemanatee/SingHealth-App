@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { SafeAreaView, View } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   Divider,
   Icon,
@@ -14,7 +14,7 @@ import {
   useTheme,
 } from "@ui-kitten/components";
 
-import { Styles as directoryStyles } from "../DirectoryScreens/StyleGuide";
+import directoryStyles from "./StyleGuide";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -35,25 +35,28 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
     />
   );
 
-  const renderInstitutions = useCallback((itemData) => {
-    return (
-      <Card
-        style={[
-          directoryStyles.item,
-          { backgroundColor: theme["color-info-100"] },
-        ]}
-        status="info"
-        activeOpacity={0.5}
-        onPress={() => {}}
-      >
-        <View>
-          <Text style={directoryStyles.listContentText}>
-            {itemData.item[1].name}
-          </Text>
-        </View>
-      </Card>
-    );
-  }, []);
+  const renderInstitutions = useCallback(
+    (itemData) => {
+      return (
+        <Card
+          style={[
+            directoryStyles.item,
+            { backgroundColor: theme["color-info-100"] },
+          ]}
+          status="info"
+          activeOpacity={0.5}
+          onPress={() => {}}
+        >
+          <View>
+            <Text style={directoryStyles.listContentText}>
+              {itemData.item[1].name}
+            </Text>
+          </View>
+        </Card>
+      );
+    },
+    [theme]
+  );
 
   useEffect(() => {
     const tempArray = Object.entries(databaseStore.tenants);
@@ -61,21 +64,17 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
       return e[1].institution === chosenInstitution;
     });
     setTenants(newTempArray);
-  }, [databaseStore.tenants]);
+  }, [chosenInstitution, databaseStore.tenants]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.screen}>
       <TopNavigation
         title="Directory"
         alignment="center"
         accessoryLeft={BackAction}
       />
       <Divider />
-      <Layout
-        style={{
-          flex: 1,
-        }}
-      >
+      <Layout style={styles.layout}>
         <List
           data={tenants}
           renderItem={renderInstitutions}
@@ -86,6 +85,13 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
   );
 };
 
-const styles = StyleService.create({});
+const styles = StyleService.create({
+  screen: {
+    flex: 1,
+  },
+  layout: {
+    flex: 1,
+  },
+});
 
 export default TenantsDirectoryScreen;

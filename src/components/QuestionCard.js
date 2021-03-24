@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect, useRef } from "react";
 import { Dimensions, Platform, View } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   Button,
   Text,
@@ -18,14 +18,13 @@ const TrashIcon = (props) => <Icon {...props} name="trash" />;
 const UndoIcon = (props) => <Icon {...props} name="undo" />;
 
 const QuestionCard = (props) => {
-  const checklistTypeStore = useSelector(
-    (state) => state.checklist.chosen_checklist_type
-  );
   const [checked, setChecked] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const { index } = props;
-  const { itemData } = props;
-  const section = itemData.section.title;
+  const { question } = props;
+  const { answer } = props;
+  const { section } = props;
+
   const leftSwipeable = useRef(null);
 
   const theme = useTheme();
@@ -35,59 +34,63 @@ const QuestionCard = (props) => {
   const SCREEN_WIDTH = Dimensions.get("window").width;
 
   useEffect(() => {
-    setChecked(false);
-    setDeleted(false);
-  }, [checklistTypeStore]);
+    if (answer === null) {
+      setChecked(false);
+      setDeleted(true);
+    } else {
+      setChecked(answer);
+      setDeleted(false);
+    }
+  }, [answer]);
 
-  const Header = (props) => (
-    <View {...props}>
+  const Header = (headerProps) => (
+    <View {...headerProps}>
       <Text>{index + 1}</Text>
     </View>
   );
 
   const onClickDetailHandler = () => {
     props.navigation.navigate("QuestionDetails", {
-      index: index,
-      item: itemData.item,
-      section: section,
+      index,
+      question,
+      section,
     });
   };
 
-  const leftComponent = useCallback(
-    (progress, dragX) => {
-      return (
-        <View
-          style={[
-            styles.deleteBox,
-            { backgroundColor: theme["color-primary-100"] },
-          ]}
-        >
-          <Button
-            appearance="ghost"
-            accessoryLeft={deleted ? UndoIcon : TrashIcon}
-          />
-        </View>
-      );
-    },
-    [deleted, checked]
-  );
+  const leftComponent = useCallback(() => {
+    return (
+      <View
+        style={[
+          styles.deleteBox,
+          { backgroundColor: theme["color-primary-100"] },
+        ]}
+      >
+        <Button
+          appearance="ghost"
+          accessoryLeft={deleted ? UndoIcon : TrashIcon}
+        />
+      </View>
+    );
+  }, [theme, deleted]);
 
   const rightSwipe = useCallback(() => {
     console.log(section, index, deleted, checked);
     setDeleted(!deleted);
-    dispatch(checklistActions.changeMaximumScore(!deleted, checked));
+    // dispatch(checklistActions.changeMaximumScore(!deleted, checked));
     dispatch(checklistActions.changeAnswer(section, index, !deleted, checked));
     leftSwipeable.current.close();
-  }, [section, index, deleted, checked]);
+  }, [section, index, deleted, checked, dispatch]);
 
   const onChangeHandler = useCallback(
     (nextChecked) => {
       console.log(section, index, deleted, checked);
       setChecked(nextChecked);
-      dispatch(checklistActions.changeCurrentScore(nextChecked));
-      dispatch(checklistActions.changeAnswer(section, index, deleted, nextChecked));
+      // dispatch(checklistActions.changeCurrentScore(nextChecked));
+      dispatch(
+        checklistActions.changeAnswer(section, index, deleted, nextChecked)
+      );
     },
-    [section, index, deleted, checked]
+    [section, index, deleted, checked, dispatch]
   );
 
   return (
@@ -97,37 +100,33 @@ const QuestionCard = (props) => {
       onSwipeableOpen={rightSwipe}
       friction={2}
     >
-      <View>
-        <Card onPress={onClickDetailHandler} header={Header}>
-          <View style={styles.questionContainer}>
-            <CheckBox
-              checked={checked}
-              onChange={onChangeHandler}
-              disabled={deleted}
-            />
-            <View style={styles.questionTextContainer}>
-              <Text
-                style={{
-                  width: Platform.OS === "web" ? SCREEN_WIDTH - 100 : null,
-                  textDecorationLine: deleted ? "line-through" : null,
-                }}
-              >
-                {itemData.item.question}
-              </Text>
-            </View>
+      <Card onPress={onClickDetailHandler} header={Header}>
+        <View style={styles.questionContainer}>
+          <CheckBox
+            checked={checked}
+            onChange={onChangeHandler}
+            disabled={deleted}
+          />
+          <View style={styles.questionTextContainer}>
+            <Text
+              // eslint-disable-next-line react-native/no-inline-styles
+              style={{
+                width: Platform.OS === "web" ? SCREEN_WIDTH - 100 : null,
+                textDecorationLine: deleted ? "line-through" : null,
+              }}
+            >
+              {question}
+            </Text>
           </View>
-        </Card>
-      </View>
+        </View>
+      </Card>
     </Swipeable>
   );
 };
 
 const areEqual = (prevProps, nextProps) => {
-  const { itemData } = nextProps;
-  const { itemData: prevItemData } = prevProps;
-
-  /*if the props are equal, it won't update*/
-  const isSelectedEqual = itemData.item.question === prevItemData.item.question;
+  /* if the props are equal, it won't update */
+  const isSelectedEqual = nextProps.question === prevProps.question;
 
   return isSelectedEqual;
 };

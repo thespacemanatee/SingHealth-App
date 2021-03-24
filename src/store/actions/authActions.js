@@ -1,27 +1,17 @@
-import { Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+
+import { endpoint, httpClient } from "../../helpers/CustomHTTPClient";
 
 export const RESTORE_TOKEN = "RESTORE_TOKEN";
 export const SIGN_IN = "SIGN_IN";
 export const SIGN_OUT = "SIGN_OUT";
 
-let endpoint;
-
-if (Platform.OS === "android") {
-  endpoint = "http://10.0.2.2:5000/";
-} else {
-  endpoint = "http://localhost:5000/";
-}
-
 export const restoreToken = () => {
   return async (dispatch, getState) => {
-    let userData;
-    let jsonData;
-
     try {
-      userData = await AsyncStorage.getItem("userData");
-      jsonData = JSON.parse(userData);
+      const cache = await AsyncStorage.getItem("userData");
+      const userData = JSON.parse(cache);
+      console.log("RESTORING TOKEN: ", userData);
 
       // After restoring token, we may need to validate it in production apps
 
@@ -29,37 +19,54 @@ export const restoreToken = () => {
       // screen will be unmounted and thrown away.
       dispatch({
         type: RESTORE_TOKEN,
-        userType: jsonData.userType,
-        token: jsonData.userToken,
+        userData,
       });
     } catch (e) {
       // Restoring token failed
-      console.log("RESTORE_TOKEN: no token found in local storage");
+      console.error("RESTORE_TOKEN: no token found in local storage");
     }
   };
 };
 
-export const signIn = (email, password, userType) => {
+export const signIn = (user, pswd, userType) => {
   return async (dispatch, getState) => {
     // dispatch({ action: SIGN_IN, token: token ? token : null });
 
     const loginOptions = {
-      url: `${endpoint}test_login/${userType}`,
-      method: "get",
+      url: `${endpoint}login/${userType}`,
+      method: "post",
       withCredentials: true,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      data: {
+        user,
+        pswd,
+      },
     };
-    axios(loginOptions)
+    httpClient(loginOptions)
       .then((res) => {
-        console.log(res);
+        const userToken = "dummy-auth-token";
+        const { _id, email, institutionID, name } = res.data.data;
+        const userData = {
+          userType,
+          userToken,
+          _id,
+          email,
+          institutionID,
+          name,
+        };
+
+        dispatch({
+          type: SIGN_IN,
+          userData,
+        });
+        saveUserDataToStorage(userData);
       })
       .catch((err) => {
-        console.error(err);
+        handleErrorResponse(err);
       });
-
-    let userToken = "dummy-auth-token";
-
-    dispatch({ type: SIGN_IN, userType: userType, userToken: userToken });
-    saveUserDataToStorage(userToken, userType);
   };
 };
 
@@ -72,39 +79,52 @@ export const signOut = () => {
       method: "get",
       withCredentials: true,
     };
-    axios(signOutOptions)
+    httpClient(signOutOptions)
       .then((res) => {
         console.log(res);
       })
       .catch((err) => {
-        console.error(err);
+        handleErrorResponse(err);
       });
 
-    let token = "dummy-auth-token";
+    const token = "dummy-auth-token";
 
     dispatch({ type: SIGN_OUT });
     removeTokenToStorage(token);
   };
 };
 
-const saveUserDataToStorage = async (userToken, userType) => {
+const saveUserDataToStorage = async (userData) => {
   try {
-    await AsyncStorage.setItem(
-      "userData",
-      JSON.stringify({
-        userToken: userToken,
-        userType: userType,
-      })
-    );
+    await AsyncStorage.setItem("userData", JSON.stringify(userData));
   } catch (err) {
     console.error(err);
   }
 };
 
-const removeTokenToStorage = async (token) => {
+const removeTokenToStorage = async () => {
   try {
     await AsyncStorage.removeItem("userData");
   } catch (err) {
     console.error(err);
   }
+};
+
+const handleErrorResponse = (err) => {
+  if (err.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    console.error(err.response.data);
+    console.error(err.response.status);
+    console.error(err.response.headers);
+  } else if (err.request) {
+    // The request was made but no response was received
+    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+    // http.ClientRequest in node.js
+    console.error(err.request);
+  } else {
+    // Something happened in setting up the request that triggered an Error
+    console.error("Error", err.message);
+  }
+  console.error(err.config);
 };

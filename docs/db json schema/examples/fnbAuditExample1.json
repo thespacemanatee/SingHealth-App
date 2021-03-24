@@ -2,15 +2,55 @@
     "_id": "jk9o4g943hri47eg23bfjr3b8",
     "type": "fnb",
     "formTemplateID": "fnb2021",
-    "answers": [
+    "answers": {
+      "Professionalism and Staff Hygiene": [
         {
           "answer": false,
           "images": [
               "img00001",
               "img00002",
               "img00003"
-          ]
+          ],
+          "rectified": false
         },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        }
+      ],
+      "Housekeeping & General Cleanliness": [
         {
           "answer": true
         },
@@ -61,130 +101,9 @@
         },
         {
           "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
+        }
+      ],
+      "Food Hygiene": [
         {
           "answer": true
         },
@@ -296,5 +215,97 @@
         {
           "answer": true
         }
-       ]
+      ],
+      "Healthier Choice in line with HPB's Healthy Eating's Initiative": [
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        }
+      ],
+      "Workplace Safety & Health": [
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        },
+        {
+          "answer": true
+        }
+      ]
+    }
 }

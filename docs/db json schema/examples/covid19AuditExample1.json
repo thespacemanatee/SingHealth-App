@@ -2,46 +2,53 @@
     "_id": "fi85904u2bgfvu92",
     "type": "covid19",
     "formTemplateID": "covid192021",
-    "answers": [
-        {
-          "answer": false,
-          "remarks": "No safe entry in the shop"
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        }
-       ]
+    "answers": {
+      "Safe Management Measures for Front-of-house": 
+        [
+          {
+            "answer": false,
+            "remarks": "No safe entry in the shop",
+            "rectified": false
+          },
+          {
+            "answer": true
+          },
+          {
+            "answer": true
+          },
+          {
+            "answer": true
+          },
+          {
+            "answer": true
+          },
+          {
+            "answer": true
+          },
+          {
+            "answer": true
+          },
+          {
+            "answer": true
+          }
+        ],
+      "Staff Hygiene and Safe Management Measures": 
+        [
+          {
+            "answer": true
+          },
+          {
+            "answer": true
+          },
+          {
+            "answer": true
+          },
+          {
+            "answer": true
+          },
+          {
+            "answer": true
+          }
+        ]
+    }    
 }

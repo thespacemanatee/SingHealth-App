@@ -39,9 +39,7 @@ const LoginScreen = ({ navigation }) => {
     email: Yup.string()
       .email("Invalid email!")
       .required("Please enter your email!"),
-    password: Yup.string()
-      .required("Please enter your password!")
-      .min(8, "Password is too short - should be 8 chars minimum."),
+    password: Yup.string().required("Please enter your password!"),
   });
 
   const renderSecureIcon = (props) => (
@@ -63,6 +61,10 @@ const LoginScreen = ({ navigation }) => {
     />
   );
 
+  const handleUserToggle = (isChecked) => {
+    setChecked(isChecked);
+  };
+
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -72,23 +74,17 @@ const LoginScreen = ({ navigation }) => {
       }}
     >
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={styles.screen}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <TopNavigation
-          style={{ zIndex: 5 }}
+          style={styles.topNavigation}
           title="Login"
           alignment="center"
           accessoryLeft={BackAction}
         />
         <Divider />
-        <Layout
-          style={{
-            flex: 1,
-            justifyContent: "flex-end",
-            alignItems: "center",
-          }}
-        >
+        <Layout style={styles.layout}>
           <Formik
             initialValues={{ email: "", password: "" }}
             onSubmit={(values) => {
@@ -123,7 +119,7 @@ const LoginScreen = ({ navigation }) => {
                       !!errors.email && (
                         <Icon
                           {...props}
-                          name={"alert-circle-outline"}
+                          name="alert-circle-outline"
                           fill={theme["color-danger-700"]}
                         />
                       )
@@ -142,12 +138,7 @@ const LoginScreen = ({ navigation }) => {
                   accessoryRight={renderSecureIcon}
                 />
                 <View style={styles.forgotPassword}>
-                  <Toggle
-                    checked={checked}
-                    onChange={(isChecked) => {
-                      setChecked(isChecked);
-                    }}
-                  >
+                  <Toggle checked={checked} onChange={handleUserToggle}>
                     {`Login as ${checked ? "Staff" : "Tenant"}`}
                   </Toggle>
                   <TouchableOpacity
@@ -177,6 +168,17 @@ const LoginScreen = ({ navigation }) => {
 };
 
 const styles = StyleService.create({
+  screen: {
+    flex: 1,
+  },
+  topNavigation: {
+    zIndex: 5,
+  },
+  layout: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
   forgotPassword: {
     width: "100%",
     flexDirection: "row",

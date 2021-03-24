@@ -6,6 +6,8 @@ from base64 import b64decode, b64encode
 from botocore.exceptions import ClientError
 import boto3
 import io
+import traceback
+
 
 def upload_image(file_obj, bucket, file_name):
     """
@@ -33,20 +35,18 @@ def list_images(bucket):
     """
     s3 = boto3.client('s3')
     contents = []
-    # try:
     for item in s3.list_objects(Bucket=bucket)['Contents']:
         contents.append(item)
-    # except Exception as e:
-    #     pass
 
     return contents
+
 
 def addImagesEndpoint(app):
     @app.route("/images", methods=["GET", 'POST'])
     @login_required
     def images():
         if request.method == 'POST':
-            if (requestJson := request.get_json(silent = True)) != None:
+            if (requestJson := request.get_json(silent=True)) != None:
                 allImages = requestJson.get("images", [])
                 if len(allImages) > 0:
                     requestData = allImages
@@ -59,22 +59,26 @@ def addImagesEndpoint(app):
                     if detected_Duplicate_filenames:
                         return failureResponse(failureMsg("Duplicate image names found", 400), 400)
 
-
                     for image in requestData:
                         try:
                             imageName = image["fileName"]
                             imageData = image["uri"]
+                            imageData = imageData.partition(",")[2]
+                            imageData = imageData.encode('utf-8')
+                            pad = len(imageData) % 4
+                            imageData += b"="*pad
+
                         except KeyError:
-                            failureResponse(failureMsg("Wrong request format. Make sure every Image object has a 'fileName' & a 'uri' field", 400), 400)
+                            return failureResponse(failureMsg(
+                                "Wrong request format. Make sure every Image object has a 'fileName' & a 'uri' field", 400), 400)
 
                         imageBytes = io.BytesIO(b64decode(imageData))
                         upload_image(imageBytes, S3BUCKETNAME, imageName)
                     return successResponse(successMsg("Pictures have successfully been uploaded"))
-            
+
             elif len(request.files) > 0:
                 formdata = request.files
                 images = formdata.getlist("images")
-
 
                 detected_Duplicate_filenames = len(images) > len(set(images))
                 if detected_Duplicate_filenames:
@@ -87,31 +91,37 @@ def addImagesEndpoint(app):
                 return successResponse(successMsg("Pictures have successfully been uploaded"))
             return failureResponse(failureMsg("No image data received", 400), 400)
 
-
         elif request.method == "GET":
-            details = request.json
-            filenames = details["fileNames"]
-            output = []
-            n = 0
-            m = 0
-            o = 0
-            failed = []
-            for index, filename in enumerate(filenames):
-                try:
-                    imageObject = download_image(filename, S3BUCKETNAME)
-                    imageBase64 = b64encode(imageObject.getvalue()).decode()
-                    output.append(imageBase64)
-                    n += 1
-                except ClientError as e:
-                    msg = str(e)
-                    if "Not Found" in msg:
-                        m += 1
-                        failed.append(filename)
-                except:
-                    o += 1
+            try:
+                details = request.json
+                filenames = details["fileNames"]
+                output = []
+                n = 0
+                m = 0
+                o = 0
+                failed = []
+                for index, filename in enumerate(filenames):
+                    try:
+                        # TODO: Might need to strip the header before sending it back to the client
+                        imageObject = download_image(filename, S3BUCKETNAME)
+                        imageBase64 = b64encode(
+                            imageObject.getvalue()).decode()
+                        output.append(imageBase64)
+                        n += 1
+                    except ClientError as e:
+                        msg = str(e)
+                        if "Not Found" in msg:
+                            m += 1
+                            failed.append(filename)
+                    except:
+                        o += 1
 
-            serverResponse = successMsg(f"{n} images successfully downloaded, {m} images failed to download and {o} failed due to other reasons")
-            serverResponse["uri"] = output
-            serverResponse["notFound"] = failed
+                serverResponse = successMsg(
+                    f"{n} images successfully downloaded, {m} images failed to download and {o} failed due to other reasons")
+                serverResponse["uri"] = output
+                serverResponse["notFound"] = failed
 
-            return successResponse(serverResponse)
+                return successResponse(serverResponse)
+            except Exception as e:
+                traceback.print_exc()
+                return failureResponse(failureMsg("LOL", 503), 503)

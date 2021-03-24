@@ -7,7 +7,6 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { useDispatch } from "react-redux";
 import {
   Button,
   Divider,
@@ -22,7 +21,6 @@ import {
 import { Formik } from "formik";
 import * as Yup from "yup";
 import CustomTextInput from "../../../components/CustomTextInput";
-import * as authActions from "../../../store/actions/authActions";
 import Logo from "../../../components/ui/Logo";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
@@ -31,8 +29,6 @@ const RegisterScreen = ({ navigation }) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
 
   const theme = useTheme();
-
-  const dispatch = useDispatch();
 
   const RegisterSchema = Yup.object().shape({
     name: Yup.string().required("Please enter your name!"),
@@ -76,22 +72,17 @@ const RegisterScreen = ({ navigation }) => {
       }}
     >
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={styles.screen}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <TopNavigation
-          style={{ zIndex: 5 }}
+          style={styles.topNavigation}
           title="Register"
           alignment="center"
           accessoryLeft={BackAction}
         />
         <Divider />
-        <Layout
-          style={{
-            flex: 1,
-            alignItems: "center",
-          }}
-        >
+        <Layout style={styles.layout}>
           <Formik
             initialValues={{ name: "", email: "", password: "" }}
             onSubmit={(values) => {
@@ -118,7 +109,7 @@ const RegisterScreen = ({ navigation }) => {
                       !!errors.name && (
                         <Icon
                           {...props}
-                          name={"alert-circle-outline"}
+                          name="alert-circle-outline"
                           fill={theme["color-danger-700"]}
                         />
                       )
@@ -142,7 +133,7 @@ const RegisterScreen = ({ navigation }) => {
                       !!errors.email && (
                         <Icon
                           {...props}
-                          name={"alert-circle-outline"}
+                          name="alert-circle-outline"
                           fill={theme["color-danger-700"]}
                         />
                       )
@@ -161,7 +152,7 @@ const RegisterScreen = ({ navigation }) => {
                   accessoryRight={renderSecureIcon}
                 />
                 <View style={styles.buttonContainer}>
-                  <Button onPress={handleSubmit} style={{ marginTop: 24 }}>
+                  <Button onPress={handleSubmit} style={styles.button}>
                     Sign Up
                   </Button>
                 </View>
@@ -181,6 +172,16 @@ const RegisterScreen = ({ navigation }) => {
 };
 
 const styles = StyleService.create({
+  screen: {
+    flex: 1,
+  },
+  topNavigation: {
+    zIndex: 5,
+  },
+  layout: {
+    flex: 1,
+    alignItems: "center",
+  },
   keyboardContainer: {
     flex: 1,
     alignItems: "center",
@@ -198,6 +199,9 @@ const styles = StyleService.create({
     width: "100%",
     marginBottom: 20,
     justifyContent: "flex-end",
+  },
+  button: {
+    marginTop: 24,
   },
   link: {
     fontWeight: "bold",

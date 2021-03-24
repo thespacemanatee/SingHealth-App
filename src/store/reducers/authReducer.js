@@ -5,32 +5,72 @@ const initialState = {
   isSignOut: false,
   userToken: null,
   userType: null,
+  _id: null,
+  email: null,
+  institutionID: null,
+  name: null,
 };
 
-export const authReducer = (state = initialState, action) => {
+const authReducer = (state = initialState, action) => {
   switch (action.type) {
-    case RESTORE_TOKEN:
+    case RESTORE_TOKEN: {
+      const {
+        userToken,
+        userType,
+        _id,
+        email,
+        institutionID,
+        name,
+      } = action.userData;
       return {
         ...state,
-        userToken: action.token,
-        userType: action.userType,
+        userToken,
+        userType,
+        // eslint-disable-next-line no-underscore-dangle
+        _id,
+        email,
+        institutionID,
+        name,
         isLoading: false,
       };
-    case SIGN_IN:
+    }
+    case SIGN_IN: {
+      const {
+        userToken,
+        userType,
+        _id,
+        email,
+        institutionID,
+        name,
+      } = action.userData;
       return {
         ...state,
         isSignOut: false,
-        userToken: action.token,
-        userType: action.userType,
+        userToken,
+        userType,
+        // eslint-disable-next-line no-underscore-dangle
+        _id,
+        email,
+        institutionID,
+        name,
       };
-    case SIGN_OUT:
+    }
+    case SIGN_OUT: {
       return {
-        ...state,
+        isLoading: false,
         isSignOut: true,
         userToken: null,
+        userType: null,
+        _id: null,
+        email: null,
+        institutionID: null,
+        name: null,
       };
+    }
 
     default:
       return state;
   }
 };
+
+export default authReducer;

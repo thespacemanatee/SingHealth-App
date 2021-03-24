@@ -13,49 +13,54 @@
             "description": "fnb / non_fnb / covid19",
             "type": "string"
         },
-        "formTemplateID": { "type": "string" },
+        "formTemplateID": { 
+            "description": "The ID that is unique to the type and version of the form",
+            "type": "string"
+        },
         "answers": {
-            "description": "All the questions for this audit form",
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "answer": {"type": "boolean"},
-                    "images": {
-                        "description": "The URL to query for the image",
-                        "type": "array",
-                        "items": {
-                            "type": "string"
+            "description": "All the questions for this audit form, grouped into categories",
+            "type": "object",
+            "patternProperties": {
+                ".*":{
+                    "description": "Maps a named category to the an array of questions",
+                    "type":"array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "answer": {"type": "boolean"},
+                            "images": {
+                                "description": "The URL to query for the image",
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "minItems": 0,
+                                "maxItems": 3,
+                                "uniqueItems": true
+                            },
+                            "rectificationImages":{
+                                "description": "The URL to query for the image",
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "minItems": 0,
+                                "uniqueItems": true
+                            },
+                            "remarks": {"type": "string"},
+                            "deadline": {
+                                "description": "date in ISO",
+                                "type":"string" 
+                            },
+                            "rectified": {"type": "boolean"},
+                            "requestForExt": {"type": "boolean"},
+                            "acceptedRequest": {"type": "boolean"}
                         },
-                        "minItems": 0,
-                        "maxItems": 3,
-                        "uniqueItems": true
-                    },
-                    "rectificationImages":{
-                        "description": "The URL to query for the image",
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "minItems": 0,
-                        "uniqueItems": true
-                    },
-                    "remarks": {"type": "string"},
-                    "deadline":{
-                        "description": "date in ISO",
-                        "type":"string" 
-                    },
-                    "rectified": {"type": "boolean"},
-                    "requestForExt": {"type": "boolean"},
-                    "acceptedRequest": {"type": "boolean"},
-                    "questionTags": {
-                        "description": "Category of question",
-                        "type": "array",
-                        "items": {"type": "string"}
+                        "required": [ "answer"]
                     }
-                },
-                "required": [ "answer" , "questionTags"]
-            }
+                }
+            },
+            "additionalProperties": false            
         }
     },
     "required": [ "_id", "type", "formTemplateID", "answers" ]

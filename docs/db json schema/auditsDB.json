@@ -22,7 +22,7 @@
             "type": "string"
         },
         "date": {
-            "description": "DDMMYYYY",
+            "description": "Date in ISO format",
             "type": "string"
         },
         "score": {
@@ -36,6 +36,10 @@
                     "type": "string"
                     }
                 }
+        },
+        "rectificationProgress": {
+            "description": "The number of NCs rectified divided by the total number of NCs",
+            "type": "number"
         }
     },
     "required": [ "_id", "staffID", "tenantID", "institutionID", "date", "score", "auditChecklists"]

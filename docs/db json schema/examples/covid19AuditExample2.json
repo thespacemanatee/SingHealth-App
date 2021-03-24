@@ -2,51 +2,59 @@
     "_id": "vrebynby775345#$G#^Hgn8h4v64KYE",
     "type": "covid19",
     "formTemplateID": "covid192021",
-    "answers": [
-        {
-          "answer": false,
-          "remarks": "Stall is dirty"
-        },
-        {
-          "answer": false,
-          "remarks": "Stall is poorly maintained",
-          "images": [
-            "img01204205",
-            "img01204201"
-          ]
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        },
-        {
-          "answer": true
-        }
-       ]
+    "answers": {
+      "Safe Management Measures for Front-of-house": 
+        [
+          {
+            "answer": false,
+            "remarks": "Stall is dirty",
+            "rectified": false
+          },
+          {
+            "answer": false,
+            "remarks": "Stall is poorly maintained",
+            "images": [
+              "img01204205",
+              "img01204201"
+            ],
+            "rectified": false
+          },
+          {
+            "answer": true
+          },
+          {
+            "answer": true
+          },
+          {
+            "answer": true
+          },
+          {
+            "answer": true
+          },
+          {
+            "answer": true
+          },
+          {
+            "answer": true
+          }
+        ],
+      "Staff Hygiene and Safe Management Measures": 
+        [
+          {
+            "answer": true
+          },
+          {
+            "answer": true
+          },
+          {
+            "answer": true
+          },
+          {
+            "answer": true
+          },
+          {
+            "answer": true
+          }
+        ]
+    }
 }

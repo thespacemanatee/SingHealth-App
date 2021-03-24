@@ -7,6 +7,25 @@ Created on Fri Mar  5 02:46:03 2021
 
 from flask import jsonify, make_response
 import json
+from bson.json_util import dumps
+
+
+def return_find_data_json(result):
+    output = {}
+    
+    #if data is found
+    if len(result) > 0 :
+        output = {
+            "status" : 200,
+            "description" : "success",
+            "data" : result}
+    else:
+        output = {
+            "status" : 200,
+            "description" : "no matching data",
+            "data" : {}}
+        
+    return output     
 
 def addWenXinEndpoints(app, mongo):
     #Able to retrieve tenant and audit form information and return as json string
@@ -21,27 +40,17 @@ def addWenXinEndpoints(app, mongo):
                 }
                     for tenant in tenants]
             
-            #if data is found
-            if len(result) > 0 :
-                output = {
-                    "status" : 200,
-                    "description" : "success",
-                    "data" : result}
-            else:
-                output = {
-                    "status" : 200,
-                    "description" : "no matching data",
-                    "data" : []}
+            output = return_find_data_json(result)
                 
-            
         except:
             output = {
                     "status" : 404,
                     "description" : "error in connection",
                     "data" : []}
-        
+
         response = make_response(jsonify(output), output['status'])
-        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Origin"] = "http://localhost:19006"
+        response.headers["Access-Control-Allow-Credentials"] = "true"
         return response
 
     @app.route("/auditForms/<form_type>", methods = ["GET"])
@@ -49,42 +58,32 @@ def addWenXinEndpoints(app, mongo):
         
         try:
             form = mongo.db.auditFormTemplate.find_one(
-                {"type": form_type, "currentForm": True})  
+                {"type": form_type})  
             
-            checklist = []
+            checklist = {}
             if form is not None:
-                #access the questions with each categories
-                for key, value in form["categories"].items():
-                    value = {
-                        "category" : value,
-                        "questions" : form[key]["questions"]
-                        }
-                    checklist.append(value)
-                    
-                output = {
-                    "status" : 200,
-                    "description" : "success",
-                    "data" : {
-                        "formID" : form["_id"],
-                        "type" : form["type"],
-                        "checklist" : checklist
-                        }
-                    }
+                for category in form["questions"]:
+                    checklist[category] = form["questions"][category]
                 
+                result = {
+                    "_id" : form["_id"],
+                    "type" : form["type"],
+                    "questions" : checklist
+                    }
             else:
-                output = {
-                    "status" : 200,
-                    "description" : "no matching form",
-                    "data" : {}
-                    }
-                
+                result = {}
+
+            output = return_find_data_json(result)
+            
+            
         except:
             output = {
                     "status" : 404,
                     "description" : "unspecified connection/data error",
-                    "data" : []}
+                    "data" : {}}
         
         response = make_response(jsonify(output), output['status'])
-        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Origin"] = "http://localhost:19006"
+        response.headers["Access-Control-Allow-Credentials"] = "true"
         return response
 

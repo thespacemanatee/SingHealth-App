@@ -3,71 +3,82 @@ import _ from "lodash";
 import {
   ADD_AUDIT_TENANT_SELECTION,
   ADD_CHOSEN_CHECKLIST,
+  ADD_SAVED_CHECKLIST,
   ADD_IMAGE,
   DELETE_IMAGE,
   ADD_REMARKS,
-  SET_MAXIMUM_SCORE,
-  CHANGE_CURRENT_SCORE,
-  CHANGE_MAXIMUM_SCORE,
   ADD_COVID_CHECKLIST,
   CHANGE_ANSWER,
+  CHANGE_DEADLINE,
+  RESET_CHECKLIST_STORE,
 } from "../actions/checklistActions";
-
-import { COVID_SECTION } from "../../screens/staff/AuditScreens/ChecklistScreen";
 
 const initialState = {
   chosen_tenant: null,
   chosen_checklist_type: null,
   chosen_checklist: null,
-  maximum_score: 0,
-  current_score: 0,
+  covid19: null,
 };
 
-export const checklistReducer = (state = initialState, action) => {
+const checklistReducer = (state = initialState, action) => {
+  let covidKeys;
+  if (state.covid19) {
+    covidKeys = Object.keys(state.covid19.questions);
+  }
   switch (action.type) {
     case ADD_AUDIT_TENANT_SELECTION:
       return {
         ...state,
         chosen_tenant: action.tenant,
-        chosen_checklist_type: null,
-        chosen_checklist: null,
-        maximum_score: 0,
-        current_score: 0,
       };
     case ADD_CHOSEN_CHECKLIST: {
       return {
         ...state,
-        chosen_checklist_type: action.checklist_type,
-        chosen_checklist: _.cloneDeep(action.checklist),
-        maximum_score: 0,
-        current_score: 0,
+        chosen_checklist_type: action.checklistType,
+        chosen_checklist: action.checklist,
       };
     }
 
     case ADD_COVID_CHECKLIST: {
       return {
         ...state,
-        covid19: _.cloneDeep(action.checklist),
-        maximum_score: 0,
-        current_score: 0,
+        covid19: action.checklist,
       };
     }
 
-    //TODO:
+    case ADD_SAVED_CHECKLIST: {
+      return {
+        ...action.data,
+      };
+    }
+
+    // TODO:
     case ADD_IMAGE: {
       let newChecklist;
-      if (action.section === COVID_SECTION) {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          state.covid19.questions,
+          action.section
+        )
+      ) {
         newChecklist = _.cloneDeep(state.covid19);
       } else {
         newChecklist = _.cloneDeep(state.chosen_checklist);
       }
-      if (newChecklist.questions[action.index].image == null) {
-        newChecklist.questions[action.index].image = [];
+      if (newChecklist.questions[action.section][action.index].image == null) {
+        newChecklist.questions[action.section][action.index].image = [];
       }
-      newChecklist.questions[action.index].image.push(action.imageUri);
+      newChecklist.questions[action.section][action.index].image.push(
+        action.imageUri
+      );
       // console.log(newChecklist.questions);
 
-      if (action.section === COVID_SECTION) {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          state.covid19.questions,
+          action.section
+        )
+      ) {
         return {
           ...state,
           covid19: newChecklist,
@@ -80,18 +91,18 @@ export const checklistReducer = (state = initialState, action) => {
     }
     case DELETE_IMAGE: {
       let newChecklist;
-      if (action.section === COVID_SECTION) {
+      if (covidKeys.includes(action.section)) {
         newChecklist = _.cloneDeep(state.covid19);
       } else {
         newChecklist = _.cloneDeep(state.chosen_checklist);
       }
-      newChecklist.questions[action.index].image.splice(
+      newChecklist.questions[action.section][action.index].image.splice(
         action.selectedIndex,
         1
       );
 
       // console.log(newChecklist.questions[action.index].image.uri);
-      if (action.section === COVID_SECTION) {
+      if (covidKeys.includes(action.section)) {
         return {
           ...state,
           covid19: newChecklist,
@@ -105,17 +116,25 @@ export const checklistReducer = (state = initialState, action) => {
     }
     case ADD_REMARKS: {
       let newChecklist;
-      if (action.section === COVID_SECTION) {
+      if (covidKeys.includes(action.section)) {
         newChecklist = _.cloneDeep(state.covid19);
       } else {
         newChecklist = _.cloneDeep(state.chosen_checklist);
       }
-      if (newChecklist.questions[action.index].remarks == null) {
-        newChecklist.questions[action.index].remarks = "";
+      if (
+        newChecklist.questions[action.section][action.index].remarks == null
+      ) {
+        newChecklist.questions[action.section][action.index].remarks = "";
       }
-      newChecklist.questions[action.index].remarks = action.remarks;
+      newChecklist.questions[action.section][action.index].remarks =
+        action.remarks;
 
-      if (action.section === COVID_SECTION) {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          state.covid19.questions,
+          action.section
+        )
+      ) {
         return {
           ...state,
           covid19: newChecklist,
@@ -125,67 +144,26 @@ export const checklistReducer = (state = initialState, action) => {
       return {
         ...state,
         chosen_checklist: newChecklist,
-      };
-    }
-    case SET_MAXIMUM_SCORE: {
-      return {
-        ...state,
-        maximum_score: action.score,
-      };
-    }
-    case CHANGE_CURRENT_SCORE: {
-      let new_current_score;
-      if (action.change) {
-        new_current_score = state.current_score + 1;
-      } else {
-        new_current_score = state.current_score - 1;
-      }
-      return {
-        ...state,
-        current_score: new_current_score,
-      };
-    }
-    case CHANGE_MAXIMUM_SCORE: {
-      console.log(action.deleted);
-      let new_maximum_score;
-      let new_current_score = state.current_score;
-      if (action.deleted) {
-        new_maximum_score = state.maximum_score - 1;
-        if (action.checked) {
-          new_current_score--;
-        }
-      } else {
-        new_maximum_score = state.maximum_score + 1;
-        if (action.checked) {
-          new_current_score++;
-        }
-      }
-      return {
-        ...state,
-        maximum_score: new_maximum_score,
-        current_score: new_current_score,
       };
     }
     case CHANGE_ANSWER: {
       let newChecklist;
-      if (action.section === COVID_SECTION) {
+      if (covidKeys.includes(action.section)) {
         newChecklist = _.cloneDeep(state.covid19);
       } else {
         newChecklist = _.cloneDeep(state.chosen_checklist);
       }
       if (action.deleted) {
-        newChecklist.questions[action.index].answer = null;
+        newChecklist.questions[action.section][action.index].answer = null;
+      } else if (action.checked) {
+        newChecklist.questions[action.section][action.index].answer = true;
       } else {
-        if (action.checked) {
-          newChecklist.questions[action.index].answer = true;
-        } else {
-          newChecklist.questions[action.index].answer = false;
-        }
+        newChecklist.questions[action.section][action.index].answer = false;
       }
 
       console.log(newChecklist);
 
-      if (action.section === COVID_SECTION) {
+      if (covidKeys.includes(action.section)) {
         return {
           ...state,
           covid19: newChecklist,
@@ -197,7 +175,43 @@ export const checklistReducer = (state = initialState, action) => {
         chosen_checklist: newChecklist,
       };
     }
+    case CHANGE_DEADLINE: {
+      let newChecklist;
+      if (covidKeys.includes(action.section)) {
+        newChecklist = _.cloneDeep(state.covid19);
+      } else {
+        newChecklist = _.cloneDeep(state.chosen_checklist);
+      }
+
+      newChecklist.questions[action.section][action.index].deadline =
+        action.date;
+
+      console.log(newChecklist);
+
+      if (covidKeys.includes(action.section)) {
+        return {
+          ...state,
+          covid19: newChecklist,
+        };
+      }
+
+      return {
+        ...state,
+        chosen_checklist: newChecklist,
+      };
+    }
+    case RESET_CHECKLIST_STORE: {
+      return {
+        chosen_tenant: null,
+        chosen_checklist_type: null,
+        chosen_checklist: null,
+        covid19: null,
+      };
+    }
+
     default:
       return state;
   }
 };
+
+export default checklistReducer;

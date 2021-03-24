@@ -1,45 +1,103 @@
 {
     "auditMetadata":{
         "_id": null,
-        "staffID": "CGH_Staff1",
-        "tenantID": "CGH_Tenant1",
+        "staffID": "CGH_Staff12",
+        "tenantID": "CGH_Tenant12",
         "institutionID": "CGH",
-        "date": "03032021",
+        "date": "2021-03-23T09:37:42+0000",
         "score": 0.333,
         "auditChecklists": {}
     },
     "auditForms":{
         "fnb": {
             "_id": "fnb2021",
-            "type": "fnb",
-            "questions": [
-                {
-                    "question": "Store is clean",
-                    "answer": true
-                },
-                {
-                    "question": "Store is covid-free",
-                    "answer": false,
-                    "images": ["image001" , "image002", "image001"],
-                    "rectificationImages" : null,
-                    "remarks": "Case #36475 traced back here",
-                    "deadline": "06032021",
-                    "rectified": false,
-                    "requestedForExt": false,
-                    "acceptedRequest": null
-                },
-                {
-                    "question": "Personnel observed personal hygiene",
-                    "answer": false,
-                    "images": ["image001" , "image002"],
-                    "rectificationImages" : [ "img654","img863" ],
-                    "remarks": "Ill personal came back to work",
-                    "deadline": "06032021",
-                    "rectified": true,
-                    "requestedForExt": true,
-                    "acceptedRequest": true
-                }
-            ]
+            "type": "non_fnb",
+            "questions": {
+                "Professionalism and Staff Hygiene": [
+                    {
+                        "question": "Store is clean",
+                        "answer": true
+                    },
+                    {
+                        "question": "Store is covid-free",
+                        "answer": false,
+                        "images": ["image001" , "image002"],
+                        "rectificationImages" : null,
+                        "remarks": "Case #36475 traced back here",
+                        "deadline": "2021-03-23T09:37:42+0000",
+                        "rectified": false,
+                        "requestedForExt": false,
+                        "acceptedRequest": null
+                    },
+                    {
+                        "question": "Personnel observed personal hygiene",
+                        "answer": false,
+                        "images": ["image001" , "image002"],
+                        "rectificationImages" : [ "img654","img863" ],
+                        "remarks": "Ill personal came back to work",
+                        "deadline": "2021-03-23T09:37:42+0000",
+                        "rectified": true,
+                        "requestedForExt": true,
+                        "acceptedRequest": true
+                    }
+                ],
+                "Housekeeping & General Cleanliness": [
+                    {
+                        "question": "Store is clean",
+                        "answer": true
+                    },
+                    {
+                        "question": "Store is covid-free",
+                        "answer": false,
+                        "images": ["image001" , "image002"],
+                        "rectificationImages" : null,
+                        "remarks": "Case #36475 traced back here",
+                        "deadline": "2021-03-23T09:37:42+0000",
+                        "rectified": false,
+                        "requestedForExt": false,
+                        "acceptedRequest": null
+                    },
+                    {
+                        "question": "Personnel observed personal hygiene",
+                        "answer": false,
+                        "images": ["image001" , "image002"],
+                        "rectificationImages" : [ "img654","img863" ],
+                        "remarks": "Ill personal came back to work",
+                        "deadline": "2021-03-23T09:37:42+0000",
+                        "rectified": true,
+                        "requestedForExt": true,
+                        "acceptedRequest": true
+                    }
+                ],
+                "Workplace Safety & Health": [
+                    {
+                        "question": "Store is clean",
+                        "answer": true
+                    },
+                    {
+                        "question": "Store is covid-free",
+                        "answer": false,
+                        "images": ["image001" , "image002"],
+                        "rectificationImages" : null,
+                        "remarks": "Case #36475 traced back here",
+                        "deadline": "2021-03-23T09:37:42+0000",
+                        "rectified": false,
+                        "requestedForExt": false,
+                        "acceptedRequest": null
+                    },
+                    {
+                        "question": "Personnel observed personal hygiene",
+                        "answer": false,
+                        "images": ["image001" , "image002"],
+                        "rectificationImages" : [ "img654","img863" ],
+                        "remarks": "Ill personal came back to work",
+                        "deadline": "2021-03-23T09:37:42+0000",
+                        "rectified": true,
+                        "requestedForExt": true,
+                        "acceptedRequest": true
+                    }
+                ]
+            }
         }
     }
 }
