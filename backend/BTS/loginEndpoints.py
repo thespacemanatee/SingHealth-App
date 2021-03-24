@@ -27,7 +27,9 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
             returnJson = {"userEmail": userEmail, "loginStatus": loginStatus}
             return make_response(jsonify(returnJson), 200)
 
-    @app.route('/login/staff',  methods=["POST", "OPTIONS"])
+
+
+    @app.route('/login/staff',  methods=["POST"])
     def login_for_staff():
         """
         TODO:
@@ -52,7 +54,7 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
             else:
                 return failureResponse(failureMsg(f"{credentials['user']} account does not exist", 404), 404)
 
-    @app.route('/login/tenant',  methods=["POST", "OPTIONS"])
+    @app.route('/login/tenant',  methods=["POST"])
     def login_for_tenant():
         """
         TODO:
