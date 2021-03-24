@@ -5,11 +5,14 @@ from flask_login import login_required
 from pymongo.errors import DuplicateKeyError
 import iso8601
 
-compliant = lambda answer: answer["answer"]
-percentageCompliant = lambda ls : ls.count(True) / len(ls)
+
+def compliant(answer): return answer["answer"]
+def percentageCompliant(ls): return ls.count(True) / len(ls)
 
 # does not give ID to converted form
 # TODO: Add random integer or smth to the IDs
+
+
 def convertToFilledAuditForm(filledAuditFormTemplate):
     filledAuditForm = dict()
     filledAuditForm["formTemplateID"] = filledAuditFormTemplate.get("_id")
@@ -38,7 +41,7 @@ def validateFilledAuditForm(filledAuditForm):
                 return False, category, index, "Please fill in the 'answer' field."
 
             if "images" in answer.keys():
-                if (numImages := len(answer.get("images",[]))) > MAX_NUM_IMAGES_PER_NC:
+                if (numImages := len(answer.get("images", []))) > MAX_NUM_IMAGES_PER_NC:
                     return False, category, index, f"Max allowed is {MAX_NUM_IMAGES_PER_NC} images but {numImages} provided."
 
                 numUniqueFilenames = len(set(answer["images"]))
@@ -46,7 +49,7 @@ def validateFilledAuditForm(filledAuditForm):
                 if numFilenames > numUniqueFilenames:
                     return False, category, index, f"Duplicate filenames found."
 
-            if not answer["answer"] and len(answer.get("remarks",[])) == 0:
+            if not answer["answer"] and len(answer.get("remarks", [])) == 0:
                 return False, category, index, "Please fill in the remarks section"
 
     return True, "Form is valid and ready for uploading"
@@ -78,29 +81,37 @@ def convertTimeStr2UTC(filledAuditForm):
                 answer["deadline"] = iso8601.parse_date(deadline)
             convertedTime.append(answer)
         answers[category] = convertedTime
-    
+
     filledAuditForm_copy["answers"] = answers
     return filledAuditForm_copy
 
+
 def calculateAuditScore(filledAuditForm) -> float:
-    
+    print(filledAuditForm)
     if filledAuditForm["type"] == "fnb":
-        c1 = percentageCompliant(list(map(compliant,filledAuditForm["answers"]["Professionalism and Staff Hygiene"]))) * 0.1
-        c2 = percentageCompliant(list(map(compliant,filledAuditForm["answers"]["Housekeeping & General Cleanliness"]))) * 0.2
-        c3 = percentageCompliant(list(map(compliant,filledAuditForm["answers"]["Food Hygiene"]))) * 0.35
-        c4 = percentageCompliant(list(map(compliant,filledAuditForm["answers"]["Healthier Choice in line with HPB's Healthy Eating's Initiative"]))) * 0.15
-        c5 = percentageCompliant(list(map(compliant,filledAuditForm["answers"]["Workplace Safety & Health"]))) * 0.2
+        c1 = percentageCompliant(list(map(
+            compliant, filledAuditForm["answers"]["Professionalism and Staff Hygiene"]))) * 0.1
+        c2 = percentageCompliant(list(map(
+            compliant, filledAuditForm["answers"]["Housekeeping and General Cleanliness"]))) * 0.2
+        c3 = percentageCompliant(
+            list(map(compliant, filledAuditForm["answers"]["Food Hygiene"]))) * 0.35
+        c4 = percentageCompliant(list(map(
+            compliant, filledAuditForm["answers"]["Healthier Choice in line with HPB's Healthy Eating's Initiative"]))) * 0.15
+        c5 = percentageCompliant(list(
+            map(compliant, filledAuditForm["answers"]["Workplace Safety and Health"]))) * 0.2
         auditScore = c1 + c2 + c3 + c4 + c5
-    
+
     elif filledAuditForm["type"] == "non_fnb":
-        c1 = percentageCompliant(list(map(compliant,filledAuditForm["answers"]["Professionalism and Staff Hygiene"]))) * 0.2
-        c2 = percentageCompliant(list(map(compliant,filledAuditForm["answers"]["Housekeeping & General Cleanliness"]))) * 0.4
-        c3 = percentageCompliant(list(map(compliant,filledAuditForm["answers"]["Workplace Safety & Health"]))) * 0.4
+        c1 = percentageCompliant(list(map(
+            compliant, filledAuditForm["answers"]["Professionalism and Staff Hygiene"]))) * 0.2
+        c2 = percentageCompliant(list(map(
+            compliant, filledAuditForm["answers"]["Housekeeping and General Cleanliness"]))) * 0.4
+        c3 = percentageCompliant(list(
+            map(compliant, filledAuditForm["answers"]["Workplace Safety and Health"]))) * 0.4
         auditScore = c1 + c2 + c3
-    
+
     return auditScore
 
-        
 
 def processAuditdata(auditData):
     auditMetaData = auditData["auditMetadata"]
@@ -109,7 +120,6 @@ def processAuditdata(auditData):
 
     metaDataID = createIDForAuditMetaData(auditMetaData)
     auditMetaData["_id"] = metaDataID
-    
 
     filledAuditForms = {}
     for formType, formTemplate in auditForms.items():
@@ -122,15 +132,12 @@ def processAuditdata(auditData):
         filledAuditForms[filledAuditForm["type"]] = filledAuditForm
         auditMetaData["auditChecklists"][filledAuditForm["type"]] = id
 
-        #TODO: investigate further if DB structure can be flattened further for data integrity
+        # TODO: investigate further if DB structure can be flattened further for data integrity
         # This works for now because we only have 2 forms: 1 covid, 1 non-covid
         # Otherwise, maintain data integrity by writing checks on the incoming data and make sure they have only 2 specific forms
         if formType != "covid19":
             auditScore = calculateAuditScore(filledAuditForm)
             auditMetaData["score"] = auditScore
-            
-
-
 
     auditMetaData['date'] = iso8601.parse_date(auditMetaData['date'])
     return filledAuditForms, auditMetaData
@@ -171,7 +178,7 @@ def addAuditsEndpoint(app, mongo):
 
                     if not result2.acknowledged:
                         return failureResponse(failureMsg("Problem uploading forms to Database", 503), 503)
-                        
+
             except DuplicateKeyError:
                 return failureResponse(failureMsg("Form has already been uploaded", 400), 400)
 
