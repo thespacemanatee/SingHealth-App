@@ -11,10 +11,10 @@ from flask_cors import CORS
 import secrets
 import os
 
-
+print(os.environ.get('SECRET_KEY'))
 app = Flask(__name__)
 app.config["MONGO_URI"] = CLOUD_MONGODB_URI
-app.config["SECRET_KEY"] = secrets.token_urlsafe(nbytes=32)
+app.config["SECRET_KEY"] = os.environ.get('SECRET_KEY', None)
 mongo = PyMongo(app)
 CORS(app, supports_credentials=True)
 
