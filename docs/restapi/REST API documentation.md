@@ -15,6 +15,7 @@
 - [ ] [`GET /audits/saved`](#`GET-/audits/saved`)
 - [x] [`GET /audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`)
 - [x] [`GET /audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`)
+- [ ] [`GET /tenant/{tenantID}`](#GET-/tenant/{tenantID}`) 
 - [ ] [`GET /tenant/delete/{tenantID}`](#GET-/tenant/delete/{tenantID}`)
 - [ ] [`POST /tenant/add`](#POST-/tenant/add`)
 ---
