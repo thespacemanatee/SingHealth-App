@@ -4,7 +4,7 @@ from flask import request, make_response, jsonify
 from flask_login import login_required
 from pymongo.errors import DuplicateKeyError
 import iso8601
-
+import pprint
 
 
 def compliant(answer):
@@ -122,6 +122,8 @@ def processAuditdata(auditData):
     auditForms = auditData["auditForms"]
     auditMetaData["auditChecklists"] = {}
 
+    pp=pprint.PrettyPrinter(indent=4)
+    pp.pprint(auditForms)
     metaDataID = createIDForAuditMetaData(auditMetaData)
     auditMetaData["_id"] = metaDataID
 
@@ -149,7 +151,7 @@ def processAuditdata(auditData):
     return filledAuditForms, auditMetaData
 
 def post_process_form(filledAuditForm):
-    output = {}
+    outputDict = {}
     for category, answerList in filledAuditForm["answers"].items():
         newAnswerList = []
         for lineItem in answerList:
@@ -158,7 +160,8 @@ def post_process_form(filledAuditForm):
             elif lineItem["answer"] and "rectified" in lineItem.keys():
                 lineItem.pop("rectified")
             newAnswerList.append(lineItem)
-        output[category] = newAnswerList
+        outputDict[category] = newAnswerList
+    output = {"answers": outputDict}
     return output
 
 def post_process_forms(filledAuditForms):
@@ -167,7 +170,6 @@ def post_process_forms(filledAuditForms):
         output[formType] = post_process_form(formTemplate)
     return output
             
-
 def validateFilledAuditForms(filledAuditForms):
     for formType, form in filledAuditForms.items():
         isValid = validateFilledAuditForm(form)
