@@ -76,10 +76,10 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                 return failureResponse(failureMsg(f"{credentials['user']} account does not exist", 404), 404)
 
     @app.route('/logout')
-    @login_required
+    # @login_required
     def logout():
-        session.pop('account_type')
-        logout_user()
+        # session.pop('account_type')
+        # logout_user()
         return successResponse(successMsg("You are now logged out"))
 
     @login_manager.user_loader

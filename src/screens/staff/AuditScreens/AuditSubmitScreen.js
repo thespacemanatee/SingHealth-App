@@ -9,13 +9,13 @@ import {
   StyleService,
   TopNavigation,
 } from "@ui-kitten/components";
-import axios from "axios";
 import _ from "lodash";
 
 import { CommonActions } from "@react-navigation/routers";
 import SuccessAnimation from "../../../components/ui/SuccessAnimation";
 import CrossAnimation from "../../../components/ui/CrossAnimation";
 import * as databaseActions from "../../../store/actions/databaseActions";
+import { handleErrorResponse } from "../../../store/actions/authActions";
 
 const AuditSubmitScreen = ({ navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
@@ -187,26 +187,6 @@ const AuditSubmitScreen = ({ navigation }) => {
         routes: [{ name: "StaffDashboard" }],
       })
     );
-  };
-
-  const handleErrorResponse = (err) => {
-    setError(true);
-    if (err.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error(err.response.data);
-      console.error(err.response.status);
-      console.error(err.response.headers);
-    } else if (err.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-      // http.ClientRequest in node.js
-      console.error(err.request);
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.error("Error", err.message);
-    }
-    console.error(err.config);
   };
 
   return (

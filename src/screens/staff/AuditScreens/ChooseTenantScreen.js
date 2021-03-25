@@ -18,6 +18,7 @@ import * as databaseActions from "../../../store/actions/databaseActions";
 import SavedChecklistCard from "../../../components/SavedChecklistCard";
 import NewChecklistCard from "../../../components/NewChecklistCard";
 import alert from "../../../components/CustomAlert";
+import { handleErrorResponse } from "../../../store/actions/authActions";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -103,7 +104,7 @@ const ChooseTenantScreen = ({ navigation }) => {
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
 
-      // console.log(authStore.institutionID);
+      console.log(res.data.data);
       const tempChecklists = [
         {
           title: "Available Tenants",
@@ -126,7 +127,7 @@ const ChooseTenantScreen = ({ navigation }) => {
       setSectionData(tempChecklists);
     } catch (err) {
       setLoading(false);
-      console.error(err);
+      handleErrorResponse(err);
     }
   }, [authStore.institutionID, dispatch]);
 

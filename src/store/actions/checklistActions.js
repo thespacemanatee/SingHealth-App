@@ -124,15 +124,21 @@ export const getAuditData = (auditID, stallName) => {
       // withCredentials: true,
     };
     const res = await httpClient(options);
-    const { data } = res.data;
-    console.log(data);
+    const { data } = res;
+    const { auditMetadata } = data;
+    const { auditForms } = data;
+    const formKeys = Object.keys(auditForms);
+    const type = formKeys.find((e) => {
+      return e !== "covid19";
+    });
+    console.log(stallName);
 
     dispatch({
       type: GET_AUDIT_DATA,
-      chosen_tenant: stallName,
-      chosen_checklist_type: Object.keys(data.auditForm)[0],
-      chosen_checklist: data.auditForm.covid19,
-      covid19: data.auditForm.covid19,
+      chosen_tenant: { stallName, tenantID: auditMetadata.tenantID },
+      chosen_checklist_type: type,
+      chosen_checklist: auditForms[type],
+      covid19: auditForms.covid19,
       // auditMetadata: res.data.data.auditMetadata,
       // auditForm: res.data.data.auditForm,
     });

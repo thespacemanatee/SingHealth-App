@@ -18,7 +18,7 @@ export const restoreToken = () => {
       // This will switch to the App screen or Auth screen and this loading
       // screen will be unmounted and thrown away.
       dispatch({ type: RESTORE_TOKEN, userData });
-    } catch (e) {
+    } catch (err) {
       // Restoring token failed
       console.error("RESTORE_TOKEN: no token found in local storage");
     }
@@ -92,7 +92,7 @@ const saveUserDataToStorage = async (userData) => {
   try {
     await AsyncStorage.setItem("userData", JSON.stringify(userData));
   } catch (err) {
-    console.error(err);
+    handleErrorResponse(err);
   }
 };
 
@@ -100,17 +100,21 @@ const removeTokenFromStorage = async () => {
   try {
     await AsyncStorage.removeItem("userData");
   } catch (err) {
-    console.error(err);
+    handleErrorResponse(err);
   }
 };
 
-const handleErrorResponse = (err) => {
+// eslint-disable-next-line import/prefer-default-export
+export const handleErrorResponse = (err) => {
   if (err.response) {
     // The request was made and the server responded with a status code
     // that falls out of the range of 2xx
     console.error(err.response.data);
     console.error(err.response.status);
     console.error(err.response.headers);
+    if (err.response.status === 403) {
+      signOut();
+    }
   } else if (err.request) {
     // The request was made but no response was received
     // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
