@@ -232,24 +232,7 @@ const ChecklistScreen = ({ route, navigation }) => {
     setLoading(false);
   }, [createNewSections]);
 
-  if (loading) {
-    return (
-      <View style={styles.screen}>
-        <TopNavigation
-          title="Checklist"
-          alignment="center"
-          accessoryLeft={BackAction}
-        />
-        <Divider />
-        <Layout style={styles.layout}>
-          <ActivityIndicator
-            size="large"
-            color={theme["color-primary-default"]}
-          />
-        </Layout>
-      </View>
-    );
-  }
+  // if (loa
 
   if (error) {
     return (
@@ -308,19 +291,30 @@ const ChecklistScreen = ({ route, navigation }) => {
           <Radio>F&B</Radio>
           <Radio>Non-F&B</Radio>
         </RadioGroup>
-        <SectionList
-          sections={completeChecklist}
-          keyExtractor={(item, index) => item + index}
-          renderItem={renderChosenChecklist}
-          initialNumToRender={40}
-          renderSectionHeader={renderSectionHeader}
-          SectionSeparatorComponent={() => <Divider />}
-        />
-        <View style={styles.bottomContainer}>
-          <Button status="primary" onPress={onSubmitHandler}>
-            SUBMIT
-          </Button>
-        </View>
+        {!loading ? (
+          <View>
+            <SectionList
+              sections={completeChecklist}
+              keyExtractor={(item, index) => item + index}
+              renderItem={renderChosenChecklist}
+              initialNumToRender={40}
+              renderSectionHeader={renderSectionHeader}
+              SectionSeparatorComponent={() => <Divider />}
+            />
+            <View style={styles.bottomContainer}>
+              <Button status="primary" onPress={onSubmitHandler}>
+                SUBMIT
+              </Button>
+            </View>
+          </View>
+        ) : (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator
+              size="large"
+              color={theme["color-primary-default"]}
+            />
+          </View>
+        )}
       </Layout>
     </View>
   );
@@ -368,6 +362,10 @@ const styles = StyleService.create({
     fontWeight: "bold",
     fontSize: 26,
     marginBottom: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
   },
 });
 

@@ -39,9 +39,20 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   const handleOpenAudit = () => {};
 
-  const renderActiveAudits = useCallback(({ item }) => {
-    return <ActiveAuditCard item={item} onPress={handleOpenAudit} />;
-  }, []);
+  const renderActiveAudits = useCallback(
+    ({ item }) => {
+      return (
+        <View style={styles.item}>
+          <ActiveAuditCard
+            userType={authStore.userType}
+            item={item}
+            onPress={handleOpenAudit}
+          />
+        </View>
+      );
+    },
+    [authStore.userType]
+  );
 
   const getListData = useCallback(() => {
     dispatch(databaseActions.getTenantActiveAudits(authStore._id))
@@ -129,10 +140,7 @@ const styles = StyleService.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
-  cardContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
+  item: {
+    paddingVertical: 4,
   },
-  listItemContainer: {},
 });

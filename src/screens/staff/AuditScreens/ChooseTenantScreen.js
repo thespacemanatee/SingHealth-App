@@ -152,25 +152,6 @@ const ChooseTenantScreen = ({ navigation }) => {
     };
   }, [dispatch, getSectionData, navigation]);
 
-  if (loading) {
-    return (
-      <View style={styles.screen}>
-        <TopNavigation
-          title="Checklist"
-          alignment="center"
-          accessoryLeft={BackAction}
-        />
-        <Divider />
-        <Layout style={styles.layout}>
-          <ActivityIndicator
-            size="large"
-            color={theme["color-primary-default"]}
-          />
-        </Layout>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.screen}>
       <TopNavigation
@@ -183,14 +164,23 @@ const ChooseTenantScreen = ({ navigation }) => {
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Choose a Tenant to Audit</Text>
         </View>
-        <SectionList
-          sections={sectionData}
-          keyExtractor={(item, index) => item + index}
-          renderItem={renderSectionList}
-          // contentContainerStyle={styles.contentContainer}
-          renderSectionHeader={renderSectionHeader}
-          SectionSeparatorComponent={() => <Divider />}
-        />
+        {!loading ? (
+          <SectionList
+            sections={sectionData}
+            keyExtractor={(item, index) => item + index}
+            renderItem={renderSectionList}
+            // contentContainerStyle={styles.contentContainer}
+            renderSectionHeader={renderSectionHeader}
+            SectionSeparatorComponent={() => <Divider />}
+          />
+        ) : (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator
+              size="large"
+              color={theme["color-primary-default"]}
+            />
+          </View>
+        )}
       </Layout>
     </View>
   );
@@ -214,6 +204,10 @@ const styles = StyleService.create({
   },
   title: {
     fontSize: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
   },
   contentContainer: {
     paddingHorizontal: 8,

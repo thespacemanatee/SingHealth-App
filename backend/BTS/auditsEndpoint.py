@@ -6,9 +6,11 @@ from pymongo.errors import DuplicateKeyError
 import iso8601
 
 
-def compliant(answer): 
+def compliant(answer):
     return answer["answer"]
-def percentageCompliant(ls): 
+
+
+def percentageCompliant(ls):
     return ls.count(True) / len(ls)
 
 # does not give ID to converted form
@@ -139,7 +141,6 @@ def processAuditdata(auditData):
         if formType != "covid19":
             auditScore = calculateAuditScore(filledAuditForm)
             auditMetaData["score"] = auditScore
-            
 
     if auditScore < 1:
         auditMetaData['rectificationProgress'] = 0
@@ -176,7 +177,7 @@ def validateFilledAuditForms(filledAuditForms):
 
 def addAuditsEndpoint(app, mongo):
     @app.route("/audits", methods=['POST'])
-    @login_required
+    # @login_required
     def audits():
         if request.method == 'POST':
             auditData = request.json
@@ -209,7 +210,7 @@ def addAuditsEndpoint(app, mongo):
             return successResponse(successMsg("Forms have been submitted"))
 
     @app.route("/audits/<auditID>", methods=['GET'])
-    @login_required
+    # @login_required
     def get_audit(auditID):
         if request.method == "GET":
             responseJson = {}
@@ -218,8 +219,10 @@ def addAuditsEndpoint(app, mongo):
                 checklists = audit["auditChecklists"]
                 auditForms = {}
                 for formType, formID in checklists.items():
-                    filledAuditForm = mongo.db.filledAuditForms.find_one({"_id": formID})
-                    auditFormTemplate = mongo.db.auditFormTemplate.find_one({"_id": filledAuditForm["formTemplateID"]})
+                    filledAuditForm = mongo.db.filledAuditForms.find_one(
+                        {"_id": formID})
+                    auditFormTemplate = mongo.db.auditFormTemplate.find_one(
+                        {"_id": filledAuditForm["formTemplateID"]})
                     questions = {}
                     for category in filledAuditForm["answers"].keys():
                         categoryQuestions = []
@@ -227,7 +230,7 @@ def addAuditsEndpoint(app, mongo):
                             lineItem["question"] = auditFormTemplate["questions"][category][index]["question"]
                             categoryQuestions.append(lineItem)
                         questions[category] = categoryQuestions
-                    
+
                     filledAuditForm.pop("answers")
                     filledAuditForm["questions"] = questions
 
@@ -241,4 +244,3 @@ def addAuditsEndpoint(app, mongo):
             else:
 
                 return make_response(jsonify(description="None found"), 404)
-            
