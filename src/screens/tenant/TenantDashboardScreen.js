@@ -20,6 +20,7 @@ const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 
 const StaffDashboardScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
+  const databaseStore = useSelector((state) => state.database);
   const [listData, setListData] = useState([]);
 
   const dispatch = useDispatch();
@@ -54,16 +55,17 @@ const StaffDashboardScreen = ({ navigation }) => {
     [authStore.userType]
   );
 
-  const getListData = useCallback(() => {
-    dispatch(databaseActions.getTenantActiveAudits(authStore._id))
-      .then((res) => {
-        console.log(res);
-        setListData(res.data.data);
-      })
-      .catch((err) => {
-        handleErrorResponse(err);
-      });
-  }, [authStore._id, dispatch]);
+  const getListData = useCallback(async () => {
+    try {
+      await dispatch(
+        databaseActions.getTenantActiveAudits(authStore.institutionID)
+      );
+
+      setListData(databaseStore.activeAudits);
+    } catch (err) {
+      handleErrorResponse(err);
+    }
+  }, [authStore.institutionID, databaseStore.activeAudits, dispatch]);
 
   useEffect(() => {
     // Subscribe for the focus Listener

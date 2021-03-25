@@ -15,7 +15,7 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
     >
       <View style={styles.cardContainer}>
         <View style={{}}>
-          <Text style={{ fontWeight: "bold" }}>
+          <Text style={styles.timeStamp}>
             {moment(item.date)
               .toLocaleString()
               .split(" ")
@@ -49,5 +49,8 @@ const styles = StyleService.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
+  },
+  timeStamp: {
+    fontWeight: "bold",
   },
 });

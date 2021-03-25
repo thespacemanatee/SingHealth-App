@@ -17,10 +17,7 @@ export const restoreToken = () => {
 
       // This will switch to the App screen or Auth screen and this loading
       // screen will be unmounted and thrown away.
-      dispatch({
-        type: RESTORE_TOKEN,
-        userData,
-      });
+      dispatch({ type: RESTORE_TOKEN, userData });
     } catch (e) {
       // Restoring token failed
       console.error("RESTORE_TOKEN: no token found in local storage");
@@ -45,28 +42,25 @@ export const signIn = (user, pswd, userType) => {
         pswd,
       },
     };
-    httpClient(loginOptions)
-      .then((res) => {
-        const userToken = "dummy-auth-token";
-        const { _id, email, institutionID, name } = res.data.data;
-        const userData = {
-          userType,
-          userToken,
-          _id,
-          email,
-          institutionID,
-          name,
-        };
+    const res = await httpClient(loginOptions);
+    // .then((res) => {
+    const userToken = "dummy-auth-token";
+    const { _id, email, institutionID, name } = res.data.data;
+    const userData = {
+      userType,
+      userToken,
+      _id,
+      email,
+      institutionID,
+      name,
+    };
 
-        dispatch({
-          type: SIGN_IN,
-          userData,
-        });
-        saveUserDataToStorage(userData);
-      })
-      .catch((err) => {
-        handleErrorResponse(err);
-      });
+    dispatch({ type: SIGN_IN, userData });
+    saveUserDataToStorage(userData);
+    // })
+    // .catch((err) => {
+    //   handleErrorResponse(err);
+    // });
   };
 };
 
@@ -79,18 +73,18 @@ export const signOut = () => {
       method: "get",
       // withCredentials: true,
     };
-    httpClient(signOutOptions)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        handleErrorResponse(err);
-      });
+    await httpClient(signOutOptions);
+    // .then((res) => {
+    // console.log(res);
+    // })
+    // .catch((err) => {
+    // handleErrorResponse(err);
+    // });
 
-    const token = "dummy-auth-token";
+    // const token = "dummy-auth-token";
 
     dispatch({ type: SIGN_OUT });
-    removeTokenToStorage(token);
+    removeTokenFromStorage();
   };
 };
 
@@ -102,7 +96,7 @@ const saveUserDataToStorage = async (userData) => {
   }
 };
 
-const removeTokenToStorage = async () => {
+const removeTokenFromStorage = async () => {
   try {
     await AsyncStorage.removeItem("userData");
   } catch (err) {
