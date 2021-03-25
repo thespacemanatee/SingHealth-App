@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { SafeAreaView, View } from "react-native";
-import { useSelector } from "react-redux";
 import {
   Divider,
   Icon,

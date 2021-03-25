@@ -20,8 +20,8 @@ import * as checklistActions from "../../../store/actions/checklistActions";
 import QuestionCard from "../../../components/QuestionCard";
 import alert from "../../../components/CustomAlert";
 import { handleErrorResponse } from "../../../store/actions/authActions";
-import CenteredLoading from "../../../components/ui/CenteredLoading";
 import SkeletonLoading from "../../../components/ui/SkeletonLoading";
+import CenteredLoading from "../../../components/ui/CenteredLoading";
 
 export const FNB_SECTION = "F&B Checklist";
 export const NON_FNB_SECTION = "Non-F&B Checklist";
@@ -266,6 +266,10 @@ const ChecklistScreen = ({ route, navigation }) => {
     );
   }
 
+  const LoadingComponent = () => {
+    return Platform.OS === "web" ? <CenteredLoading /> : <SkeletonLoading />;
+  };
+
   return (
     <View style={styles.screen}>
       <TopNavigation
@@ -312,7 +316,7 @@ const ChecklistScreen = ({ route, navigation }) => {
             </View>
           </>
         ) : (
-          <SkeletonLoading />
+          <LoadingComponent />
         )}
       </Layout>
     </View>

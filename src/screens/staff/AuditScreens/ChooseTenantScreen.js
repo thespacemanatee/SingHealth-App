@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { SectionList, View, ActivityIndicator } from "react-native";
+import { SectionList, View, Platform } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -19,14 +19,13 @@ import SavedChecklistCard from "../../../components/SavedChecklistCard";
 import NewChecklistCard from "../../../components/NewChecklistCard";
 import alert from "../../../components/CustomAlert";
 import { handleErrorResponse } from "../../../store/actions/authActions";
-import CenteredLoading from "../../../components/ui/CenteredLoading";
 import SkeletonLoading from "../../../components/ui/SkeletonLoading";
+import CenteredLoading from "../../../components/ui/CenteredLoading";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const ChooseTenantScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
-  const databaseStore = useSelector((state) => state.database);
   const [sectionData, setSectionData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -150,6 +149,10 @@ const ChooseTenantScreen = ({ navigation }) => {
     };
   }, [dispatch, getSectionData, navigation]);
 
+  const LoadingComponent = () => {
+    return Platform.OS === "web" ? <CenteredLoading /> : <SkeletonLoading />;
+  };
+
   return (
     <View style={styles.screen}>
       <TopNavigation
@@ -172,7 +175,7 @@ const ChooseTenantScreen = ({ navigation }) => {
             SectionSeparatorComponent={() => <Divider />}
           />
         ) : (
-          <SkeletonLoading />
+          <LoadingComponent />
         )}
       </Layout>
     </View>

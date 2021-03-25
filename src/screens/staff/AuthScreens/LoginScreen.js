@@ -6,7 +6,6 @@ import {
   View,
   KeyboardAvoidingView,
   Platform,
-  ActivityIndicator,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import {

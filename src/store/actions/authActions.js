@@ -7,7 +7,7 @@ export const SIGN_IN = "SIGN_IN";
 export const SIGN_OUT = "SIGN_OUT";
 
 export const restoreToken = () => {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     try {
       const cache = await AsyncStorage.getItem("userData");
       const userData = JSON.parse(cache);
@@ -26,7 +26,7 @@ export const restoreToken = () => {
 };
 
 export const signIn = (user, pswd, userType) => {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     // dispatch({ action: SIGN_IN, token: token ? token : null });
 
     const loginOptions = {
@@ -65,7 +65,7 @@ export const signIn = (user, pswd, userType) => {
 };
 
 export const signOut = () => {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     // dispatch({ action: SIGN_OUT, token: token ? token : null });
     console.log("Signing out!");
     const signOutOptions = {
