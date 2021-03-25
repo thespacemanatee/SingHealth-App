@@ -6,12 +6,13 @@ from pymongo.errors import DuplicateKeyError
 import iso8601
 
 
+
 def compliant(answer):
     return answer["answer"]
 
 
 def percentageCompliant(ls):
-    return ls.count(True) / len(ls.count(False) + ls.count(True))
+    return ls.count(True) / (ls.count(False) + ls.count(True))
 
 # does not give ID to converted form
 # TODO: Add random integer or smth to the IDs
