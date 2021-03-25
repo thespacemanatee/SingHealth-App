@@ -6,22 +6,23 @@ from .utils import successMsg, successResponse, failureMsg, failureResponse
 
 def addRecentAuditsEndpoints(app, mongo):
     @app.route("/audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>", methods=['GET'])
-    @login_required
-    def unrectified_audits_tenant(tenantID, daysBefore = 0):
+    # @login_required
+    def unrectified_audits_tenant(tenantID, daysBefore=0):
         if request.method == 'GET':
-            if session["account_type"] == "tenant": 
+            if session["account_type"] == "tenant":
                 queryDict = {}
                 queryDict["tenantID"] = tenantID
                 queryDict["rectificationProgress"] = {"$lt": 1}
                 if daysBefore > 0:
-                    queryDict["date"] = {"$gt": datetime.utcnow() - datetime.timedelta(days=daysBefore)}
+                    queryDict["date"] = {"$gt": datetime.utcnow(
+                    ) - datetime.timedelta(days=daysBefore)}
 
                 audits = mongo.db.audits.find(queryDict)
 
                 auditsList = []
                 for audit in audits:
                     auditsList.append(audit)
-                
+
                 if len(auditsList) == 0:
                     return failureResponse(failureMsg("No matching forms", 404), 404)
 
@@ -34,7 +35,7 @@ def addRecentAuditsEndpoints(app, mongo):
                 return failureResponse(failureMsg("You do not have access to this as you are not a tenant", 403), 403)
 
     @app.route("/audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>", methods=['GET'])
-    @login_required
+    # @login_required
     def unrectified_audits_staff(institutionID, daysBefore):
         if request.method == 'GET':
             if session["account_type"] == "staff":
@@ -42,16 +43,17 @@ def addRecentAuditsEndpoints(app, mongo):
                 queryDict["institutionID"] = institutionID
                 queryDict["rectificationProgress"] = {"$lt": 1}
                 if daysBefore > 0:
-                    queryDict["date"] = {"$gt": datetime.utcnow() - datetime.timedelta(days=daysBefore)}
-                
+                    queryDict["date"] = {"$gt": datetime.utcnow(
+                    ) - datetime.timedelta(days=daysBefore)}
+
                 audits = mongo.db.audits.find(queryDict)
                 auditsList = []
                 for audit in audits:
                     auditsList.append(audit)
-                
+
                 if len(auditsList) == 0:
                     return failureResponse(failureMsg("No matching forms", 404), 404)
-                
+
                 response = successMsg("Forms found")
                 response["data"] = auditsList
 

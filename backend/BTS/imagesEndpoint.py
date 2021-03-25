@@ -43,7 +43,7 @@ def list_images(bucket):
 
 def addImagesEndpoint(app):
     @app.route("/images", methods=["GET", 'POST'])
-    @login_required
+    # @login_required
     def images():
         if request.method == 'POST':
             if (requestJson := request.get_json(silent=True)) != None:
@@ -55,7 +55,8 @@ def addImagesEndpoint(app):
                     for image in requestData:
                         imageFilenames.append(image["fileName"])
 
-                    detected_Duplicate_filenames = len(imageFilenames) > len(set(imageFilenames))
+                    detected_Duplicate_filenames = len(
+                        imageFilenames) > len(set(imageFilenames))
                     if detected_Duplicate_filenames:
                         return failureResponse(failureMsg("Duplicate image names found", 400), 400)
 
