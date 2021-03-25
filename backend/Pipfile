@@ -28,6 +28,7 @@ dnspython = "*"
 iso8601 = "*"
 pytz = "*"
 gunicorn = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
