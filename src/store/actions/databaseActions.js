@@ -43,3 +43,57 @@ export const getStaffActiveAudits = (institutionID, daysBefore = 0) => {
     return res;
   };
 };
+
+export const postAuditForm = (auditData) => {
+  return async () => {
+    console.log(auditData);
+    const postAudit = {
+      url: `${endpoint}audits`,
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      data: auditData,
+    };
+
+    const res = await httpClient(postAudit);
+    // console.log(res.data.data);
+
+    return res;
+  };
+};
+
+export const postAuditImages = (formData) => {
+  return async () => {
+    const postImages = {
+      url: `${endpoint}images`,
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "multipart/form-data",
+      },
+      data: formData,
+    };
+    const res = await httpClient(postImages);
+
+    return res;
+  };
+};
+
+export const postAuditImagesWeb = (base64images) => {
+  return async () => {
+    const postImagesWeb = {
+      url: `${endpoint}images`,
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      data: base64images,
+    };
+    const res = await httpClient(postImagesWeb);
+
+    return res;
+  };
+};

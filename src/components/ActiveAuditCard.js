@@ -6,12 +6,17 @@ import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 const ActiveAuditCard = ({ userType, item, onPress }) => {
   const theme = useTheme();
+
+  const handleOnPress = () => {
+    onPress(item._id);
+  };
+
   return (
     <Card
       style={{ backgroundColor: theme["color-info-100"] }}
       status="info"
       activeOpacity={0.5}
-      onPress={onPress}
+      onPress={handleOnPress}
     >
       <View style={styles.cardContainer}>
         <View style={{}}>
@@ -22,9 +27,9 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
               .slice(0, 5)
               .join(" ")}
           </Text>
-          <Text>{`${userType === "staff" ? "Tenant" : "You"} scored: ${
-            Number.parseFloat(item.score).toPrecision(3) * 100
-          }`}</Text>
+          <Text>{`${userType === "staff" ? "Tenant" : "You"} scored: ${(
+            Number.parseFloat(item.score) * 100
+          ).toFixed(1)}`}</Text>
         </View>
         <View>
           <AnimatedCircularProgress

@@ -11,6 +11,7 @@ import {
   CHANGE_ANSWER,
   CHANGE_DEADLINE,
   RESET_CHECKLIST_STORE,
+  GET_AUDIT_DATA,
 } from "../actions/checklistActions";
 
 const initialState = {
@@ -206,6 +207,15 @@ const checklistReducer = (state = initialState, action) => {
         chosen_checklist_type: null,
         chosen_checklist: null,
         covid19: null,
+      };
+    }
+
+    case GET_AUDIT_DATA: {
+      return {
+        chosen_tenant: action.chosen_tenant,
+        chosen_checklist_type: action.chosen_checklist_type,
+        chosen_checklist: action.chosen_checklist,
+        covid19: action.covid19,
       };
     }
 
