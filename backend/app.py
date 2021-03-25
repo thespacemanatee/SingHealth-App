@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 mongo = PyMongo(app)
-CORS(app, supports_credentials=True, resources={r"/api/*": {"origins": [
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": [
      "http://localhost:19006", "https://605c593c390ce193453c0220--esc-group-10.netlify.app"]}})
 
 
