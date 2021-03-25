@@ -15,6 +15,7 @@ import { FAB } from "react-native-paper";
 
 import Graph from "../../components/ui/graph/Graph.tsx";
 import * as databaseActions from "../../store/actions/databaseActions";
+import * as checklistActions from "../../store/actions/checklistActions";
 import ActiveAuditCard from "../../components/ActiveAuditCard";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
@@ -45,7 +46,14 @@ const StaffDashboardScreen = ({ navigation }) => {
     <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
   );
 
-  const handleOpenAudit = () => {};
+  const handleOpenAudit = async (auditID) => {
+    try {
+      console.log(auditID);
+      await dispatch(checklistActions.getAuditData(auditID));
+    } catch (err) {
+      handleErrorResponse(err);
+    }
+  };
 
   const renderActiveAudits = useCallback(
     ({ item }) => {
@@ -67,6 +75,7 @@ const StaffDashboardScreen = ({ navigation }) => {
       const res = await dispatch(
         databaseActions.getStaffActiveAudits(authStore.institutionID)
       );
+      console.log(res.data.data);
       setListData(res.data.data);
     } catch (err) {
       handleErrorResponse(err);

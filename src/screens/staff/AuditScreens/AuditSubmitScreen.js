@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Platform, View } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Text,
   Button,
@@ -15,12 +15,14 @@ import _ from "lodash";
 import { CommonActions } from "@react-navigation/routers";
 import SuccessAnimation from "../../../components/ui/SuccessAnimation";
 import CrossAnimation from "../../../components/ui/CrossAnimation";
-// import * as checklistActions from "../../../store/actions/checklistActions";
+import * as databaseActions from "../../../store/actions/databaseActions";
 
 const AuditSubmitScreen = ({ navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
   const [submitting, setSubmitting] = useState(true);
   const [error, setError] = useState(false);
+
+  const dispatch = useDispatch();
 
   const submitHandler = useCallback(async () => {
     setError(false);
@@ -65,7 +67,7 @@ const AuditSubmitScreen = ({ navigation }) => {
         }
       });
     });
-    console.log(tempChosenChecklist);
+    // console.log(tempChosenChecklist);
 
     const covid19Keys = Object.keys(checklistStore.covid19.questions);
     covid19Keys.forEach((section) => {
@@ -95,7 +97,7 @@ const AuditSubmitScreen = ({ navigation }) => {
       });
     });
 
-    console.log(formData);
+    // console.log(formData);
 
     const auditData = {
       auditMetadata: {
@@ -110,100 +112,69 @@ const AuditSubmitScreen = ({ navigation }) => {
       },
     };
 
-    // console.log(audit_data);
+    uploadAuditData(imageAdded, auditData, base64images, formData);
 
-    let endpoint;
-
-    if (Platform.OS === "android") {
-      endpoint = "http://10.0.2.2:5000/";
-    } else {
-      endpoint = "http://localhost:5000/";
-    }
-
-    const postAudit = {
-      url: `${endpoint}audits`,
-      method: "post",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      withCredentials: true,
-      data: auditData,
-    };
-
-    const postImages = {
-      url: `${endpoint}images`,
-      method: "post",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "multipart/form-data",
-      },
-      withCredentials: true,
-      data: imageAdded ? formData : null,
-    };
-
-    const postImagesWeb = {
-      url: `${endpoint}images`,
-      method: "post",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      withCredentials: true,
-      data: base64images,
-    };
-
-    const handleErrorResponse = (err) => {
-      setError(true);
-      if (err.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.error(err.response.data);
-        console.error(err.response.status);
-        console.error(err.response.headers);
-      } else if (err.request) {
-        // The request was made but no response was received
-        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-        // http.ClientRequest in node.js
-        console.error(err.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.error("Error", err.message);
-      }
-      console.error(err.config);
-    };
-
-    if (imageAdded) {
-      Promise.all([
-        axios(postAudit),
-        axios(Platform.OS === "web" ? postImagesWeb : postImages),
-      ])
-        .then(
-          axios.spread((req1, req2) => {
-            console.log(req1.data, "req1");
-            console.log(req2.data, "req2");
-          })
-        )
-        .catch((err) => {
-          handleErrorResponse(err);
-        });
-    } else {
-      axios(postAudit)
-        .then((req) => {
-          console.log(req.data, "req");
-        })
-        .catch((err) => {
-          handleErrorResponse(err);
-        });
-    }
+    // if (imageAdded) {
+    //   Promise.all([
+    //     axios(postAudit),
+    //     axios(Platform.OS === "web" ? postImagesWeb : postImages),
+    //   ])
+    //     .then(
+    //       axios.spread((req1, req2) => {
+    //         console.log(req1.data, "req1");
+    //         console.log(req2.data, "req2");
+    //       })
+    //     )
+    //     .catch((err) => {
+    //       handleErrorResponse(err);
+    //     });
+    // } else {
+    //   axios(postAudit)
+    //     .then((req) => {
+    //       console.log(req.data, "req");
+    //     })
+    //     .catch((err) => {
+    //       handleErrorResponse(err);
+    //     });
+    // }
 
     setSubmitting(false);
   }, [
     checklistStore.chosen_checklist,
     checklistStore.chosen_checklist_type,
-    checklistStore.chosen_tenant,
+    checklistStore.chosen_tenant.tenantID,
     checklistStore.covid19,
+    uploadAuditData,
   ]);
+
+  const uploadAuditData = useCallback(
+    async (imageAdded, auditData, base64images, formData) => {
+      try {
+        let res;
+        if (imageAdded) {
+          // await dispatch(databaseActions.postAuditForm(auditData));
+          if (Platform.OS === "web") {
+            res = await Promise.all([
+              dispatch(databaseActions.postAuditForm(auditData)),
+              dispatch(databaseActions.postAuditImagesWeb(base64images)),
+            ]);
+          } else {
+            res = await Promise.all([
+              dispatch(databaseActions.postAuditForm(auditData)),
+              dispatch(databaseActions.postAuditImages(formData)),
+            ]);
+          }
+        } else {
+          res = await dispatch(databaseActions.postAuditForm(auditData));
+        }
+
+        console.log(res);
+      } catch (err) {
+        handleErrorResponse(err);
+      }
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     submitHandler();
@@ -216,6 +187,26 @@ const AuditSubmitScreen = ({ navigation }) => {
         routes: [{ name: "StaffDashboard" }],
       })
     );
+  };
+
+  const handleErrorResponse = (err) => {
+    setError(true);
+    if (err.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.error(err.response.data);
+      console.error(err.response.status);
+      console.error(err.response.headers);
+    } else if (err.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      console.error(err.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error("Error", err.message);
+    }
+    console.error(err.config);
   };
 
   return (

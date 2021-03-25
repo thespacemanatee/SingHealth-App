@@ -13,6 +13,7 @@ export const CHANGE_MAXIMUM_SCORE = "CHANGE_MAXIMUM_SCORE";
 export const CHANGE_ANSWER = "CHANGE_ANSWER";
 export const CHANGE_DEADLINE = "CHANGE_DEADLINE";
 export const RESET_CHECKLIST_STORE = "RESET_CHECKLIST_STORE";
+export const GET_AUDIT_DATA = "GET_AUDIT_DATA";
 
 export const TYPE_FNB = "fnb";
 export const TYPE_NON_FNB = "non_fnb";
@@ -113,4 +114,28 @@ export const changeDeadline = (section, index, date) => {
 };
 export const resetChecklistStore = () => {
   return { type: RESET_CHECKLIST_STORE };
+};
+
+export const getAuditData = (auditID, stallName) => {
+  return async (dispatch) => {
+    const options = {
+      url: `${endpoint}audits/${auditID}`,
+      method: "get",
+      // withCredentials: true,
+    };
+    const res = await httpClient(options);
+    const { data } = res.data;
+    console.log(data);
+
+    dispatch({
+      type: GET_AUDIT_DATA,
+      chosen_tenant: stallName,
+      chosen_checklist_type: Object.keys(data.auditForm)[0],
+      chosen_checklist: data.auditForm.covid19,
+      covid19: data.auditForm.covid19,
+      // auditMetadata: res.data.data.auditMetadata,
+      // auditForm: res.data.data.auditForm,
+    });
+    return res;
+  };
 };
