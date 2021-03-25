@@ -17,7 +17,8 @@
 - [x] [`GET /audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`)
 - [ ] [`GET /tenant/{tenantID}`](#GET-/tenant/{tenantID}`) 
 - [ ] [`GET /tenant/delete/{tenantID}`](#GET-/tenant/delete/{tenantID}`)
-- [ ] [`POST /tenant/add`](#POST-/tenant/add`)
+- [ ] [`POST /tenant`](#POST-/tenant`)
+- [ ] [`GET /graph`]
 ---
 
 
@@ -799,7 +800,7 @@ localhost:5000/tenant/delete/<tenantID>
     "data": []
 }
 ```
-## `POST /tenant/add`
+## `POST /tenant`
 ### JSON body parameters
 `name`
 ~ The name of the tenant
