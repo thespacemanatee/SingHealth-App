@@ -19,6 +19,7 @@ const initialState = {
   chosen_checklist_type: null,
   chosen_checklist: null,
   covid19: null,
+  auditMetadata: null,
 };
 
 const checklistReducer = (state = initialState, action) => {
@@ -216,6 +217,7 @@ const checklistReducer = (state = initialState, action) => {
         chosen_checklist_type: action.chosen_checklist_type,
         chosen_checklist: action.chosen_checklist,
         covid19: action.covid19,
+        auditMetadata: action.auditMetadata,
       };
     }
 

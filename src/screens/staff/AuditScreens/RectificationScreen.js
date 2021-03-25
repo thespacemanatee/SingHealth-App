@@ -10,17 +10,17 @@ import {
   Icon,
   Text,
   StyleService,
-  Radio,
-  RadioGroup,
   useTheme,
 } from "@ui-kitten/components";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import moment from "moment";
 
 import * as checklistActions from "../../../store/actions/checklistActions";
 import QuestionCard from "../../../components/QuestionCard";
 import alert from "../../../components/CustomAlert";
 import { handleErrorResponse } from "../../../store/actions/authActions";
 import CenteredLoading from "../../../components/ui/CenteredLoading";
+import SectionHeader from "../../../components/ui/SectionHeader";
 
 export const FNB_SECTION = "F&B Checklist";
 export const NON_FNB_SECTION = "Non-F&B Checklist";
@@ -30,14 +30,11 @@ const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const SaveIcon = (props) => <Icon {...props} name="save-outline" />;
 const RetryIcon = (props) => <Icon {...props} name="refresh-outline" />;
 
-const ChecklistScreen = ({ route, navigation }) => {
+const RectificationScreen = ({ route, navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
   const [completeChecklist, setCompleteChecklist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(
-    checklistStore.chosen_checklist_type === "non_fnb" ? 1 : 0
-  );
 
   console.log(checklistStore.chosen_checklist_type);
 
@@ -73,7 +70,6 @@ const ChecklistScreen = ({ route, navigation }) => {
 
   const loadForm = async (index) => {
     try {
-      setSelectedIndex(index);
       const checklistType = index === 0 ? "fnb" : "non_fnb";
       setError(false);
       // setErrorMsg("");
@@ -88,21 +84,6 @@ const ChecklistScreen = ({ route, navigation }) => {
       // setErrorMsg(err.message);
       setLoading(false);
     }
-  };
-
-  const handleChangeFormType = (index) => {
-    alert(
-      "WARNING!",
-      "If you change the form type, your progress will be erased.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Confirm",
-          style: "destructive",
-          onPress: () => loadForm(index),
-        },
-      ]
-    );
   };
 
   const saveChecklists = async () => {
@@ -154,9 +135,9 @@ const ChecklistScreen = ({ route, navigation }) => {
         { text: "Cancel", style: "cancel" },
         {
           text: "Submit",
-          onPress: () => {
-            navigation.navigate("AuditSubmit");
-          },
+          // onPress: () => {
+          //   navigation.navigate("AuditSubmit");
+          // },
         },
       ]);
     }
@@ -171,23 +152,16 @@ const ChecklistScreen = ({ route, navigation }) => {
           answer={itemData.item.answer}
           section={itemData.section.title}
           navigation={navigation}
+          rectify
         />
       );
     },
     [navigation]
   );
 
-  const renderSectionHeader = useCallback(
-    ({ section: { title } }) => {
-      return (
-        <View style={{ backgroundColor: theme["color-primary-300"] }}>
-          <Text style={styles.header}>{title}</Text>
-          <Divider />
-        </View>
-      );
-    },
-    [theme]
-  );
+  const renderSectionHeader = useCallback(({ section: { title } }) => {
+    return <SectionHeader title={title} />;
+  }, []);
 
   const SaveAction = () => (
     <TopNavigationAction icon={SaveIcon} onPress={handleSaveChecklist} />
@@ -241,7 +215,7 @@ const ChecklistScreen = ({ route, navigation }) => {
     return (
       <View style={styles.screen}>
         <TopNavigation
-          title="Checklist"
+          title="Rectification"
           alignment="center"
           accessoryLeft={BackAction}
         />
@@ -268,7 +242,7 @@ const ChecklistScreen = ({ route, navigation }) => {
   return (
     <View style={styles.screen}>
       <TopNavigation
-        title="Checklist"
+        title="Rectification"
         alignment="center"
         accessoryLeft={BackAction}
         accessoryRight={SaveAction}
@@ -284,16 +258,14 @@ const ChecklistScreen = ({ route, navigation }) => {
           <Text style={styles.title}>
             Audit: {checklistStore.chosen_tenant.stallName}
           </Text>
-          <Text>{new Date().toDateString()}</Text>
+          <Text>
+            {moment(checklistStore.auditMetadata.date)
+              .toLocaleString()
+              .split(" ")
+              .slice(0, 5)
+              .join(" ")}
+          </Text>
         </View>
-        <RadioGroup
-          selectedIndex={selectedIndex}
-          onChange={handleChangeFormType}
-          style={styles.radioGroup}
-        >
-          <Radio>F&B</Radio>
-          <Radio>Non-F&B</Radio>
-        </RadioGroup>
         {!loading ? (
           <>
             <SectionList
@@ -338,11 +310,6 @@ const styles = StyleService.create({
     flexDirection: "row",
     flexWrap: "wrap",
   },
-  header: {
-    fontSize: 24,
-    padding: 10,
-    fontWeight: "bold",
-  },
   bottomContainer: {
     flexDirection: "row-reverse",
     padding: 20,
@@ -363,4 +330,4 @@ const styles = StyleService.create({
   },
 });
 
-export default ChecklistScreen;
+export default RectificationScreen;

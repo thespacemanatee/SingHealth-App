@@ -19,7 +19,9 @@ import StaffDashboardScreen from "../screens/staff/StaffDashboardScreen";
 // import DirectoryScreen from "../screens/staff/DirectoryScreens/DirectoryScreen";
 import ChooseTenantScreen from "../screens/staff/AuditScreens/ChooseTenantScreen";
 import ChecklistScreen from "../screens/staff/AuditScreens/ChecklistScreen";
+import RectificationScreen from "../screens/staff/AuditScreens/RectificationScreen";
 import QuestionDetailsScreen from "../screens/staff/AuditScreens/QuestionDetailsScreen";
+import RectificationDetailsScreen from "../screens/staff/AuditScreens/RectificationDetailsScreen";
 import AuditSubmitScreen from "../screens/staff/AuditScreens/AuditSubmitScreen";
 import CameraScreen from "../screens/CameraScreen";
 import TenantsDirectoryScreen from "../screens/staff/DirectoryScreens/TenantsDirectoryScreen";
@@ -124,7 +126,12 @@ const StaffDashboardStackNavigator = () => {
       <Screen name="StaffDashboard" component={StaffDashboardScreen} />
       <Screen name="ChooseTenant" component={ChooseTenantScreen} />
       <Screen name="Checklist" component={ChecklistScreen} />
+      <Screen name="Rectification" component={RectificationScreen} />
       <Screen name="QuestionDetails" component={QuestionDetailsScreen} />
+      <Screen
+        name="RectificationDetails"
+        component={RectificationDetailsScreen}
+      />
       <Screen name="AuditSubmit" component={AuditSubmitScreen} />
     </Navigator>
   );

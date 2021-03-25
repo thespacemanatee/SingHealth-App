@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View, Platform, ActivityIndicator, Dimensions } from "react-native";
+import { View, Platform } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -19,6 +19,7 @@ import * as databaseActions from "../../store/actions/databaseActions";
 import * as checklistActions from "../../store/actions/checklistActions";
 import ActiveAuditCard from "../../components/ActiveAuditCard";
 import { handleErrorResponse } from "../../store/actions/authActions";
+import CenteredLoading from "../../components/ui/CenteredLoading";
 
 let SkeletonPlaceholder;
 if (Platform.OS !== "web") {
@@ -36,7 +37,6 @@ const StaffDashboardScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
-  const WINDOW_WIDTH = Dimensions.get("window").width;
 
   const theme = useTheme();
 
@@ -59,9 +59,15 @@ const StaffDashboardScreen = ({ navigation }) => {
     <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
   );
 
+  const handleRefreshList = () => {
+    setLoading(true);
+    getListData();
+  };
+
   const handleOpenAudit = useCallback(
     async (auditID, tenantID) => {
       try {
+        setLoading(true);
         console.log(auditID);
         const tenantObj = databaseStore.relevantTenants.find((e) => {
           return e.tenantID === tenantID;
@@ -70,7 +76,7 @@ const StaffDashboardScreen = ({ navigation }) => {
         await dispatch(
           checklistActions.getAuditData(auditID, tenantObj.stallName)
         );
-        navigation.navigate("Checklist", { auditID });
+        navigation.navigate("Rectification", { auditID });
       } catch (err) {
         handleErrorResponse(err);
         setError(err.message);
@@ -128,23 +134,16 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   const LoadingComponent = () => {
     return Platform.OS === "web" ? (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator
-          size="large"
-          color={theme["color-primary-default"]}
-        />
-      </View>
+      <CenteredLoading />
     ) : (
       <SkeletonPlaceholder>
-        <View style={{ margin: 20 }}>
+        <View style={styles.skeletonContainer}>
           {/* <View style={{ width: 60, height: 60, borderRadius: 50 }} /> */}
-          <View
-            style={{
-              width: WINDOW_WIDTH - 40,
-              height: 40,
-              borderRadius: 4,
-            }}
-          />
+          <View style={styles.skeleton} />
+          <View style={styles.skeleton} />
+          <View style={styles.skeleton} />
+          <View style={styles.skeleton} />
+          <View style={styles.skeleton} />
         </View>
       </SkeletonPlaceholder>
     );
@@ -170,6 +169,8 @@ const StaffDashboardScreen = ({ navigation }) => {
             contentContainerStyle={styles.contentContainer}
             data={listData}
             renderItem={renderActiveAudits}
+            onRefresh={handleRefreshList}
+            refreshing={loading}
           />
         ) : (
           <LoadingComponent />
@@ -224,11 +225,15 @@ const styles = StyleService.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
+  skeletonContainer: {
+    margin: 20,
+  },
+  skeleton: {
+    height: 75,
+    borderRadius: 4,
+    marginVertical: 10,
+  },
   item: {
     paddingVertical: 4,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
   },
 });

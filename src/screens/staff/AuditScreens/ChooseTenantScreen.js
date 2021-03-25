@@ -19,6 +19,7 @@ import SavedChecklistCard from "../../../components/SavedChecklistCard";
 import NewChecklistCard from "../../../components/NewChecklistCard";
 import alert from "../../../components/CustomAlert";
 import { handleErrorResponse } from "../../../store/actions/authActions";
+import CenteredLoading from "../../../components/ui/CenteredLoading";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -170,12 +171,7 @@ const ChooseTenantScreen = ({ navigation }) => {
             SectionSeparatorComponent={() => <Divider />}
           />
         ) : (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator
-              size="large"
-              color={theme["color-primary-default"]}
-            />
-          </View>
+          <CenteredLoading />
         )}
       </Layout>
     </View>
@@ -200,10 +196,6 @@ const styles = StyleService.create({
   },
   title: {
     fontSize: 20,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
   },
   contentContainer: {
     paddingHorizontal: 8,
