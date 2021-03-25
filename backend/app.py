@@ -17,7 +17,7 @@ app = Flask(__name__)
 app.config["FLASK_ENV"] = "development"
 app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
-app.config["SESSION_COOKIE_DOMAIN"] = "singhealth-backend-bts.herokuapp.com"
+app.config["SESSION_COOKIE_DOMAIN"] = "singhealth-backend-sessionless.herokuapp.com/"
 mongo = PyMongo(app)
 
 WEB_APP_URI = os.getenv("WEB_APP_URI")
