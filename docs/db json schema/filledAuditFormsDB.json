@@ -47,6 +47,7 @@
                                 "minItems": 0,
                                 "uniqueItems": true
                             },
+                            "rectificationRemarks": {"type": "string"},
                             "remarks": {"type": "string"},
                             "deadline": {
                                 "description": "date in ISO",

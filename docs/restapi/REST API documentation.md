@@ -9,6 +9,9 @@
 - [x] [`GET /images`](#`GET-/images`)
 - [x] [`GET /login/tenant`](#`GET-/login/tenant`)
 - [x] [`GET /login/staff`](#`GET-/login/staff`)
+- [ ] [`GET /audits/<auditID>`](#`GET-/audits/auditID`)
+- [ ] [`PATCH /audits/<auditID>/tenant`](#`PATCH-/audits/auditID/tenant`)
+- [ ] [`PATCH /audits/<auditID>/staff`](#`PATCH-/audits/auditID/staff`)
 - [ ] [`GET /audits/saved`](#`GET-/audits/saved`)
 - [x] [`GET /audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`)
 - [x] [`GET /audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`)
@@ -16,7 +19,7 @@
 
 
 ## `GET /tenants/{institutionId}`
-### Parameters
+### JSON body parameters
 `institutionId`
 ~ Unique identifier for inst
 
@@ -52,7 +55,7 @@ localhost:5000/tenants/{institutionId}
 <br>
 
 ## `GET /auditForms/<form_type>`
-### Query parameters
+### URL Query parameters
 `<form_type>`
 ~ Just the type. Not the ID. The endpoint will fetch the latest version of the form.
 ~ Examples: `fnb`, `non_fnb`, `covid19`
@@ -97,65 +100,6 @@ localhost:5000/auditForms/fnb
 
 <br>
 
-## `POST /audits`
----
-### Side effects
-- Checks `savedAudits` & `savedFilledauditForms` for any data with matching IDs and deletes them.
-- Checks `staff` DB under a `savedAudits` list attribute and erases any audit ID that matches those that have just been submitted.
-### Query string parameters
-`auditMetadata`
-~ JSON containing metadata about the audit
-`auditForms`
-~ JSON containing all the QnA, photos, deadlines, remarks, etc
-
-### Sample request
-```python
-{
-  "auditMetadata": {
-    ...
-  },
-  "auditForm": {
-    "fnb": {
-      "hygiene": [
-        ...
-      ],
-      "professionalism": [
-        ...
-      ]
-    },
-    "covid19": {
-      "cleanliness": [
-        ...
-      ],
-      "safety": [
-        ...
-      ]
-    }
-  } 
-}
-```
-
-### Sample response
-#### Success response
-```
-{
-  "status": 200,
-  "description": "Forms have successfully been uploaded"
-}
-```
-#### Failure response
-```
-{
-  "status": 400,
-  "description": "Duplicate image filenames found",
-  "category": "Professionalism",
-  "index": 0
-}
-```
-
-<br>
-<br>
-
 ## `POST /images`
 ---
 There are 2 ways to send in images to this endpoint:
@@ -163,7 +107,7 @@ There are 2 ways to send in images to this endpoint:
 - by Multipart/formdata
 
 
-### JSON Query string parameters (for sending images in base64 str format)
+### JSON body parameters (for sending images in base64 str format)
 `images`
 ~ An array of image objects each containing `fileName` & `uri`.
 `fileName`
@@ -216,7 +160,7 @@ Out of base64(JSON) or formdata, **only use 1** of them per request~
 
 ## `GET /images`
 ---
-### JSON Query string parameters
+### JSON body parameters
 `fileNames`
 ~ The name and file extension of the image. Must be globally unique.
 
@@ -274,7 +218,7 @@ Out of base64(JSON) or formdata, **only use 1** of them per request~
 ```
 
 ## `POST /login/tenant`
-### JSON Query string parameters
+### JSON body parameters
 `user`
 ~ The user email tagged to the account
 `pswd`
@@ -303,12 +247,13 @@ Out of base64(JSON) or formdata, **only use 1** of them per request~
     "description": "User or pswd is incorrect"
 }
 ```
+
 
 ## `POST /login/staff`
 !!!note
 Uses exactly the same request and response format as `/login/tenant`
 !!!
-
+### JSON body parameters
 `user`
 ~ The user email tagged to the account
 `pswd`
@@ -337,6 +282,296 @@ Uses exactly the same request and response format as `/login/tenant`
     "description": "User or pswd is incorrect"
 }
 ```
+
+## `GET /audits/<auditID>`
+### URL Query Parameters
+`auditID`
+~ The unique identifier for the audit(metadata)
+
+### Sample request
+```
+localhost:5000/auditForms/tegtethg4355g4gbtr
+```
+
+### Sample responses
+#### Success
+```js
+{
+  "status": 200,
+  "data":{
+      "auditMetadata": {
+        ...
+      },
+      "auditForm": {
+          "fnb": {
+              "hygiene": [
+                  {
+                      "question": "How are you?",
+                      "answer": true
+                  },
+                  <Question Object>,
+                  <Question Object>
+              ],
+              "professionalism": [
+                ...
+              ]
+          },
+          "covid19": {
+              "cleanliness": [
+                ...
+              ],
+              "safety": [
+                ...
+              ]
+          }
+      } 
+    }
+}
+```
+
+#### Failure
+```js
+{
+  "status": 404,
+  "description": "No matching audits found"
+}
+```
+
+
+## `PATCH /audits/<auditID>/tenant`
+### JSON Body parameters
+`<formType>`
+~ I.e. `fnb`, `non_fnb`, etc
+`category`
+~ The part of the form to edit
+`index`
+~ The line item to target
+`rectificationImages`
+~ [Required]: A series of images to show the staff what has been done to fix the non-compliance. Appends to the database of images and does not replace any images.
+`rectificationRemarks`
+~ [Optional] Supplement images with remarks.
+`requestForExt`
+~ [Optional] If tenant needs more time to fix non-compliance, this option raises a request to the staff for approval. Staff chooses deadline.
+
+!!!caution
+Also, server will reject requests if it contains any PATCHes to *compliant* line items! Users are only allowed to edit non-compliant line items!
+
+Tenants will only be allowed to create these 3 fields through this endpoint: `rectificationImages`, `rectificationRemarks` & `requestForExt`. Adding any other fields will be rejected with a error code `400` and will not be processed!
+!!!
+
+#### Example
+```js
+{
+    <formType>: [
+            {
+                "category": "Category Name",
+                "index": 0,
+                "rectificationImages": ["filename1", "filename2"],
+                "rectificationRemarks": "Remarks",
+                "requestForExt": bool
+            },
+            <Patch Object>,
+            <Patch Object>       
+    ],
+    <formType>: [
+        ...
+    ]
+    
+}
+```
+
+### Sample request
+```js
+{
+    "fnb": [
+            {
+                "category": "Professionalism",
+                "index": 0,
+                "rectificationImages": ["img007", "img008"],
+                "rectificationRemarks": "hello, this is me",
+                "requestForExt": True
+            },
+            <Patch Object>,
+            <Patch Object>       
+    ],
+    "covid19": [
+        ...
+    ]
+    
+}
+```
+### Sample response
+#### Success
+```js
+{
+    "status": 200,
+    "description": "All patches saved and added to database"
+}
+```
+#### Failure
+```js
+{
+    "status": 400,
+    "description": "Wrong form name: fmb"    
+}
+```
+
+## `PATCH /audits/<auditID>/staff`
+### JSON Body parameters
+Check out the example below on how all these parameters are arranged in the actual request.
+
+`<formType>`
+~ I.e. `fnb`, `non_fnb`, etc
+`category`
+~ The part of the form to edit
+`index`
+~ The line item to target
+`rectified`
+~ [Required]: Whether the rectification has been accepted by the staff.
+`acceptedRequest`
+~ A record of whether the request for time extension has been granted.
+`deadline`
+~ The new deadline if time extension has been granted
+
+!!!caution
+Staff will only be allowed to create these 3 fields through this endpoint: `rectified`, `acceptedRequest` & `deadline`. Adding any other fields will be rejected with a error code `400` and will not be processed!
+
+Also, server will reject requests if it contains any PATCHes to *compliant* line items! Users are only allowed to edit non-compliant line items!
+!!!
+!!!note
+This PATCH request can be repeated many times. The `deadline`, `acceptedRequest` fields in the database will keep changing until `rectified` has been set to true
+!!!
+
+#### Example
+```js
+{
+    <formType>: [
+            {
+                "category": "Category Name",
+                "index": 0,
+                "deadline": (Str Date in ISO),
+                "rectified": bool,
+                "acceptedRequest": bool
+            },
+            <Patch Object>,
+            <Patch Object>,
+            ...
+    ],
+    <formType>: [
+        ...
+    ]
+    
+}
+```
+
+### Sample request
+```js
+{
+    "fnb": [
+            {
+                "category": "Professionalism",
+                "index": 20,
+                "deadline": null,
+                "rectified": true,
+                "acceptedRequest": null
+            },
+            {
+                "category": "Professionalism",
+                "index": 21,
+                "deadline": "2021-03-25T01:38:34+0000",
+                "rectified": false,
+                "acceptedRequest": true
+            },
+            <Patch Object>,
+            ...
+    ],
+    "covid19": [
+        ...
+    ]
+    
+}
+```
+### Sample response
+#### Success
+```js
+{
+    "status": 200,
+    "description": "All patches saved and added to database"
+}
+```
+#### Failure
+```js
+{
+    "status": 400,
+    "description": "Wrong form name: fmb"    
+}
+
+{
+    "status": 400,
+    "description": "Line item already compliant and is not open for editing"    
+}
+```
+
+## `POST /audits`
+---
+### Side effects
+- Checks `savedAudits` & `savedFilledauditForms` for any data with matching IDs and deletes them.
+- Checks `staff` DB under a `savedAudits` list attribute and erases any audit ID that matches those that have just been submitted.
+### JSON body parameters
+`auditMetadata`
+~ JSON containing metadata about the audit
+`auditForms`
+~ JSON containing all the QnA, photos, deadlines, remarks, etc
+
+### Sample request
+```python
+{
+  "auditMetadata": {
+    ...
+  },
+  "auditForm": {
+    "fnb": {
+      "hygiene": [
+        ...
+      ],
+      "professionalism": [
+        ...
+      ]
+    },
+    "covid19": {
+      "cleanliness": [
+        ...
+      ],
+      "safety": [
+        ...
+      ]
+    }
+  } 
+}
+```
+
+### Sample response
+#### Success response
+```js
+{
+  "status": 200,
+  "description": "Forms have successfully been uploaded"
+}
+```
+#### Failure response
+```js
+{
+  "status": 400,
+  "description": "Duplicate image filenames found",
+  "category": "Professionalism",
+  "index": 0
+}
+```
+
+<br>
+<br>
+
+
 
 ## `POST /audits/saved`
 ### Description of use case
