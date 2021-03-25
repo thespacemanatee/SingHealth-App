@@ -8,11 +8,16 @@ from flask import Flask
 from flask_pymongo import PyMongo
 from flask_cors import CORS
 import os
+from dotenv import load_dotenv
+from os.path import join, dirname
 
+load_dotenv(dirname(__file__), '.env')
 
 app = Flask(__name__)
+app.config["FLASK_ENV"] = "development"
 app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+app.config["SESSION_COOKIE_DOMAIN"] = "singhealth-backend-bts.herokuapp.com"
 mongo = PyMongo(app)
 
 WEB_APP_URI = os.getenv("WEB_APP_URI")
@@ -49,4 +54,4 @@ addRecentAuditsEndpoints(app, mongo)
 
 port = int(os.getenv('PORT', 5000))
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, debug=True, load_dotenv=".env")
