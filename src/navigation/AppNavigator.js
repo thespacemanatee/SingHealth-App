@@ -6,8 +6,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleService } from "@ui-kitten/components";
 
-import database from "../data/dummy-database";
-import * as databaseActions from "../store/actions/databaseActions";
 import * as authActions from "../store/actions/authActions";
 import StaffNavigator from "./StaffNavigator";
 import TenantNavigator from "./TenantNavigator";
@@ -46,10 +44,6 @@ const AppNavigator = () => {
       </View>
     );
   };
-
-  useEffect(() => {
-    dispatch(databaseActions.storeDatabase(database));
-  }, [dispatch]);
 
   useEffect(() => {
     dispatch(authActions.restoreToken());

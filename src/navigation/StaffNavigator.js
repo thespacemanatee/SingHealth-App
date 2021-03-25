@@ -134,7 +134,7 @@ const StaffDirectoryStackNavigator = () => {
   const { Navigator, Screen } = createStackNavigator();
   return (
     <Navigator headerMode="none">
-      <Screen name="Directory" component={DirectoryScreen} />
+      {/* <Screen name="Directory" component={DirectoryScreen} /> */}
       <Screen name="TenantsDirectory" component={TenantsDirectoryScreen} />
     </Navigator>
   );

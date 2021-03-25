@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { SafeAreaView, View } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
   Icon,
@@ -15,16 +15,17 @@ import {
 } from "@ui-kitten/components";
 
 import directoryStyles from "./StyleGuide";
+import * as databaseActions from "../../../store/actions/databaseActions";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
-const TenantsDirectoryScreen = ({ route, navigation }) => {
-  const databaseStore = useSelector((state) => state.database);
+const TenantsDirectoryScreen = ({ navigation }) => {
+  const authStore = useSelector((state) => state.auth);
   const [tenants, setTenants] = useState([]);
 
-  const { chosenInstitution } = route.params;
-
   const theme = useTheme();
+
+  const dispatch = useDispatch();
 
   const BackAction = () => (
     <TopNavigationAction
@@ -49,7 +50,7 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
         >
           <View>
             <Text style={directoryStyles.listContentText}>
-              {itemData.item[1].name}
+              {itemData.item.stallName}
             </Text>
           </View>
         </Card>
@@ -58,13 +59,20 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
     [theme]
   );
 
+  const getTenants = useCallback(async () => {
+    dispatch(databaseActions.getRelevantTenants(authStore.institutionID)).then(
+      (res) => {
+        console.log("RESPONSE:", res.data.data);
+
+        // console.log(authStore.institutionID);
+        setTenants(res.data.data);
+      }
+    );
+  }, [authStore.institutionID, dispatch]);
+
   useEffect(() => {
-    const tempArray = Object.entries(databaseStore.tenants);
-    const newTempArray = tempArray.filter((e) => {
-      return e[1].institution === chosenInstitution;
-    });
-    setTenants(newTempArray);
-  }, [chosenInstitution, databaseStore.tenants]);
+    getTenants();
+  }, [getTenants]);
 
   return (
     <SafeAreaView style={styles.screen}>

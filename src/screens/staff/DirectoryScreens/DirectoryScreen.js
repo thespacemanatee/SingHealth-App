@@ -20,7 +20,6 @@ const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 
 const DirectoryScreen = ({ navigation }) => {
-  const databaseStore = useSelector((state) => state.database);
   const [institutions, setInstitutions] = useState([]);
 
   const theme = useTheme();
@@ -38,37 +37,41 @@ const DirectoryScreen = ({ navigation }) => {
     <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
   );
 
-  const renderInstitutions = useCallback((itemData) => {
-    return (
-      <Card
-        style={[
-          directoryStyles.item,
-          { backgroundColor: theme["color-info-100"] },
-        ]}
-        status="info"
-        activeOpacity={0.5}
-        onPress={() => {
-          navigation.navigate("TenantsDirectory", {
-            chosenInstitution: itemData.item[0],
-          });
-        }}
-      >
-        <View>
-          <Text style={directoryStyles.listContentText}>
-            {itemData.item[1].name}
-          </Text>
-        </View>
-      </Card>
-    );
-  }, []);
+  const renderInstitutions = useCallback(
+    (itemData) => {
+      return (
+        <Card
+          style={[
+            directoryStyles.item,
+            { backgroundColor: theme["color-info-100"] },
+          ]}
+          status="info"
+          activeOpacity={0.5}
+          onPress={() => {
+            navigation.navigate("TenantsDirectory", {
+              chosenInstitution: itemData.item[0],
+            });
+          }}
+        >
+          <View>
+            <Text style={directoryStyles.listContentText}>
+              {itemData.item[1].name}
+            </Text>
+          </View>
+        </Card>
+      );
+    },
+    [navigation, theme]
+  );
 
   useEffect(() => {
-    const tempArray = Object.entries(databaseStore.institutions);
+    // TODO
+    const tempArray = Object.entries();
     const newTempArray = tempArray.filter((e) => {
       return e[0] !== "default";
     });
     setInstitutions(newTempArray);
-  }, [databaseStore.institutions]);
+  }, []);
 
   return (
     <SafeAreaView style={styles.screen}>

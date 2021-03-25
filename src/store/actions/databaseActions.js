@@ -1,12 +1,5 @@
 import { endpoint, httpClient } from "../../helpers/CustomHTTPClient";
 
-export const STORE_DATABASE = "STORE_DATABASE";
-export const GET_RELEVANT_TENANTS = "GET_RELEVANT_TENANTS";
-
-export const storeDatabase = (database) => {
-  return { type: STORE_DATABASE, database };
-};
-
 export const getRelevantTenants = (institutionID) => {
   return async () => {
     // dispatch({ action: SIGN_IN, token: token ? token : null });
