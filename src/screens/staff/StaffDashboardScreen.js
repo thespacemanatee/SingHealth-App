@@ -64,15 +64,14 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   const getListData = useCallback(async () => {
     try {
-      await dispatch(
+      const res = await dispatch(
         databaseActions.getStaffActiveAudits(authStore.institutionID)
       );
-
-      setListData(databaseStore.activeAudits);
+      setListData(res.data.data);
     } catch (err) {
       handleErrorResponse(err);
     }
-  }, [authStore.institutionID, databaseStore.activeAudits, dispatch]);
+  }, [authStore.institutionID, dispatch]);
 
   useEffect(() => {
     // Subscribe for the focus Listener

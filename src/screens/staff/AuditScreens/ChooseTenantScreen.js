@@ -23,6 +23,7 @@ const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const ChooseTenantScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
+  const databaseStore = useSelector((state) => state.database);
   const [sectionData, setSectionData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -101,8 +102,6 @@ const ChooseTenantScreen = ({ navigation }) => {
       const res = await dispatch(
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
-
-      console.log("RESPONSE:", res.data.data);
 
       // console.log(authStore.institutionID);
       const tempChecklists = [

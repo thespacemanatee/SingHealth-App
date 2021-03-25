@@ -68,23 +68,23 @@ const ChecklistScreen = ({ route, navigation }) => {
     />
   );
 
-  const loadForm = (index) => {
-    setSelectedIndex(index);
-    const checklistType = index === 0 ? "fnb" : "non_fnb";
-    setError(false);
-    setErrorMsg("");
-    setLoading(true);
-    dispatch(checklistActions.getChecklist(checklistType, tenant))
-      .then(() => {
-        createNewSections();
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError(true);
-        setErrorMsg(err.message);
-        setLoading(false);
-      });
+  const loadForm = async (index) => {
+    try {
+      setSelectedIndex(index);
+      const checklistType = index === 0 ? "fnb" : "non_fnb";
+      setError(false);
+      setErrorMsg("");
+      setLoading(true);
+      await dispatch(checklistActions.getChecklist(checklistType, tenant));
+      // .then(() => {
+      createNewSections();
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setError(true);
+      setErrorMsg(err.message);
+      setLoading(false);
+    }
   };
 
   const handleChangeFormType = (index) => {
