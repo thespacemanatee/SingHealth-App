@@ -1,42 +1,99 @@
 import { endpoint, httpClient } from "../../helpers/CustomHTTPClient";
 
-export const getRelevantTenants = (institutionID) => {
-  return async () => {
-    // dispatch({ action: SIGN_IN, token: token ? token : null });
+export const GET_RELEVANT_TENANTS = "GET_RELEVANT_TENANTS";
+export const GET_TENANT_ACTIVE_AUDITS = "GET_TENANT_ACTIVE_AUDITS";
+export const GET_STAFF_ACTIVE_AUDITS = "GET_STAFF_ACTIVE_AUDITS";
 
+export const getRelevantTenants = (institutionID) => {
+  return async (dispatch) => {
     const options = {
       url: `${endpoint}tenants/${institutionID}`,
       method: "get",
       // withCredentials: true,
     };
     console.log(institutionID);
-    const response = await httpClient(options);
-    return response;
+    const res = await httpClient(options);
+    dispatch({ type: GET_RELEVANT_TENANTS, relevantTenants: res.data.data });
+    return res;
   };
 };
 
 export const getTenantActiveAudits = (tenantID, daysBefore = 0) => {
-  return async () => {
-    // dispatch({ action: SIGN_IN, token: token ? token : null });
+  return async (dispatch) => {
     const options = {
       url: `${endpoint}audits/unrectified/recent/tenant/${tenantID}/${daysBefore}`,
       method: "get",
       // withCredentials: true,
     };
-    const response = await httpClient(options);
-    return response;
+    const res = await httpClient(options);
+    dispatch({ type: GET_TENANT_ACTIVE_AUDITS, activeAudits: res.data.data });
+    return res;
   };
 };
 
 export const getStaffActiveAudits = (institutionID, daysBefore = 0) => {
-  return async () => {
-    // dispatch({ action: SIGN_IN, token: token ? token : null });
+  return async (dispatch) => {
     const options = {
       url: `${endpoint}audits/unrectified/recent/staff/${institutionID}/${daysBefore}`,
       method: "get",
       // withCredentials: true,
     };
-    const response = await httpClient(options);
-    return response;
+    const res = await httpClient(options);
+    dispatch({ type: GET_STAFF_ACTIVE_AUDITS, activeAudits: res.data.data });
+    return res;
+  };
+};
+
+export const postAuditForm = (auditData) => {
+  return async () => {
+    console.log(auditData);
+    const postAudit = {
+      url: `${endpoint}audits`,
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      data: auditData,
+    };
+
+    const res = await httpClient(postAudit);
+    // console.log(res.data.data);
+
+    return res;
+  };
+};
+
+export const postAuditImages = (formData) => {
+  return async () => {
+    const postImages = {
+      url: `${endpoint}images`,
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "multipart/form-data",
+      },
+      data: formData,
+    };
+    const res = await httpClient(postImages);
+
+    return res;
+  };
+};
+
+export const postAuditImagesWeb = (base64images) => {
+  return async () => {
+    const postImagesWeb = {
+      url: `${endpoint}images`,
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      data: base64images,
+    };
+    const res = await httpClient(postImagesWeb);
+
+    return res;
   };
 };

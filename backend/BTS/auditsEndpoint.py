@@ -4,6 +4,7 @@ from flask import request, make_response, jsonify
 from flask_login import login_required
 from pymongo.errors import DuplicateKeyError
 import iso8601
+import pprint
 
 
 def compliant(answer):
@@ -11,7 +12,7 @@ def compliant(answer):
 
 
 def percentageCompliant(ls):
-    return ls.count(True) / len(ls)
+    return ls.count(True) / (ls.count(False) + ls.count(True))
 
 # does not give ID to converted form
 # TODO: Add random integer or smth to the IDs
@@ -121,6 +122,8 @@ def processAuditdata(auditData):
     auditForms = auditData["auditForms"]
     auditMetaData["auditChecklists"] = {}
 
+    pp=pprint.PrettyPrinter(indent=4)
+    pp.pprint(auditForms)
     metaDataID = createIDForAuditMetaData(auditMetaData)
     auditMetaData["_id"] = metaDataID
 
@@ -148,7 +151,7 @@ def processAuditdata(auditData):
     return filledAuditForms, auditMetaData
 
 def post_process_form(filledAuditForm):
-    output = {}
+    outputDict = {}
     for category, answerList in filledAuditForm["answers"].items():
         newAnswerList = []
         for lineItem in answerList:
@@ -157,7 +160,8 @@ def post_process_form(filledAuditForm):
             elif lineItem["answer"] and "rectified" in lineItem.keys():
                 lineItem.pop("rectified")
             newAnswerList.append(lineItem)
-        output[category] = newAnswerList
+        outputDict[category] = newAnswerList
+    output = {"answers": outputDict}
     return output
 
 def post_process_forms(filledAuditForms):
@@ -166,7 +170,6 @@ def post_process_forms(filledAuditForms):
         output[formType] = post_process_form(formTemplate)
     return output
             
-
 def validateFilledAuditForms(filledAuditForms):
     for formType, form in filledAuditForms.items():
         isValid = validateFilledAuditForm(form)
@@ -221,6 +224,9 @@ def addAuditsEndpoint(app, mongo):
                 for formType, formID in checklists.items():
                     filledAuditForm = mongo.db.filledAuditForms.find_one(
                         {"_id": formID})
+                    if not filledAuditForm:
+                        msg = {"description": "form not found", "status": 404}
+                        return make_response(jsonify(msg), 404)
                     auditFormTemplate = mongo.db.auditFormTemplate.find_one(
                         {"_id": filledAuditForm["formTemplateID"]})
                     questions = {}
