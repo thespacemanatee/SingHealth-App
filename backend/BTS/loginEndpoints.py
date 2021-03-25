@@ -84,13 +84,9 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
 
     @login_manager.user_loader
     def load_user(user_email):
-        if session["account_type"] == "tenant":
-            exists = mongo.db.tenant.find_one({"email": user_email})
-        elif session["account_type"] == "staff":
-            exists = mongo.db.staff.find_one({"email": user_email})
-        if not exists:
+        if not (mongo.db.tenant.find_one({"email": user_email}) and mongo.db.staff.find_one({"email": user_email})):
             return None
-        return User(userEmail=exists["email"])
+        return User(userEmail=user_email)
 
     @app.route('/test_login/staff')
     def test_login_staff():
