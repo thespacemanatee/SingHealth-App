@@ -19,7 +19,10 @@ app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 app.config["SESSION_COOKIE_DOMAIN"] = "singhealth-backend-bts.herokuapp.com"
 mongo = PyMongo(app)
-CORS(app, supports_credentials=True)
+
+WEB_APP_URI = os.getenv("WEB_APP_URI")
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": [
+     "http://localhost:19006", WEB_APP_URI]}})
 
 
 @ app.route('/', methods=["GET", "POST"])
