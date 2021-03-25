@@ -17,6 +17,7 @@ import Graph from "../../components/ui/graph/Graph.tsx";
 import * as databaseActions from "../../store/actions/databaseActions";
 import * as checklistActions from "../../store/actions/checklistActions";
 import ActiveAuditCard from "../../components/ActiveAuditCard";
+import { handleErrorResponse } from "../../helpers/utils";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
@@ -26,6 +27,8 @@ const StaffDashboardScreen = ({ navigation }) => {
   const databaseStore = useSelector((state) => state.database);
   const [state, setState] = useState({ open: false });
   const [listData, setListData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -146,25 +149,6 @@ const StaffDashboardScreen = ({ navigation }) => {
       </Layout>
     </View>
   );
-};
-
-const handleErrorResponse = (err) => {
-  if (err.response) {
-    // The request was made and the server responded with a status code
-    // that falls out of the range of 2xx
-    console.error(err.response.data);
-    console.error(err.response.status);
-    console.error(err.response.headers);
-  } else if (err.request) {
-    // The request was made but no response was received
-    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-    // http.ClientRequest in node.js
-    console.error(err.request);
-  } else {
-    // Something happened in setting up the request that triggered an Error
-    console.error("Error", err.message);
-  }
-  console.error(err.config);
 };
 
 export default StaffDashboardScreen;
