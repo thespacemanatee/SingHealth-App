@@ -13,8 +13,6 @@ import os
 app = Flask(__name__)
 app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
-app.config["SERVER_NAME"] = "singhealth-backend-bts.herokuapp.com"
-app.config["SESSION_COOKIE_HTTPONLY"] = False
 mongo = PyMongo(app)
 CORS(app, supports_credentials=True)
 
