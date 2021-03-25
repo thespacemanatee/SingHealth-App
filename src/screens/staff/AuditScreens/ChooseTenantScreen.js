@@ -104,7 +104,7 @@ const ChooseTenantScreen = ({ navigation }) => {
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
 
-      // console.log(authStore.institutionID);
+      console.log(res.data.data);
       const tempChecklists = [
         {
           title: "Available Tenants",

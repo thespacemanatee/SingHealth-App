@@ -34,12 +34,14 @@ const ChecklistScreen = ({ route, navigation }) => {
   const [completeChecklist, setCompleteChecklist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  // const [errorMsg, setErrorMsg] = useState("");
-  const { type } = route.params;
+  const [errorMsg, setErrorMsg] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(
-    type === "non_fnb" ? 1 : 0
+    checklistStore.chosen_checklist_type === "non_fnb" ? 1 : 0
   );
 
+  console.log(checklistStore.chosen_checklist_type);
+
+  // const { type } = route.params;
   const { auditID } = route.params;
   const tenant = checklistStore.chosen_tenant;
 

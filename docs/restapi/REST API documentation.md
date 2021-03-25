@@ -9,12 +9,15 @@
 - [x] [`GET /images`](#`GET-/images`)
 - [x] [`GET /login/tenant`](#`GET-/login/tenant`)
 - [x] [`GET /login/staff`](#`GET-/login/staff`)
-- [x] [`GET /audits/<auditID>`](#`GET-/audits/auditID`)
+- [ ] [`GET /audits/<auditID>`](#`GET-/audits/auditID`)
 - [ ] [`PATCH /audits/<auditID>/tenant`](#`PATCH-/audits/auditID/tenant`)
 - [ ] [`PATCH /audits/<auditID>/staff`](#`PATCH-/audits/auditID/staff`)
 - [ ] [`GET /audits/saved`](#`GET-/audits/saved`)
 - [x] [`GET /audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`)
 - [x] [`GET /audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`)
+- [ ] [`GET /tenant/{tenantID}`](#GET-/tenant/{tenantID}`) 
+- [ ] [`GET /tenant/delete/{tenantID}`](#GET-/tenant/delete/{tenantID}`)
+- [ ] [`POST /tenant/add`](#POST-/tenant/add`)
 ---
 
 
@@ -529,7 +532,7 @@ This PATCH request can be repeated many times. The `deadline`, `acceptedRequest`
   "auditMetadata": {
     ...
   },
-  "auditForm": {
+  "auditForms": {
     "fnb": {
       "hygiene": [
         ...
@@ -756,5 +759,145 @@ localhost:5000/audits/unrectified/recent/tenant/grwrbgbgbewvw/0
     "status": 404,
     "description": "No matching Forms",
     "data": []
+}
+```
+
+## `GET /tenant/delete/<tenantID>`
+### Description of use case
+To delete existing tenant
+### URL parameters
+`tenantID`
+~ The unique identifier for the tenant account
+### Sample request
+```
+localhost:5000/tenant/delete/<tenantID>
+```
+### Sample response
+#### Success [tenantID found]
+```js
+{
+    "status": 200,
+    "description": "success",
+    "data" : []
+}
+```
+
+#### Partial Failure [tenantID not found]
+```js
+{
+    "status": 200,
+    "description": "no matching data",
+    "data" : []
+}
+```
+
+#### Failure
+```js
+{
+    "status": 404,
+    "description": "Tenant cannot be deleted",
+    "data": []
+}
+```
+## `POST /tenant/add`
+### JSON body parameters
+`name`
+~ The name of the tenant
+`email`
+~ The email of the tenant
+`pswd`
+~ The password
+`institutionID`
+~ The institution ID of the tenant
+`stall_name`
+~ The stall name of the tenant
+`company_name`
+~ The company name of the tenant
+`company_POC_name`
+~ The name of the company POC for the tenant
+`company_POC_email`
+~ The email of the company POC for the tenant
+`unit_no`
+~ The unit number of the tenant
+`fnb`
+~ If the stall is fnb 
+`staffID`
+~ The staff ID of the staff who made the add request
+`date`
+~ The date of the add request
+
+#### Optional
+`{group}`
+~ The group that the stall belongs to
+`{stall number}`
+~ The stall number
+
+### Sample request
+```js
+{
+    "name": "myname",
+    "email": "myemail.gg.com",
+    "pswd": "mypassword",
+    "institutionID": "myinstitution",
+    "stall_name": "mystall",
+    "company_name": "mycompany",
+    "company_POC_name": "my_poc_name",
+    "company_POC_email": "my_poc_email",
+    "unit_no": "myunit",
+    "fnb": true,
+    "staffID": "000111",
+    "date": "dd/mm/yyyy",
+    "group": "koufu",
+    "stall_number": "stall 7"
+}
+```
+### Sample response
+#### Success
+```js
+{
+    "status": "200",
+    "description": "New tenant added"
+}
+```
+
+#### Partial Failure
+##### Empty response received
+```js
+{
+    "status": "200",
+    "description": "No data received"
+}
+```
+
+##### Partial data posted
+```js
+{
+    "status": "200",
+    "description": "Insufficient data to add new tenants"
+}
+```
+
+##### Error in data
+```js
+{
+    "status": "200",
+    "description": "Error in data"
+}
+```
+
+#### Failure
+##### Error in accessing database
+```js
+{
+    "status": "404",
+    "description": "Cannot upload data to server"
+}
+```
+
+##### No response is posted
+```js
+{
+    "status": "404",
+    "description": "No response received"
 }
 ```

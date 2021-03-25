@@ -122,8 +122,6 @@ def processAuditdata(auditData):
     auditForms = auditData["auditForms"]
     auditMetaData["auditChecklists"] = {}
 
-    pp=pprint.PrettyPrinter(indent=4)
-    pp.pprint(auditForms)
     metaDataID = createIDForAuditMetaData(auditMetaData)
     auditMetaData["_id"] = metaDataID
 
@@ -152,6 +150,7 @@ def processAuditdata(auditData):
 
 def post_process_form(filledAuditForm):
     outputDict = {}
+    filledAuditForm_cp = filledAuditForm.copy()
     for category, answerList in filledAuditForm["answers"].items():
         newAnswerList = []
         for lineItem in answerList:
@@ -161,8 +160,8 @@ def post_process_form(filledAuditForm):
                 lineItem.pop("rectified")
             newAnswerList.append(lineItem)
         outputDict[category] = newAnswerList
-    output = {"answers": outputDict}
-    return output
+    filledAuditForm_cp["answers"] = outputDict
+    return filledAuditForm_cp
 
 def post_process_forms(filledAuditForms):
     output = {}
