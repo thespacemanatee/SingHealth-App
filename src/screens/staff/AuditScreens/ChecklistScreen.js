@@ -19,6 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as checklistActions from "../../../store/actions/checklistActions";
 import QuestionCard from "../../../components/QuestionCard";
 import alert from "../../../components/CustomAlert";
+import { handleErrorResponse } from "../../../helpers/utils";
 
 export const FNB_SECTION = "F&B Checklist";
 export const NON_FNB_SECTION = "Non-F&B Checklist";
@@ -75,16 +76,16 @@ const ChecklistScreen = ({ route, navigation }) => {
       setSelectedIndex(index);
       const checklistType = index === 0 ? "fnb" : "non_fnb";
       setError(false);
-      setErrorMsg("");
+      // setErrorMsg("");
       setLoading(true);
       await dispatch(checklistActions.getChecklist(checklistType, tenant));
       // .then(() => {
       createNewSections();
       setLoading(false);
     } catch (err) {
-      console.error(err);
-      setError(true);
-      setErrorMsg(err.message);
+      handleErrorResponse(err);
+      setError(err.message);
+      // setErrorMsg(err.message);
       setLoading(false);
     }
   };
@@ -128,9 +129,9 @@ const ChecklistScreen = ({ route, navigation }) => {
       }
     } catch (err) {
       // error reading value
-      console.error(err);
-      setError(true);
-      setErrorMsg(err.message);
+      handleErrorResponse(err);
+      setError(err.message);
+      // setErrorMsg(err.message);
     }
   };
 
@@ -247,7 +248,7 @@ const ChecklistScreen = ({ route, navigation }) => {
         <Divider />
         <Layout style={styles.layout}>
           <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>{errorMsg}</Text>
+            <Text style={styles.errorText}>{error}</Text>
             <View>
               <Button
                 accessoryLeft={RetryIcon}

@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { endpoint, httpClient } from "../../helpers/CustomHTTPClient";
+import { handleErrorResponse } from "../../helpers/utils";
 
 export const RESTORE_TOKEN = "RESTORE_TOKEN";
 export const SIGN_IN = "SIGN_IN";
@@ -18,7 +19,7 @@ export const restoreToken = () => {
       // This will switch to the App screen or Auth screen and this loading
       // screen will be unmounted and thrown away.
       dispatch({ type: RESTORE_TOKEN, userData });
-    } catch (e) {
+    } catch (err) {
       // Restoring token failed
       console.error("RESTORE_TOKEN: no token found in local storage");
     }
@@ -92,7 +93,7 @@ const saveUserDataToStorage = async (userData) => {
   try {
     await AsyncStorage.setItem("userData", JSON.stringify(userData));
   } catch (err) {
-    console.error(err);
+    handleErrorResponse(err);
   }
 };
 
@@ -100,25 +101,6 @@ const removeTokenFromStorage = async () => {
   try {
     await AsyncStorage.removeItem("userData");
   } catch (err) {
-    console.error(err);
+    handleErrorResponse(err);
   }
-};
-
-const handleErrorResponse = (err) => {
-  if (err.response) {
-    // The request was made and the server responded with a status code
-    // that falls out of the range of 2xx
-    console.error(err.response.data);
-    console.error(err.response.status);
-    console.error(err.response.headers);
-  } else if (err.request) {
-    // The request was made but no response was received
-    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-    // http.ClientRequest in node.js
-    console.error(err.request);
-  } else {
-    // Something happened in setting up the request that triggered an Error
-    console.error("Error", err.message);
-  }
-  console.error(err.config);
 };
