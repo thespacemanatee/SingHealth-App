@@ -146,6 +146,25 @@ def processAuditdata(auditData):
     auditMetaData['date'] = iso8601.parse_date(auditMetaData['date'])
     return filledAuditForms, auditMetaData
 
+def post_process_form(filledAuditForm):
+    output = {}
+    for category, answerList in filledAuditForm["answers"].items():
+        newAnswerList = []
+        for lineItem in answerList:
+            if not lineItem["answer"]:
+                lineItem["rectified"] = False
+            elif lineItem["answer"] and "rectified" in lineItem.keys():
+                lineItem.pop("rectified")
+            newAnswerList.append(lineItem)
+        output[category] = newAnswerList
+    return output
+
+def post_process_forms(filledAuditForms):
+    output = {}
+    for formType, formTemplate in filledAuditForms.items():
+        output[formType] = post_process_form(formTemplate)
+    return output
+            
 
 def validateFilledAuditForms(filledAuditForms):
     for formType, form in filledAuditForms.items():
@@ -162,6 +181,7 @@ def addAuditsEndpoint(app, mongo):
         if request.method == 'POST':
             auditData = request.json
             filledAuditForms, auditMetaData = processAuditdata(auditData)
+            filledAuditForms = post_process_forms(filledAuditForms)
             allFormsAreValid = validateFilledAuditForms(filledAuditForms)
 
             if not allFormsAreValid[0]:
@@ -212,9 +232,6 @@ def addAuditsEndpoint(app, mongo):
                     filledAuditForm["questions"] = questions
 
                     auditForms[formType] = filledAuditForm
-
-                        # auditFormTemplate[category]
-                    # auditForms[formType] = filledAuditForm
 
                 responseJson["auditMetadata"] = audit
                 responseJson["auditForms"] = auditForms
