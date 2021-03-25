@@ -3,18 +3,16 @@ from BTS.loginEndpoints import addLoginEndpointsForTenantAndStaff
 from BTS.imagesEndpoint import addImagesEndpoint
 from BTS.auditsEndpoint_wx import addWenXinEndpoints
 from BTS.recentAuditsEndpoints import addRecentAuditsEndpoints
-from BTS.constants import CLOUD_MONGODB_URI, LOCAL_MONGODB_URI
 from BTS.utils import successMsg, successResponse
-from flask import Flask, request
+from flask import Flask
 from flask_pymongo import PyMongo
 from flask_cors import CORS
-import secrets
 import os
 
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = CLOUD_MONGODB_URI
-app.config["SECRET_KEY"] = secrets.token_urlsafe(nbytes=32)
+app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 mongo = PyMongo(app)
 CORS(app, supports_credentials=True)
 
@@ -46,6 +44,6 @@ addImagesEndpoint(app)
 addLoginEndpointsForTenantAndStaff(app, mongo)
 addRecentAuditsEndpoints(app, mongo)
 
-port = int(os.environ.get('PORT', 5000))
+port = int(os.getenv('PORT', 5000))
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)

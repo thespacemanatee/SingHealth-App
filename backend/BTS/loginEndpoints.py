@@ -1,9 +1,8 @@
 from flask import Flask, request, session, jsonify, make_response
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from flask_pymongo import PyMongo
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from .login import User
-from .utils import successMsg, failureMsg, successResponse, failureResponse, printJ
+from .utils import successMsg, failureMsg, successResponse, failureResponse
 
 
 def addLoginEndpointsForTenantAndStaff(app, mongo):
@@ -25,8 +24,6 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
             userEmail = current_user.userEmail
             returnJson = {"userEmail": userEmail, "loginStatus": loginStatus}
             return make_response(jsonify(returnJson), 200)
-
-
 
     @app.route('/login/staff',  methods=["POST"])
     def login_for_staff():

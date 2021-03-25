@@ -1,12 +1,12 @@
 from flask_login import login_required
 from flask import request
 from .utils import successMsg, failureMsg, failureResponse, successResponse
-from .constants import S3BUCKETNAME
 from base64 import b64decode, b64encode
 from botocore.exceptions import ClientError
 import boto3
 import io
 import traceback
+import os
 
 
 def upload_image(file_obj, bucket, file_name):
@@ -74,7 +74,8 @@ def addImagesEndpoint(app):
                                 "Wrong request format. Make sure every Image object has a 'fileName' & a 'uri' field", 400), 400)
 
                         imageBytes = io.BytesIO(b64decode(imageData))
-                        upload_image(imageBytes, S3BUCKETNAME, imageName)
+                        upload_image(imageBytes, os.getenv(
+                            "S3_BUCKET"), imageName)
                     return successResponse(successMsg("Pictures have successfully been uploaded"))
 
             elif len(request.files) > 0:
@@ -87,7 +88,7 @@ def addImagesEndpoint(app):
 
                 for image in images:
                     imgName = image.filename
-                    upload_image(image, S3BUCKETNAME, imgName)
+                    upload_image(image, os.getenv("S3_BUCKET"), imgName)
 
                 return successResponse(successMsg("Pictures have successfully been uploaded"))
             return failureResponse(failureMsg("No image data received", 400), 400)
@@ -104,7 +105,8 @@ def addImagesEndpoint(app):
                 for index, filename in enumerate(filenames):
                     try:
                         # TODO: Might need to strip the header before sending it back to the client
-                        imageObject = download_image(filename, S3BUCKETNAME)
+                        imageObject = download_image(
+                            filename, os.getenv("S3_BUCKET"))
                         imageBase64 = b64encode(
                             imageObject.getvalue()).decode()
                         output.append(imageBase64)
