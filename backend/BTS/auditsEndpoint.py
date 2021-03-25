@@ -4,7 +4,6 @@ from flask import request, make_response, jsonify
 from flask_login import login_required
 from pymongo.errors import DuplicateKeyError
 import iso8601
-import pprint
 
 
 def compliant(answer):
@@ -101,6 +100,7 @@ def generateIDs(auditMetaData, auditForms):
             continue
         
         id = createIDForFilledForm(formTemplate, auditMetaData)
+        formTemplate["formTemplateID"] = formTemplate["_id"]
         formTemplate["_id"] = id
         filledAuditForms[formTemplate["type"]] = formTemplate
         auditMetaData["auditChecklists"][formTemplate["type"]] = id
@@ -127,6 +127,8 @@ def postProcessLineItem(lineItem):
     return lineItem
 def post_process_filledAuditForms(filledAuditForms):
     output = {}
+    # pp = pprint.PrettyPrinter(indent=4)
+    # pp.pprint(filledAuditForms)
     for formType, filledAuditForm in filledAuditForms.items():
         filledAuditForm_cp = filledAuditForm.copy()
         filledAuditForm_cp["answers"] = filledAuditForm["questions"]
@@ -140,6 +142,8 @@ def post_process_filledAuditForms(filledAuditForms):
             processedFilledAuditForm[category] = processedAnswerList
         filledAuditForm_cp["answers"] = processedFilledAuditForm
         output[formType] = filledAuditForm_cp
+    # print()
+    # pp.pprint(output)
     return output
 def post_process_AuditMetadata(auditMetadata):
     auditMetadata_cp = auditMetadata.copy()
@@ -173,18 +177,14 @@ def addAuditsEndpoint(app, mongo):
 
 
             auditMetaData_ID, filledAuditForms_ID = generateIDs(auditMetaData, filledAuditForms)
-
             filledAuditForms_ID_processed = post_process_filledAuditForms(filledAuditForms_ID)
             auditMetaData_ID_processed = post_process_AuditMetadata(auditMetaData_ID)
             auditScore = calculateAuditScore(filledAuditForms_ID_processed)
             auditMetaData_ID_processed["score"] = auditScore
+
             if auditScore < 1:
                 auditMetaData_ID_processed['rectificationProgress'] = 0
 
-            pp = pprint.PrettyPrinter(indent=4)
-            pp.pprint(auditMetaData_ID_processed)
-            print()
-            pp.pprint(filledAuditForms_ID_processed)
             try:
                 result1 = mongo.db.audits.insert_one(auditMetaData_ID_processed)
 
