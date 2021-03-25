@@ -16,7 +16,7 @@ import {
 } from "@ui-kitten/components";
 
 import StaffDashboardScreen from "../screens/staff/StaffDashboardScreen";
-import DirectoryScreen from "../screens/staff/DirectoryScreens/DirectoryScreen";
+// import DirectoryScreen from "../screens/staff/DirectoryScreens/DirectoryScreen";
 import ChooseTenantScreen from "../screens/staff/AuditScreens/ChooseTenantScreen";
 import ChecklistScreen from "../screens/staff/AuditScreens/ChecklistScreen";
 import QuestionDetailsScreen from "../screens/staff/AuditScreens/QuestionDetailsScreen";

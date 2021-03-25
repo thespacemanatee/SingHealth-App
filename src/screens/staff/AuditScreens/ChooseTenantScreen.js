@@ -18,7 +18,7 @@ import * as databaseActions from "../../../store/actions/databaseActions";
 import SavedChecklistCard from "../../../components/SavedChecklistCard";
 import NewChecklistCard from "../../../components/NewChecklistCard";
 import alert from "../../../components/CustomAlert";
-import { handleErrorResponse } from "../../../helpers/utils";
+import { handleErrorResponse } from "../../../store/actions/authActions";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 

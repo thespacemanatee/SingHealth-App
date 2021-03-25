@@ -14,7 +14,7 @@ import {
 
 import * as databaseActions from "../../store/actions/databaseActions";
 import ActiveAuditCard from "../../components/ActiveAuditCard";
-import { handleErrorResponse } from "../../helpers/utils";
+import { handleErrorResponse } from "../../store/actions/authActions";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;

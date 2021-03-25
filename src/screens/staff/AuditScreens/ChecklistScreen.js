@@ -19,7 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as checklistActions from "../../../store/actions/checklistActions";
 import QuestionCard from "../../../components/QuestionCard";
 import alert from "../../../components/CustomAlert";
-import { handleErrorResponse } from "../../../helpers/utils";
+import { handleErrorResponse } from "../../../store/actions/authActions";
 
 export const FNB_SECTION = "F&B Checklist";
 export const NON_FNB_SECTION = "Non-F&B Checklist";
@@ -34,7 +34,6 @@ const ChecklistScreen = ({ route, navigation }) => {
   const [completeChecklist, setCompleteChecklist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(
     checklistStore.chosen_checklist_type === "non_fnb" ? 1 : 0
   );

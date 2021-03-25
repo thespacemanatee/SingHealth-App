@@ -15,7 +15,7 @@ import { CommonActions } from "@react-navigation/routers";
 import SuccessAnimation from "../../../components/ui/SuccessAnimation";
 import CrossAnimation from "../../../components/ui/CrossAnimation";
 import * as databaseActions from "../../../store/actions/databaseActions";
-import { handleErrorResponse } from "../../../helpers/utils";
+import { handleErrorResponse } from "../../../store/actions/authActions";
 
 const AuditSubmitScreen = ({ navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);

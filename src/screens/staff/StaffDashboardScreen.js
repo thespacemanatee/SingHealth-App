@@ -18,7 +18,7 @@ import Graph from "../../components/ui/graph/Graph.tsx";
 import * as databaseActions from "../../store/actions/databaseActions";
 import * as checklistActions from "../../store/actions/checklistActions";
 import ActiveAuditCard from "../../components/ActiveAuditCard";
-import { handleErrorResponse } from "../../helpers/utils";
+import { handleErrorResponse } from "../../store/actions/authActions";
 
 let SkeletonPlaceholder;
 if (Platform.OS !== "web") {
