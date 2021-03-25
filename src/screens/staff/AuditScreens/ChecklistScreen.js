@@ -292,7 +292,7 @@ const ChecklistScreen = ({ route, navigation }) => {
           <Radio>Non-F&B</Radio>
         </RadioGroup>
         {!loading ? (
-          <View>
+          <>
             <SectionList
               sections={completeChecklist}
               keyExtractor={(item, index) => item + index}
@@ -306,7 +306,7 @@ const ChecklistScreen = ({ route, navigation }) => {
                 SUBMIT
               </Button>
             </View>
-          </View>
+          </>
         ) : (
           <View style={styles.loadingContainer}>
             <ActivityIndicator
