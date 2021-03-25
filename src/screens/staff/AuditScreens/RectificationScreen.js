@@ -21,6 +21,7 @@ import alert from "../../../components/CustomAlert";
 import { handleErrorResponse } from "../../../store/actions/authActions";
 import CenteredLoading from "../../../components/ui/CenteredLoading";
 import SectionHeader from "../../../components/ui/SectionHeader";
+import SkeletonLoading from "../../../components/ui/SkeletonLoading";
 
 export const FNB_SECTION = "F&B Checklist";
 export const NON_FNB_SECTION = "Non-F&B Checklist";
@@ -283,7 +284,7 @@ const RectificationScreen = ({ route, navigation }) => {
             </View>
           </>
         ) : (
-          <CenteredLoading />
+          <SkeletonLoading />
         )}
       </Layout>
     </View>

@@ -149,7 +149,7 @@ export const getAuditData = (auditID, stallName) => {
 
 export const getAuditImages = (images, index, section) => {
   return async (dispatch) => {
-    console.log({ fileNames: images });
+    console.log(images);
     const options = {
       url: `${endpoint}images`,
       method: "get",
@@ -158,7 +158,7 @@ export const getAuditImages = (images, index, section) => {
         "Content-Type": "application/json",
       },
       // withCredentials: true,
-      data: { fileNames: images },
+      data: images,
     };
 
     const res = await httpClient(options);

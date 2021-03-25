@@ -10,7 +10,6 @@ import {
   TopNavigation,
   TopNavigationAction,
   List,
-  useTheme,
 } from "@ui-kitten/components";
 import { FAB } from "react-native-paper";
 
@@ -20,12 +19,7 @@ import * as checklistActions from "../../store/actions/checklistActions";
 import ActiveAuditCard from "../../components/ActiveAuditCard";
 import { handleErrorResponse } from "../../store/actions/authActions";
 import CenteredLoading from "../../components/ui/CenteredLoading";
-
-let SkeletonPlaceholder;
-if (Platform.OS !== "web") {
-  // eslint-disable-next-line global-require
-  SkeletonPlaceholder = require("react-native-skeleton-placeholder").default;
-}
+import SkeletonLoading from "../../components/ui/SkeletonLoading";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
@@ -37,8 +31,6 @@ const StaffDashboardScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
-
-  const theme = useTheme();
 
   const dispatch = useDispatch();
 
@@ -133,20 +125,7 @@ const StaffDashboardScreen = ({ navigation }) => {
   }, [getListData, navigation]);
 
   const LoadingComponent = () => {
-    return Platform.OS === "web" ? (
-      <CenteredLoading />
-    ) : (
-      <SkeletonPlaceholder>
-        <View style={styles.skeletonContainer}>
-          {/* <View style={{ width: 60, height: 60, borderRadius: 50 }} /> */}
-          <View style={styles.skeleton} />
-          <View style={styles.skeleton} />
-          <View style={styles.skeleton} />
-          <View style={styles.skeleton} />
-          <View style={styles.skeleton} />
-        </View>
-      </SkeletonPlaceholder>
-    );
+    return Platform.OS === "web" ? <CenteredLoading /> : <SkeletonLoading />;
   };
 
   return (
@@ -224,14 +203,6 @@ const styles = StyleService.create({
   contentContainer: {
     paddingHorizontal: 8,
     paddingVertical: 4,
-  },
-  skeletonContainer: {
-    margin: 20,
-  },
-  skeleton: {
-    height: 75,
-    borderRadius: 4,
-    marginVertical: 10,
   },
   item: {
     paddingVertical: 4,

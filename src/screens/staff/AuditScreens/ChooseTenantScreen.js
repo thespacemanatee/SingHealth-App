@@ -20,6 +20,7 @@ import NewChecklistCard from "../../../components/NewChecklistCard";
 import alert from "../../../components/CustomAlert";
 import { handleErrorResponse } from "../../../store/actions/authActions";
 import CenteredLoading from "../../../components/ui/CenteredLoading";
+import SkeletonLoading from "../../../components/ui/SkeletonLoading";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -171,7 +172,7 @@ const ChooseTenantScreen = ({ navigation }) => {
             SectionSeparatorComponent={() => <Divider />}
           />
         ) : (
-          <CenteredLoading />
+          <SkeletonLoading />
         )}
       </Layout>
     </View>

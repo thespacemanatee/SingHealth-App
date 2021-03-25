@@ -52,9 +52,13 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
   const getImages = useCallback(async () => {
     try {
       setLoading(true);
+
       await dispatch(
         checklistActions.getAuditImages(
-          checklistStore.chosen_checklist.questions[section][index].image,
+          JSON.stringify({
+            fileNames:
+              checklistStore.chosen_checklist.questions[section][index].image,
+          }),
           index,
           section
         )

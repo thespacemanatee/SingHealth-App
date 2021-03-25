@@ -193,7 +193,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   return (
     <View style={styles.screen}>
       <TopNavigation
-        title="SingHealth"
+        title="Details"
         alignment="center"
         accessoryLeft={BackAction}
         accessoryRight={renderRightActions}
