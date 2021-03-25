@@ -11,7 +11,7 @@ def compliant(answer):
 
 
 def percentageCompliant(ls):
-    return ls.count(True) / len(ls)
+    return ls.count(True) / len(ls.count(False) + ls.count(True))
 
 # does not give ID to converted form
 # TODO: Add random integer or smth to the IDs
@@ -221,6 +221,9 @@ def addAuditsEndpoint(app, mongo):
                 for formType, formID in checklists.items():
                     filledAuditForm = mongo.db.filledAuditForms.find_one(
                         {"_id": formID})
+                    if not filledAuditForm:
+                        msg = {"description": "form not found", "status": 404}
+                        return make_response(jsonify(msg), 404)
                     auditFormTemplate = mongo.db.auditFormTemplate.find_one(
                         {"_id": filledAuditForm["formTemplateID"]})
                     questions = {}
