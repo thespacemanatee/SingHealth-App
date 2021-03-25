@@ -8,7 +8,7 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
   const theme = useTheme();
 
   const handleOnPress = () => {
-    onPress(item._id);
+    onPress(item._id, item.tenantID);
   };
 
   return (
@@ -40,7 +40,18 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
             duration={2000}
             tintColor={theme["color-info-500"]}
             backgroundColor={theme["color-danger-600"]}
-          />
+          >
+            {(fill) => (
+              <View style={styles.progressContainer}>
+                <Text style={styles.progressText}>
+                  {`${(
+                    Number.parseFloat(item.rectificationProgress) * 100
+                  ).toFixed(1)}%`}
+                </Text>
+                <Text style={styles.progressText}>Progress</Text>
+              </View>
+            )}
+          </AnimatedCircularProgress>
         </View>
       </View>
     </Card>
@@ -56,6 +67,13 @@ const styles = StyleService.create({
     alignItems: "flex-start",
   },
   timeStamp: {
+    fontWeight: "bold",
+  },
+  progressContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  progressText: {
     fontWeight: "bold",
   },
 });
