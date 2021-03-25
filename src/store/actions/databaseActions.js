@@ -2,8 +2,6 @@ import { endpoint, httpClient } from "../../helpers/CustomHTTPClient";
 
 export const getRelevantTenants = (institutionID) => {
   return async () => {
-    // dispatch({ action: SIGN_IN, token: token ? token : null });
-
     const options = {
       url: `${endpoint}tenants/${institutionID}`,
       method: "get",
@@ -17,7 +15,6 @@ export const getRelevantTenants = (institutionID) => {
 
 export const getTenantActiveAudits = (tenantID, daysBefore = 0) => {
   return async () => {
-    // dispatch({ action: SIGN_IN, token: token ? token : null });
     const options = {
       url: `${endpoint}audits/unrectified/recent/tenant/${tenantID}/${daysBefore}`,
       method: "get",
@@ -30,7 +27,6 @@ export const getTenantActiveAudits = (tenantID, daysBefore = 0) => {
 
 export const getStaffActiveAudits = (institutionID, daysBefore = 0) => {
   return async () => {
-    // dispatch({ action: SIGN_IN, token: token ? token : null });
     const options = {
       url: `${endpoint}audits/unrectified/recent/staff/${institutionID}/${daysBefore}`,
       method: "get",

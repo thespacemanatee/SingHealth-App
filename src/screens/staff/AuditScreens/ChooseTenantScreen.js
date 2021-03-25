@@ -97,42 +97,38 @@ const ChooseTenantScreen = ({ navigation }) => {
   );
 
   const getSectionData = useCallback(async () => {
-    dispatch(databaseActions.getRelevantTenants(authStore.institutionID))
-      .then((res) => {
-        console.log("RESPONSE:", res.data.data);
+    try {
+      const res = await dispatch(
+        databaseActions.getRelevantTenants(authStore.institutionID)
+      );
 
-        // console.log(authStore.institutionID);
-        const tempChecklists = [
-          {
-            title: "Available Tenants",
-            data: res.data.data,
-          },
-        ];
+      console.log("RESPONSE:", res.data.data);
 
-        AsyncStorage.getItem("savedChecklists")
-          .then((data) => {
-            if (data !== null) {
-              // eslint-disable-next-line no-param-reassign
-              data = JSON.parse(data);
-              if (Object.keys(data).length > 0) {
-                tempChecklists.push({
-                  title: "Saved Checklists",
-                  data: Object.values(data),
-                });
-              }
-            }
-            setLoading(false);
-            setSectionData(tempChecklists);
-          })
-          .catch((err) => {
-            setLoading(false);
-            console.error(err);
+      // console.log(authStore.institutionID);
+      const tempChecklists = [
+        {
+          title: "Available Tenants",
+          data: res.data.data,
+        },
+      ];
+
+      let data = await AsyncStorage.getItem("savedChecklists");
+
+      if (data !== null) {
+        data = JSON.parse(data);
+        if (Object.keys(data).length > 0) {
+          tempChecklists.push({
+            title: "Saved Checklists",
+            data: Object.values(data),
           });
-      })
-      .catch((err) => {
-        setLoading(false);
-        console.error(err);
-      });
+        }
+      }
+      setLoading(false);
+      setSectionData(tempChecklists);
+    } catch (err) {
+      setLoading(false);
+      console.error(err);
+    }
   }, [authStore.institutionID, dispatch]);
 
   useEffect(() => {
