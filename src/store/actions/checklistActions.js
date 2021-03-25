@@ -31,35 +31,36 @@ export const getChecklist = (checklistType, tenant) => async (dispatch) => {
 export const addAuditTenantSelection = (tenant) => {
   return { type: ADD_AUDIT_TENANT_SELECTION, tenant };
 };
-export const addChosenChecklist = (checklistType = "fnb") => async (
-  dispatch,
-  getState
-) => {
-  const options = {
-    url: `${endpoint}auditForms/${checklistType}`,
-    method: "get",
-    // withCredentials: true,
+export const addChosenChecklist = (checklistType = "fnb") => {
+  return async (dispatch, getState) => {
+    const options = {
+      url: `${endpoint}auditForms/${checklistType}`,
+      method: "get",
+      // withCredentials: true,
+    };
+
+    const res = await httpClient(options);
+
+    const checklist = res.data.data;
+    console.log(`Done fetching ${checklistType} checklist`);
+    return dispatch({ type: ADD_CHOSEN_CHECKLIST, checklistType, checklist });
   };
-
-  const res = await httpClient(options);
-
-  const checklist = res.data.data;
-  console.log(`Done fetching ${checklistType} checklist`);
-  return dispatch({ type: ADD_CHOSEN_CHECKLIST, checklistType, checklist });
 };
 
-export const addCovidChecklist = () => async (dispatch, getState) => {
-  const options = {
-    url: `${endpoint}auditForms/covid19`,
-    method: "get",
-    // withCredentials: true,
+export const addCovidChecklist = () => {
+  return async (dispatch, getState) => {
+    const options = {
+      url: `${endpoint}auditForms/covid19`,
+      method: "get",
+      // withCredentials: true,
+    };
+
+    const res = await httpClient(options);
+
+    const checklist = res.data.data;
+    console.log("Done fetching covid checklist");
+    return dispatch({ type: ADD_COVID_CHECKLIST, checklist });
   };
-
-  const res = await httpClient(options);
-
-  const checklist = res.data.data;
-  console.log("Done fetching covid checklist");
-  return dispatch({ type: ADD_COVID_CHECKLIST, checklist });
 };
 
 export const addSavedChecklist = (data) => {

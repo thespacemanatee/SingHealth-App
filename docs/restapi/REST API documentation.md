@@ -9,7 +9,7 @@
 - [x] [`GET /images`](#`GET-/images`)
 - [x] [`GET /login/tenant`](#`GET-/login/tenant`)
 - [x] [`GET /login/staff`](#`GET-/login/staff`)
-- [ ] [`GET /audits/<auditID>`](#`GET-/audits/auditID`)
+- [x] [`GET /audits/<auditID>`](#`GET-/audits/auditID`)
 - [ ] [`PATCH /audits/<auditID>/tenant`](#`PATCH-/audits/auditID/tenant`)
 - [ ] [`PATCH /audits/<auditID>/staff`](#`PATCH-/audits/auditID/staff`)
 - [ ] [`GET /audits/saved`](#`GET-/audits/saved`)

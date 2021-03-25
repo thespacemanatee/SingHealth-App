@@ -229,12 +229,12 @@ const AuditSubmitScreen = ({ navigation }) => {
           {!submitting && error && <CrossAnimation loading={submitting} />}
         </View>
         {!submitting && (
-          <View>
+          <>
             <Text style={styles.text}>
               Audit submitted on: {new Date().toLocaleDateString()}
             </Text>
             <Button onPress={handleGoHome}>GO HOME</Button>
-          </View>
+          </>
         )}
       </Layout>
     </View>

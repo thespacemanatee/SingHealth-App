@@ -12,7 +12,7 @@ const NewChecklistCard = ({ item, navigation, onError, onLoading }) => {
     console.log("ITEM:", item);
     dispatch(checklistActions.getChecklist(undefined, item))
       .then(() => {
-        onLoading(false);
+        // onLoading(false);
         const now = new Date().toISOString();
         navigation.navigate("Checklist", { auditID: now });
       })
