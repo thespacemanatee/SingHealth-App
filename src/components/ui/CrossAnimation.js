@@ -11,6 +11,7 @@ class CrossAnimation extends React.Component {
   render() {
     return (
       <LottieView
+        style={{ height: 160, width: 160 }}
         ref={(animation) => {
           this.animation = animation;
         }}

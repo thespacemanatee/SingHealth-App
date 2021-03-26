@@ -26,6 +26,7 @@ import AuditSubmitScreen from "../screens/staff/AuditScreens/AuditSubmitScreen";
 import CameraScreen from "../screens/CameraScreen";
 import TenantsDirectoryScreen from "../screens/staff/DirectoryScreens/TenantsDirectoryScreen";
 import * as authActions from "../store/actions/authActions";
+import AddTenantCredScreen from "../screens/staff/AddTenantScreens/AddTenantCredScreen";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
 
@@ -75,7 +76,8 @@ const DrawerContent = ({ navigation, state }) => (
       selectedIndex={new IndexPath(state.index)}
       onSelect={(index) => navigation.navigate(state.routeNames[index.row])}
     >
-      <DrawerItem title="Staff" />
+      <DrawerItem title="Dashboard" />
+      <DrawerItem title="Add Tenant" />
     </Drawer>
   </SafeAreaView>
 );
@@ -85,6 +87,7 @@ const StaffNavigator = () => {
   return (
     <Navigator drawerContent={(props) => <DrawerContent {...props} />}>
       <Screen name="StaffModalStack" component={StaffModalStackNavigator} />
+      <Screen name="AddTenantNavigator" component={AddTenantStackNavigator} />
     </Navigator>
   );
 };
@@ -124,15 +127,15 @@ const StaffDashboardStackNavigator = () => {
   return (
     <Navigator headerMode="none">
       <Screen name="StaffDashboard" component={StaffDashboardScreen} />
-      <Screen name="ChooseTenant" component={ChooseTenantScreen} />
-      <Screen name="Checklist" component={ChecklistScreen} />
-      <Screen name="Rectification" component={RectificationScreen} />
-      <Screen name="QuestionDetails" component={QuestionDetailsScreen} />
-      <Screen
-        name="RectificationDetails"
-        component={RectificationDetailsScreen}
-      />
-      <Screen name="AuditSubmit" component={AuditSubmitScreen} />
+    </Navigator>
+  );
+};
+
+const AddTenantStackNavigator = () => {
+  const { Navigator, Screen } = createStackNavigator();
+  return (
+    <Navigator headerMode="none">
+      <Screen name="AddTenantCred" component={AddTenantCredScreen} />
     </Navigator>
   );
 };

@@ -151,9 +151,9 @@ const AuditSubmitScreen = ({ navigation }) => {
         console.log(res);
         setSubmitting(false);
       } catch (err) {
-        setSubmitting(false);
         setError(true);
         handleErrorResponse(err, handleGoBack);
+        setSubmitting(false);
       }
     },
     [dispatch, handleGoBack]
@@ -195,23 +195,18 @@ const AuditSubmitScreen = ({ navigation }) => {
           {!submitting && error && <CrossAnimation loading={false} />}
           {!submitting && !error && <SuccessAnimation loading={false} />}
         </View>
-        <View style={{ flex: 1 }} />
+        <View style={styles.layoutContent} />
         {!submitting && (
-          <View
-            style={{
-              marginVertical: 20,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-around",
-                paddingVertical: 20,
-              }}
-            >
-              <Button onPress={handleGoHome}>GO HOME</Button>
-              {error ? <Button onPress={handleRetry}>RETRY</Button> : null}
-            </View>
+          <View style={styles.bottomContainer}>
+            {error ? (
+              <Button style={styles.button} onPress={handleRetry}>
+                RETRY
+              </Button>
+            ) : null}
+            <Button style={styles.button} onPress={handleGoHome}>
+              GO HOME
+            </Button>
+
             <Text style={styles.text}>
               Audit submitted on:{" "}
               {moment(new Date())
@@ -286,13 +281,24 @@ const styles = StyleService.create({
     flex: 1,
     alignItems: "center",
   },
+  layoutContent: {
+    flex: 1,
+  },
   animationContainer: {
     height: 200,
     width: 200,
     marginVertical: 20,
+    justifyContent: "center",
+    alignItems: "center",
   },
   text: {
     fontWeight: "bold",
+  },
+  bottomContainer: {
+    marginVertical: 10,
+  },
+  button: {
+    marginBottom: 10,
   },
 });
 

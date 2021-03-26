@@ -22,11 +22,11 @@ import {
 } from "@ui-kitten/components";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import CustomTextInput from "../../../components/CustomTextInput";
-import * as authActions from "../../../store/actions/authActions";
-import Logo from "../../../components/ui/Logo";
-import CenteredLoading from "../../../components/ui/CenteredLoading";
-import alert from "../../../components/CustomAlert";
+import CustomTextInput from "../../components/CustomTextInput";
+import * as authActions from "../../store/actions/authActions";
+import Logo from "../../components/ui/Logo";
+import CenteredLoading from "../../components/ui/CenteredLoading";
+import alert from "../../components/CustomAlert";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
