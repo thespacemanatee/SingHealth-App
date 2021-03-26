@@ -35,7 +35,7 @@ def addRecentAuditsEndpoints(app, mongo):
     # @login_required
     def unrectified_audits_staff(institutionID, daysBefore):
         if request.method == 'GET':
-            if session["account_type"] == "staff":
+            # if session["account_type"] == "staff":
                 queryDict = {}
                 queryDict["institutionID"] = institutionID
                 queryDict["rectificationProgress"] = {"$lt": 1}
