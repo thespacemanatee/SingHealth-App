@@ -1,28 +1,32 @@
-import React from "react";
+import { StyleService } from "@ui-kitten/components";
+import React, { useEffect, useRef } from "react";
 import { LottieView } from "../..";
 
 const sourceFile = require("../../../assets/cross.json");
 
-class CrossAnimation extends React.Component {
-  componentDidMount() {
-    this.animation.play();
-  }
+const CrossAnimation = ({ loading }) => {
+  const animation = useRef(null);
 
-  render() {
-    return (
-      <LottieView
-        style={{ height: 160, width: 160 }}
-        ref={(animation) => {
-          this.animation = animation;
-        }}
-        // eslint-disable-next-line react/destructuring-assignment
-        loop={this.props.loading}
-        source={sourceFile}
-        resizeMode="cover"
-      />
-    );
-    // }
-  }
-}
+  useEffect(() => {
+    animation.current.play();
+  });
+
+  return (
+    <LottieView
+      style={styles.animation}
+      ref={animation}
+      loop={loading}
+      source={sourceFile}
+      resizeMode="cover"
+    />
+  );
+};
 
 export default CrossAnimation;
+
+const styles = StyleService.create({
+  animation: {
+    height: 160,
+    width: 160,
+  },
+});

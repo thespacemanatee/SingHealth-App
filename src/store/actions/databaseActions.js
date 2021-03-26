@@ -73,6 +73,7 @@ export const postAuditImages = (formData) => {
         "Content-Type": "multipart/form-data",
       },
       data: formData,
+      timeout: 30000,
     };
     const res = await httpClient(postImages);
 
@@ -90,6 +91,7 @@ export const postAuditImagesWeb = (base64images) => {
         "Content-Type": "application/json",
       },
       data: base64images,
+      timeout: 30000,
     };
     const res = await httpClient(postImagesWeb);
 
