@@ -48,7 +48,8 @@ def addWenXinEndpoints(app, mongo):
                 "description": "error in connection",
                 "data": []}
 
-        response = make_response(jsonify(output), output['status'])
+        response = make_response(jsonify(output["data"]), output['status'])
+        response.status = output["description"]
         response.headers.add('Access-Control-Allow-Headers',
                              "Origin, X-Requested-With, Content-Type, Accept, x-auth")
         response.headers["Access-Control-Allow-Origin"] = os.getenv(
@@ -84,7 +85,8 @@ def addWenXinEndpoints(app, mongo):
                 "description": "unspecified connection/data error",
                 "data": {}}
 
-        response = make_response(jsonify(output), output['status'])
+        response = make_response(jsonify(output["data"]), output['status'])
+        response.status = output["description"]
         response.headers.add('Access-Control-Allow-Headers',
                              "Origin, X-Requested-With, Content-Type, Accept, x-auth")
         response.headers["Access-Control-Allow-Origin"] = os.getenv(

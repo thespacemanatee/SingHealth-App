@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import request, session
 from flask_login import login_required
-from .utils import successMsg, successResponse, failureMsg, failureResponse
+from .utils import serverResponse
 
 
 def addRecentAuditsEndpoints(app, mongo):
@@ -24,15 +24,12 @@ def addRecentAuditsEndpoints(app, mongo):
                     auditsList.append(audit)
 
                 if len(auditsList) == 0:
-                    return failureResponse(failureMsg("No matching forms", 404), 404)
+                    return serverResponse(None, 404, "No matching forms")
 
-                response = successMsg("Forms found")
-                response["data"] = auditsList
-
-                return successResponse(response)
+                return serverResponse(auditsList, 200, "Forms found")
 
             else:
-                return failureResponse(failureMsg("You do not have access to this as you are not a tenant", 403), 403)
+                return serverResponse(None, 403, "You do not have access to this as you are not a tenant")
 
     @app.route("/audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>", methods=['GET'])
     # @login_required
@@ -43,8 +40,9 @@ def addRecentAuditsEndpoints(app, mongo):
                 queryDict["institutionID"] = institutionID
                 queryDict["rectificationProgress"] = {"$lt": 1}
                 if daysBefore > 0:
-                    queryDict["date"] = {"$gt": datetime.utcnow(
-                    ) - datetime.timedelta(days=daysBefore)}
+                    queryDict["date"] = {
+                        "$gt": datetime.utcnow() - datetime.timedelta(days=daysBefore)
+                        }
 
                 audits = mongo.db.audits.find(queryDict)
                 auditsList = []
@@ -52,12 +50,9 @@ def addRecentAuditsEndpoints(app, mongo):
                     auditsList.append(audit)
 
                 if len(auditsList) == 0:
-                    return failureResponse(failureMsg("No matching forms", 404), 404)
+                    return serverResponse(None, 404, "No matching forms")
 
-                response = successMsg("Forms found")
-                response["data"] = auditsList
-
-                return successResponse(response)
+                return serverResponse(auditsList, 200, "Forms found")
 
             else:
-                return failureResponse(failureMsg("You do not have access to this as you are not a staff", 403), 403)
+                return serverResponse(None, 403, "You do not have access to this as you are not a staff")

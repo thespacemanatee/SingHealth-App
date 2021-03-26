@@ -1,4 +1,4 @@
-from .utils import failureMsg, successMsg, successResponse, failureResponse
+from .utils import serverResponse
 from .constants import MAX_NUM_IMAGES_PER_NC
 from flask import request, make_response, jsonify
 from flask_login import login_required
@@ -166,14 +166,12 @@ def addAuditsEndpoint(app, mongo):
 
             if not allMetadataAreValid[0]:
                 errorDescription = allMetadataAreValid[1]
-                return failureResponse(failureMsg(errorDescription, 400), 400)
+                return serverResponse(None, 400, errorDescription)
 
             if not allFormsAreValid[0]:
                 errorDescription = allFormsAreValid[1]
-                jsonMsg = failureMsg(errorDescription[-1], 400)
-                jsonMsg["category"] = errorDescription[0]
-                jsonMsg["index"] = errorDescription[1]
-                return failureResponse(jsonMsg, 400)
+                jsonMsg = {"category": errorDescription[0], "index": errorDescription[1]}
+                return serverResponse(jsonMsg, 400, errorDescription[-1])
 
 
             auditMetaData_ID, filledAuditForms_ID = generateIDs(auditMetaData, filledAuditForms)
@@ -189,18 +187,18 @@ def addAuditsEndpoint(app, mongo):
                 result1 = mongo.db.audits.insert_one(auditMetaData_ID_processed)
 
                 if not result1.acknowledged:
-                    return failureResponse(failureMsg("Problem uploading audit details to Database", 503), 503)
+                    return serverResponse(None, 503, "Problem uploading audit details to Database")
 
                 for filledForm in filledAuditForms_ID_processed.values():
                     result2 = mongo.db.filledAuditForms.insert_one(filledForm)
 
                     if not result2.acknowledged:
-                        return failureResponse(failureMsg("Problem uploading forms to Database", 503), 503)
+                        return serverResponse(None, 503, "Problem uploading forms to Database")
 
             except DuplicateKeyError:
-                return failureResponse(failureMsg("Form has already been uploaded", 400), 400)
+                return serverResponse(None, 400, "Form has already been uploaded")
 
-            return successResponse(successMsg("Forms have been submitted"))
+            return serverResponse(None, 200, "Forms have been submitted successfully!")
 
     @app.route("/audits/<auditID>", methods=['GET'])
     # @login_required
@@ -215,8 +213,8 @@ def addAuditsEndpoint(app, mongo):
                     filledAuditForm = mongo.db.filledAuditForms.find_one(
                         {"_id": formID})
                     if not filledAuditForm:
-                        msg = {"description": "form not found", "status": 404}
-                        return make_response(jsonify(msg), 404)
+                        return serverResponse(None, 404, f"Form not found: {formID}")
+
                     auditFormTemplate = mongo.db.auditFormTemplate.find_one(
                         {"_id": filledAuditForm["formTemplateID"]})
                     questions = {}
@@ -229,14 +227,13 @@ def addAuditsEndpoint(app, mongo):
 
                     filledAuditForm.pop("answers")
                     filledAuditForm["questions"] = questions
-
                     auditForms[formType] = filledAuditForm
 
                 responseJson["auditMetadata"] = audit
                 responseJson["auditForms"] = auditForms
 
-                return make_response(jsonify(responseJson), 200)
+                return serverResponse(responseJson, 200, "Forms retrieved successfully!")
 
             else:
 
-                return make_response(jsonify(description="None found"), 404)
+                return serverResponse(None, 404, "Form not found in our database")

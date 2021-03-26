@@ -2,7 +2,7 @@ from flask import Flask, request, session, jsonify, make_response
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from .login import User
-from .utils import successMsg, failureMsg, successResponse, failureResponse
+from .utils import serverResponse
 
 
 def addLoginEndpointsForTenantAndStaff(app, mongo):
@@ -17,13 +17,13 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
             app.config["SECRET_KEY"] = secrets.token_urlsafe(nbytes=32)
             """)
 
-    @app.route('/login/status',  methods=["GET"])
-    def login_status():
-        if request.method == "GET":
-            loginStatus = current_user.is_authenticated
-            userEmail = current_user.userEmail
-            returnJson = {"userEmail": userEmail, "loginStatus": loginStatus}
-            return make_response(jsonify(returnJson), 200)
+    # @app.route('/login/status',  methods=["GET"])
+    # def login_status():
+    #     if request.method == "GET":
+    #         loginStatus = current_user.is_authenticated
+    #         userEmail = current_user.userEmail
+    #         returnJson = {"userEmail": userEmail, "loginStatus": loginStatus}
+    #         return serverResponse(returnJson, 200, )
 
     @app.route('/login/staff',  methods=["POST"])
     def login_for_staff():
@@ -40,15 +40,12 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                     user_obj = User(userEmail=user['email'])
                     login_user(user_obj, remember=True)
                     session['account_type'] = "staff"
-                    jsonMsg = successMsg(
-                        f"You are now logged in as a staff under: {user['email']}")
-                    jsonMsg["data"] = user
-                    return successResponse(jsonMsg)
+                    return serverResponse(user, 200, f"You are now logged in as a staff under: {user['email']}")
                 else:
-                    return failureResponse(failureMsg("Either user email or pswd is wrong", 400), 400)
+                    return serverResponse(None, 404, "Either user email or pswd is wrong")
 
             else:
-                return failureResponse(failureMsg(f"{credentials['user']} account does not exist", 404), 404)
+                return serverResponse(None, 404, f"{credentials['user']} account does not exist")
 
     @app.route('/login/tenant',  methods=["POST"])
     def login_for_tenant():
@@ -65,22 +62,19 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                     user_obj = User(userEmail=user['email'])
                     login_user(user_obj, remember=True)
                     session['account_type'] = "tenant"
-                    jsonMsg = successMsg(
-                        f"You are now logged in as a tenant under: {user['email']}")
-                    jsonMsg['data'] = user
-                    return successResponse(jsonMsg)
+                    return serverResponse(user, 200, f"You are now logged in as a tenant under: {user['email']}")
                 else:
-                    return failureResponse(failureMsg("Either user email or pswd is wrong", 400), 400)
+                    return serverResponse(None, 400, "Either user email or pswd is incorrect")
 
             else:
-                return failureResponse(failureMsg(f"{credentials['user']} account does not exist", 404), 404)
+                return serverResponse(None, 404, f"{credentials['user']} account does not exist")
 
     @app.route('/logout')
     # @login_required
     def logout():
         # session.pop('account_type')
         # logout_user()
-        return successResponse(successMsg("You are now logged out"))
+        return serverResponse(None, 200, "You are now logged out")
 
     @login_manager.user_loader
     def load_user(user_email):
@@ -97,11 +91,11 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
         user = User("staff developer login")
         session['account_type'] = "staff"
         login_user(user)
-        return successResponse(successMsg("You are logged in as a staff for testing purposes"))
+        return serverResponse(None, 200, "You are logged in as a staff for testing purposes")
 
     @app.route('/test_login/tenant')
     def test_login_tenant():
         user = User("tenant developer login")
         session['account_type'] = "tenant"
         login_user(user)
-        return successResponse(successMsg("You are logged in as a tenant for testing purposes"))
+        return serverResponse(None, 200, "You are logged in as a tenant for testing purposes")
