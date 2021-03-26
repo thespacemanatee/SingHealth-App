@@ -9,8 +9,8 @@
         "auditChecklists": {}
     },
     "auditForms":{
-        "fnb": {
-            "_id": "fnb2021",
+        "non_fnb": {
+            "_id": "non_fnb2021",
             "type": "non_fnb",
             "questions": {
                 "Professionalism and Staff Hygiene": [
@@ -41,7 +41,7 @@
                         "acceptedRequest": true
                     }
                 ],
-                "Housekeeping & General Cleanliness": [
+                "Housekeeping and General Cleanliness": [
                     {
                         "question": "Store is clean",
                         "answer": true
@@ -69,7 +69,7 @@
                         "acceptedRequest": true
                     }
                 ],
-                "Workplace Safety & Health": [
+                "Workplace Safety and Health": [
                     {
                         "question": "Store is clean",
                         "answer": true

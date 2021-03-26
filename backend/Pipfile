@@ -29,6 +29,7 @@ iso8601 = "*"
 pytz = "*"
 gunicorn = "*"
 python-dotenv = "*"
+pylint = "*"
 
 [dev-packages]
 

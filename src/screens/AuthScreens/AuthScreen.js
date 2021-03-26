@@ -7,7 +7,7 @@ import {
   TopNavigation,
   StyleService,
 } from "@ui-kitten/components";
-import Logo from "../../../components/ui/Logo";
+import Logo from "../../components/ui/Logo";
 
 const LoginScreen = ({ navigation }) => {
   const handleLogin = () => {

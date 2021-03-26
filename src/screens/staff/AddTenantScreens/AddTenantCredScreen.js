@@ -24,11 +24,21 @@ import CustomTextInput from "../../../components/CustomTextInput";
 import Logo from "../../../components/ui/Logo";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
+const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 
-const RegisterScreen = ({ navigation }) => {
+const AddTenantCredScreen = ({ navigation }) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
 
   const theme = useTheme();
+
+  const DrawerAction = () => (
+    <TopNavigationAction
+      icon={DrawerIcon}
+      onPress={() => {
+        navigation.openDrawer();
+      }}
+    />
+  );
 
   const RegisterSchema = Yup.object().shape({
     name: Yup.string().required("Please enter your name!"),
@@ -54,15 +64,6 @@ const RegisterScreen = ({ navigation }) => {
     </TouchableOpacity>
   );
 
-  const BackAction = () => (
-    <TopNavigationAction
-      icon={BackIcon}
-      onPress={() => {
-        navigation.goBack();
-      }}
-    />
-  );
-
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -76,10 +77,9 @@ const RegisterScreen = ({ navigation }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <TopNavigation
-          style={styles.topNavigation}
-          title="Register"
+          title="Add Tenant"
           alignment="center"
-          accessoryLeft={BackAction}
+          accessoryLeft={DrawerAction}
         />
         <Divider />
         <Layout style={styles.layout}>
@@ -208,4 +208,4 @@ const styles = StyleService.create({
   },
 });
 
-export default RegisterScreen;
+export default AddTenantCredScreen;

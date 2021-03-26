@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import {
+  View,
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-  View,
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { useDispatch } from "react-redux";
 import {
   Button,
   Divider,
@@ -18,28 +17,31 @@ import {
   Icon,
   StyleService,
   useTheme,
-  Toggle,
 } from "@ui-kitten/components";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import CustomTextInput from "../../../components/CustomTextInput";
-import * as authActions from "../../../store/actions/authActions";
-import Logo from "../../../components/ui/Logo";
+import CustomTextInput from "../../components/CustomTextInput";
+import Logo from "../../components/ui/Logo";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
-const LoginScreen = ({ navigation }) => {
+const RegisterScreen = ({ navigation }) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const [checked, setChecked] = useState(false);
+
   const theme = useTheme();
 
-  const dispatch = useDispatch();
-
-  const LoginSchema = Yup.object().shape({
+  const RegisterSchema = Yup.object().shape({
+    name: Yup.string().required("Please enter your name!"),
     email: Yup.string()
       .email("Invalid email!")
       .required("Please enter your email!"),
-    password: Yup.string().required("Please enter your password!"),
+    password: Yup.string()
+      .required("Please enter your password!")
+      .min(8, "Password is too short - should be 8 chars minimum."),
+    passwordConfirmation: Yup.string().oneOf(
+      [Yup.ref("password"), null],
+      "Passwords must match"
+    ),
   });
 
   const renderSecureIcon = (props) => (
@@ -61,10 +63,6 @@ const LoginScreen = ({ navigation }) => {
     />
   );
 
-  const handleUserToggle = (isChecked) => {
-    setChecked(isChecked);
-  };
-
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -79,29 +77,45 @@ const LoginScreen = ({ navigation }) => {
       >
         <TopNavigation
           style={styles.topNavigation}
-          title="Login"
+          title="Register"
           alignment="center"
           accessoryLeft={BackAction}
         />
         <Divider />
         <Layout style={styles.layout}>
           <Formik
-            initialValues={{ email: "", password: "" }}
+            initialValues={{ name: "", email: "", password: "" }}
             onSubmit={(values) => {
               console.log(values);
-              dispatch(
-                authActions.signIn(
-                  values.email,
-                  values.password,
-                  checked ? "staff" : "tenant"
-                )
-              );
+              // dispatch(
+              //   authActions.signIn(values.email, values.password, "staff")
+              // );
             }}
-            validationSchema={LoginSchema}
+            validationSchema={RegisterSchema}
           >
             {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
               <View style={styles.keyboardContainer}>
                 <Logo />
+                <CustomTextInput
+                  label="Name"
+                  returnKeyType="next"
+                  value={values.name}
+                  onChangeText={handleChange("name")}
+                  onBlur={handleBlur("name")}
+                  error={!!errors.name}
+                  errorText={errors.name}
+                  accessoryRight={(props) => {
+                    return (
+                      !!errors.name && (
+                        <Icon
+                          {...props}
+                          name="alert-circle-outline"
+                          fill={theme["color-danger-700"]}
+                        />
+                      )
+                    );
+                  }}
+                />
                 <CustomTextInput
                   label="Email"
                   returnKeyType="next"
@@ -137,28 +151,18 @@ const LoginScreen = ({ navigation }) => {
                   secureTextEntry={secureTextEntry}
                   accessoryRight={renderSecureIcon}
                 />
-                <View style={styles.forgotPassword}>
-                  <Toggle checked={checked} onChange={handleUserToggle}>
-                    {`Login as ${checked ? "Staff" : "Tenant"}`}
-                  </Toggle>
-                  <TouchableOpacity
-                    onPress={() => navigation.navigate("ForgotPassword")}
-                  >
-                    <Text style={styles.forgot}>Forgot your password?</Text>
-                  </TouchableOpacity>
-                </View>
                 <View style={styles.buttonContainer}>
-                  <Button mode="contained" onPress={handleSubmit}>
-                    Login
+                  <Button onPress={handleSubmit} style={styles.button}>
+                    Sign Up
                   </Button>
                 </View>
               </View>
             )}
           </Formik>
           <View style={styles.row}>
-            <Text>Don’t have an account? </Text>
-            <TouchableOpacity onPress={() => navigation.replace("Register")}>
-              <Text style={styles.link}>Sign up</Text>
+            <Text>Already have an account? </Text>
+            <TouchableOpacity onPress={() => navigation.replace("Login")}>
+              <Text style={styles.link}>Login</Text>
             </TouchableOpacity>
           </View>
         </Layout>
@@ -176,13 +180,6 @@ const styles = StyleService.create({
   },
   layout: {
     flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "center",
-  },
-  forgotPassword: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
   },
   keyboardContainer: {
@@ -203,12 +200,12 @@ const styles = StyleService.create({
     marginBottom: 20,
     justifyContent: "flex-end",
   },
-  forgot: {
-    fontSize: 13,
+  button: {
+    marginTop: 24,
   },
   link: {
     fontWeight: "bold",
   },
 });
 
-export default LoginScreen;
+export default RegisterScreen;

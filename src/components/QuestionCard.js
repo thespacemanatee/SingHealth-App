@@ -24,6 +24,8 @@ const QuestionCard = (props) => {
   const { question } = props;
   const { answer } = props;
   const { section } = props;
+  const { rectify } = props;
+  const { navigation } = props;
 
   const leftSwipeable = useRef(null);
 
@@ -50,11 +52,20 @@ const QuestionCard = (props) => {
   );
 
   const onClickDetailHandler = () => {
-    props.navigation.navigate("QuestionDetails", {
-      index,
-      question,
-      section,
-    });
+    console.log(rectify);
+    if (rectify) {
+      navigation.navigate("RectificationDetails", {
+        index,
+        question,
+        section,
+      });
+    } else {
+      navigation.navigate("QuestionDetails", {
+        index,
+        question,
+        section,
+      });
+    }
   };
 
   const leftComponent = useCallback(() => {

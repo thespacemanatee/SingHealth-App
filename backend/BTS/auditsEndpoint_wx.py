@@ -6,6 +6,7 @@ Created on Fri Mar  5 02:46:03 2021
 """
 
 from flask import jsonify, make_response
+from .utils import serverResponse
 import os
 
 
@@ -48,12 +49,9 @@ def addWenXinEndpoints(app, mongo):
                 "description": "error in connection",
                 "data": []}
 
-        response = make_response(jsonify(output), output['status'])
-        response.headers.add('Access-Control-Allow-Headers',
-                             "Origin, X-Requested-With, Content-Type, Accept, x-auth")
-        response.headers["Access-Control-Allow-Origin"] = os.getenv(
-            'WEB_APP_URI')
-        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response = serverResponse(
+            output["data"], output["status"], output["description"])
+        # response.status = output["description"]
         return response
 
     @app.route("/auditForms/<form_type>", methods=["GET"])
@@ -84,10 +82,7 @@ def addWenXinEndpoints(app, mongo):
                 "description": "unspecified connection/data error",
                 "data": {}}
 
-        response = make_response(jsonify(output), output['status'])
-        response.headers.add('Access-Control-Allow-Headers',
-                             "Origin, X-Requested-With, Content-Type, Accept, x-auth")
-        response.headers["Access-Control-Allow-Origin"] = os.getenv(
-            'WEB_APP_URI')
-        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response = serverResponse(
+            output["data"], output["status"], output["description"])
+        # response.status = output["description"]
         return response

@@ -1,14 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { endpoint, httpClient } from "../../helpers/CustomHTTPClient";
-import { handleErrorResponse } from "../../helpers/utils";
 
 export const RESTORE_TOKEN = "RESTORE_TOKEN";
 export const SIGN_IN = "SIGN_IN";
 export const SIGN_OUT = "SIGN_OUT";
 
 export const restoreToken = () => {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     try {
       const cache = await AsyncStorage.getItem("userData");
       const userData = JSON.parse(cache);
@@ -27,9 +26,7 @@ export const restoreToken = () => {
 };
 
 export const signIn = (user, pswd, userType) => {
-  return async (dispatch, getState) => {
-    // dispatch({ action: SIGN_IN, token: token ? token : null });
-
+  return async (dispatch) => {
     const loginOptions = {
       url: `${endpoint}login/${userType}`,
       method: "post",
@@ -44,9 +41,9 @@ export const signIn = (user, pswd, userType) => {
       },
     };
     const res = await httpClient(loginOptions);
-    // .then((res) => {
+
     const userToken = "dummy-auth-token";
-    const { _id, email, institutionID, name } = res.data.data;
+    const { _id, email, institutionID, name } = res.data;
     const userData = {
       userType,
       userToken,
@@ -58,15 +55,11 @@ export const signIn = (user, pswd, userType) => {
 
     dispatch({ type: SIGN_IN, userData });
     saveUserDataToStorage(userData);
-    // })
-    // .catch((err) => {
-    //   handleErrorResponse(err);
-    // });
   };
 };
 
 export const signOut = () => {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     // dispatch({ action: SIGN_OUT, token: token ? token : null });
     console.log("Signing out!");
     const signOutOptions = {
@@ -90,17 +83,9 @@ export const signOut = () => {
 };
 
 const saveUserDataToStorage = async (userData) => {
-  try {
-    await AsyncStorage.setItem("userData", JSON.stringify(userData));
-  } catch (err) {
-    handleErrorResponse(err);
-  }
+  await AsyncStorage.setItem("userData", JSON.stringify(userData));
 };
 
 const removeTokenFromStorage = async () => {
-  try {
-    await AsyncStorage.removeItem("userData");
-  } catch (err) {
-    handleErrorResponse(err);
-  }
+  await AsyncStorage.removeItem("userData");
 };

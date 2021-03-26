@@ -1,6 +1,6 @@
 from flask_login import login_required
-from flask import request
-from .utils import successMsg, failureMsg, failureResponse, successResponse
+from flask import request, make_response, jsonify
+from .utils import serverResponse
 from base64 import b64decode, b64encode
 from botocore.exceptions import ClientError
 import boto3
@@ -58,7 +58,7 @@ def addImagesEndpoint(app):
                     detected_Duplicate_filenames = len(
                         imageFilenames) > len(set(imageFilenames))
                     if detected_Duplicate_filenames:
-                        return failureResponse(failureMsg("Duplicate image names found", 400), 400)
+                        return serverResponse(None, 400, "Duplicate image names found")
 
                     for image in requestData:
                         try:
@@ -70,13 +70,13 @@ def addImagesEndpoint(app):
                             imageData += b"="*pad
 
                         except KeyError:
-                            return failureResponse(failureMsg(
-                                "Wrong request format. Make sure every Image object has a 'fileName' & a 'uri' field", 400), 400)
+                            return serverResponse(
+                                None, 400, "Wrong request format. Make sure every Image object has a 'fileName' & a 'uri' field")
 
                         imageBytes = io.BytesIO(b64decode(imageData))
                         upload_image(imageBytes, os.getenv(
                             "S3_BUCKET"), imageName)
-                    return successResponse(successMsg("Pictures have successfully been uploaded"))
+                    return serverResponse(None, 200, "Pictures have successfully been uploaded")
 
             elif len(request.files) > 0:
                 formdata = request.files
@@ -84,47 +84,24 @@ def addImagesEndpoint(app):
 
                 detected_Duplicate_filenames = len(images) > len(set(images))
                 if detected_Duplicate_filenames:
-                    return failureResponse(failureMsg("Duplicate image names found", 400), 400)
+                    return serverResponse(None, 400, "Duplicate image names found")
 
                 for image in images:
                     imgName = image.filename
                     upload_image(image, os.getenv("S3_BUCKET"), imgName)
 
-                return successResponse(successMsg("Pictures have successfully been uploaded"))
-            return failureResponse(failureMsg("No image data received", 400), 400)
+                return serverResponse(None, 200, "Pictures have successfully been uploaded")
+            return serverResponse(None, 400, "No image data received")
 
         elif request.method == "GET":
+            filename = request.args.get("fileName", None)
             try:
-                details = request.json
-                filenames = details["fileNames"]
-                output = []
-                n = 0
-                m = 0
-                o = 0
-                failed = []
-                for index, filename in enumerate(filenames):
-                    try:
-                        # TODO: Might need to strip the header before sending it back to the client
-                        imageObject = download_image(
-                            filename, os.getenv("S3_BUCKET"))
-                        imageBase64 = b64encode(
-                            imageObject.getvalue()).decode()
-                        output.append(imageBase64)
-                        n += 1
-                    except ClientError as e:
-                        msg = str(e)
-                        if "Not Found" in msg:
-                            m += 1
-                            failed.append(filename)
-                    except:
-                        o += 1
-
-                serverResponse = successMsg(
-                    f"{n} images successfully downloaded, {m} images failed to download and {o} failed due to other reasons")
-                serverResponse["uri"] = output
-                serverResponse["notFound"] = failed
-
-                return successResponse(serverResponse)
-            except Exception as e:
-                traceback.print_exc()
-                return failureResponse(failureMsg("LOL", 503), 503)
+                imageObject = download_image(
+                    filename, os.getenv("S3_BUCKET"))
+                imageBase64 = b64encode(
+                    imageObject.getvalue()).decode()
+                return serverResponse(imageBase64, 200, "Image found")
+            except ClientError as e:
+                return serverResponse(None, 502, "Database down. Sorry! Pls try again.")
+            except:
+                return serverResponse(None, 500, "Unexpected error")

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View, Platform, ActivityIndicator, Dimensions } from "react-native";
+import { View, Platform } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -10,7 +10,6 @@ import {
   TopNavigation,
   TopNavigationAction,
   List,
-  useTheme,
 } from "@ui-kitten/components";
 import { FAB } from "react-native-paper";
 
@@ -18,13 +17,10 @@ import Graph from "../../components/ui/graph/Graph.tsx";
 import * as databaseActions from "../../store/actions/databaseActions";
 import * as checklistActions from "../../store/actions/checklistActions";
 import ActiveAuditCard from "../../components/ActiveAuditCard";
-import { handleErrorResponse } from "../../helpers/utils";
-
-let SkeletonPlaceholder;
-if (Platform.OS !== "web") {
-  // eslint-disable-next-line global-require
-  SkeletonPlaceholder = require("react-native-skeleton-placeholder").default;
-}
+import * as authActions from "../../store/actions/authActions";
+import CenteredLoading from "../../components/ui/CenteredLoading";
+import SkeletonLoading from "../../components/ui/SkeletonLoading";
+import alert from "../../components/CustomAlert";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
@@ -36,9 +32,6 @@ const StaffDashboardScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
-  const WINDOW_WIDTH = Dimensions.get("window").width;
-
-  const theme = useTheme();
 
   const dispatch = useDispatch();
 
@@ -59,9 +52,15 @@ const StaffDashboardScreen = ({ navigation }) => {
     <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
   );
 
+  const handleRefreshList = () => {
+    setLoading(true);
+    getListData();
+  };
+
   const handleOpenAudit = useCallback(
     async (auditID, tenantID) => {
       try {
+        setLoading(true);
         console.log(auditID);
         const tenantObj = databaseStore.relevantTenants.find((e) => {
           return e.tenantID === tenantID;
@@ -70,10 +69,11 @@ const StaffDashboardScreen = ({ navigation }) => {
         await dispatch(
           checklistActions.getAuditData(auditID, tenantObj.stallName)
         );
-        navigation.navigate("Checklist", { auditID });
+        navigation.navigate("Rectification", { auditID });
       } catch (err) {
         handleErrorResponse(err);
         setError(err.message);
+        setLoading(false);
       }
     },
     [databaseStore.relevantTenants, dispatch, navigation]
@@ -102,12 +102,13 @@ const StaffDashboardScreen = ({ navigation }) => {
       await dispatch(
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
-      console.log(res.data.data);
-      setListData(res.data.data);
+      console.log(res.data);
+      setListData(res.data);
       setLoading(false);
     } catch (err) {
       handleErrorResponse(err);
       setError(err.message);
+      setLoading(false);
     }
   }, [authStore.institutionID, dispatch]);
 
@@ -116,6 +117,7 @@ const StaffDashboardScreen = ({ navigation }) => {
     getListData();
 
     const unsubscribe = navigation.addListener("focus", () => {
+      setLoading(true);
       getListData();
     });
 
@@ -127,27 +129,7 @@ const StaffDashboardScreen = ({ navigation }) => {
   }, [getListData, navigation]);
 
   const LoadingComponent = () => {
-    return Platform.OS === "web" ? (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator
-          size="large"
-          color={theme["color-primary-default"]}
-        />
-      </View>
-    ) : (
-      <SkeletonPlaceholder>
-        <View style={{ margin: 20 }}>
-          {/* <View style={{ width: 60, height: 60, borderRadius: 50 }} /> */}
-          <View
-            style={{
-              width: WINDOW_WIDTH - 40,
-              height: 40,
-              borderRadius: 4,
-            }}
-          />
-        </View>
-      </SkeletonPlaceholder>
-    );
+    return Platform.OS === "web" ? <CenteredLoading /> : <SkeletonLoading />;
   };
 
   return (
@@ -170,6 +152,8 @@ const StaffDashboardScreen = ({ navigation }) => {
             contentContainerStyle={styles.contentContainer}
             data={listData}
             renderItem={renderActiveAudits}
+            onRefresh={handleRefreshList}
+            refreshing={loading}
           />
         ) : (
           <LoadingComponent />
@@ -205,6 +189,44 @@ const StaffDashboardScreen = ({ navigation }) => {
   );
 };
 
+const handleErrorResponse = (err) => {
+  if (err.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    const { data } = err.response;
+    console.error(err.response.data);
+    console.error(err.response.status);
+    console.error(err.response.headers);
+    if (err.response.status === 403) {
+      authActions.signOut();
+    } else {
+      switch (Math.floor(err.response.status / 100)) {
+        case 4: {
+          alert("Error", "Input error.");
+          break;
+        }
+        case 5: {
+          alert("Server Error", "Please contact your administrator.");
+          break;
+        }
+        default: {
+          alert("Request timeout", "Check your internet connection.");
+          break;
+        }
+      }
+    }
+  } else if (err.request) {
+    // The request was made but no response was received
+    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+    // http.ClientRequest in node.js
+    console.error(err.request);
+  } else {
+    // Something happened in setting up the request that triggered an Error
+    console.error("Error", err.message);
+  }
+  console.error(err.config);
+};
+
 export default StaffDashboardScreen;
 
 const styles = StyleService.create({
@@ -226,9 +248,5 @@ const styles = StyleService.create({
   },
   item: {
     paddingVertical: 4,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
   },
 });

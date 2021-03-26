@@ -1,10 +1,9 @@
-from .utils import failureMsg, successMsg, successResponse, failureResponse
+from .utils import serverResponse
 from .constants import MAX_NUM_IMAGES_PER_NC
 from flask import request, make_response, jsonify
 from flask_login import login_required
 from pymongo.errors import DuplicateKeyError
 import iso8601
-import pprint
 
 
 def compliant(answer):
@@ -13,51 +12,6 @@ def compliant(answer):
 
 def percentageCompliant(ls):
     return ls.count(True) / (ls.count(False) + ls.count(True))
-
-# does not give ID to converted form
-# TODO: Add random integer or smth to the IDs
-
-
-def convertToFilledAuditForm(filledAuditFormTemplate):
-    filledAuditForm = dict()
-    filledAuditForm["formTemplateID"] = filledAuditFormTemplate.get("_id")
-    filledAuditForm["type"] = filledAuditFormTemplate.get("type")
-
-    # Remove all the questions from the "questions" field
-    questions = filledAuditFormTemplate["questions"]
-    answers = {}
-    for category, answerList in questions.items():
-        removedQuestion = []
-        for answer in answerList:
-            answer.pop("question")
-            removedQuestion.append(answer)
-        answers[category] = removedQuestion
-
-    filledAuditForm["answers"] = answers
-
-    return filledAuditForm
-
-
-def validateFilledAuditForm(filledAuditForm):
-    answers = filledAuditForm["answers"]
-    for category, answerList in answers.items():
-        for index, answer in enumerate(answerList):
-            if not "answer" in answer.keys():
-                return False, category, index, "Please fill in the 'answer' field."
-
-            if "images" in answer.keys():
-                if (numImages := len(answer.get("images", []))) > MAX_NUM_IMAGES_PER_NC:
-                    return False, category, index, f"Max allowed is {MAX_NUM_IMAGES_PER_NC} images but {numImages} provided."
-
-                numUniqueFilenames = len(set(answer["images"]))
-                numFilenames = len(answer["images"])
-                if numFilenames > numUniqueFilenames:
-                    return False, category, index, f"Duplicate filenames found."
-
-            if not answer["answer"] and len(answer.get("remarks", [])) == 0:
-                return False, category, index, "Please fill in the remarks section"
-
-    return True, "Form is valid and ready for uploading"
 
 
 def createIDForFilledForm(formTemplate, metadata):
@@ -75,51 +29,80 @@ def createIDForAuditMetaData(auditMetadata):
     return staffID + tenantID + institutionID + date
 
 
-def convertTimeStr2UTC(filledAuditForm):
-    filledAuditForm_copy = filledAuditForm.copy()
-    iso = filledAuditForm_copy["answers"]
-    answers = {}
-    for category, answerList in iso.items():
-        convertedTime = []
-        for answer in answerList:
-            if (deadline := answer.get("deadline", None)) != None:
-                answer["deadline"] = iso8601.parse_date(deadline)
-            convertedTime.append(answer)
-        answers[category] = convertedTime
+def calculateAuditScore(filledAuditForms) -> float:
+    for formType, filledAuditForm in filledAuditForms.items():
+        if filledAuditForm["type"] == "fnb":
+            c1 = percentageCompliant(list(map(
+                compliant, filledAuditForm["answers"]["Professionalism and Staff Hygiene"]))) * 0.1
+            c2 = percentageCompliant(list(map(
+                compliant, filledAuditForm["answers"]["Housekeeping and General Cleanliness"]))) * 0.2
+            c3 = percentageCompliant(
+                list(map(compliant, filledAuditForm["answers"]["Food Hygiene"]))) * 0.35
+            c4 = percentageCompliant(list(map(
+                compliant, filledAuditForm["answers"]["Healthier Choice in line with HPB's Healthy Eating's Initiative"]))) * 0.15
+            c5 = percentageCompliant(list(
+                map(compliant, filledAuditForm["answers"]["Workplace Safety and Health"]))) * 0.2
+            auditScore = c1 + c2 + c3 + c4 + c5
 
-    filledAuditForm_copy["answers"] = answers
-    return filledAuditForm_copy
-
-
-def calculateAuditScore(filledAuditForm) -> float:
-    if filledAuditForm["type"] == "fnb":
-        c1 = percentageCompliant(list(map(
-            compliant, filledAuditForm["answers"]["Professionalism and Staff Hygiene"]))) * 0.1
-        c2 = percentageCompliant(list(map(
-            compliant, filledAuditForm["answers"]["Housekeeping and General Cleanliness"]))) * 0.2
-        c3 = percentageCompliant(
-            list(map(compliant, filledAuditForm["answers"]["Food Hygiene"]))) * 0.35
-        c4 = percentageCompliant(list(map(
-            compliant, filledAuditForm["answers"]["Healthier Choice in line with HPB's Healthy Eating's Initiative"]))) * 0.15
-        c5 = percentageCompliant(list(
-            map(compliant, filledAuditForm["answers"]["Workplace Safety and Health"]))) * 0.2
-        auditScore = c1 + c2 + c3 + c4 + c5
-
-    elif filledAuditForm["type"] == "non_fnb":
-        c1 = percentageCompliant(list(map(
-            compliant, filledAuditForm["answers"]["Professionalism and Staff Hygiene"]))) * 0.2
-        c2 = percentageCompliant(list(map(
-            compliant, filledAuditForm["answers"]["Housekeeping and General Cleanliness"]))) * 0.4
-        c3 = percentageCompliant(list(
-            map(compliant, filledAuditForm["answers"]["Workplace Safety and Health"]))) * 0.4
-        auditScore = c1 + c2 + c3
+        elif filledAuditForm["type"] == "non_fnb":
+            c1 = percentageCompliant(list(map(
+                compliant, filledAuditForm["answers"]["Professionalism and Staff Hygiene"]))) * 0.2
+            c2 = percentageCompliant(list(map(
+                compliant, filledAuditForm["answers"]["Housekeeping and General Cleanliness"]))) * 0.4
+            c3 = percentageCompliant(list(
+                map(compliant, filledAuditForm["answers"]["Workplace Safety and Health"]))) * 0.4
+            auditScore = c1 + c2 + c3
 
     return auditScore
 
 
-def processAuditdata(auditData):
-    auditMetaData = auditData["auditMetadata"]
-    auditForms = auditData["auditForms"]
+def validateAuditMetadata(auditMetadata):
+    # TODO: check with data base if the users are real
+    try:
+        date = iso8601.parse_date(auditMetadata["date"])
+        return True, "Good to go"
+    except:
+        return False, "Please provide an ISO format for the date"
+
+
+def validateFilledAuditForms(filledAuditForms):
+    def validateFilledAuditForm(filledAuditForm):
+        answers = filledAuditForm["questions"]
+        for category, answerList in answers.items():
+            for index, answer in enumerate(answerList):
+                if not "answer" in answer.keys():
+                    return False, category, index, "Please fill in the 'answer' field."
+
+                if "images" in answer.keys():
+                    if (numImages := len(answer.get("images", []))) > MAX_NUM_IMAGES_PER_NC:
+                        return False, category, index, f"Max allowed is {MAX_NUM_IMAGES_PER_NC} images but {numImages} provided."
+
+                    numUniqueFilenames = len(set(answer["images"]))
+                    numFilenames = len(answer["images"])
+                    if numFilenames > numUniqueFilenames:
+                        return False, category, index, f"Duplicate filenames found."
+
+                if not answer["answer"]:
+                    if len(answer.get("remarks", [])) == 0:
+                        return False, category, index, "Please fill in the remarks section"
+
+                    if "deadline" not in answer.keys():
+                        return False, category, index, "Please provide the deadline for the rectification"
+                    else:
+                        try:
+                            date = iso8601.parse_date(answer["deadline"])
+                        except:
+                            return False, category, index, "Please provide an ISO format for the deadline"
+
+        return True, "Form is valid and ready for uploading"
+    for formType, form in filledAuditForms.items():
+        isValid = validateFilledAuditForm(form)
+        if not isValid[0]:
+            return False, isValid[1:]
+    return True, "All forms are valid and ready for uploading"
+
+
+def generateIDs(auditMetaData, auditForms):
     auditMetaData["auditChecklists"] = {}
 
     metaDataID = createIDForAuditMetaData(auditMetaData)
@@ -129,52 +112,61 @@ def processAuditdata(auditData):
     for formType, formTemplate in auditForms.items():
         if formTemplate == None:
             continue
-        filledAuditForm_TimeStr = convertToFilledAuditForm(formTemplate)
-        filledAuditForm = convertTimeStr2UTC(filledAuditForm_TimeStr)
+
         id = createIDForFilledForm(formTemplate, auditMetaData)
-        filledAuditForm["_id"] = id
-        filledAuditForms[filledAuditForm["type"]] = filledAuditForm
-        auditMetaData["auditChecklists"][filledAuditForm["type"]] = id
+        formTemplate["formTemplateID"] = formTemplate["_id"]
+        formTemplate["_id"] = id
+        filledAuditForms[formTemplate["type"]] = formTemplate
+        auditMetaData["auditChecklists"][formTemplate["type"]] = id
 
         # TODO: investigate further if DB structure can be flattened further for data integrity
         # This works for now because we only have 2 forms: 1 covid, 1 non-covid
         # Otherwise, maintain data integrity by writing checks on the incoming data and make sure they have only 2 specific forms
-        if formType != "covid19":
-            auditScore = calculateAuditScore(filledAuditForm)
-            auditMetaData["score"] = auditScore
+    # Add rect progress -> auditMetaData
 
-    if auditScore < 1:
-        auditMetaData['rectificationProgress'] = 0
-    auditMetaData['date'] = iso8601.parse_date(auditMetaData['date'])
-    return filledAuditForms, auditMetaData
+    return auditMetaData, filledAuditForms
 
-def post_process_form(filledAuditForm):
-    outputDict = {}
-    filledAuditForm_cp = filledAuditForm.copy()
-    for category, answerList in filledAuditForm["answers"].items():
-        newAnswerList = []
-        for lineItem in answerList:
-            if not lineItem["answer"]:
-                lineItem["rectified"] = False
-            elif lineItem["answer"] and "rectified" in lineItem.keys():
-                lineItem.pop("rectified")
-            newAnswerList.append(lineItem)
-        outputDict[category] = newAnswerList
-    filledAuditForm_cp["answers"] = outputDict
-    return filledAuditForm_cp
 
-def post_process_forms(filledAuditForms):
+def postProcessLineItem(lineItem):
+    # convert all time to datetime objects
+    #             if answer = False, add a rectified = False
+    #             rm qns
+    lineItem.pop("question")
+
+    if not lineItem["answer"]:
+        lineItem["rectified"] = False
+        lineItem["deadline"] = iso8601.parse_date(lineItem["deadline"])
+    elif lineItem["answer"] and "rectified" in lineItem.keys():
+        lineItem.pop("rectified")
+    return lineItem
+
+
+def post_process_filledAuditForms(filledAuditForms):
     output = {}
-    for formType, formTemplate in filledAuditForms.items():
-        output[formType] = post_process_form(formTemplate)
+    # pp = pprint.PrettyPrinter(indent=4)
+    # pp.pprint(filledAuditForms)
+    for formType, filledAuditForm in filledAuditForms.items():
+        filledAuditForm_cp = filledAuditForm.copy()
+        filledAuditForm_cp["answers"] = filledAuditForm["questions"]
+        filledAuditForm_cp.pop("questions")
+        processedFilledAuditForm = {}
+        for category, answerList in filledAuditForm_cp["answers"].items():
+            processedAnswerList = []
+            for lineItem in answerList:
+                processedLineItem = postProcessLineItem(lineItem)
+                processedAnswerList.append(processedLineItem)
+            processedFilledAuditForm[category] = processedAnswerList
+        filledAuditForm_cp["answers"] = processedFilledAuditForm
+        output[formType] = filledAuditForm_cp
+    # print()
+    # pp.pprint(output)
     return output
-            
-def validateFilledAuditForms(filledAuditForms):
-    for formType, form in filledAuditForms.items():
-        isValid = validateFilledAuditForm(form)
-        if not isValid[0]:
-            return False, isValid[1:]
-    return True, "All forms are valid and ready for uploading"
+
+
+def post_process_AuditMetadata(auditMetadata):
+    auditMetadata_cp = auditMetadata.copy()
+    auditMetadata_cp['date'] = iso8601.parse_date(auditMetadata_cp['date'])
+    return auditMetadata_cp
 
 
 def addAuditsEndpoint(app, mongo):
@@ -183,33 +175,51 @@ def addAuditsEndpoint(app, mongo):
     def audits():
         if request.method == 'POST':
             auditData = request.json
-            filledAuditForms, auditMetaData = processAuditdata(auditData)
-            filledAuditForms = post_process_forms(filledAuditForms)
+            auditMetaData = auditData["auditMetadata"]
+            filledAuditForms = auditData["auditForms"]
+
             allFormsAreValid = validateFilledAuditForms(filledAuditForms)
+            allMetadataAreValid = validateAuditMetadata(auditMetaData)
+
+            if not allMetadataAreValid[0]:
+                errorDescription = allMetadataAreValid[1]
+                return serverResponse(None, 400, errorDescription)
 
             if not allFormsAreValid[0]:
                 errorDescription = allFormsAreValid[1]
-                jsonMsg = failureMsg(errorDescription[-1], 400)
-                jsonMsg["category"] = errorDescription[0]
-                jsonMsg["index"] = errorDescription[1]
-                return failureResponse(jsonMsg, 400)
+                jsonMsg = {
+                    "category": errorDescription[0], "index": errorDescription[1], "description": errorDescription[2]}
+                return serverResponse(jsonMsg, 400, errorDescription[-1])
+
+            auditMetaData_ID, filledAuditForms_ID = generateIDs(
+                auditMetaData, filledAuditForms)
+            filledAuditForms_ID_processed = post_process_filledAuditForms(
+                filledAuditForms_ID)
+            auditMetaData_ID_processed = post_process_AuditMetadata(
+                auditMetaData_ID)
+            auditScore = calculateAuditScore(filledAuditForms_ID_processed)
+            auditMetaData_ID_processed["score"] = auditScore
+
+            if auditScore < 1:
+                auditMetaData_ID_processed['rectificationProgress'] = 0
 
             try:
-                result1 = mongo.db.audits.insert_one(auditMetaData)
+                result1 = mongo.db.audits.insert_one(
+                    auditMetaData_ID_processed)
 
                 if not result1.acknowledged:
-                    return failureResponse(failureMsg("Problem uploading audit details to Database", 503), 503)
+                    return serverResponse(None, 503, "Problem uploading audit details to Database")
 
-                for filledForm in filledAuditForms.values():
+                for filledForm in filledAuditForms_ID_processed.values():
                     result2 = mongo.db.filledAuditForms.insert_one(filledForm)
 
                     if not result2.acknowledged:
-                        return failureResponse(failureMsg("Problem uploading forms to Database", 503), 503)
+                        return serverResponse(None, 503, "Problem uploading forms to Database")
 
             except DuplicateKeyError:
-                return failureResponse(failureMsg("Form has already been uploaded", 400), 400)
+                return serverResponse(None, 400, "Form has already been uploaded")
 
-            return successResponse(successMsg("Forms have been submitted"))
+            return serverResponse(None, 200, "Forms have been submitted successfully!")
 
     @app.route("/audits/<auditID>", methods=['GET'])
     # @login_required
@@ -224,8 +234,8 @@ def addAuditsEndpoint(app, mongo):
                     filledAuditForm = mongo.db.filledAuditForms.find_one(
                         {"_id": formID})
                     if not filledAuditForm:
-                        msg = {"description": "form not found", "status": 404}
-                        return make_response(jsonify(msg), 404)
+                        return serverResponse(None, 404, f"Form not found: {formID}")
+
                     auditFormTemplate = mongo.db.auditFormTemplate.find_one(
                         {"_id": filledAuditForm["formTemplateID"]})
                     questions = {}
@@ -238,14 +248,13 @@ def addAuditsEndpoint(app, mongo):
 
                     filledAuditForm.pop("answers")
                     filledAuditForm["questions"] = questions
-
                     auditForms[formType] = filledAuditForm
 
                 responseJson["auditMetadata"] = audit
                 responseJson["auditForms"] = auditForms
 
-                return make_response(jsonify(responseJson), 200)
+                return serverResponse(responseJson, 200, "Forms retrieved successfully!")
 
             else:
 
-                return make_response(jsonify(description="None found"), 404)
+                return serverResponse(None, 404, "Form not found in our database")
