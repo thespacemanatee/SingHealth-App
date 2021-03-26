@@ -1916,10 +1916,10 @@
     sudo-prompt "^9.0.0"
     wcwidth "^1.0.1"
 
-"@react-native-community/datetimepicker@3.4.2":
-  version "3.4.2"
-  resolved "https://registry.yarnpkg.com/@react-native-community/datetimepicker/-/datetimepicker-3.4.2.tgz#9112125075a7da77cf20909084cba7253f5ae700"
-  integrity sha512-Yn1XSImqNr0nzJq1ZK/NScVAAWubyTBpZTKIYh466CWv/nZXAUBtLXPxohJa+qNcYy5iAwOWPKm3SBktwRFZNg==
+"@react-native-community/datetimepicker@3.4.3":
+  version "3.4.3"
+  resolved "https://registry.yarnpkg.com/@react-native-community/datetimepicker/-/datetimepicker-3.4.3.tgz#e57cc254a53ea7c4229ad7c4cfc3368c109c1db3"
+  integrity sha512-FaryfNYxWvgL2YH+CPhbKl2viLwsYFSq+vrhQT8IHB+uOTPhRtRZ0sWSU1N3eWy8HFwqmTw2Ao5uVgn8cvsUew==
   dependencies:
     invariant "^2.2.4"
 
@@ -11387,10 +11387,8 @@ watchpack@^1.6.1:
   resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-1.7.5.tgz#1267e6c55e0b9b5be44c2023aed5437a2c26c453"
   integrity sha512-9P3MWk6SrKjHsGkLT2KHXdQ/9SNkyoJbabxnKOoJepsvJjJG8uYTR3yTPxPQvNDI3w4Nz1xnE0TLHK4RIVe/MQ==
   dependencies:
-    chokidar "^3.4.1"
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
-    watchpack-chokidar2 "^2.0.1"
   optionalDependencies:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"
