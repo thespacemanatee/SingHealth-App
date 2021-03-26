@@ -58,7 +58,7 @@ def addImagesEndpoint(app):
                     detected_Duplicate_filenames = len(
                         imageFilenames) > len(set(imageFilenames))
                     if detected_Duplicate_filenames:
-                        return failureResponse(failureMsg("Duplicate image names found", 400), 400)
+                        return serverResponse(None, 400, "Duplicate image names found")
 
                     for image in requestData:
                         try:
@@ -70,13 +70,13 @@ def addImagesEndpoint(app):
                             imageData += b"="*pad
 
                         except KeyError:
-                            return failureResponse(failureMsg(
-                                "Wrong request format. Make sure every Image object has a 'fileName' & a 'uri' field", 400), 400)
+                            return serverResponse(
+                                None, 400, "Wrong request format. Make sure every Image object has a 'fileName' & a 'uri' field")
 
                         imageBytes = io.BytesIO(b64decode(imageData))
                         upload_image(imageBytes, os.getenv(
                             "S3_BUCKET"), imageName)
-                    return successResponse(successMsg("Pictures have successfully been uploaded"))
+                    return serverResponse(None, 400, "Pictures have successfully been uploaded")
 
             elif len(request.files) > 0:
                 formdata = request.files
@@ -84,14 +84,14 @@ def addImagesEndpoint(app):
 
                 detected_Duplicate_filenames = len(images) > len(set(images))
                 if detected_Duplicate_filenames:
-                    return failureResponse(failureMsg("Duplicate image names found", 400), 400)
+                    return serverResponse(None, 400, "Duplicate image names found")
 
                 for image in images:
                     imgName = image.filename
                     upload_image(image, os.getenv("S3_BUCKET"), imgName)
 
-                return successResponse(successMsg("Pictures have successfully been uploaded"))
-            return failureResponse(failureMsg("No image data received", 400), 400)
+                return serverResponse(None, 200, "Pictures have successfully been uploaded")
+            return serverResponse(None, 400, "No image data received")
 
         elif request.method == "GET":
             filename = request.args.get("fileName", None)

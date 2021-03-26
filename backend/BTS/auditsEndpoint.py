@@ -8,19 +8,27 @@ import iso8601
 
 def compliant(answer):
     return answer["answer"]
+
+
 def percentageCompliant(ls):
     return ls.count(True) / (ls.count(False) + ls.count(True))
+
+
 def createIDForFilledForm(formTemplate, metadata):
     date = metadata["date"]
     tenant = metadata["tenantID"]
     typeOfForm = formTemplate["type"]
     return date + tenant + typeOfForm
+
+
 def createIDForAuditMetaData(auditMetadata):
     staffID = auditMetadata["staffID"]
     tenantID = auditMetadata["tenantID"]
     institutionID = auditMetadata["institutionID"]
     date = auditMetadata["date"]
     return staffID + tenantID + institutionID + date
+
+
 def calculateAuditScore(filledAuditForms) -> float:
     for formType, filledAuditForm in filledAuditForms.items():
         if filledAuditForm["type"] == "fnb":
@@ -46,13 +54,17 @@ def calculateAuditScore(filledAuditForms) -> float:
             auditScore = c1 + c2 + c3
 
     return auditScore
+
+
 def validateAuditMetadata(auditMetadata):
-    #TODO: check with data base if the users are real
+    # TODO: check with data base if the users are real
     try:
         date = iso8601.parse_date(auditMetadata["date"])
         return True, "Good to go"
     except:
         return False, "Please provide an ISO format for the date"
+
+
 def validateFilledAuditForms(filledAuditForms):
     def validateFilledAuditForm(filledAuditForm):
         answers = filledAuditForm["questions"]
@@ -73,7 +85,7 @@ def validateFilledAuditForms(filledAuditForms):
                 if not answer["answer"]:
                     if len(answer.get("remarks", [])) == 0:
                         return False, category, index, "Please fill in the remarks section"
-                    
+
                     if "deadline" not in answer.keys():
                         return False, category, index, "Please provide the deadline for the rectification"
                     else:
@@ -81,13 +93,15 @@ def validateFilledAuditForms(filledAuditForms):
                             date = iso8601.parse_date(answer["deadline"])
                         except:
                             return False, category, index, "Please provide an ISO format for the deadline"
-                
+
         return True, "Form is valid and ready for uploading"
     for formType, form in filledAuditForms.items():
         isValid = validateFilledAuditForm(form)
         if not isValid[0]:
             return False, isValid[1:]
     return True, "All forms are valid and ready for uploading"
+
+
 def generateIDs(auditMetaData, auditForms):
     auditMetaData["auditChecklists"] = {}
 
@@ -98,7 +112,7 @@ def generateIDs(auditMetaData, auditForms):
     for formType, formTemplate in auditForms.items():
         if formTemplate == None:
             continue
-        
+
         id = createIDForFilledForm(formTemplate, auditMetaData)
         formTemplate["formTemplateID"] = formTemplate["_id"]
         formTemplate["_id"] = id
@@ -109,15 +123,15 @@ def generateIDs(auditMetaData, auditForms):
         # This works for now because we only have 2 forms: 1 covid, 1 non-covid
         # Otherwise, maintain data integrity by writing checks on the incoming data and make sure they have only 2 specific forms
     # Add rect progress -> auditMetaData
-    
+
     return auditMetaData, filledAuditForms
+
+
 def postProcessLineItem(lineItem):
     # convert all time to datetime objects
     #             if answer = False, add a rectified = False
     #             rm qns
     lineItem.pop("question")
-
-    
 
     if not lineItem["answer"]:
         lineItem["rectified"] = False
@@ -125,6 +139,8 @@ def postProcessLineItem(lineItem):
     elif lineItem["answer"] and "rectified" in lineItem.keys():
         lineItem.pop("rectified")
     return lineItem
+
+
 def post_process_filledAuditForms(filledAuditForms):
     output = {}
     # pp = pprint.PrettyPrinter(indent=4)
@@ -145,6 +161,8 @@ def post_process_filledAuditForms(filledAuditForms):
     # print()
     # pp.pprint(output)
     return output
+
+
 def post_process_AuditMetadata(auditMetadata):
     auditMetadata_cp = auditMetadata.copy()
     auditMetadata_cp['date'] = iso8601.parse_date(auditMetadata_cp['date'])
@@ -160,7 +178,6 @@ def addAuditsEndpoint(app, mongo):
             auditMetaData = auditData["auditMetadata"]
             filledAuditForms = auditData["auditForms"]
 
-
             allFormsAreValid = validateFilledAuditForms(filledAuditForms)
             allMetadataAreValid = validateAuditMetadata(auditMetaData)
 
@@ -170,13 +187,16 @@ def addAuditsEndpoint(app, mongo):
 
             if not allFormsAreValid[0]:
                 errorDescription = allFormsAreValid[1]
-                jsonMsg = {"category": errorDescription[0], "index": errorDescription[1]}
+                jsonMsg = {
+                    "category": errorDescription[0], "index": errorDescription[1], "description": errorDescription[2]}
                 return serverResponse(jsonMsg, 400, errorDescription[-1])
 
-
-            auditMetaData_ID, filledAuditForms_ID = generateIDs(auditMetaData, filledAuditForms)
-            filledAuditForms_ID_processed = post_process_filledAuditForms(filledAuditForms_ID)
-            auditMetaData_ID_processed = post_process_AuditMetadata(auditMetaData_ID)
+            auditMetaData_ID, filledAuditForms_ID = generateIDs(
+                auditMetaData, filledAuditForms)
+            filledAuditForms_ID_processed = post_process_filledAuditForms(
+                filledAuditForms_ID)
+            auditMetaData_ID_processed = post_process_AuditMetadata(
+                auditMetaData_ID)
             auditScore = calculateAuditScore(filledAuditForms_ID_processed)
             auditMetaData_ID_processed["score"] = auditScore
 
@@ -184,7 +204,8 @@ def addAuditsEndpoint(app, mongo):
                 auditMetaData_ID_processed['rectificationProgress'] = 0
 
             try:
-                result1 = mongo.db.audits.insert_one(auditMetaData_ID_processed)
+                result1 = mongo.db.audits.insert_one(
+                    auditMetaData_ID_processed)
 
                 if not result1.acknowledged:
                     return serverResponse(None, 503, "Problem uploading audit details to Database")

@@ -43,7 +43,7 @@ export const addChosenChecklist = (checklistType = "fnb") => {
 
     const res = await httpClient(options);
 
-    const checklist = res.data.data;
+    const checklist = res.data;
     console.log(`Done fetching ${checklistType} checklist`);
     return dispatch({ type: ADD_CHOSEN_CHECKLIST, checklistType, checklist });
   };
@@ -59,7 +59,7 @@ export const addCovidChecklist = () => {
 
     const res = await httpClient(options);
 
-    const checklist = res.data.data;
+    const checklist = res.data;
     console.log("Done fetching covid checklist");
     return dispatch({ type: ADD_COVID_CHECKLIST, checklist });
   };
@@ -141,32 +141,28 @@ export const getAuditData = (auditID, stallName) => {
       chosen_checklist: auditForms[type],
       covid19: auditForms.covid19,
       auditMetadata,
-      // auditForm: res.data.data.auditForm,
     });
     return res;
   };
 };
 
-export const getAuditImages = (images, index, section) => {
+export const getAuditImages = (image, index, section) => {
   return async (dispatch) => {
-    console.log(images);
+    console.log(image);
     const options = {
       url: `${endpoint}images`,
       method: "get",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+      params: {
+        fileName: image,
       },
-      // withCredentials: true,
-      data: images,
     };
 
     const res = await httpClient(options);
 
     console.log(res);
 
-    const image = res.data.data;
+    const { data } = res.data;
 
-    dispatch({ type: GET_AUDIT_IMAGES, index, section, image });
+    // dispatch({ type: GET_AUDIT_IMAGES, index, section, image });
   };
 };

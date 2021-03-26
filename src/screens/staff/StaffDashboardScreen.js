@@ -73,6 +73,7 @@ const StaffDashboardScreen = ({ navigation }) => {
       } catch (err) {
         handleErrorResponse(err);
         setError(err.message);
+        setLoading(false);
       }
     },
     [databaseStore.relevantTenants, dispatch, navigation]
@@ -101,12 +102,13 @@ const StaffDashboardScreen = ({ navigation }) => {
       await dispatch(
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
-      console.log(res.data.data);
-      setListData(res.data.data);
+      console.log(res.data);
+      setListData(res.data);
       setLoading(false);
     } catch (err) {
       handleErrorResponse(err);
       setError(err.message);
+      setLoading(false);
     }
   }, [authStore.institutionID, dispatch]);
 
