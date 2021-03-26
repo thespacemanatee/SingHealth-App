@@ -176,10 +176,10 @@ const handleErrorResponse = (err) => {
     console.error(err.response.data);
     console.error(err.response.status);
     console.error(err.response.headers);
-    if (data.status === 403) {
+    if (err.response.status === 403) {
       authActions.signOut();
     } else {
-      switch (Math.floor(data.status / 100)) {
+      switch (Math.floor(err.response.status / 100)) {
         case 4: {
           alert("Error", "Input error.");
           break;
