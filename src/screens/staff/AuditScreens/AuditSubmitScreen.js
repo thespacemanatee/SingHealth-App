@@ -113,32 +113,6 @@ const AuditSubmitScreen = ({ navigation }) => {
     };
 
     uploadAuditData(imageAdded, auditData, base64images, formData);
-
-    // if (imageAdded) {
-    //   Promise.all([
-    //     axios(postAudit),
-    //     axios(Platform.OS === "web" ? postImagesWeb : postImages),
-    //   ])
-    //     .then(
-    //       axios.spread((req1, req2) => {
-    //         console.log(req1.data, "req1");
-    //         console.log(req2.data, "req2");
-    //       })
-    //     )
-    //     .catch((err) => {
-    //       handleErrorResponse(err);
-    //     });
-    // } else {
-    //   axios(postAudit)
-    //     .then((req) => {
-    //       console.log(req.data, "req");
-    //     })
-    //     .catch((err) => {
-    //       handleErrorResponse(err);
-    //     });
-    // }
-
-    setSubmitting(false);
   }, [
     checklistStore.chosen_checklist,
     checklistStore.chosen_checklist_type,
@@ -167,11 +141,12 @@ const AuditSubmitScreen = ({ navigation }) => {
         } else {
           res = await dispatch(databaseActions.postAuditForm(auditData));
         }
-
         console.log(res);
       } catch (err) {
+        setError(err.message);
         handleErrorResponse(err);
       }
+      setSubmitting(false);
     },
     [dispatch]
   );
@@ -195,9 +170,9 @@ const AuditSubmitScreen = ({ navigation }) => {
       <Divider />
       <Layout style={styles.layout}>
         <View style={styles.animationContainer}>
-          {submitting && <SuccessAnimation loading={submitting} />}
-          {!submitting && !error && <SuccessAnimation loading={submitting} />}
-          {!submitting && error && <CrossAnimation loading={submitting} />}
+          {submitting && <SuccessAnimation loading />}
+          {!submitting && error && <CrossAnimation loading={false} />}
+          {!submitting && !error && <SuccessAnimation loading={false} />}
         </View>
         {!submitting && (
           <>
