@@ -3,7 +3,7 @@
     "jsx": "react-native",
     "target": "esnext",
     "lib": [
-      "esnext"
+      "esnext","dom", "es2017"
     ],
     "types": ["jest"],
     "allowJs": true,
@@ -12,6 +12,15 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "moduleResolution": "node"
-  }
+    "moduleResolution": "node",
+    "module": "esnext",
+    "preserveConstEnums": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "strict": true,
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+, "**/*.js"  ],
 }

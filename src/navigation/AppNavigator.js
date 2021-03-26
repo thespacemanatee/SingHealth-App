@@ -17,12 +17,12 @@ import ForgotPasswordScreen from "../screens/staff/AuthScreens/ForgotPasswordScr
 
 const { Navigator, Screen } = createStackNavigator();
 
-const AppNavigator = () => {
+export const AppNavigator = () => {
   const authStore = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 
-  const renderNavigator = () => {
+  export const renderNavigator = () => {
     if (authStore.userType === "staff") {
       return (
         <Navigator headerMode="none">

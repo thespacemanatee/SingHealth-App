@@ -4,7 +4,7 @@ import * as institutions from "./institutions-data.json";
 import * as staffs from "./staffs-data.json";
 import * as tenants from "./tenants-data.json";
 
-const database = {
+export const database = {
   audit_forms: auditForms,
   audits,
   institutions,

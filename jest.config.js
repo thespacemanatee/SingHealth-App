@@ -1,6 +1,11 @@
 module.exports = {
     rootDir: './',
+    testEnvironment: 'node',
+    testMatch: ["**/__tests__/**/*.ts?(x)", "**/?(*.)+(test).ts?(x)","**/?(*.)+(test).js?(x)"],
     preset: 'react-native',
+    "setupFiles": [
+      "<rootDir>/jest/setup.js"
+    ],
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
     verbose: true,
     transform: {
