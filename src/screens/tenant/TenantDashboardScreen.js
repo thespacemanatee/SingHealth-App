@@ -63,7 +63,7 @@ const StaffDashboardScreen = ({ navigation }) => {
       const res = await dispatch(
         databaseActions.getTenantActiveAudits(authStore._id)
       );
-      setListData(res.data.data);
+      setListData(res.data);
       setLoading(false);
     } catch (err) {
       handleErrorResponse(err);
