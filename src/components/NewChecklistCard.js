@@ -1,26 +1,27 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { Card, StyleService, Text } from "@ui-kitten/components";
+import moment from "moment";
 
 import * as checklistActions from "../store/actions/checklistActions";
 
 const NewChecklistCard = ({ item, navigation, onError, onLoading }) => {
   const dispatch = useDispatch();
 
-  const handleCreateNewChecklist = () => {
+  const handleCreateNewChecklist = async () => {
     onLoading(true);
     console.log("ITEM:", item);
-    dispatch(checklistActions.getChecklist(undefined, item))
-      .then(() => {
-        // onLoading(false);
-        const now = new Date().toISOString();
-        navigation.navigate("Checklist", { auditID: now });
-      })
-      .catch((err) => {
-        console.error(err);
-        onLoading(false);
-        onError(err, handleCreateNewChecklist);
-      });
+    try {
+      await dispatch(checklistActions.getChecklist(undefined, item));
+
+      const now = moment(new Date()).toISOString();
+      onLoading(false);
+      navigation.navigate("Checklist", { auditID: now });
+    } catch (err) {
+      console.error(err);
+      onLoading(false);
+      onError(err);
+    }
   };
 
   return (

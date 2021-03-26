@@ -1,17 +1,5 @@
 import React from "react";
-import LottieView from "lottie-react-native";
-import { Platform } from "react-native";
-
-let Lottie;
-
-if (Platform.OS === "web") {
-  import("react-native-web-lottie").then((res) => {
-    console.log(res);
-    Lottie = res.default;
-  });
-} else {
-  Lottie = LottieView;
-}
+import { LottieView } from "../..";
 
 const sourceFile = require("../../../assets/success.json");
 
@@ -27,7 +15,7 @@ class SuccessAnimation extends React.Component {
 
   render() {
     return (
-      <Lottie
+      <LottieView
         ref={(animation) => {
           this.animation = animation;
         }}

@@ -2,14 +2,11 @@ import {
   GET_RELEVANT_TENANTS,
   GET_TENANT_ACTIVE_AUDITS,
   GET_STAFF_ACTIVE_AUDITS,
-  GET_AUDIT_DATA,
 } from "../actions/databaseActions";
 
 const initialState = {
   relevantTenants: [],
   activeAudits: [],
-  auditMetadata: null,
-  auditForm: null,
 };
 
 const equals = (a, b) => {
@@ -53,13 +50,6 @@ const databaseReducer = (state = initialState, action) => {
       return {
         ...state,
         activeAudits: action.activeAudits,
-      };
-    }
-    case GET_AUDIT_DATA: {
-      return {
-        ...state,
-        auditMetadata: action.auditMetadata,
-        auditForm: action.auditForm,
       };
     }
 

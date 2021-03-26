@@ -9,10 +9,10 @@ import { StyleService } from "@ui-kitten/components";
 import * as authActions from "../store/actions/authActions";
 import StaffNavigator from "./StaffNavigator";
 import TenantNavigator from "./TenantNavigator";
-import AuthScreen from "../screens/staff/AuthScreens/AuthScreen";
-import LoginScreen from "../screens/staff/AuthScreens/LoginScreen";
-import RegisterScreen from "../screens/staff/AuthScreens/RegisterScreen";
-import ForgotPasswordScreen from "../screens/staff/AuthScreens/ForgotPasswordScreen";
+import AuthScreen from "../screens/AuthScreens/AuthScreen";
+import LoginScreen from "../screens/AuthScreens/LoginScreen";
+import RegisterScreen from "../screens/AuthScreens/RegisterScreen";
+import ForgotPasswordScreen from "../screens/AuthScreens/ForgotPasswordScreen";
 
 const { Navigator, Screen } = createStackNavigator();
 

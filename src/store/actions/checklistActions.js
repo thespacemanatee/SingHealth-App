@@ -14,6 +14,7 @@ export const CHANGE_ANSWER = "CHANGE_ANSWER";
 export const CHANGE_DEADLINE = "CHANGE_DEADLINE";
 export const RESET_CHECKLIST_STORE = "RESET_CHECKLIST_STORE";
 export const GET_AUDIT_DATA = "GET_AUDIT_DATA";
+export const GET_AUDIT_IMAGES = "GET_AUDIT_IMAGES";
 
 export const TYPE_FNB = "fnb";
 export const TYPE_NON_FNB = "non_fnb";
@@ -33,7 +34,7 @@ export const addAuditTenantSelection = (tenant) => {
   return { type: ADD_AUDIT_TENANT_SELECTION, tenant };
 };
 export const addChosenChecklist = (checklistType = "fnb") => {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     const options = {
       url: `${endpoint}auditForms/${checklistType}`,
       method: "get",
@@ -49,7 +50,7 @@ export const addChosenChecklist = (checklistType = "fnb") => {
 };
 
 export const addCovidChecklist = () => {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     const options = {
       url: `${endpoint}auditForms/covid19`,
       method: "get",
@@ -139,9 +140,33 @@ export const getAuditData = (auditID, stallName) => {
       chosen_checklist_type: type,
       chosen_checklist: auditForms[type],
       covid19: auditForms.covid19,
-      // auditMetadata: res.data.data.auditMetadata,
+      auditMetadata,
       // auditForm: res.data.data.auditForm,
     });
     return res;
+  };
+};
+
+export const getAuditImages = (images, index, section) => {
+  return async (dispatch) => {
+    console.log(images);
+    const options = {
+      url: `${endpoint}images`,
+      method: "get",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      // withCredentials: true,
+      data: images,
+    };
+
+    const res = await httpClient(options);
+
+    console.log(res);
+
+    const image = res.data.data;
+
+    dispatch({ type: GET_AUDIT_IMAGES, index, section, image });
   };
 };

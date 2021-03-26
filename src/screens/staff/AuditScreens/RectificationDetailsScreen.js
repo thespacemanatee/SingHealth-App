@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { View, Alert, Platform, Dimensions } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import { View, Dimensions } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -12,30 +12,26 @@ import {
   Text,
   useTheme,
 } from "@ui-kitten/components";
-import { Camera } from "expo-camera";
-import * as FileSystem from "expo-file-system";
-import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import moment from "moment";
 
-import alert from "../../../components/CustomAlert";
 import * as checklistActions from "../../../store/actions/checklistActions";
 import ImageViewPager from "../../../components/ImageViewPager";
 import CustomDatepicker from "../../../components/CustomDatePicker";
+import * as authActions from "../../../store/actions/authActions";
+import alert from "../../../components/CustomAlert";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
-const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
-const ImageIcon = (props) => <Icon {...props} name="image-outline" />;
 
-const QuestionDetailsScreen = ({ route, navigation }) => {
+const RectificationDetailsScreen = ({ route, navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
   const { index } = route.params;
   const { question } = route.params;
   const { section } = route.params;
   const [value, setValue] = useState("");
-  const [selectedIndex, setSelectedIndex] = useState(0);
   const [imageArray, setImageArray] = useState([]);
   const [deadline, setDeadline] = useState();
+  const [loading, setLoading] = useState(true);
 
   const theme = useTheme();
 
@@ -53,6 +49,30 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     console.log(val);
     dispatch(checklistActions.addRemarks(section, index, val));
   };
+
+  const getImages = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      await dispatch(
+        checklistActions.getAuditImages(
+          JSON.stringify({
+            fileNames:
+              checklistStore.chosen_checklist.questions[section][index].image,
+          }),
+          index,
+          section
+        )
+      );
+    } catch (err) {
+      handleErrorResponse(err);
+    }
+    setLoading(false);
+  }, [checklistStore.chosen_checklist, dispatch, index, section]);
+
+  useEffect(() => {
+    getImages();
+  }, [getImages]);
 
   useEffect(() => {
     let storeImageUri;
@@ -101,51 +121,6 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     }
   }, [checklistStore, dispatch, index, section]);
 
-  const onSave = async (imageData) => {
-    if (imageArray.length > 2) {
-      alert("Upload Failed", "Max upload count is 3.", [{ text: "OK" }]);
-    } else {
-      const fileName = checklistStore.chosen_tenant.stallName + Date.now();
-      let destination;
-      if (Platform.OS === "web") {
-        destination = imageData.uri;
-      } else {
-        destination = FileSystem.cacheDirectory + fileName.replace(/\s+/g, "");
-        // console.log(destination);
-        await FileSystem.copyAsync({
-          from: imageData.uri,
-          to: destination,
-        });
-      }
-      dispatch(checklistActions.addImage(section, index, destination));
-      setSelectedIndex(selectedIndex + 1);
-    }
-  };
-
-  const startCamera = async () => {
-    const { status } = await Camera.requestPermissionsAsync();
-    if (status === "granted") {
-      navigation.navigate("CameraModal", { onSave });
-    } else {
-      Alert.alert("Access denied");
-    }
-  };
-
-  const imagePickerHandler = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [3, 4],
-      quality: 1,
-    });
-
-    // console.log(result);
-
-    if (!result.cancelled) {
-      onSave(result);
-    }
-  };
-
   const BackAction = () => (
     <TopNavigationAction
       icon={BackIcon}
@@ -155,48 +130,12 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     />
   );
 
-  const CameraAction = () => (
-    <TopNavigationAction
-      icon={CameraIcon}
-      onPress={() => {
-        if (Platform.OS === "web") {
-          navigation.navigate("CameraModal", { onSave });
-        } else {
-          startCamera();
-        }
-      }}
-    />
-  );
-
-  const ImageAction = () => (
-    <TopNavigationAction
-      icon={ImageIcon}
-      onPress={() => {
-        // if (Platform.OS === "web") {
-        //   navigation.navigate("CameraModal", { onSave: onSave });
-        // } else {
-        imagePickerHandler();
-        // }
-      }}
-    />
-  );
-
-  const renderRightActions = () => {
-    return (
-      <>
-        <CameraAction />
-        <ImageAction />
-      </>
-    );
-  };
-
   return (
     <View style={styles.screen}>
       <TopNavigation
-        title="Details"
+        title="Rectify"
         alignment="center"
         accessoryLeft={BackAction}
-        accessoryRight={renderRightActions}
       />
       <Divider />
       <View
@@ -235,7 +174,45 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   );
 };
 
-export default QuestionDetailsScreen;
+const handleErrorResponse = (err) => {
+  if (err.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    const { data } = err.response;
+    console.error(err.response.data);
+    console.error(err.response.status);
+    console.error(err.response.headers);
+    if (data.status === 403) {
+      authActions.signOut();
+    } else {
+      switch (Math.floor(data.status / 100)) {
+        case 4: {
+          alert("Error", "Input error.");
+          break;
+        }
+        case 5: {
+          alert("Server Error", "Please contact your administrator.");
+          break;
+        }
+        default: {
+          alert("Request timeout", "Check your internet connection.");
+          break;
+        }
+      }
+    }
+  } else if (err.request) {
+    // The request was made but no response was received
+    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+    // http.ClientRequest in node.js
+    console.error(err.request);
+  } else {
+    // Something happened in setting up the request that triggered an Error
+    console.error("Error", err.message);
+  }
+  console.error(err.config);
+};
+
+export default RectificationDetailsScreen;
 
 const styles = StyleService.create({
   screen: {
