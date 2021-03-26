@@ -54,16 +54,20 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
     try {
       setLoading(true);
 
-      await dispatch(
-        checklistActions.getAuditImages(
-          JSON.stringify({
-            fileNames:
-              checklistStore.chosen_checklist.questions[section][index].image,
-          }),
-          index,
-          section
+      const temp = [];
+
+      await Promise.all(
+        checklistStore.chosen_checklist.questions[section][index].image.map(
+          async (fileName) => {
+            const res = await dispatch(
+              checklistActions.getAuditImages(fileName)
+            );
+            temp.push(`data:image/jpg;base64,${res.data}`);
+          }
         )
       );
+      setImageArray(temp);
+      setLoading(false);
     } catch (err) {
       handleErrorResponse(err);
       setLoading(false);

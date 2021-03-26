@@ -146,7 +146,7 @@ export const getAuditData = (auditID, stallName) => {
   };
 };
 
-export const getAuditImages = (image, index, section) => {
+export const getAuditImages = (image) => {
   return async (dispatch) => {
     console.log(image);
     const options = {
@@ -159,9 +159,7 @@ export const getAuditImages = (image, index, section) => {
 
     const res = await httpClient(options);
 
-    console.log(res);
-
-    const { data } = res.data;
+    return res;
 
     // dispatch({ type: GET_AUDIT_IMAGES, index, section, image });
   };

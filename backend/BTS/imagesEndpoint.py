@@ -76,7 +76,7 @@ def addImagesEndpoint(app):
                         imageBytes = io.BytesIO(b64decode(imageData))
                         upload_image(imageBytes, os.getenv(
                             "S3_BUCKET"), imageName)
-                    return serverResponse(None, 400, "Pictures have successfully been uploaded")
+                    return serverResponse(None, 200, "Pictures have successfully been uploaded")
 
             elif len(request.files) > 0:
                 formdata = request.files
