@@ -17,7 +17,13 @@ import alert from "./CustomAlert";
 
 const TrashIcon = (props) => <Icon {...props} name="trash" />;
 
-const SavedChecklistCard = ({ item, navigation, deleteSave }) => {
+const SavedChecklistCard = ({
+  item,
+  navigation,
+  deleteSave,
+  onError,
+  onLoading,
+}) => {
   const leftSwipeable = useRef(null);
   const dispatch = useDispatch();
 
@@ -35,16 +41,22 @@ const SavedChecklistCard = ({ item, navigation, deleteSave }) => {
   };
 
   const rightSwipe = useCallback(async () => {
-    let data = await AsyncStorage.getItem("savedChecklists");
-    if (data !== null) {
-      data = JSON.parse(data);
-    }
-    delete data[item.time];
-    console.log(data);
-    AsyncStorage.setItem("savedChecklists", JSON.stringify(data));
+    try {
+      onLoading(true);
+      let data = await AsyncStorage.getItem("savedChecklists");
+      if (data !== null) {
+        data = JSON.parse(data);
+      }
+      delete data[item.time];
+      console.log(data);
+      AsyncStorage.setItem("savedChecklists", JSON.stringify(data));
 
-    deleteSave();
-  }, [deleteSave, item.time]);
+      await deleteSave();
+    } catch (err) {
+      onError(err);
+      onLoading(false);
+    }
+  }, [deleteSave, item.time, onError, onLoading]);
 
   const leftComponent = useCallback(() => {
     return (

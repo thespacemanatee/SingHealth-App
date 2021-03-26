@@ -27,8 +27,6 @@ export const restoreToken = () => {
 
 export const signIn = (user, pswd, userType) => {
   return async (dispatch) => {
-    // dispatch({ action: SIGN_IN, token: token ? token : null });
-
     const loginOptions = {
       url: `${endpoint}login/${userType}`,
       method: "post",
@@ -43,7 +41,7 @@ export const signIn = (user, pswd, userType) => {
       },
     };
     const res = await httpClient(loginOptions);
-    // .then((res) => {
+
     const userToken = "dummy-auth-token";
     const { _id, email, institutionID, name } = res.data.data;
     const userData = {
@@ -57,10 +55,6 @@ export const signIn = (user, pswd, userType) => {
 
     dispatch({ type: SIGN_IN, userData });
     saveUserDataToStorage(userData);
-    // })
-    // .catch((err) => {
-    //   handleErrorResponse(err);
-    // });
   };
 };
 
@@ -89,40 +83,9 @@ export const signOut = () => {
 };
 
 const saveUserDataToStorage = async (userData) => {
-  try {
-    await AsyncStorage.setItem("userData", JSON.stringify(userData));
-  } catch (err) {
-    handleErrorResponse(err);
-  }
+  await AsyncStorage.setItem("userData", JSON.stringify(userData));
 };
 
 const removeTokenFromStorage = async () => {
-  try {
-    await AsyncStorage.removeItem("userData");
-  } catch (err) {
-    handleErrorResponse(err);
-  }
-};
-
-// eslint-disable-next-line import/prefer-default-export
-export const handleErrorResponse = (err) => {
-  if (err.response) {
-    // The request was made and the server responded with a status code
-    // that falls out of the range of 2xx
-    console.error(err.response.data);
-    console.error(err.response.status);
-    console.error(err.response.headers);
-    if (err.response.status === 403) {
-      signOut();
-    }
-  } else if (err.request) {
-    // The request was made but no response was received
-    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-    // http.ClientRequest in node.js
-    console.error(err.request);
-  } else {
-    // Something happened in setting up the request that triggered an Error
-    console.error("Error", err.message);
-  }
-  console.error(err.config);
+  await AsyncStorage.removeItem("userData");
 };

@@ -18,7 +18,7 @@ import * as databaseActions from "../../../store/actions/databaseActions";
 import SavedChecklistCard from "../../../components/SavedChecklistCard";
 import NewChecklistCard from "../../../components/NewChecklistCard";
 import alert from "../../../components/CustomAlert";
-import { handleErrorResponse } from "../../../store/actions/authActions";
+import * as authActions from "../../../store/actions/authActions";
 import SkeletonLoading from "../../../components/ui/SkeletonLoading";
 import CenteredLoading from "../../../components/ui/CenteredLoading";
 
@@ -58,21 +58,6 @@ const ChooseTenantScreen = ({ navigation }) => {
     [theme]
   );
 
-  const handleError = (err, retryFunction) => {
-    alert("Request timeout", "Check your internet connection.", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Confirm",
-        style: "default",
-        onPress: retryFunction,
-      },
-    ]);
-  };
-
-  const handleLoading = (load) => {
-    setLoading(load);
-  };
-
   const renderSectionList = useCallback(
     (itemData) => {
       if (itemData.item.data) {
@@ -81,8 +66,8 @@ const ChooseTenantScreen = ({ navigation }) => {
             item={itemData.item}
             navigation={navigation}
             deleteSave={handleDeleteSavedChecklist}
-            onError={handleError}
-            onLoading={handleLoading}
+            onError={handleErrorResponse}
+            onLoading={setLoading}
           />
         );
       }
@@ -91,8 +76,8 @@ const ChooseTenantScreen = ({ navigation }) => {
         <NewChecklistCard
           item={itemData.item}
           navigation={navigation}
-          onError={handleError}
-          onLoading={handleLoading}
+          onError={handleErrorResponse}
+          onLoading={setLoading}
         />
       );
     },
@@ -124,11 +109,11 @@ const ChooseTenantScreen = ({ navigation }) => {
           });
         }
       }
-      setLoading(false);
       setSectionData(tempChecklists);
-    } catch (err) {
       setLoading(false);
+    } catch (err) {
       handleErrorResponse(err);
+      setLoading(false);
     }
   }, [authStore.institutionID, dispatch]);
 
@@ -136,6 +121,7 @@ const ChooseTenantScreen = ({ navigation }) => {
     // Subscribe for the focus Listener
     getSectionData();
     const unsubscribe = navigation.addListener("focus", () => {
+      setLoading(true);
       getSectionData();
       setTimeout(() => {
         dispatch(checklistActions.resetChecklistStore());
@@ -180,6 +166,44 @@ const ChooseTenantScreen = ({ navigation }) => {
       </Layout>
     </View>
   );
+};
+
+const handleErrorResponse = (err) => {
+  if (err.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    const { data } = err.response;
+    console.error(err.response.data);
+    console.error(err.response.status);
+    console.error(err.response.headers);
+    if (data.status === 403) {
+      authActions.signOut();
+    } else {
+      switch (Math.floor(data.status / 100)) {
+        case 4: {
+          alert("Error", "Input error.");
+          break;
+        }
+        case 5: {
+          alert("Server Error", "Please contact your administrator.");
+          break;
+        }
+        default: {
+          alert("Request timeout", "Check your internet connection.");
+          break;
+        }
+      }
+    }
+  } else if (err.request) {
+    // The request was made but no response was received
+    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+    // http.ClientRequest in node.js
+    console.error(err.request);
+  } else {
+    // Something happened in setting up the request that triggered an Error
+    console.error("Error", err.message);
+  }
+  console.error(err.config);
 };
 
 const styles = StyleService.create({

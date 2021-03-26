@@ -8,14 +8,20 @@ import {
   Layout,
   StyleService,
   TopNavigation,
+  TopNavigationAction,
+  Icon,
 } from "@ui-kitten/components";
 import _ from "lodash";
+import moment from "moment";
 
-import { CommonActions } from "@react-navigation/routers";
+import { StackActions } from "@react-navigation/routers";
 import SuccessAnimation from "../../../components/ui/SuccessAnimation";
 import CrossAnimation from "../../../components/ui/CrossAnimation";
 import * as databaseActions from "../../../store/actions/databaseActions";
-import { handleErrorResponse } from "../../../store/actions/authActions";
+import * as authActions from "../../../store/actions/authActions";
+import alert from "../../../components/CustomAlert";
+
+const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const AuditSubmitScreen = ({ navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
@@ -26,6 +32,7 @@ const AuditSubmitScreen = ({ navigation }) => {
 
   const submitHandler = useCallback(async () => {
     setError(false);
+    setSubmitting(true);
     const tempChosenChecklist = _.cloneDeep(checklistStore.chosen_checklist);
     const tempCovid19Checklist = _.cloneDeep(checklistStore.covid19);
     const chosenTenant = checklistStore.chosen_tenant.tenantID;
@@ -142,13 +149,14 @@ const AuditSubmitScreen = ({ navigation }) => {
           res = await dispatch(databaseActions.postAuditForm(auditData));
         }
         console.log(res);
+        setSubmitting(false);
       } catch (err) {
-        setError(err.message);
-        handleErrorResponse(err);
+        setSubmitting(false);
+        setError(true);
+        handleErrorResponse(err, handleGoBack);
       }
-      setSubmitting(false);
     },
-    [dispatch]
+    [dispatch, handleGoBack]
   );
 
   useEffect(() => {
@@ -156,17 +164,30 @@ const AuditSubmitScreen = ({ navigation }) => {
   }, [checklistStore, submitHandler]);
 
   const handleGoHome = () => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 1,
-        routes: [{ name: "StaffDashboard" }],
-      })
-    );
+    navigation.dispatch(StackActions.popToTop());
+  };
+
+  const handleGoBack = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
+
+  const handleRetry = () => {
+    submitHandler();
+  };
+
+  const renderBackAction = () => {
+    return error ? (
+      <TopNavigationAction icon={BackIcon} onPress={handleGoBack} />
+    ) : null;
   };
 
   return (
     <View style={styles.screen}>
-      <TopNavigation title="SingHealth" alignment="center" />
+      <TopNavigation
+        title="SingHealth"
+        alignment="center"
+        accessoryLeft={renderBackAction}
+      />
       <Divider />
       <Layout style={styles.layout}>
         <View style={styles.animationContainer}>
@@ -174,17 +195,86 @@ const AuditSubmitScreen = ({ navigation }) => {
           {!submitting && error && <CrossAnimation loading={false} />}
           {!submitting && !error && <SuccessAnimation loading={false} />}
         </View>
+        <View style={{ flex: 1 }} />
         {!submitting && (
-          <>
+          <View
+            style={{
+              marginVertical: 20,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-around",
+                paddingVertical: 20,
+              }}
+            >
+              <Button onPress={handleGoHome}>GO HOME</Button>
+              {error ? <Button onPress={handleRetry}>RETRY</Button> : null}
+            </View>
             <Text style={styles.text}>
-              Audit submitted on: {new Date().toLocaleDateString()}
+              Audit submitted on:{" "}
+              {moment(new Date())
+                .toLocaleString()
+                .split(" ")
+                .slice(0, 5)
+                .join(" ")}
             </Text>
-            <Button onPress={handleGoHome}>GO HOME</Button>
-          </>
+          </View>
         )}
       </Layout>
     </View>
   );
+};
+
+const handleErrorResponse = (err, handleGoBack) => {
+  if (err.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    const { data } = err.response;
+    console.error(err.response.data);
+    console.error(err.response.status);
+    console.error(err.response.headers);
+    if (data.status === 403) {
+      authActions.signOut();
+    } else {
+      switch (Math.floor(data.status / 100)) {
+        case 4: {
+          alert(
+            "Error",
+            `${data.description} in question ${data.index + 1}, under the ${
+              data.category
+            } section.`,
+            [
+              { text: "Cancel", style: "cancel" },
+              {
+                text: "Go back",
+                onPress: handleGoBack,
+              },
+            ]
+          );
+          break;
+        }
+        case 5: {
+          alert("Server Error", "Please contact your administrator.");
+          break;
+        }
+        default: {
+          alert("Request timeout", "Check your internet connection.");
+          break;
+        }
+      }
+    }
+  } else if (err.request) {
+    // The request was made but no response was received
+    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+    // http.ClientRequest in node.js
+    console.error(err.request);
+  } else {
+    // Something happened in setting up the request that triggered an Error
+    console.error("Error", err.message);
+  }
+  console.error(err.config);
 };
 
 const styles = StyleService.create({
@@ -194,12 +284,12 @@ const styles = StyleService.create({
   },
   layout: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
   },
   animationContainer: {
     height: 200,
     width: 200,
+    marginVertical: 20,
   },
   text: {
     fontWeight: "bold",

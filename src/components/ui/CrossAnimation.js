@@ -17,6 +17,7 @@ class CrossAnimation extends React.Component {
         // eslint-disable-next-line react/destructuring-assignment
         loop={this.props.loading}
         source={sourceFile}
+        resizeMode="cover"
       />
     );
     // }
