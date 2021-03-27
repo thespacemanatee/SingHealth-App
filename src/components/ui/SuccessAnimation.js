@@ -1,31 +1,20 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { LottieView } from "../..";
 
 const sourceFile = require("../../../assets/success.json");
 
-class SuccessAnimation extends React.Component {
-  componentDidMount() {
-    // eslint-disable-next-line react/destructuring-assignment
-    if (this.props.loading) {
-      this.animation.play(0, 50);
-    } else {
-      this.animation.play();
-    }
-  }
+const SuccessAnimation = ({ loading }) => {
+  const animation = useRef(null);
 
-  render() {
-    return (
-      <LottieView
-        ref={(animation) => {
-          this.animation = animation;
-        }}
-        // eslint-disable-next-line react/destructuring-assignment
-        loop={this.props.loading}
-        source={sourceFile}
-      />
-    );
-    // }
-  }
-}
+  useEffect(() => {
+    if (loading) {
+      animation.current.play(0, 50);
+    } else {
+      animation.current.play();
+    }
+  }, [loading]);
+
+  return <LottieView ref={animation} loop={loading} source={sourceFile} />;
+};
 
 export default SuccessAnimation;

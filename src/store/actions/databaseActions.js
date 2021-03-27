@@ -13,7 +13,7 @@ export const getRelevantTenants = (institutionID) => {
     };
     console.log(institutionID);
     const res = await httpClient(options);
-    dispatch({ type: GET_RELEVANT_TENANTS, relevantTenants: res.data.data });
+    dispatch({ type: GET_RELEVANT_TENANTS, relevantTenants: res.data });
     return res;
   };
 };
@@ -26,7 +26,7 @@ export const getTenantActiveAudits = (tenantID, daysBefore = 0) => {
       // withCredentials: true,
     };
     const res = await httpClient(options);
-    dispatch({ type: GET_TENANT_ACTIVE_AUDITS, activeAudits: res.data.data });
+    dispatch({ type: GET_TENANT_ACTIVE_AUDITS, activeAudits: res.data });
     return res;
   };
 };
@@ -39,7 +39,7 @@ export const getStaffActiveAudits = (institutionID, daysBefore = 0) => {
       // withCredentials: true,
     };
     const res = await httpClient(options);
-    dispatch({ type: GET_STAFF_ACTIVE_AUDITS, activeAudits: res.data.data });
+    dispatch({ type: GET_STAFF_ACTIVE_AUDITS, activeAudits: res.data });
     return res;
   };
 };
@@ -58,7 +58,6 @@ export const postAuditForm = (auditData) => {
     };
 
     const res = await httpClient(postAudit);
-    // console.log(res.data.data);
 
     return res;
   };
@@ -74,6 +73,7 @@ export const postAuditImages = (formData) => {
         "Content-Type": "multipart/form-data",
       },
       data: formData,
+      timeout: 30000,
     };
     const res = await httpClient(postImages);
 
@@ -91,6 +91,7 @@ export const postAuditImagesWeb = (base64images) => {
         "Content-Type": "application/json",
       },
       data: base64images,
+      timeout: 30000,
     };
     const res = await httpClient(postImagesWeb);
 

@@ -73,6 +73,7 @@ const StaffDashboardScreen = ({ navigation }) => {
       } catch (err) {
         handleErrorResponse(err);
         setError(err.message);
+        setLoading(false);
       }
     },
     [databaseStore.relevantTenants, dispatch, navigation]
@@ -101,12 +102,13 @@ const StaffDashboardScreen = ({ navigation }) => {
       await dispatch(
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
-      console.log(res.data.data);
-      setListData(res.data.data);
+      console.log(res.data);
+      setListData(res.data);
       setLoading(false);
     } catch (err) {
       handleErrorResponse(err);
       setError(err.message);
+      setLoading(false);
     }
   }, [authStore.institutionID, dispatch]);
 
@@ -195,10 +197,10 @@ const handleErrorResponse = (err) => {
     console.error(err.response.data);
     console.error(err.response.status);
     console.error(err.response.headers);
-    if (data.status === 403) {
+    if (err.response.status === 403) {
       authActions.signOut();
     } else {
-      switch (Math.floor(data.status / 100)) {
+      switch (Math.floor(err.response.status / 100)) {
         case 4: {
           alert("Error", "Input error.");
           break;

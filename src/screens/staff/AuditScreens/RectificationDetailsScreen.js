@@ -54,18 +54,23 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
     try {
       setLoading(true);
 
-      await dispatch(
-        checklistActions.getAuditImages(
-          JSON.stringify({
-            fileNames:
-              checklistStore.chosen_checklist.questions[section][index].image,
-          }),
-          index,
-          section
+      const temp = [];
+
+      await Promise.all(
+        checklistStore.chosen_checklist.questions[section][index].image.map(
+          async (fileName) => {
+            const res = await dispatch(
+              checklistActions.getAuditImages(fileName)
+            );
+            temp.push(`data:image/jpg;base64,${res.data}`);
+          }
         )
       );
+      setImageArray(temp);
+      setLoading(false);
     } catch (err) {
       handleErrorResponse(err);
+      setLoading(false);
     }
     setLoading(false);
   }, [checklistStore.chosen_checklist, dispatch, index, section]);
@@ -182,10 +187,10 @@ const handleErrorResponse = (err) => {
     console.error(err.response.data);
     console.error(err.response.status);
     console.error(err.response.headers);
-    if (data.status === 403) {
+    if (err.response.status === 403) {
       authActions.signOut();
     } else {
-      switch (Math.floor(data.status / 100)) {
+      switch (Math.floor(err.response.status / 100)) {
         case 4: {
           alert("Error", "Input error.");
           break;

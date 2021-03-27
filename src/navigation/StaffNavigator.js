@@ -127,6 +127,15 @@ const StaffDashboardStackNavigator = () => {
   return (
     <Navigator headerMode="none">
       <Screen name="StaffDashboard" component={StaffDashboardScreen} />
+      <Screen name="ChooseTenant" component={ChooseTenantScreen} />
+      <Screen name="Checklist" component={ChecklistScreen} />
+      <Screen name="Rectification" component={RectificationScreen} />
+      <Screen name="QuestionDetails" component={QuestionDetailsScreen} />
+      <Screen
+        name="RectificationDetails"
+        component={RectificationDetailsScreen}
+      />
+      <Screen name="AuditSubmit" component={AuditSubmitScreen} />
     </Navigator>
   );
 };

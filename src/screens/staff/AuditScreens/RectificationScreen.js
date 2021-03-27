@@ -73,23 +73,19 @@ const RectificationScreen = ({ route, navigation }) => {
     try {
       const checklistType = index === 0 ? "fnb" : "non_fnb";
       setError(false);
-      // setErrorMsg("");
       setLoading(true);
       await dispatch(checklistActions.getChecklist(checklistType, tenant));
-      // .then(() => {
       createNewSections();
       setLoading(false);
     } catch (err) {
       handleErrorResponse(err);
       setError(err.message);
-      // setErrorMsg(err.message);
       setLoading(false);
     }
   };
 
   const saveChecklists = async () => {
     try {
-      // AsyncStorage.removeItem("savedChecklists");
       const toSave = {
         chosen_tenant: checklistStore.chosen_tenant,
         time: auditID,
@@ -98,7 +94,6 @@ const RectificationScreen = ({ route, navigation }) => {
 
       const value = await AsyncStorage.getItem("savedChecklists");
       if (value === null) {
-        // value previously stored
         AsyncStorage.setItem(
           "savedChecklists",
           JSON.stringify({ [auditID]: toSave })
@@ -106,14 +101,12 @@ const RectificationScreen = ({ route, navigation }) => {
       } else {
         const temp = JSON.parse(value);
         temp[auditID] = toSave;
-        // console.log(temp);
         AsyncStorage.setItem("savedChecklists", JSON.stringify(temp));
       }
     } catch (err) {
-      // error reading value
       handleErrorResponse(err);
       setError(err.message);
-      // setErrorMsg(err.message);
+      setLoading(false);
     }
   };
 
@@ -301,10 +294,10 @@ const handleErrorResponse = (err) => {
     console.error(err.response.data);
     console.error(err.response.status);
     console.error(err.response.headers);
-    if (data.status === 403) {
+    if (err.response.status === 403) {
       authActions.signOut();
     } else {
-      switch (Math.floor(data.status / 100)) {
+      switch (Math.floor(err.response.status / 100)) {
         case 4: {
           alert("Error", "Input error.");
           break;
