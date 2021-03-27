@@ -7,7 +7,7 @@ Created on Fri Mar 26 01:47:13 2021
 
 from flask import Flask, request
 from utils import serverResponse
-
+import datetime
 
 def check_required_info(mydict, key_arr):
     missing_keys = []
@@ -63,7 +63,7 @@ def change_tenant_info(app, mongo):
                          "stall_name", "company_name", 
                          "company_POC_name", "company_POC_email",
                          "unit_no", "fnb",
-                         "staffID", "date", "tenantDateStart", "tenantDateEnd"]
+                         "staffID", "tenantDateStart", "tenantDateEnd"]
         
         try:
             if request.method == "POST":
@@ -91,7 +91,7 @@ def change_tenant_info(app, mongo):
                                 "zipcode": tenant_info.get("zipcode", None)},
                             "fnb":tenant_info["fnb"]},
                         "createdBy":tenant_info["staffID"],
-                        "dateCreated":tenant_info["date"],
+                        "dateCreated":datetime.datetime.now().isoformat(),
                         "tenantDateStart": tenant_info.get("tenantDateStart", None),
                         "tenantDateEnd": tenant_info.get("tenantDateEnd", None)
                          }
