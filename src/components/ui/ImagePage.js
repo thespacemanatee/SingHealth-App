@@ -5,6 +5,7 @@ import { Button, StyleService } from "@ui-kitten/components";
 
 import alert from "../CustomAlert";
 import * as checklistActions from "../../store/actions/checklistActions";
+import CenteredLoading from "./CenteredLoading";
 
 const ImagePage = (props) => {
   const SCREEN_HEIGHT = Dimensions.get("window").height;
@@ -15,6 +16,7 @@ const ImagePage = (props) => {
   const { index } = props;
   const { section } = props;
   const { selectedIndex } = props;
+  const { loading } = props;
 
   const dispatch = useDispatch();
 
@@ -64,7 +66,11 @@ const ImagePage = (props) => {
               width: IMAGE_WIDTH,
             }}
           >
-            <Text style={styles.text}>No Images. Start adding some!</Text>
+            {!loading ? (
+              <Text style={styles.text}>No Images. Start adding some!</Text>
+            ) : (
+              <CenteredLoading />
+            )}
           </View>
         )}
       </View>

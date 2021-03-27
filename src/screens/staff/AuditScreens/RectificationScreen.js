@@ -16,12 +16,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
 
 import * as checklistActions from "../../../store/actions/checklistActions";
-import QuestionCard from "../../../components/QuestionCard";
 import alert from "../../../components/CustomAlert";
 import * as authActions from "../../../store/actions/authActions";
 import SectionHeader from "../../../components/ui/SectionHeader";
 import SkeletonLoading from "../../../components/ui/SkeletonLoading";
 import CenteredLoading from "../../../components/ui/CenteredLoading";
+import RectificationCard from "../../../components/RectificationCard";
 
 export const FNB_SECTION = "F&B Checklist";
 export const NON_FNB_SECTION = "Non-F&B Checklist";
@@ -37,7 +37,7 @@ const RectificationScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  // console.log(checklistStore.chosen_checklist_type);
+  // console.log(checklistStore.chosen_checklist);
 
   // const { type } = route.params;
   const { auditID } = route.params;
@@ -79,7 +79,7 @@ const RectificationScreen = ({ route, navigation }) => {
       setLoading(false);
     } catch (err) {
       handleErrorResponse(err);
-      setError(err.message);
+      setError(true);
       setLoading(false);
     }
   };
@@ -140,13 +140,12 @@ const RectificationScreen = ({ route, navigation }) => {
   const renderChosenChecklist = useCallback(
     (itemData) => {
       return (
-        <QuestionCard
+        <RectificationCard
           index={itemData.index}
           question={itemData.item.question}
           answer={itemData.item.answer}
           section={itemData.section.title}
           navigation={navigation}
-          rectify
         />
       );
     },

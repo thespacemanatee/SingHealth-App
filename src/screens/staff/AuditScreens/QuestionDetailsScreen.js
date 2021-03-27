@@ -55,7 +55,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    let storeImageUri;
+    let storeImages;
     let storeRemarks;
     let storeDeadline;
     if (
@@ -64,11 +64,11 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
         section
       )
     ) {
-      storeImageUri = checklistStore.covid19.questions[section][index].image;
+      storeImages = checklistStore.covid19.questions[section][index].image;
       storeRemarks = checklistStore.covid19.questions[section][index].remarks;
       storeDeadline = checklistStore.covid19.questions[section][index].deadline;
     } else {
-      storeImageUri =
+      storeImages =
         checklistStore.chosen_checklist.questions[section][index].image;
       storeRemarks =
         checklistStore.chosen_checklist.questions[section][index].remarks;
@@ -76,8 +76,9 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
         checklistStore.chosen_checklist.questions[section][index].deadline;
     }
 
-    if (storeImageUri) {
-      setImageArray(storeImageUri);
+    if (storeImages) {
+      const images = storeImages.map((e) => e.uri);
+      setImageArray(images);
     }
     if (storeRemarks) {
       setValue(storeRemarks);
@@ -105,7 +106,10 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     if (imageArray.length > 2) {
       alert("Upload Failed", "Max upload count is 3.", [{ text: "OK" }]);
     } else {
-      const fileName = checklistStore.chosen_tenant.stallName + Date.now();
+      const fileName = `${`${checklistStore.chosen_tenant.tenantID}${Math.round(
+        Date.now() * Math.random()
+      )}`}.jpg`;
+      // const fileName = checklistStore.chosen_tenant.stallName + Date.now();
       let destination;
       if (Platform.OS === "web") {
         destination = imageData.uri;
@@ -117,7 +121,9 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           to: destination,
         });
       }
-      dispatch(checklistActions.addImage(section, index, destination));
+      dispatch(
+        checklistActions.addImage(section, index, fileName, destination)
+      );
       setSelectedIndex(selectedIndex + 1);
     }
   };

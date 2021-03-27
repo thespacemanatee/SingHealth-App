@@ -53,19 +53,20 @@ const AuditSubmitScreen = ({ navigation }) => {
         if (element.image) {
           imageAdded = true;
           element.image.forEach((image, imageIndex) => {
-            const fileName = `${`${chosenTenant}_${imageIndex}_${Math.round(
-              Date.now() * Math.random()
-            )}`}.jpg`;
+            // const fileName = `${`${chosenTenant}_${imageIndex}_${Math.round(
+            //   Date.now() * Math.random()
+            // )}`}.jpg`;
             if (Platform.OS === "web") {
-              base64images.images.push({ fileName, uri: image });
+              base64images.images.push(image);
             } else {
               formData.append("images", {
-                uri: image,
-                name: fileName,
+                // uri: image,
+                // name: fileName,
+                ...image,
                 type: "image/jpg",
               });
             }
-            chosenChecklistImages.push(fileName);
+            chosenChecklistImages.push(image.name);
           });
           tempChosenChecklist.questions[section][
             index
@@ -82,19 +83,20 @@ const AuditSubmitScreen = ({ navigation }) => {
         if (element.image) {
           imageAdded = true;
           element.image.forEach((image, imageIndex) => {
-            const fileName = `${`${chosenTenant}_${imageIndex}_${Math.round(
-              Date.now() * Math.random()
-            )}`}.jpg`;
+            // const fileName = `${`${chosenTenant}_${imageIndex}_${Math.round(
+            //   Date.now() * Math.random()
+            // )}`}.jpg`;
             if (Platform.OS === "web") {
-              base64images.images.push({ fileName, uri: image });
+              base64images.images.push(image);
             } else {
               formData.append("images", {
-                uri: image,
-                name: fileName,
+                // uri: image,
+                // name: fileName,
+                ...image,
                 type: "image/jpeg",
               });
             }
-            covid19ChecklistImages.push(fileName);
+            covid19ChecklistImages.push(image.name);
           });
           tempCovid19Checklist.questions[section][
             index
@@ -111,7 +113,7 @@ const AuditSubmitScreen = ({ navigation }) => {
         staffID: "CGH_Staff1",
         tenantID: chosenTenant,
         institutionID: "CGH",
-        date: new Date().toISOString(),
+        date: moment(new Date()).toISOString(),
       },
       auditForms: {
         [chosenChecklistType]: tempChosenChecklist,

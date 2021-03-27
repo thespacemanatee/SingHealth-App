@@ -32,6 +32,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
   const [imageArray, setImageArray] = useState([]);
   const [deadline, setDeadline] = useState();
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   const theme = useTheme();
 
@@ -50,37 +51,57 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
     dispatch(checklistActions.addRemarks(section, index, val));
   };
 
-  const getImages = useCallback(async () => {
+  const getImages = async () => {
     try {
       setLoading(true);
 
-      const temp = [];
+      // const temp = [];
 
-      await Promise.all(
-        checklistStore.chosen_checklist.questions[section][index].image.map(
-          async (fileName) => {
-            const res = await dispatch(
-              checklistActions.getAuditImages(fileName)
-            );
-            temp.push(`data:image/jpg;base64,${res.data}`);
-          }
-        )
-      );
-      setImageArray(temp);
+      if (checklistStore.chosen_checklist.questions[section][index].image) {
+        setLoading(true);
+        try {
+          await Promise.all(
+            checklistStore.chosen_checklist.questions[section][index].image.map(
+              async (fileName) => {
+                if (!fileName.name) {
+                  const res = await dispatch(
+                    checklistActions.getImage(fileName)
+                  );
+                  dispatch(
+                    checklistActions.addImage(
+                      section,
+                      index,
+                      fileName,
+                      `data:image/jpg;base64,${res.data}`
+                    )
+                  );
+                }
+              }
+            )
+          );
+          setLoading(false);
+        } catch (err) {
+          setError(err);
+          setLoading(false);
+          handleErrorResponse(err);
+        }
+      }
+      // setImageArray(temp);
       setLoading(false);
     } catch (err) {
       handleErrorResponse(err);
       setLoading(false);
     }
     setLoading(false);
-  }, [checklistStore.chosen_checklist, dispatch, index, section]);
+  };
 
   useEffect(() => {
+    console.log("USEEFFECT");
     getImages();
-  }, [getImages]);
+  }, []);
 
   useEffect(() => {
-    let storeImageUri;
+    let storeImages;
     let storeRemarks;
     let storeDeadline;
     if (
@@ -89,11 +110,11 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
         section
       )
     ) {
-      storeImageUri = checklistStore.covid19.questions[section][index].image;
+      storeImages = checklistStore.covid19.questions[section][index].image;
       storeRemarks = checklistStore.covid19.questions[section][index].remarks;
       storeDeadline = checklistStore.covid19.questions[section][index].deadline;
     } else {
-      storeImageUri =
+      storeImages =
         checklistStore.chosen_checklist.questions[section][index].image;
       storeRemarks =
         checklistStore.chosen_checklist.questions[section][index].remarks;
@@ -101,8 +122,10 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
         checklistStore.chosen_checklist.questions[section][index].deadline;
     }
 
-    if (storeImageUri) {
-      setImageArray(storeImageUri);
+    if (storeImages) {
+      const images = storeImages.map((e) => e.uri);
+      console.log("AFTER GET IMAGES:", storeImages);
+      setImageArray(images);
     }
     if (storeRemarks) {
       setValue(storeRemarks);
@@ -110,19 +133,15 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
     if (storeDeadline) {
       setDeadline(storeDeadline);
     } else {
-      dispatch(
-        checklistActions.changeDeadline(
-          section,
-          index,
-          moment(
-            new Date(
-              new Date().getFullYear(),
-              new Date().getMonth(),
-              new Date().getDate() + 7
-            )
-          )
+      const newDate = moment(
+        new Date(
+          new Date().getFullYear(),
+          new Date().getMonth(),
+          new Date().getDate() + 7
         )
       );
+      dispatch(checklistActions.changeDeadline(section, index, newDate));
+      setDeadline(newDate);
     }
   }, [checklistStore, dispatch, index, section]);
 
@@ -157,7 +176,9 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
             imageArray={imageArray}
             index={index}
             section={section}
+            loading={loading}
           />
+
           <View style={styles.datePickerContainer}>
             <Text category="h6">Deadline: </Text>
             <CustomDatepicker onSelect={handleDateChange} deadline={deadline} />

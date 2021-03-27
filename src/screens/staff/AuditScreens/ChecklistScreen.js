@@ -15,11 +15,13 @@ import {
   useTheme,
 } from "@ui-kitten/components";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import moment from "moment";
 
 import * as checklistActions from "../../../store/actions/checklistActions";
 import QuestionCard from "../../../components/QuestionCard";
 import alert from "../../../components/CustomAlert";
 import * as authActions from "../../../store/actions/authActions";
+import SectionHeader from "../../../components/ui/SectionHeader";
 import SkeletonLoading from "../../../components/ui/SkeletonLoading";
 import CenteredLoading from "../../../components/ui/CenteredLoading";
 
@@ -105,7 +107,6 @@ const ChecklistScreen = ({ route, navigation }) => {
 
   const saveChecklists = async () => {
     try {
-      // AsyncStorage.removeItem("savedChecklists");
       const toSave = {
         chosen_tenant: checklistStore.chosen_tenant,
         time: auditID,
@@ -114,7 +115,6 @@ const ChecklistScreen = ({ route, navigation }) => {
 
       const value = await AsyncStorage.getItem("savedChecklists");
       if (value === null) {
-        // value previously stored
         AsyncStorage.setItem(
           "savedChecklists",
           JSON.stringify({ [auditID]: toSave })
@@ -122,15 +122,12 @@ const ChecklistScreen = ({ route, navigation }) => {
       } else {
         const temp = JSON.parse(value);
         temp[auditID] = toSave;
-        // console.log(temp);
         AsyncStorage.setItem("savedChecklists", JSON.stringify(temp));
       }
     } catch (err) {
-      // error reading value
       handleErrorResponse(err);
       setError(err.message);
       setLoading(false);
-      // setErrorMsg(err.message);
     }
   };
 
@@ -176,17 +173,9 @@ const ChecklistScreen = ({ route, navigation }) => {
     [navigation]
   );
 
-  const renderSectionHeader = useCallback(
-    ({ section: { title } }) => {
-      return (
-        <View style={{ backgroundColor: theme["color-primary-300"] }}>
-          <Text style={styles.header}>{title}</Text>
-          <Divider />
-        </View>
-      );
-    },
-    [theme]
-  );
+  const renderSectionHeader = useCallback(({ section: { title } }) => {
+    return <SectionHeader title={title} />;
+  }, []);
 
   const SaveAction = () => (
     <TopNavigationAction icon={SaveIcon} onPress={handleSaveChecklist} />
@@ -233,8 +222,6 @@ const ChecklistScreen = ({ route, navigation }) => {
     createNewSections();
     setLoading(false);
   }, [createNewSections]);
-
-  // if (loa
 
   if (error) {
     return (
@@ -287,7 +274,13 @@ const ChecklistScreen = ({ route, navigation }) => {
           <Text style={styles.title}>
             Audit: {checklistStore.chosen_tenant.stallName}
           </Text>
-          <Text>{new Date().toDateString()}</Text>
+          <Text>
+            {moment(new Date())
+              .toLocaleString()
+              .split(" ")
+              .slice(0, 5)
+              .join(" ")}
+          </Text>
         </View>
         <RadioGroup
           selectedIndex={selectedIndex}
@@ -378,11 +371,6 @@ const styles = StyleService.create({
     paddingLeft: 20,
     flexDirection: "row",
     flexWrap: "wrap",
-  },
-  header: {
-    fontSize: 24,
-    padding: 10,
-    fontWeight: "bold",
   },
   bottomContainer: {
     flexDirection: "row-reverse",

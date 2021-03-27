@@ -9,6 +9,7 @@ const ImageViewPager = (props) => {
   const { imageArray } = props;
   const { index } = props;
   const { section } = props;
+  const { loading } = props;
 
   const renderImages = imageArray.map((imageUri) => {
     return (
@@ -18,6 +19,7 @@ const ImageViewPager = (props) => {
         index={index}
         section={section}
         selectedIndex={selectedIndex}
+        loading={loading}
       />
     );
   });
