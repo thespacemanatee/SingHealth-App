@@ -692,46 +692,6 @@ localhost:5000/audits/unrectified/recent/staff/grwrbgbgbewvw/4
 }
 ```
 
-## `GET /audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`
-### Description of use case
-The tenant is interested in seeing any past audits that have not been rectified and needs to query only his own audits.
-### URL parameters
-URL param | Description
--|-
-`tenantID` | The unique identifier for the tenant account
-`daysBefore` | An integer indicating how early the audits to query from. If 0, all unrectified audits regardless of time will be returned.
-
-### Sample request
-#### With date range
-```js
-localhost:5000/audits/unrectified/recent/tenant/grwrbgbgbewvw/4
-```
-#### Without date range
-```js
-localhost:5000/audits/unrectified/recent/tenant/grwrbgbgbewvw/0
-```
-### Sample response
-#### Success
-```js
-{
-    "status": 200,
-    "description": "Forms found",
-    "data": [
-        <Audit object>,
-        <Audit object>
-    ]
-}
-```
-
-#### Failure
-```js
-{
-    "status": 404,
-    "description": "No matching Forms",
-    "data": []
-}
-```
-
 ## `POST /tenant`
 ### Description of use case
 The staff to add new tenant.
@@ -749,7 +709,6 @@ JSON param | Description
 `unit_no` | The unit number. I.e. 02-212 (without hashes).
 `fnb` | Whether the stall is an F&B stall.
 `staffID` | ID of staff who created this account.
-`dateCreated` | Date when the account was created (submitted to database), in ISO date format.
 `tenantDateStart` | Date when tenantship started, without including exact date. I.e. MM/YYYY
 `tenantDateEnd` | The unique identifier for the tenant account. I.e. MM/YYYY
 
@@ -777,7 +736,6 @@ JSON param | Description
     "unit_no": "01-001",
     "fnb": true,
     "staffID": "000111",
-    "date": "dd/mm/yyyy",
     "stall_number": "stall 7",
   	"tenantDateStart": "03/2021",
   	"tenantDateEnd": "05/2025"
@@ -801,7 +759,6 @@ JSON param | Description
     "zipcode": 123456,
     "fnb": true,
     "staffID": "000111",
-    "date": "dd/mm/yyyy",
     "stall_number": "stall 7",
   	"tenantDateStart": "03/2021",
   	"tenantDateEnd": "05/2025"
