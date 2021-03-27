@@ -17,39 +17,49 @@ def addWenXinEndpoints(app, mongo):
             tenants = mongo.db.tenant.find({"institutionID": institutionID})
     
             result = [{
-                'tenantID' : tenant['_id'], 
+                'tenantID' : str(tenant['_id']), 
                 'stallName' : tenant["stall"]["name"]
                 }
                       for tenant in tenants]
             
-            output = return_find_data_json(result)
+            if len(result) > 0 :
+                output = return_response("Success", result)
+            else:
+                output = return_response("No matching data", [], code = 404)
                 
         except:
             output = return_response("error in connection", code = 404)
-    
+        
         return output
+
 
     @app.route("/auditForms/<form_type>", methods=["GET"])
     def get_audit_form(form_type):
         try:
             form = mongo.db.auditFormTemplate.find_one(
                 {"type": form_type})  
-            
+                
             checklist = {}
             if form is not None:
                 for category in form["questions"]:
                     checklist[category] = form["questions"][category]
                 
                 result = [{
-                    "_id" : form["_id"],
+                    "_id" : str(form["_id"]),
                     "type" : form["type"],
                     "questions" : checklist
                     }]
+                
+                output = return_response("Success", data = result)
             else:
-                result = []
+                output = return_response("No matching form", code = 404)
     
-            output = return_find_data_json(result)
-            
-            
+            if len(result) > 0 :
+                output = return_response("Success", result)
+            else:
+                output = return_response("No matching form", [], code = 404)
+    
         except:
              output = return_response("unspecified connection/data error", code = 404)
+        
+        return output

@@ -34,15 +34,6 @@ def return_response(desc, data = None, code = 200):
         
     return output
 
-def return_find_data_json(result): 
-    #if data is found
-    if len(result) > 0 :
-        output = return_response("success", result)
-    else:
-        output = return_response("no matching data", [])
-        
-    return output
-
 def check_required_info(mydict, key_arr):
     missing_keys = []
     key_value_error = []
