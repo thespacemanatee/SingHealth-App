@@ -17,6 +17,7 @@ const ImagePage = (props) => {
   const { section } = props;
   const { selectedIndex } = props;
   const { loading } = props;
+  const { rectify } = props;
 
   const dispatch = useDispatch();
 
@@ -48,15 +49,17 @@ const ImagePage = (props) => {
                 uri: imageUri,
               }}
             />
-            <Button
-              style={styles.button}
-              appearance="ghost"
-              status="control"
-              size="giant"
-              onPress={handleAlert}
-            >
-              Delete
-            </Button>
+            {!rectify ? (
+              <Button
+                style={styles.button}
+                appearance="ghost"
+                status="control"
+                size="giant"
+                onPress={handleAlert}
+              >
+                Delete
+              </Button>
+            ) : null}
           </View>
         ) : (
           <View

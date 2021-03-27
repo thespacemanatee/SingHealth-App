@@ -177,6 +177,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
             index={index}
             section={section}
             loading={loading}
+            rectify
           />
 
           <View style={styles.datePickerContainer}>

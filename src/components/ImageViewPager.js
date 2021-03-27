@@ -10,6 +10,7 @@ const ImageViewPager = (props) => {
   const { index } = props;
   const { section } = props;
   const { loading } = props;
+  const { rectify } = props;
 
   const renderImages = imageArray.map((imageUri) => {
     return (
@@ -20,6 +21,7 @@ const ImageViewPager = (props) => {
         section={section}
         selectedIndex={selectedIndex}
         loading={loading}
+        rectify={rectify}
       />
     );
   });
