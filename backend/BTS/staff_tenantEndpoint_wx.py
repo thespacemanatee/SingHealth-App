@@ -6,12 +6,23 @@ Created on Fri Mar 26 01:47:13 2021
 """
 
 from flask import request
+from flask_pymongo import ObjectId
 from wx_utils import return_response, return_find_data_json, validate_required_info
 import datetime
 
 
 #For the staff to edit tenant info
 def change_tenant_info(app, mongo):
+    def find_tenant_by_id(tenantID):
+        try:
+            tenant = mongo.db.tenant.find_one({"_id" : ObjectId(tenantID)})
+            
+            if tenant is not None:
+                return True, tenant
+            else:
+                return False, None
+        except:
+            return None, None
     
     @app.route("/tenant", methods = ["POST"])
     def add_tenant():
@@ -62,6 +73,35 @@ def change_tenant_info(app, mongo):
         except:
             return return_response("No response received", code = 404)
         
-        return return_response("Tenant Added")
-
+        return return_response("Tenant Added", code = 201)
+    
+    @app.route("/tenant/<tenantID>" , methods = ["GET"])
+    def get_tenant(tenantID):
+        tenant_found, tenant_info = find_tenant_by_id(tenantID)
+        
+        if tenant_found is not None:
+            if tenant_found:
+                tenant_info["_id"] = tenantID
+                return return_response("Success", data = tenant_info, code = 200)
+            else:
+                return return_response("No matching tenant ID found", code = 404)
+        else:
+            return return_response("Error connecting to server", code = 404)
+        
+    @app.route("/tenant/<tenantID>" , methods = ["DELETE"])
+    def delete_tenant(tenantID):
+        tenant_found, tenant_info = find_tenant_by_id(tenantID)
+    
+        if tenant_found is not None:
+            if tenant_found:
+                try:
+                    mongo.db.tenant.delete_one( {"_id": ObjectId(tenantID)});
+                except:
+                    return return_response("Error connecting to server", code = 404)
+                
+                return return_response("Tenant with ID " + tenantID + " deleted")
+            else:
+                return return_response("No matching tenant ID found", code = 404)
+        else:
+            return return_response("Error connecting to server", code = 404)
 

@@ -74,3 +74,4 @@ def validate_required_info(mydict, key_arr):
     
     else:
         return False, "Wrong input parameter type"
+    

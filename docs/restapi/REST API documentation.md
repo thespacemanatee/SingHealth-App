@@ -16,8 +16,8 @@
 - [x] [`GET /audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`)
 - [x] [`GET /audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`)
 - [x] [`POST /tenant`](#POST-/tenant`)
-- [] [`DELETE /tenant/{tenantID}`](#POST-/tenant\{tenantID}`)
-- [] [`GET /tenant/{tenantID}`](#GET-/tenant\{tenantID}`)
+- [x] [`DELETE /tenant/<tenantID>`](#POST-/tenant\{tenantID}`)
+- [x] [`GET /tenant/<tenantID>`](#GET-/tenant\{tenantID}`)
 ---
 
 
@@ -32,7 +32,8 @@ Param | Description
 localhost:5000/tenants/CGH
 ```
 
-### Sample success response
+### Sample responses
+#### Success
 ```
 {
   "status": 200,
@@ -47,9 +48,26 @@ localhost:5000/tenants/CGH
         "stallName": "Jollibean"
       }
   ]
-  
 }
 ```
+
+#### Failure
+##### No matching data found
+```
+{
+  "status": 404,
+  "description": "No tenant with the institution ID found"
+}
+```
+
+##### Server Connection error
+```
+{
+  "status": 404,
+  "description": "Error in connection"
+}
+```
+
 ### Response definitions
 `tenantID`
 ~ Unique identifier for tenant
@@ -69,6 +87,7 @@ Param | Description
 localhost:5000/auditForms/fnb
 ```
 ### Sample Response
+#### Success
 ```js
 {
   "description": "Success",
@@ -101,6 +120,24 @@ localhost:5000/auditForms/fnb
   }
 }
 ```
+
+#### Failure
+##### No matching data found
+```
+{
+  "status": 404,
+  "description": "No matching form"
+}
+```
+
+##### Server Connection error
+```
+{
+  "status": 404,
+  "description": "Error in connection"
+}
+```
+
 
 
 <br>
@@ -768,9 +805,8 @@ JSON param | Description
 #### Success
 ```js
 {
-    "status": 200,
-    "description": "Tenant Added",
-    "data": []
+    "status": 201,
+    "description": "Tenant Added"
     ]
 }
 ```
@@ -781,11 +817,11 @@ JSON param | Description
 {
     "status": 200,
     "description": "Insufficient/Error in data to add new tenant",
-    "data": {
+    "data": [{
       "missing_keys": ["key1", "key2", ...]
       "key_value_error": ["key3", "key4", ...]
-    }
-    ]
+    }]
+    
 }
 ```
 
@@ -794,8 +830,7 @@ JSON param | Description
 ```js
 {
     "status": 404,
-    "description": "No response received",
-    "data": []
+    "description": "No response received"
 }
 ```
 
@@ -803,7 +838,91 @@ JSON param | Description
 ```js
 {
     "status": 404,
-    "description": "Cannot upload data to server",
-    "data": []
+    "description": "Cannot upload data to server"
+}
+```
+
+## `DELETE /tenant/<tenantID>`
+### Description of use case
+The staff to delete existing tenant.
+### URL Query Parameters
+URL Param | Description
+-|-
+`tenantID` | The unique identifier for tenant
+
+### Sample request
+```
+localhost:5000/tenant/0ta2b2kjq
+```
+
+### Sample responses
+#### Success
+```js
+{
+  "status": 200,
+  "description": "Tenant with ID 0ta2b2kjq deleted"
+}
+```
+
+#### Failure
+##### TenantID not found
+```js
+{
+  "status": 404,
+  "description": "No matching tenant ID found"
+}
+```
+
+##### Server Error
+```js
+{
+  "status": 404,
+  "description": "Error connecting to server"
+}
+```
+
+## `GET /tenant/<tenantID>`
+### Description of use case
+The staff to view existing tenant.
+### URL Query Parameters
+URL Param | Description
+-|-
+`tenantID` | The unique identifier for tenant
+
+### Sample request
+```
+localhost:5000/tenant/0ta2b2kjq
+```
+
+### Sample responses
+#### Success
+```js
+{
+  "status": 200,
+  "description": "Success",
+  "data": [{
+    "name": "myname",
+    "email": "myemail@gg.com",
+    ...
+  }]
+
+  ]
+}
+```
+
+#### Failure
+##### TenantID not found
+```js
+{
+  "status": 404,
+  "description": "No matching tenant ID found"
+}
+```
+
+##### Server Error
+```js
+{
+  "status": 404,
+  "description": "Error connecting to server"
 }
 ```
