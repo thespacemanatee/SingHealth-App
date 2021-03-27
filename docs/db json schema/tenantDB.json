@@ -38,7 +38,7 @@
                     "type": "string"
                 },
                 "companyPOC": {
-                    "description": "The unique identifier for a tenant",
+                    "description": "All the info regarding the company's point of contact",
                     "type": "object",
                     "properties": {
                         "name": {
@@ -53,7 +53,7 @@
                     "required": ["name", "email"]
                 },
                 "address": {
-                    "description": "Name of the company the stall is representing",
+                    "description": "All the info regarding the stall address",
                     "type": "object",
                     "properties": {
                         "blk": {
@@ -73,6 +73,7 @@
                             "type": "string"
                         },
                         "zipcode": {
+                            "description": "The zipcode of the stall. I.e. 123456 (only numbers)",
                             "type": "integer"
                         }
                     },
@@ -90,7 +91,7 @@
             "type": "string"
         },
         "dateCreated": {
-            "description": "Date when the account was created",
+            "description": "Date when the account was created (submitted to database), in ISO date format",
             "type": "string"
         },
         "tenantDateStart": {
