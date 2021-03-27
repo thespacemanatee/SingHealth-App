@@ -20,7 +20,12 @@
     "transformIgnorePatterns": [
       "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*)"
     ],
-    "setupFiles": ["<rootDir>/_tests_/jest-setup.js"]
+    "setupFiles": [
+      "<rootDir>/_tests_/jest-setup.js"
+    ],
+    "snapshotSrializers": [
+      "enzyme-to-json/seriaizer"
+    ]
   },
   "dependencies": {
     "@babel/preset-env": "^7.13.10",
@@ -43,6 +48,7 @@
     "babel-preset-react-native": "^4.0.1",
     "d3-shape": "^2.1.0",
     "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.6",
     "expo": "^40.0.1",
     "expo-app-loading": "^1.0.1",
     "expo-camera": "~9.1.0",
