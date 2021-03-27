@@ -5,52 +5,9 @@ Created on Fri Mar 26 01:47:13 2021
 @author: angel
 """
 
-from flask import Flask, request
-from utils import serverResponse
+from flask import request
+from wx_utils import return_response, return_find_data_json, validate_required_info
 import datetime
-
-def check_required_info(mydict, key_arr):
-    missing_keys = []
-    key_value_error = []
-    
-    if isinstance(mydict, dict) and isinstance(key_arr , list):
-        for item in key_arr:
-            #check if the dictionary contains keys
-            if item not in mydict:
-                missing_keys.append(item)
-            
-            else:
-                if mydict[item] is None:
-                    key_value_error.append(item)
-                elif isinstance(mydict[item], str):
-                    if len(mydict[item]) == 0:
-                        key_value_error.append(item)
-                        
-        return missing_keys, key_value_error
-    else:
-        return None
-
-def validate_required_info(mydict, key_arr):
-    if check_required_info(mydict, key_arr) is not None:
-        missing_keys , key_value_error = check_required_info(mydict, key_arr)
-        if len(missing_keys) == 0 and len(key_value_error) == 0:
-            return True, ""
-        
-        else:
-            error_message = {}
-            
-            if len(missing_keys) > 0:
-                error_message["missing_keys"] = missing_keys
-                
-            if len(key_value_error) > 0:
-                error_message["key_value_error"] = key_value_error
-                
-        return False, error_message
-    
-    else:
-        return False, "Wrong input parameter type"
-
-
 
 
 #For the staff to edit tenant info
@@ -58,7 +15,6 @@ def change_tenant_info(app, mongo):
     
     @app.route("/tenant", methods = ["POST"])
     def add_tenant():
-        complete_data = False
         required_info = [ "name", "email", "pswd", "institutionID", 
                          "stall_name", "company_name", 
                          "company_POC_name", "company_POC_email",
@@ -99,13 +55,13 @@ def change_tenant_info(app, mongo):
                 try:
                     mongo.db.tenant.insert_one(data)
                 except:
-                    return serverResponse(None, 404, "Cannot upload data to server")
+                    return return_response("Cannot upload data to server", code = 404)
             else:
-                return serverResponse(message, 200, "Insufficient/Error in data to add new tenant")
+                return return_response("Insufficient/Error in data to add new tenant", data = message)
 
         except:
-            return serverResponse(None, 404, "No response received")
+            return return_response("No response received", code = 404)
         
-        return serverResponse(None, 200, "Tenant Added")
+        return return_response("Tenant Added")
 
 
