@@ -122,19 +122,15 @@ const RectificationScreen = ({ route, navigation }) => {
   };
 
   const onSubmitHandler = () => {
-    if (Platform.OS === "web") {
-      navigation.navigate("AuditSubmit");
-    } else {
-      alert("Confirm Submission", "Are you sure you want to submit?", [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Submit",
-          // onPress: () => {
-          //   navigation.navigate("AuditSubmit");
-          // },
-        },
-      ]);
-    }
+    alert("Confirm Submission", "Are you sure you want to submit?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Submit",
+        // onPress: () => {
+        //   navigation.navigate("AuditSubmit");
+        // },
+      },
+    ]);
   };
 
   const renderChosenChecklist = useCallback(
