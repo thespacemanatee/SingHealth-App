@@ -769,19 +769,41 @@ JSON param | Description
 ```js
 {
     "status": 200,
-    "description": "Forms found",
-    "data": [
-        <Audit object>,
-        <Audit object>
+    "description": "Tenant Added",
+    "data": []
+    ]
+}
+```
+
+#### Partial Success
+##### Missing keys, null or empty value received for compulsory data fields
+```js
+{
+    "status": 200,
+    "description": "Insufficient/Error in data to add new tenant",
+    "data": {
+      "missing_keys": ["key1", "key2", ...]
+      "key_value_error": ["key3", "key4", ...]
+    }
     ]
 }
 ```
 
 #### Failure
+##### No response received
 ```js
 {
     "status": 404,
-    "description": "No matching Forms",
+    "description": "No response received",
+    "data": []
+}
+```
+
+##### Unable to upload data
+```js
+{
+    "status": 404,
+    "description": "Cannot upload data to server",
     "data": []
 }
 ```
