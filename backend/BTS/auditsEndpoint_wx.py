@@ -25,10 +25,10 @@ def addWenXinEndpoints(app, mongo):
             if len(result) > 0 :
                 output = return_response("Success", result)
             else:
-                output = return_response("No matching data", [], code = 404)
+                output = return_response("No tenant with the institution ID found", code = 404)
                 
         except:
-            output = return_response("error in connection", code = 404)
+            output = return_response("Error in connection", code = 404)
         
         return output
 
@@ -60,6 +60,6 @@ def addWenXinEndpoints(app, mongo):
                 output = return_response("No matching form", [], code = 404)
     
         except:
-             output = return_response("unspecified connection/data error", code = 404)
+             output = return_response("Error in connection", code = 404)
         
         return output
