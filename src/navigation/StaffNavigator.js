@@ -143,9 +143,11 @@ const StaffDashboardStackNavigator = () => {
 const AddTenantStackNavigator = () => {
   const { Navigator, Screen } = createStackNavigator();
   return (
-    <Navigator headerMode="none">
-      <Screen name="AddTenantCred" component={AddTenantCredScreen} />
-    </Navigator>
+    <SafeAreaView style={styles.screen}>
+      <Navigator headerMode="none">
+        <Screen name="AddTenantCred" component={AddTenantCredScreen} />
+      </Navigator>
+    </SafeAreaView>
   );
 };
 

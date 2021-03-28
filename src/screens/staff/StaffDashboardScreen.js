@@ -202,7 +202,7 @@ const handleErrorResponse = (err) => {
     } else {
       switch (Math.floor(err.response.status / 100)) {
         case 4: {
-          alert("Error", "Input error.");
+          alert("Error", err.response.message);
           break;
         }
         case 5: {

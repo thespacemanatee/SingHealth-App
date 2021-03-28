@@ -1,17 +1,38 @@
-import json
-from flask import make_response, jsonify
-import os
+# -*- coding: utf-8 -*-
 
-
-def printJ(data):
-    print(json.dumps(data, indent=4, sort_keys=False))
-
-
-def serverResponse(data, status_code, msg):
-    r = make_response(jsonify(data))
-    r.status = msg
-    r.status_code = status_code
-    return r
+def return_response(desc, data = None, code = 200):
+    internal_error = False
+    
+    #check data types:
+    if isinstance(desc, str) and \
+        isinstance(code, int):
+            if data is None:
+                output = {
+                    "status": code,
+                    "description": desc}
+            else:
+                if isinstance(data, list):
+                    output = {
+                        "status": code,
+                        "description": desc,
+                        "data": data}
+                elif isinstance(data, dict):
+                    output = {
+                        "status": code,
+                        "description": desc,
+                        "data": [data]}
+                else:
+                    internal_error = True
+    else:
+        internal_error = True
+    
+    if internal_error:
+         output = {
+            "status": 404,
+            "description": "Internal algorithm error."
+            }
+        
+    return output
 
 def check_required_info(mydict, key_arr):
     missing_keys = []
@@ -49,4 +70,8 @@ def validate_required_info(mydict, key_arr):
             if len(key_value_error) > 0:
                 error_message["key_value_error"] = key_value_error
                 
-        return False, [error_message]
+        return False, error_message
+    
+    else:
+        return False, "Wrong input parameter type"
+    

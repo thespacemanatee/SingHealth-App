@@ -54,15 +54,9 @@ const checklistReducer = (state = initialState, action) => {
       };
     }
 
-    // TODO:
     case ADD_IMAGE: {
       let newChecklist;
-      if (
-        Object.prototype.hasOwnProperty.call(
-          state.covid19.questions,
-          action.section
-        )
-      ) {
+      if (covidKeys.includes(action.section)) {
         newChecklist = _.cloneDeep(state.covid19);
       } else {
         newChecklist = _.cloneDeep(state.chosen_checklist);
@@ -70,17 +64,22 @@ const checklistReducer = (state = initialState, action) => {
       if (newChecklist.questions[action.section][action.index].image == null) {
         newChecklist.questions[action.section][action.index].image = [];
       }
-      newChecklist.questions[action.section][action.index].image.push(
-        action.imageUri
+
+      const imageObject = {
+        name: action.fileName,
+        uri: action.imageUri,
+      };
+      const temp = newChecklist.questions[action.section][action.index].image;
+
+      temp.push(imageObject);
+
+      newChecklist.questions[action.section][action.index].image = temp.filter(
+        (e) => e !== action.fileName
       );
+
       // console.log(newChecklist.questions);
 
-      if (
-        Object.prototype.hasOwnProperty.call(
-          state.covid19.questions,
-          action.section
-        )
-      ) {
+      if (covidKeys.includes(action.section)) {
         return {
           ...state,
           covid19: newChecklist,
@@ -220,6 +219,44 @@ const checklistReducer = (state = initialState, action) => {
         auditMetadata: action.auditMetadata,
       };
     }
+
+    // case GET_IMAGE: {
+    //   let newChecklist;
+    //   if (covidKeys.includes(action.section)) {
+    //     newChecklist = _.cloneDeep(state.covid19);
+    //   } else {
+    //     newChecklist = _.cloneDeep(state.chosen_checklist);
+    //   }
+    //   if (newChecklist.questions[action.section][action.index].image == null) {
+    //     newChecklist.questions[action.section][action.index].image = [];
+    //   }
+
+    //   const imageObject = {
+    //     name: action.fileName,
+    //     uri: action.imageUri,
+    //   };
+
+    //   const temp = newChecklist.questions[action.section][action.index].image;
+
+    //   temp.push(imageObject);
+
+    //   newChecklist.questions[action.section][action.index].image = temp.filter(
+    //     (e) => e !== action.fileName
+    //   );
+
+    //   // console.log(newChecklist.questions);
+
+    //   if (covidKeys.includes(action.section)) {
+    //     return {
+    //       ...state,
+    //       covid19: newChecklist,
+    //     };
+    //   }
+    //   return {
+    //     ...state,
+    //     chosen_checklist: newChecklist,
+    //   };
+    // }
 
     default:
       return state;

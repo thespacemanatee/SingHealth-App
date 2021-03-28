@@ -14,7 +14,7 @@ export const CHANGE_ANSWER = "CHANGE_ANSWER";
 export const CHANGE_DEADLINE = "CHANGE_DEADLINE";
 export const RESET_CHECKLIST_STORE = "RESET_CHECKLIST_STORE";
 export const GET_AUDIT_DATA = "GET_AUDIT_DATA";
-export const GET_AUDIT_IMAGES = "GET_AUDIT_IMAGES";
+export const GET_IMAGE = "GET_IMAGE";
 
 export const TYPE_FNB = "fnb";
 export const TYPE_NON_FNB = "non_fnb";
@@ -72,11 +72,12 @@ export const addSavedChecklist = (data) => {
   };
 };
 
-export const addImage = (section, index, imageUri) => {
+export const addImage = (section, index, fileName, imageUri) => {
   return {
     type: ADD_IMAGE,
     section,
     index,
+    fileName,
     imageUri,
   };
 };
@@ -146,21 +147,19 @@ export const getAuditData = (auditID, stallName) => {
   };
 };
 
-export const getAuditImages = (image) => {
-  return async (dispatch) => {
-    console.log(image);
+export const getImage = (fileName) => {
+  return async () => {
+    console.log(fileName);
     const options = {
       url: `${endpoint}images`,
       method: "get",
       params: {
-        fileName: image,
+        fileName,
       },
     };
 
     const res = await httpClient(options);
 
     return res;
-
-    // dispatch({ type: GET_AUDIT_IMAGES, index, section, image });
   };
 };

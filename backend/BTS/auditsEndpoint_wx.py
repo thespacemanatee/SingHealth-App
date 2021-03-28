@@ -5,28 +5,7 @@ Created on Fri Mar  5 02:46:03 2021
 @author:wx
 """
 
-from flask import jsonify, make_response
-from .utils import serverResponse
-import os
-
-
-def return_find_data_json(result):
-    output = {}
-
-    # if data is found
-    if len(result) > 0:
-        output = {
-            "status": 200,
-            "description": "success",
-            "data": result}
-    else:
-        output = {
-            "status": 200,
-            "description": "no matching data",
-            "data": {}}
-
-    return output
-
+from .utils import serverResponse, validate_required_info
 
 def addWenXinEndpoints(app, mongo):
     # Able to retrieve tenant and audit form information and return as json string
@@ -36,27 +15,23 @@ def addWenXinEndpoints(app, mongo):
             tenants = mongo.db.tenant.find({"institutionID": institutionID})
 
             result = [{
-                'tenantID': tenant['_id'],
+                'tenantID': str(tenant['_id']),
                 'stallName': tenant["stall"]["name"]
             }
                 for tenant in tenants]
 
-            output = return_find_data_json(result)
+            if len(result) > 0:
+                output = serverResponse(result, 200, "Success")
+            else:
+                output = serverResponse(None, 404, "No tenant with the institution ID found")
 
         except:
-            output = {
-                "status": 404,
-                "description": "error in connection",
-                "data": []}
+            output = serverResponse(None, 404, "Error in connection")
 
-        response = serverResponse(
-            output["data"], output["status"], output["description"])
-        # response.status = output["description"]
-        return response
+        return output
 
     @app.route("/auditForms/<form_type>", methods=["GET"])
     def get_audit_form(form_type):
-
         try:
             form = mongo.db.auditFormTemplate.find_one(
                 {"type": form_type})
@@ -66,23 +41,17 @@ def addWenXinEndpoints(app, mongo):
                 for category in form["questions"]:
                     checklist[category] = form["questions"][category]
 
-                result = {
-                    "_id": form["_id"],
+                result = [{
+                    "_id": str(form["_id"]),
                     "type": form["type"],
                     "questions": checklist
-                }
-            else:
-                result = {}
+                }]
 
-            output = return_find_data_json(result)
+                output = serverResponse(result, 200, "Success")
+            else:
+                output = serverResponse(None, 404, "No matching form")
 
         except:
-            output = {
-                "status": 404,
-                "description": "unspecified connection/data error",
-                "data": {}}
+            output = serverResponse(None, 404, "Error in connection")
 
-        response = serverResponse(
-            output["data"], output["status"], output["description"])
-        # response.status = output["description"]
-        return response
+        return output

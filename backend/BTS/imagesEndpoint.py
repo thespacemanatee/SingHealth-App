@@ -102,6 +102,6 @@ def addImagesEndpoint(app):
                     imageObject.getvalue()).decode()
                 return serverResponse(imageBase64, 200, "Image found")
             except ClientError as e:
-                return serverResponse(None, 502, "Database down. Sorry! Pls try again.")
+                return serverResponse(None, 404, "Image not found")
             except:
-                return serverResponse(None, 500, "Unexpected error")
+                return serverResponse(None, 500, "Unexpected error, pls try again.")
