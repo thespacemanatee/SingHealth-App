@@ -54,7 +54,6 @@ const checklistReducer = (state = initialState, action) => {
       };
     }
 
-    // TODO:
     case ADD_IMAGE: {
       let newChecklist;
       if (covidKeys.includes(action.section)) {

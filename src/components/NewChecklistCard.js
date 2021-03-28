@@ -15,7 +15,6 @@ const NewChecklistCard = ({ item, navigation, onError, onLoading }) => {
       await dispatch(checklistActions.getChecklist(undefined, item));
 
       const now = moment(new Date()).toISOString();
-      onLoading(false);
       navigation.navigate("Checklist", { auditID: now });
     } catch (err) {
       console.error(err);

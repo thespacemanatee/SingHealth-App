@@ -64,7 +64,7 @@ const DirectoryScreen = ({ navigation }) => {
   );
 
   useEffect(() => {
-    // TODO
+    // TODO: replace with mongoDB data
     const tempArray = Object.entries();
     const newTempArray = tempArray.filter((e) => {
       return e[0] !== "default";
