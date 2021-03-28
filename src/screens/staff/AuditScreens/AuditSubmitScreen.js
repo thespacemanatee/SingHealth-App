@@ -54,7 +54,10 @@ const AuditSubmitScreen = ({ navigation }) => {
           imageAdded = true;
           element.image.forEach((image) => {
             if (Platform.OS === "web") {
-              base64images.images.push(image);
+              base64images.images.push({
+                fileName: image.name,
+                uri: image.uri,
+              });
             } else {
               formData.append("images", {
                 ...image,
@@ -83,7 +86,10 @@ const AuditSubmitScreen = ({ navigation }) => {
           imageAdded = true;
           element.image.forEach((image) => {
             if (Platform.OS === "web") {
-              base64images.images.push(image);
+              base64images.images.push({
+                fileName: image.name,
+                uri: image.uri,
+              });
             } else {
               formData.append("images", {
                 ...image,
