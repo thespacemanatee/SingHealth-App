@@ -15,7 +15,7 @@ const CameraIcon = (props) => <Icon {...props} name="camera" />;
 const FlashOnIcon = (props) => <Icon {...props} name="flash" />;
 const FlashOffIcon = (props) => <Icon {...props} name="flash-off" />;
 
-const CameraScreen = ({ route, navigation }) => {
+export const CameraScreen = ({ route, navigation }) => {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
   const [flashMode, setFlashMode] = useState("off");
