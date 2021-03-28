@@ -5,9 +5,7 @@ Created on Fri Mar  5 02:46:03 2021
 @author:wx
 """
 
-
-from .wx_utils import return_response, validate_required_info
-
+from .utils import serverResponse, validate_required_info
 
 def addWenXinEndpoints(app, mongo):
     # Able to retrieve tenant and audit form information and return as json string
@@ -23,13 +21,12 @@ def addWenXinEndpoints(app, mongo):
                 for tenant in tenants]
 
             if len(result) > 0:
-                output = return_response("Success", result)
+                output = serverResponse(result, 200, "Success")
             else:
-                output = return_response(
-                    "No tenant with the institution ID found", code=404)
+                output = serverResponse(None, 404, "No tenant with the institution ID found")
 
         except:
-            output = return_response("Error in connection", code=404)
+            output = serverResponse(None, 404, "Error in connection")
 
         return output
 
@@ -50,16 +47,11 @@ def addWenXinEndpoints(app, mongo):
                     "questions": checklist
                 }]
 
-                output = return_response("Success", data=result)
+                output = serverResponse(result, 200, "Success")
             else:
-                output = return_response("No matching form", code=404)
-
-            if len(result) > 0:
-                output = return_response("Success", result)
-            else:
-                output = return_response("No matching form", [], code=404)
+                output = serverResponse(None, 404, "No matching form")
 
         except:
-            output = return_response("Error in connection", code=404)
+            output = serverResponse(None, 404, "Error in connection")
 
         return output
