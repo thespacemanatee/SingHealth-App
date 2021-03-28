@@ -42,9 +42,6 @@ const ChecklistScreen = ({ route, navigation }) => {
     checklistStore.chosen_checklist_type === "non_fnb" ? 1 : 0
   );
 
-  // console.log(checklistStore.chosen_checklist_type);
-
-  // const { type } = route.params;
   const { auditID } = route.params;
   const tenant = checklistStore.chosen_tenant;
 

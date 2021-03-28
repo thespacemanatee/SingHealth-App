@@ -900,11 +900,11 @@ localhost:5000/tenant/0ta2b2kjq
 {
   "status": 200,
   "description": "Success",
-  "data": [{
+  "data": {
     "name": "myname",
     "email": "myemail@gg.com",
     ...
-  }]
+  }
 
   ]
 }
