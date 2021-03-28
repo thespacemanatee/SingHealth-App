@@ -12,7 +12,6 @@ import {
   StyleService,
   useTheme,
 } from "@ui-kitten/components";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
 
 import * as checklistActions from "../../../store/actions/checklistActions";
@@ -28,7 +27,6 @@ export const NON_FNB_SECTION = "Non-F&B Checklist";
 export const COVID_SECTION = "COVID-19 Checklist";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
-const SaveIcon = (props) => <Icon {...props} name="save-outline" />;
 const RetryIcon = (props) => <Icon {...props} name="refresh-outline" />;
 
 const RectificationScreen = ({ route, navigation }) => {
@@ -37,9 +35,6 @@ const RectificationScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  // console.log(checklistStore.chosen_checklist);
-
-  // const { type } = route.params;
   const { auditID } = route.params;
   const tenant = checklistStore.chosen_tenant;
 
@@ -84,43 +79,6 @@ const RectificationScreen = ({ route, navigation }) => {
     }
   };
 
-  const saveChecklists = async () => {
-    try {
-      const toSave = {
-        chosen_tenant: checklistStore.chosen_tenant,
-        time: auditID,
-        data: checklistStore,
-      };
-
-      const value = await AsyncStorage.getItem("savedChecklists");
-      if (value === null) {
-        AsyncStorage.setItem(
-          "savedChecklists",
-          JSON.stringify({ [auditID]: toSave })
-        );
-      } else {
-        const temp = JSON.parse(value);
-        temp[auditID] = toSave;
-        AsyncStorage.setItem("savedChecklists", JSON.stringify(temp));
-      }
-    } catch (err) {
-      handleErrorResponse(err);
-      setError(err.message);
-      setLoading(false);
-    }
-  };
-
-  const handleSaveChecklist = () => {
-    alert(
-      "Save checklist",
-      "Save progress your current progress. WARNING: un-submitted checklists will expire after a few days.",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Save", onPress: saveChecklists },
-      ]
-    );
-  };
-
   const onSubmitHandler = () => {
     alert("Confirm Submission", "Are you sure you want to submit?", [
       { text: "Cancel", style: "cancel" },
@@ -151,10 +109,6 @@ const RectificationScreen = ({ route, navigation }) => {
   const renderSectionHeader = useCallback(({ section: { title } }) => {
     return <SectionHeader title={title} />;
   }, []);
-
-  const SaveAction = () => (
-    <TopNavigationAction icon={SaveIcon} onPress={handleSaveChecklist} />
-  );
 
   const createNewSections = useCallback(() => {
     const checklist = [
@@ -236,7 +190,6 @@ const RectificationScreen = ({ route, navigation }) => {
         title="Rectification"
         alignment="center"
         accessoryLeft={BackAction}
-        accessoryRight={SaveAction}
       />
       <Divider />
       <Layout style={styles.screen}>

@@ -44,7 +44,7 @@ export const addChosenChecklist = (checklistType = "fnb") => {
     const res = await httpClient(options);
 
     const checklist = res.data;
-    console.log(`Done fetching ${checklistType} checklist`);
+    // console.log(`Done fetching ${checklistType} checklist`, checklist);
     return dispatch({ type: ADD_CHOSEN_CHECKLIST, checklistType, checklist });
   };
 };
@@ -60,7 +60,7 @@ export const addCovidChecklist = () => {
     const res = await httpClient(options);
 
     const checklist = res.data;
-    console.log("Done fetching covid checklist");
+    // console.log("Done fetching covid checklist", checklist);
     return dispatch({ type: ADD_COVID_CHECKLIST, checklist });
   };
 };

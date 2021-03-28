@@ -77,7 +77,7 @@ const DrawerContent = ({ navigation, state }) => (
       onSelect={(index) => navigation.navigate(state.routeNames[index.row])}
     >
       <DrawerItem title="Dashboard" />
-      <DrawerItem title="Add Tenant" />
+      <DrawerItem title="Manage Tenants" />
     </Drawer>
   </SafeAreaView>
 );

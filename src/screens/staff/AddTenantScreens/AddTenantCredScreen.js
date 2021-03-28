@@ -23,7 +23,6 @@ import * as Yup from "yup";
 import CustomTextInput from "../../../components/CustomTextInput";
 import Logo from "../../../components/ui/Logo";
 
-const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 
 const AddTenantCredScreen = ({ navigation }) => {
