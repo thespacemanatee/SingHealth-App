@@ -41,11 +41,11 @@ def addWenXinEndpoints(app, mongo):
                 for category in form["questions"]:
                     checklist[category] = form["questions"][category]
 
-                result = [{
+                result = {
                     "_id": str(form["_id"]),
                     "type": form["type"],
                     "questions": checklist
-                }]
+                }
 
                 output = serverResponse(result, 200, "Success")
             else:
