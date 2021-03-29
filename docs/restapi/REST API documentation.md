@@ -295,7 +295,7 @@ Out of base64(JSON) or formdata, **only use 1** of them per request~
 {
     "status": "200",
     "description": "You are now logged in",
-    "data": <User credentials />
+    "data": <User data />
 }
 ```
 
@@ -338,7 +338,7 @@ Uses exactly the same request and response format as `/login/tenant`
 {
     "status": "200",
     "description": "You are now logged in",
-    "data": <User credentials />
+    "data": <User data />
 }
 ```
 
