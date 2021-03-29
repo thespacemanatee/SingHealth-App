@@ -295,7 +295,7 @@ Out of base64(JSON) or formdata, **only use 1** of them per request~
 {
     "status": "200",
     "description": "You are now logged in",
-    "data": <User credentials>
+    "data": <User credentials />
 }
 ```
 
@@ -338,7 +338,7 @@ Uses exactly the same request and response format as `/login/tenant`
 {
     "status": "200",
     "description": "You are now logged in",
-    "data": <User credentials>
+    "data": <User credentials />
 }
 ```
 
@@ -383,8 +383,8 @@ localhost:5000/auditForms/tegtethg4355g4gbtr
                       "question": "How are you?",
                       "answer": true
                   },
-                  <Question Object>,
-                  <Question Object>
+                  <Question Object />,
+                  <Question Object />
               ],
               "professionalism": [
                 ...
@@ -443,8 +443,8 @@ Tenants will only be allowed to create these 3 fields through this endpoint: `re
                 "rectificationRemarks": "Remarks",
                 "requestForExt": bool
             },
-            <Patch Object>,
-            <Patch Object>
+            <Patch Object />,
+            <Patch Object />
     ],
     <formType>: [
         ...
@@ -465,8 +465,8 @@ Tenants will only be allowed to create these 3 fields through this endpoint: `re
                 "rectificationRemarks": "hello, this is me",
                 "requestForExt": True
             },
-            <Patch Object>,
-            <Patch Object>
+            <Patch Object />,
+            <Patch Object />
     ],
     "covid19": [
         ...
@@ -526,7 +526,7 @@ This PATCH request can be repeated many times. The `deadline`, `acceptedRequest`
             {
                 "category": "Category Name",
                 "index": 0,
-                "deadline": (Str Date in ISO),
+                "deadline": (String Date in ISO),
                 "rectified": bool,
                 "acceptedRequest": bool
             },
@@ -560,7 +560,7 @@ This PATCH request can be repeated many times. The `deadline`, `acceptedRequest`
                 "rectified": false,
                 "acceptedRequest": true
             },
-            <Patch Object>,
+            <Patch Object />,
             ...
     ],
     "covid19": [
@@ -823,8 +823,8 @@ localhost: 5000 / audits / unrectified / recent / staff / grwrbgbgbewvw / 4;
     "status": 200,
     "description": "Forms found",
     "data": [
-        <Audit object>,
-        <Audit object>
+        <Audit object />,
+        <Audit object />
     ]
 }
 ```
