@@ -5,6 +5,13 @@ from flask_login import login_required
 from pymongo.errors import DuplicateKeyError
 import iso8601
 
+requiredPatchKeys = ["category", "index"]
+allowedTenantPatchKeys = ["rectificationImages", "rectificationRemarks", "requestForExt"]
+allowedTenantPatchKeys.extend(requiredPatchKeys)
+allowedStaffPatchKeys = ["rectified", "acceptedRequest", "deadline"]
+allowedStaffPatchKeys.extend(requiredPatchKeys)
+
+
 
 def compliant(answer):
     return answer["answer"]
@@ -169,6 +176,18 @@ def post_process_AuditMetadata(auditMetadata):
     return auditMetadata_cp
 
 
+def validatePatchRequest(patches, allowedPatchKeys, requiredPatchKeys):
+    for formType, patchList in patches.items():
+        for patch in patchList:
+            noInvalidKey = all(map(lambda x : x in allowedPatchKeys, patch.keys()))
+            sufficientKeys = all(map(lambda x : x in patch.keys(), requiredPatchKeys))
+            if not noInvalidKey:
+                return False, "Invalid keys provided. You are trying to modify fields that are locked for modifying."
+
+            if not sufficientKeys:
+                return False, "Unable to narrow down the line item in the audit that you want to edit."
+    return True, "All patches verified"
+
 def addAuditsEndpoint(app, mongo):
     @app.route("/audits", methods=['POST'])
     # @login_required
@@ -258,3 +277,145 @@ def addAuditsEndpoint(app, mongo):
             else:
 
                 return serverResponse(None, 404, "Form not found in our database")
+
+    
+    @app.route("/audits/<auditID>/tenant", methods=['PATCH'])
+    # @login_required
+    def patch_audit_tenant(auditID):
+        if request.method == "PATCH":
+            patches = request.json
+            valid, description = validatePatchRequest(patches, allowedTenantPatchKeys, requiredPatchKeys)
+            if not valid:
+                return serverResponse(None, 400, description)
+            
+            
+            selectedAudit = mongo.db.audits.find_one({"_id": auditID})
+            auditChecklists = selectedAudit["auditChecklists"]
+            for formType, patchList in patches.items():
+                try:
+                    formID = auditChecklists[formType]
+                except KeyError:
+                    return serverResponse(None, 400, f"The form you were trying({formType}) to edit does not exist.")
+                
+                selectedAuditForm = mongo.db.filledAuditForms.find_one({"_id": formID})
+
+                for patch in patchList:
+                    # go to the question number and make sure that it is NC
+                    if selectedAuditForm["answers"][patch["category"]][patch["index"]]["answer"]:
+                        return serverResponse(None, 400, "You are editing a line item that was previously marked as compliant")
+
+                    else:
+                        try:
+                            if selectedAuditForm["answers"][patch["category"]][patch["index"]]["rectified"]:
+                                return serverResponse(None, 400, "You are editing a line item that has already been rectified.")
+                        except KeyError:
+                            return serverResponse(None, 400, "Form does not have required fields. Form might be corrupted.")
+
+
+            for formType, patchList in patches.items():
+                for patch in patchList:
+                    formID = auditChecklists[formType]
+                    lineItem = "answers." + patch["category"] + "." + str(patch["index"]) + "."
+                    mongo.db.filledAuditForms.update_one(
+                        {"_id": formID},
+                        {
+                            "$set": {
+                                #TODO: does it create fields where there weren't any?                                
+                                lineItem + "rectificationImages": patch.get("rectificationImages", None),
+                                lineItem + "rectificationRemarks": patch.get("rectificationRemarks", None),
+                                lineItem + "requestForExt": patch.get("requestForExt", None)
+                            }
+                            
+                        }
+                    )
+
+            
+            return serverResponse(None, 200, "All updates successfully done. Percentage rectification successfully updated")
+
+    @app.route("/audits/<auditID>/staff", methods=['PATCH'])
+    # @login_required
+    def patch_audit_staff(auditID):
+        if request.method == "PATCH":
+            patches = request.json
+            valid, description = validatePatchRequest(patches, allowedStaffPatchKeys, requiredPatchKeys)
+            if not valid:
+                return serverResponse(None, 400, description)
+
+            selectedAudit = mongo.db.audits.find_one({"_id": auditID})
+            auditChecklists = selectedAudit["auditChecklists"]
+            for formType, patchList in patches.items():
+                try:
+                    formID = auditChecklists[formType]
+                except KeyError:
+                    return serverResponse(None, 400, f"The form you were trying({formType}) to edit does not exist.")
+                
+                selectedAuditForm = mongo.db.filledAuditForms.find_one({"_id": formID})
+
+                for patch in patchList:
+                    # go to the question number and make sure that it is NC
+                    if selectedAuditForm["answers"][patch["category"]][patch["index"]]["answer"]:
+                        return serverResponse(None, 400, "You are editing a line item that was previously marked as compliant")
+
+                    else:
+                        try:
+                            if selectedAuditForm["answers"][patch["category"]][patch["index"]]["rectified"]:
+                                return serverResponse(None, 400, "You are editing a line item that has already been rectified.")
+                        except KeyError:
+                            return serverResponse(None, 400, "Form does not have required fields. Form might be corrupted.")
+
+
+            for formType, patchList in patches.items():
+                for patch in patchList:
+                    formID = auditChecklists[formType]
+                    lineItem = "answers." + patch["category"] + "." + str(patch["index"]) + "."
+
+                    
+                    mongo.db.filledAuditForms.update_one(
+                        {"_id": formID},
+                        {
+                            "$set": {
+                                #TODO: does it create fields where there weren't any?                                
+                                lineItem + "rectified": patch.get("rectified", False),
+                                lineItem + "acceptedRequest": patch.get("acceptedRequest", None),
+                            }
+                            
+                        }
+                    )
+                    if patch.get("deadline", None) != None:
+                        mongo.db.filledAuditForms.update_one(
+                        {"_id": formID},
+                        {
+                            "$set": {
+                                #TODO: does it create fields where there weren't any?                                
+                                lineItem + "deadline": patch.get("deadline")
+                            }
+                            
+                        }
+                    )
+            
+            # retrieve the amended audit forms again starting from auditmetadata
+            allQuestions = []
+            for formType, formID in auditChecklists.items():
+                form = mongo.db.filledAuditForms.find_one({"_id": formID})
+                for answerList in form["answers"].values():
+                    allQuestions.extend(answerList)
+            
+            numNCs = len(list(filter(lambda x : x["answer"] == False, allQuestions)))
+            numRectifiedNCs = len(list(filter(lambda x : x["answer"] == False and x["rectified"] == True, allQuestions)))
+            percentRecification = numRectifiedNCs / numNCs
+
+
+            # Update audit metadata
+            mongo.db.audits.update_one(
+                {"_id": auditID},
+                {
+                    "$set": {
+                        "rectificationProgress": percentRecification
+                    }
+                }
+                )
+            
+            return serverResponse({"rectificationProgress": percentRecification}, 200, "Updates submitted successfully.")
+
+#TODO: Uppdate the rectification progress in the auditmetadata
+            
