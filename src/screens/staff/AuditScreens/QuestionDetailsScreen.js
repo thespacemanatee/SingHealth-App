@@ -145,8 +145,6 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
       quality: 1,
     });
 
-    // console.log(result);
-
     if (!result.cancelled) {
       onSave(result);
     }
@@ -198,7 +196,6 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
 
   const handleExpandImage = useCallback(
     (selectedIndex) => {
-      console.log(selectedIndex);
       navigation.navigate("ExpandImages", {
         imageArray,
         selectedIndex,
