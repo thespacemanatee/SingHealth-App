@@ -92,6 +92,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
     setLoading(false);
   };
 
+  // TODO: Cleanup memory leak when user leaves screen before image is loaded
   useEffect(() => {
     console.log("USEEFFECT");
     getImages();

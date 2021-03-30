@@ -9,17 +9,23 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  Icon,
-  StyleService,
-  TopNavigation,
-  TopNavigationAction,
-} from "@ui-kitten/components";
-
-const BackIcon = (props) => <Icon {...props} name="arrow-back" fill="white" />;
+import { Icon, StyleService } from "@ui-kitten/components";
 
 const THUMBNAIL_SIZE = 80;
 const SPACING = 10;
+const CROSS_SIZE = 40;
+
+const BackIcon = (props) => (
+  <Icon
+    {...props}
+    name="close-outline"
+    fill="gray"
+    style={{
+      width: CROSS_SIZE,
+      height: CROSS_SIZE,
+    }}
+  />
+);
 
 const ExpandImagesScreen = ({ route, navigation }) => {
   const { imageArray } = route.params;
@@ -31,14 +37,9 @@ const ExpandImagesScreen = ({ route, navigation }) => {
 
   const { width, height } = Dimensions.get("window");
 
-  const BackAction = () => (
-    <TopNavigationAction
-      icon={BackIcon}
-      onPress={() => {
-        navigation.goBack();
-      }}
-    />
-  );
+  const handleClose = () => {
+    navigation.goBack();
+  };
 
   useEffect(() => {
     scrollToActiveIndex(activeIndex);
@@ -103,7 +104,6 @@ const ExpandImagesScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.screen}>
-      <TopNavigation style={styles.topContainer} accessoryLeft={BackAction} />
       <View>
         <FlatList
           ref={topRef}
@@ -130,6 +130,9 @@ const ExpandImagesScreen = ({ route, navigation }) => {
           contentContainerStyle={{ paddingHorizontal: SPACING }}
         />
       </View>
+      <TouchableOpacity style={styles.crossButton} onPress={handleClose}>
+        <BackIcon />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -140,6 +143,12 @@ const styles = StyleService.create({
   screen: {
     flex: 1,
     backgroundColor: "black",
+  },
+  crossButton: {
+    position: "absolute",
+    borderRadius: CROSS_SIZE / 2,
+    backgroundColor: "white",
+    margin: CROSS_SIZE / 2,
   },
   topContainer: {
     backgroundColor: "black",
