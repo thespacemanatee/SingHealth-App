@@ -111,20 +111,23 @@ const ChecklistScreen = ({ route, navigation }) => {
     }
   };
 
-  const renderChosenChecklist = useCallback(
-    (itemData) => {
-      return (
-        <QuestionCard
-          index={itemData.index}
-          question={itemData.item.question}
-          answer={itemData.item.answer}
-          section={itemData.section.title}
-          navigation={navigation}
-        />
-      );
-    },
-    [navigation]
-  );
+  const handleOpenQuestionCard = (checked, deleted, data) => {
+    if (!checked && !deleted) {
+      navigation.navigate("QuestionDetails", data);
+    }
+  };
+
+  const renderChosenChecklist = useCallback((itemData) => {
+    return (
+      <QuestionCard
+        index={itemData.index}
+        question={itemData.item.question}
+        answer={itemData.item.answer}
+        section={itemData.section.title}
+        onPress={handleOpenQuestionCard}
+      />
+    );
+  }, []);
 
   const renderSectionHeader = useCallback(({ section: { title } }) => {
     return <SectionHeader title={title} />;

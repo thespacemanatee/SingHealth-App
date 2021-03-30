@@ -37,7 +37,20 @@ const RectificationScreen = ({ navigation }) => {
     <TopNavigationAction
       icon={BackIcon}
       onPress={() => {
-        navigation.goBack();
+        alert(
+          "Are you sure?",
+          "Your progress will be lost if you go back. Consider saving first.",
+          [
+            { text: "Cancel", style: "cancel" },
+            {
+              text: "Confirm",
+              onPress: () => {
+                navigation.goBack();
+              },
+              style: "destructive",
+            },
+          ]
+        );
       }}
     />
   );
@@ -54,6 +67,12 @@ const RectificationScreen = ({ navigation }) => {
     ]);
   };
 
+  const handleOpenRectificationCard = (checked, deleted, data) => {
+    if (!checked && !deleted) {
+      navigation.navigate("RectificationDetails", data);
+    }
+  };
+
   const renderChosenChecklist = useCallback(
     (itemData) => {
       return (
@@ -62,7 +81,7 @@ const RectificationScreen = ({ navigation }) => {
           question={itemData.item.question}
           answer={itemData.item.answer}
           section={itemData.section.title}
-          navigation={navigation}
+          onPress={handleOpenRectificationCard}
         />
       );
     },
