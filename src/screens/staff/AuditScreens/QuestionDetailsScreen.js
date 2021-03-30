@@ -248,7 +248,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
                   { paddingRight: width - IMAGE_WIDTH - 20 * 3 },
                 ]}
                 decelerationRate="fast"
-                keyExtractor={(item) => item}
+                keyExtractor={(item) => item.name}
                 data={imageArray}
                 renderItem={renderListItems}
                 showsHorizontalScrollIndicator={Platform.OS === "web"}

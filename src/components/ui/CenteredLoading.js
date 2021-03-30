@@ -3,7 +3,7 @@ import { View, ActivityIndicator, Platform } from "react-native";
 import { StyleService, useTheme } from "@ui-kitten/components";
 import { Dialog, Portal } from "react-native-paper";
 
-const CenteredLoading = ({ loading, ref }) => {
+const CenteredLoading = ({ loading }) => {
   const [visible, setVisible] = useState(false);
 
   const showDialog = () => setVisible(true);

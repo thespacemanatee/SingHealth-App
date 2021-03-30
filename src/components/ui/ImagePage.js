@@ -1,11 +1,17 @@
 import React, { useCallback } from "react";
 import { useDispatch } from "react-redux";
-import { Text, View, Image, Dimensions, Pressable } from "react-native";
+import {
+  Text,
+  View,
+  Image,
+  Dimensions,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import { Button, StyleService } from "@ui-kitten/components";
 
 import alert from "../CustomAlert";
 import * as checklistActions from "../../store/actions/checklistActions";
-import CenteredLoading from "./CenteredLoading";
 
 const ImagePage = (props) => {
   const { height } = Dimensions.get("window");
@@ -73,7 +79,7 @@ const ImagePage = (props) => {
             {!loading ? (
               <Text style={styles.text}>No Images. Start adding some!</Text>
             ) : (
-              <CenteredLoading />
+              <ActivityIndicator />
             )}
           </View>
         )}

@@ -31,11 +31,13 @@ const QuestionCard = (props) => {
   );
 
   const onClickDetailHandler = () => {
-    navigation.navigate("RectificationDetails", {
-      index,
-      question,
-      section,
-    });
+    if (answer === false) {
+      navigation.navigate("RectificationDetails", {
+        index,
+        question,
+        section,
+      });
+    }
   };
 
   return (

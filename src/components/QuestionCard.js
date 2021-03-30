@@ -51,11 +51,13 @@ const QuestionCard = (props) => {
   );
 
   const onClickDetailHandler = () => {
-    navigation.navigate("QuestionDetails", {
-      index,
-      question,
-      section,
-    });
+    if (!checked && !deleted) {
+      navigation.navigate("QuestionDetails", {
+        index,
+        question,
+        section,
+      });
+    }
   };
 
   const leftComponent = useCallback(() => {

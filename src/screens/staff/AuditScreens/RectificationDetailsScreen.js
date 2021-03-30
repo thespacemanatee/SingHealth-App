@@ -85,7 +85,6 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
           handleErrorResponse(err);
         }
       }
-      // setImageArray(temp);
       setLoading(false);
     } catch (err) {
       handleErrorResponse(err);
@@ -161,10 +160,11 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
           selectedIndex={itemData.index}
           onPress={() => handleExpandImage(itemData.index)}
           rectify
+          loading={loading}
         />
       );
     },
-    [handleExpandImage, index, section]
+    [handleExpandImage, index, loading, section]
   );
 
   return (
@@ -202,7 +202,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
               />
             </View>
           ) : (
-            <ImagePage loading />
+            <ImagePage />
           )}
           <View style={styles.datePickerContainer}>
             <Text category="h6">Deadline: </Text>

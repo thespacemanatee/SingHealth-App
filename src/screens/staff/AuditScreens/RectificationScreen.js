@@ -37,20 +37,7 @@ const RectificationScreen = ({ navigation }) => {
     <TopNavigationAction
       icon={BackIcon}
       onPress={() => {
-        alert(
-          "Are you sure?",
-          "Your progress will be lost if you go back. Consider saving first.",
-          [
-            { text: "Cancel", style: "cancel" },
-            {
-              text: "Confirm",
-              onPress: () => {
-                navigation.goBack();
-              },
-              style: "destructive",
-            },
-          ]
-        );
+        navigation.goBack();
       }}
     />
   );
