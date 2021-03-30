@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { View, Alert, Platform, Dimensions } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import { View, Alert, Platform, Dimensions, FlatList } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -20,8 +20,8 @@ import moment from "moment";
 
 import alert from "../../../components/CustomAlert";
 import * as checklistActions from "../../../store/actions/checklistActions";
-import ImageViewPager from "../../../components/ImageViewPager";
 import CustomDatepicker from "../../../components/CustomDatePicker";
+import ImagePage from "../../../components/ui/ImagePage";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
@@ -33,15 +33,16 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   const { question } = route.params;
   const { section } = route.params;
   const [value, setValue] = useState("");
-  const [selectedIndex, setSelectedIndex] = useState(0);
   const [imageArray, setImageArray] = useState([]);
   const [deadline, setDeadline] = useState();
+
+  const { width, height } = Dimensions.get("window");
+  const IMAGE_HEIGHT = height * 0.5;
+  const IMAGE_WIDTH = (IMAGE_HEIGHT / 4) * 3;
 
   const theme = useTheme();
 
   const dispatch = useDispatch();
-
-  const SCREEN_HEIGHT = Dimensions.get("window").height;
 
   const handleDateChange = (date) => {
     console.log(date);
@@ -124,7 +125,6 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
       dispatch(
         checklistActions.addImage(section, index, fileName, destination)
       );
-      setSelectedIndex(selectedIndex + 1);
     }
   };
 
@@ -144,8 +144,6 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
       aspect: [3, 4],
       quality: 1,
     });
-
-    // console.log(result);
 
     if (!result.cancelled) {
       onSave(result);
@@ -196,6 +194,31 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     );
   };
 
+  const handleExpandImage = useCallback(
+    (selectedIndex) => {
+      navigation.navigate("ExpandImages", {
+        imageArray,
+        selectedIndex,
+      });
+    },
+    [imageArray, navigation]
+  );
+
+  const renderListItems = useCallback(
+    (itemData) => {
+      return (
+        <ImagePage
+          imageUri={itemData.item}
+          index={index}
+          section={section}
+          selectedIndex={itemData.index}
+          onPress={() => handleExpandImage(itemData.index)}
+        />
+      );
+    },
+    [handleExpandImage, index, section]
+  );
+
   return (
     <View style={styles.screen}>
       <TopNavigation
@@ -215,11 +238,25 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
       </View>
       <Layout style={styles.layout}>
         <KeyboardAwareScrollView extraHeight={200}>
-          <ImageViewPager
-            imageArray={imageArray}
-            index={index}
-            section={section}
-          />
+          {imageArray.length > 0 ? (
+            <View style={{ width }}>
+              <FlatList
+                horizontal
+                snapToInterval={IMAGE_WIDTH + 20}
+                contentContainerStyle={[
+                  styles.contentContainer,
+                  { paddingRight: width - IMAGE_WIDTH - 20 * 3 },
+                ]}
+                decelerationRate="fast"
+                keyExtractor={(item) => item}
+                data={imageArray}
+                renderItem={renderListItems}
+                showsHorizontalScrollIndicator={Platform.OS === "web"}
+              />
+            </View>
+          ) : (
+            <ImagePage />
+          )}
           <View style={styles.datePickerContainer}>
             <Text category="h6">Deadline: </Text>
             <CustomDatepicker onSelect={handleDateChange} deadline={deadline} />
@@ -227,7 +264,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           <View style={styles.inputContainer}>
             <Text category="h6">Remarks: </Text>
             <Input
-              height={SCREEN_HEIGHT * 0.1}
+              height={height * 0.1}
               multiline
               textStyle={styles.input}
               placeholder="Enter your remarks here"
@@ -253,6 +290,9 @@ const styles = StyleService.create({
   },
   titleContainer: {
     padding: 20,
+  },
+  contentContainer: {
+    paddingBottom: 25,
   },
   text: {
     fontWeight: "bold",

@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { useDispatch } from "react-redux";
-import { Text, View, Image, Dimensions } from "react-native";
+import { Text, View, Image, Dimensions, Pressable } from "react-native";
 import { Button, StyleService } from "@ui-kitten/components";
 
 import alert from "../CustomAlert";
@@ -8,8 +8,8 @@ import * as checklistActions from "../../store/actions/checklistActions";
 import CenteredLoading from "./CenteredLoading";
 
 const ImagePage = (props) => {
-  const SCREEN_HEIGHT = Dimensions.get("window").height;
-  const IMAGE_HEIGHT = SCREEN_HEIGHT * 0.5;
+  const { height } = Dimensions.get("window");
+  const IMAGE_HEIGHT = height * 0.5;
   const IMAGE_WIDTH = (IMAGE_HEIGHT / 4) * 3;
 
   const { imageUri } = props;
@@ -18,6 +18,7 @@ const ImagePage = (props) => {
   const { selectedIndex } = props;
   const { loading } = props;
   const { rectify } = props;
+  const { onPress } = props;
 
   const dispatch = useDispatch();
 
@@ -35,7 +36,7 @@ const ImagePage = (props) => {
   }, [dispatch, index, section, selectedIndex]);
 
   return (
-    <View style={styles.screen}>
+    <Pressable style={styles.screen} onPress={onPress}>
       <View style={styles.imageContainer}>
         {imageUri ? (
           <View>
@@ -77,7 +78,7 @@ const ImagePage = (props) => {
           </View>
         )}
       </View>
-    </View>
+    </Pressable>
   );
 };
 
@@ -88,6 +89,7 @@ const styles = StyleService.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: 10,
   },
   imageContainer: {
     elevation: 10,
