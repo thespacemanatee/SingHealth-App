@@ -7,6 +7,7 @@ module.exports = async (env, argv) => {
       babel: {
         dangerouslyAddModulePathsToTranspile: ["@ui-kitten/components"],
       },
+      offline: true,
     },
     argv
   );

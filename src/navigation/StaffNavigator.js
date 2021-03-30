@@ -27,6 +27,7 @@ import CameraScreen from "../screens/CameraScreen";
 import TenantsDirectoryScreen from "../screens/staff/DirectoryScreens/TenantsDirectoryScreen";
 import * as authActions from "../store/actions/authActions";
 import AddTenantCredScreen from "../screens/staff/AddTenantScreens/AddTenantCredScreen";
+import ExpandImagesScreen from "../screens/ExpandImagesScreen";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
 
@@ -98,6 +99,7 @@ const StaffModalStackNavigator = () => {
     <Navigator headerMode="none" mode="modal">
       <Screen name="StaffTabNavigator" component={StaffTabNavigator} />
       <Screen name="CameraModal" component={CameraScreen} />
+      <Screen name="ExpandImages" component={ExpandImagesScreen} />
     </Navigator>
   );
 };
@@ -139,6 +141,16 @@ const StaffDashboardStackNavigator = () => {
     </Navigator>
   );
 };
+
+// const QuestionDetailsStackNavigator = () => {
+//   const { Navigator, Screen } = createStackNavigator();
+//   return (
+//     <Navigator headerMode="none" mode="modal">
+//       <Screen name="Question" component={QuestionDetailsScreen} />
+//       <Screen name="ExpandImages" component={ExpandImagesScreen} />
+//     </Navigator>
+//   );
+// };
 
 const AddTenantStackNavigator = () => {
   const { Navigator, Screen } = createStackNavigator();
