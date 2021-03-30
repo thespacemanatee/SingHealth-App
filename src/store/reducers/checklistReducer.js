@@ -12,6 +12,8 @@ import {
   CHANGE_DEADLINE,
   RESET_CHECKLIST_STORE,
   GET_AUDIT_DATA,
+  RECTIFY_CHOSEN_CHECKLIST,
+  RECTIFY_COVID_CHECKLIST,
 } from "../actions/checklistActions";
 
 const initialState = {
@@ -20,6 +22,8 @@ const initialState = {
   chosen_checklist: null,
   covid19: null,
   auditMetadata: null,
+  rectify_chosen_checklist: null,
+  rectify_covid_checklist: { covid19: [] },
 };
 
 const checklistReducer = (state = initialState, action) => {
@@ -38,6 +42,7 @@ const checklistReducer = (state = initialState, action) => {
         ...state,
         chosen_checklist_type: action.checklistType,
         chosen_checklist: action.checklist,
+        rectify_chosen_checklist: { [action.checklistType]: [] },
       };
     }
 
@@ -220,43 +225,43 @@ const checklistReducer = (state = initialState, action) => {
       };
     }
 
-    // case GET_IMAGE: {
-    //   let newChecklist;
-    //   if (covidKeys.includes(action.section)) {
-    //     newChecklist = _.cloneDeep(state.covid19);
-    //   } else {
-    //     newChecklist = _.cloneDeep(state.chosen_checklist);
-    //   }
-    //   if (newChecklist.questions[action.section][action.index].image == null) {
-    //     newChecklist.questions[action.section][action.index].image = [];
-    //   }
+    case RECTIFY_CHOSEN_CHECKLIST: {
+      const { category, index } = action.data;
+      const key = Object.keys(state.rectify_chosen_checklist)[0];
+      const temp = state.rectify_chosen_checklist[key];
+      const found = temp.find(
+        (e) => e.category === category && e.index === index
+      );
+      console.log("KEY", key, "FOUND:", found, "TEMP:", temp);
+      if (found !== -1) {
+        temp[found] = action.data;
+      } else {
+        temp.push(action.data);
+      }
+      return {
+        ...state,
+        rectify_chosen_checklist: { [key]: temp },
+      };
+    }
 
-    //   const imageObject = {
-    //     name: action.fileName,
-    //     uri: action.imageUri,
-    //   };
-
-    //   const temp = newChecklist.questions[action.section][action.index].image;
-
-    //   temp.push(imageObject);
-
-    //   newChecklist.questions[action.section][action.index].image = temp.filter(
-    //     (e) => e !== action.fileName
-    //   );
-
-    //   // console.log(newChecklist.questions);
-
-    //   if (covidKeys.includes(action.section)) {
-    //     return {
-    //       ...state,
-    //       covid19: newChecklist,
-    //     };
-    //   }
-    //   return {
-    //     ...state,
-    //     chosen_checklist: newChecklist,
-    //   };
-    // }
+    case RECTIFY_COVID_CHECKLIST: {
+      const { category, index } = action.data;
+      const key = Object.keys(state.rectify_covid_checklist)[0];
+      const temp = state.rectify_covid_checklist[key];
+      const found = temp.find(
+        (e) => e.category === category && e.index === index
+      );
+      console.log("KEY", key, "FOUND:", found, "TEMP:", temp);
+      if (found !== -1) {
+        temp[found] = action.data;
+      } else {
+        temp.push(action.data);
+      }
+      return {
+        ...state,
+        rectify_covid_checklist: { [key]: temp },
+      };
+    }
 
     default:
       return state;

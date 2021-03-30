@@ -8,7 +8,7 @@ import {
   Pressable,
   ActivityIndicator,
 } from "react-native";
-import { Button, StyleService } from "@ui-kitten/components";
+import { Button, StyleService, useTheme } from "@ui-kitten/components";
 
 import alert from "../CustomAlert";
 import * as checklistActions from "../../store/actions/checklistActions";
@@ -17,6 +17,8 @@ const ImagePage = (props) => {
   const { height } = Dimensions.get("window");
   const IMAGE_HEIGHT = height * 0.5;
   const IMAGE_WIDTH = (IMAGE_HEIGHT / 4) * 3;
+
+  const theme = useTheme();
 
   const { imageUri } = props;
   const { index } = props;
@@ -79,7 +81,10 @@ const ImagePage = (props) => {
             {!loading ? (
               <Text style={styles.text}>No Images. Start adding some!</Text>
             ) : (
-              <ActivityIndicator />
+              <ActivityIndicator
+                size="large"
+                color={theme["color-primary-default"]}
+              />
             )}
           </View>
         )}

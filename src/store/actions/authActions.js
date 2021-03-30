@@ -47,7 +47,7 @@ export const signIn = (user, pswd, userType) => {
     const userData = {
       userType,
       userToken,
-      _id,
+      _id: _id.$oid,
       email,
       institutionID,
       name,

@@ -15,6 +15,8 @@ export const CHANGE_DEADLINE = "CHANGE_DEADLINE";
 export const RESET_CHECKLIST_STORE = "RESET_CHECKLIST_STORE";
 export const GET_AUDIT_DATA = "GET_AUDIT_DATA";
 export const GET_IMAGE = "GET_IMAGE";
+export const RECTIFY_CHOSEN_CHECKLIST = "RECTIFY_CHOSEN_CHECKLIST";
+export const RECTIFY_COVID_CHECKLIST = "RECTIFY_COVID_CHECKLIST";
 
 export const TYPE_FNB = "fnb";
 export const TYPE_NON_FNB = "non_fnb";
@@ -163,4 +165,12 @@ export const getImage = (fileName) => {
 
     return res;
   };
+};
+
+export const rectifyChosenChecklist = (data) => {
+  return { type: RECTIFY_CHOSEN_CHECKLIST, data };
+};
+
+export const rectifyCovidChecklist = (data) => {
+  return { type: RECTIFY_COVID_CHECKLIST, data };
 };

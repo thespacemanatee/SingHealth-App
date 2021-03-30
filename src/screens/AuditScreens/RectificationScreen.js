@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, SectionList, Platform } from "react-native";
+import { View, SectionList } from "react-native";
 import { useSelector } from "react-redux";
 import {
   Button,
@@ -12,28 +12,24 @@ import {
   StyleService,
   useTheme,
 } from "@ui-kitten/components";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
 
-import QuestionCard from "../../../components/QuestionCard";
-import alert from "../../../components/CustomAlert";
-import * as authActions from "../../../store/actions/authActions";
-import SectionHeader from "../../../components/ui/SectionHeader";
-import CenteredLoading from "../../../components/ui/CenteredLoading";
+import alert from "../../components/CustomAlert";
+import SectionHeader from "../../components/ui/SectionHeader";
+import SkeletonLoading from "../../components/ui/SkeletonLoading";
+import CenteredLoading from "../../components/ui/CenteredLoading";
+import RectificationCard from "../../components/RectificationCard";
 
 export const FNB_SECTION = "F&B Checklist";
 export const NON_FNB_SECTION = "Non-F&B Checklist";
 export const COVID_SECTION = "COVID-19 Checklist";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
-const SaveIcon = (props) => <Icon {...props} name="save-outline" />;
 
-const ChecklistScreen = ({ route, navigation }) => {
+const RectificationScreen = ({ navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
   const [completeChecklist, setCompleteChecklist] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const { auditID } = route.params;
 
   const theme = useTheme();
 
@@ -59,83 +55,42 @@ const ChecklistScreen = ({ route, navigation }) => {
     />
   );
 
-  const saveChecklists = async () => {
-    try {
-      const toSave = {
-        chosen_tenant: checklistStore.chosen_tenant,
-        time: auditID,
-        data: checklistStore,
-      };
-
-      const value = await AsyncStorage.getItem("savedChecklists");
-      if (value === null) {
-        AsyncStorage.setItem(
-          "savedChecklists",
-          JSON.stringify({ [auditID]: toSave })
-        );
-      } else {
-        const temp = JSON.parse(value);
-        temp[auditID] = toSave;
-        AsyncStorage.setItem("savedChecklists", JSON.stringify(temp));
-      }
-    } catch (err) {
-      alert("Saving failed", "Please try again!");
-      setLoading(false);
-    }
-  };
-
-  const handleSaveChecklist = () => {
-    alert(
-      "Save checklist",
-      "Save progress your current progress. WARNING: un-submitted checklists will expire after a few days.",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Save", onPress: saveChecklists },
-      ]
-    );
-  };
-
   const onSubmitHandler = () => {
-    if (Platform.OS === "web") {
-      navigation.navigate("AuditSubmit");
-    } else {
-      alert("Confirm Submission", "Are you sure you want to submit?", [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Submit",
-          onPress: () => {
-            navigation.navigate("AuditSubmit");
-          },
-        },
-      ]);
-    }
+    alert("Confirm Submission", "Are you sure you want to submit?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Submit",
+        // onPress: () => {
+        //   navigation.navigate("AuditSubmit");
+        // },
+      },
+    ]);
   };
 
-  const handleOpenQuestionCard = (checked, deleted, data) => {
+  const handleOpenRectificationCard = (checked, deleted, data) => {
     if (!checked && !deleted) {
-      navigation.navigate("QuestionDetails", data);
+      navigation.navigate("RectificationDetails", data);
     }
   };
 
-  const renderChosenChecklist = useCallback((itemData) => {
-    return (
-      <QuestionCard
-        index={itemData.index}
-        question={itemData.item.question}
-        answer={itemData.item.answer}
-        section={itemData.section.title}
-        onPress={handleOpenQuestionCard}
-      />
-    );
-  }, []);
+  const renderChosenChecklist = useCallback(
+    (itemData) => {
+      return (
+        <RectificationCard
+          index={itemData.index}
+          question={itemData.item.question}
+          answer={itemData.item.answer}
+          section={itemData.section.title}
+          onPress={handleOpenRectificationCard}
+        />
+      );
+    },
+    [navigation]
+  );
 
   const renderSectionHeader = useCallback(({ section: { title } }) => {
     return <SectionHeader title={title} />;
   }, []);
-
-  const SaveAction = () => (
-    <TopNavigationAction icon={SaveIcon} onPress={handleSaveChecklist} />
-  );
 
   const createNewSections = useCallback(() => {
     const checklist = [
@@ -182,10 +137,9 @@ const ChecklistScreen = ({ route, navigation }) => {
   return (
     <View style={styles.screen}>
       <TopNavigation
-        title="Checklist"
+        title="Rectification"
         alignment="center"
         accessoryLeft={BackAction}
-        accessoryRight={SaveAction}
       />
       <Divider />
       <Layout style={styles.screen}>
@@ -199,14 +153,13 @@ const ChecklistScreen = ({ route, navigation }) => {
             Audit: {checklistStore.chosen_tenant.stallName}
           </Text>
           <Text>
-            {moment(new Date())
+            {moment(checklistStore.auditMetadata.date)
               .toLocaleString()
               .split(" ")
               .slice(0, 5)
               .join(" ")}
           </Text>
         </View>
-
         <CenteredLoading loading={loading} />
         <SectionList
           sections={completeChecklist}
@@ -266,4 +219,4 @@ const styles = StyleService.create({
   },
 });
 
-export default ChecklistScreen;
+export default RectificationScreen;

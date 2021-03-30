@@ -42,7 +42,7 @@ def addRecentAuditsEndpoints(app, mongo):
                 if daysBefore > 0:
                     queryDict["date"] = {
                         "$gt": datetime.utcnow() - datetime.timedelta(days=daysBefore)
-                        }
+                    }
 
                 audits = mongo.db.audits.find(queryDict)
                 auditsList = []

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Dimensions, Platform, FlatList } from "react-native";
+import { View, Alert, Platform } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -12,18 +12,24 @@ import {
   Text,
   useTheme,
 } from "@ui-kitten/components";
+import { Camera } from "expo-camera";
+import * as FileSystem from "expo-file-system";
+import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import moment from "moment";
 
-import * as checklistActions from "../../../store/actions/checklistActions";
-import CustomDatepicker from "../../../components/CustomDatePicker";
-import * as authActions from "../../../store/actions/authActions";
-import ImagePage from "../../../components/ui/ImagePage";
-import alert from "../../../components/CustomAlert";
+import alert from "../../components/CustomAlert";
+import * as checklistActions from "../../store/actions/checklistActions";
+import CustomDatepicker from "../../components/CustomDatePicker";
+import ImagePage from "../../components/ui/ImagePage";
+import ImageViewPager from "../../components/ImageViewPager";
+import { SCREEN_HEIGHT } from "../../helpers/config";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
+const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
+const ImageIcon = (props) => <Icon {...props} name="image-outline" />;
 
-const RectificationDetailsScreen = ({ route, navigation }) => {
+const QuestionDetailsScreen = ({ route, navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
   const { index } = route.params;
   const { question } = route.params;
@@ -31,12 +37,6 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
   const [value, setValue] = useState("");
   const [imageArray, setImageArray] = useState([]);
   const [deadline, setDeadline] = useState();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  const { width, height } = Dimensions.get("window");
-  const IMAGE_HEIGHT = height * 0.5;
-  const IMAGE_WIDTH = (IMAGE_HEIGHT / 4) * 3;
 
   const theme = useTheme();
 
@@ -49,54 +49,9 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
 
   const changeTextHandler = (val) => {
     setValue(val);
+    console.log(val);
     dispatch(checklistActions.addRemarks(section, index, val));
   };
-
-  const getImages = async () => {
-    try {
-      setLoading(true);
-
-      if (checklistStore.chosen_checklist.questions[section][index].image) {
-        setLoading(true);
-        try {
-          await Promise.all(
-            checklistStore.chosen_checklist.questions[section][index].image.map(
-              async (fileName) => {
-                if (!fileName.name) {
-                  const res = await dispatch(
-                    checklistActions.getImage(fileName)
-                  );
-                  dispatch(
-                    checklistActions.addImage(
-                      section,
-                      index,
-                      fileName,
-                      `data:image/jpg;base64,${res.data}`
-                    )
-                  );
-                }
-              }
-            )
-          );
-          setLoading(false);
-        } catch (err) {
-          setError(err);
-          setLoading(false);
-          handleErrorResponse(err);
-        }
-      }
-      setLoading(false);
-    } catch (err) {
-      handleErrorResponse(err);
-      setLoading(false);
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    console.log("USEEFFECT");
-    getImages();
-  }, []);
 
   useEffect(() => {
     let storeImages;
@@ -129,8 +84,69 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
     }
     if (storeDeadline) {
       setDeadline(storeDeadline);
+    } else {
+      dispatch(
+        checklistActions.changeDeadline(
+          section,
+          index,
+          moment(
+            new Date(
+              new Date().getFullYear(),
+              new Date().getMonth(),
+              new Date().getDate() + 7
+            )
+          )
+        )
+      );
     }
   }, [checklistStore, dispatch, index, section]);
+
+  const onSave = async (imageData) => {
+    if (imageArray.length > 2) {
+      alert("Upload Failed", "Max upload count is 3.", [{ text: "OK" }]);
+    } else {
+      const fileName = `${`${checklistStore.chosen_tenant.tenantID}${Math.round(
+        Date.now() * Math.random()
+      )}`}.jpg`;
+      // const fileName = checklistStore.chosen_tenant.stallName + Date.now();
+      let destination;
+      if (Platform.OS === "web") {
+        destination = imageData.uri;
+      } else {
+        destination = FileSystem.cacheDirectory + fileName.replace(/\s+/g, "");
+        // console.log(destination);
+        await FileSystem.copyAsync({
+          from: imageData.uri,
+          to: destination,
+        });
+      }
+      dispatch(
+        checklistActions.addImage(section, index, fileName, destination)
+      );
+    }
+  };
+
+  const startCamera = async () => {
+    const { status } = await Camera.requestPermissionsAsync();
+    if (status === "granted") {
+      navigation.navigate("CameraModal", { onSave });
+    } else {
+      Alert.alert("Access denied");
+    }
+  };
+
+  const imagePickerHandler = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [3, 4],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      onSave(result);
+    }
+  };
 
   const BackAction = () => (
     <TopNavigationAction
@@ -140,6 +156,42 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
       }}
     />
   );
+
+  const CameraAction = () => (
+    <TopNavigationAction
+      icon={CameraIcon}
+      onPress={() => {
+        if (Platform.OS === "web") {
+          navigation.navigate("CameraModal", { onSave });
+        } else {
+          startCamera();
+        }
+      }}
+    />
+  );
+
+  const ImageAction = () => (
+    <TopNavigationAction
+      icon={ImageIcon}
+      onPress={() => {
+        // if (Platform.OS === "web") {
+        //   navigation.navigate("CameraModal", { onSave: onSave });
+        // } else {
+        imagePickerHandler();
+        // }
+      }}
+    />
+  );
+
+  const renderRightActions = () => {
+    return (
+      <>
+        <CameraAction />
+        <ImageAction />
+      </>
+    );
+  };
+
   const handleExpandImage = useCallback(
     (selectedIndex) => {
       navigation.navigate("ExpandImages", {
@@ -159,20 +211,19 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
           section={section}
           selectedIndex={itemData.index}
           onPress={() => handleExpandImage(itemData.index)}
-          rectify
-          loading={loading}
         />
       );
     },
-    [handleExpandImage, index, loading, section]
+    [handleExpandImage, index, section]
   );
 
   return (
     <View style={styles.screen}>
       <TopNavigation
-        title="Rectify"
+        title="Details"
         alignment="center"
         accessoryLeft={BackAction}
+        accessoryRight={renderRightActions}
       />
       <Divider />
       <View
@@ -185,43 +236,23 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
       </View>
       <Layout style={styles.layout}>
         <KeyboardAwareScrollView extraHeight={200}>
-          {imageArray.length > 0 ? (
-            <View style={{ width }}>
-              <FlatList
-                horizontal
-                snapToInterval={IMAGE_WIDTH + 20}
-                contentContainerStyle={[
-                  styles.contentContainer,
-                  { paddingRight: width - IMAGE_WIDTH - 20 * 3 },
-                ]}
-                decelerationRate="fast"
-                keyExtractor={(item) => item}
-                data={imageArray}
-                renderItem={renderListItems}
-                showsHorizontalScrollIndicator={Platform.OS === "web"}
-              />
-            </View>
-          ) : (
-            <ImagePage />
-          )}
+          <ImageViewPager
+            imageArray={imageArray}
+            renderListItems={renderListItems}
+          />
           <View style={styles.datePickerContainer}>
             <Text category="h6">Deadline: </Text>
-            <CustomDatepicker
-              onSelect={handleDateChange}
-              deadline={deadline}
-              rectify
-            />
+            <CustomDatepicker onSelect={handleDateChange} deadline={deadline} />
           </View>
           <View style={styles.inputContainer}>
             <Text category="h6">Remarks: </Text>
             <Input
-              height={height * 0.1}
+              height={SCREEN_HEIGHT * 0.1}
               multiline
               textStyle={styles.input}
               placeholder="Enter your remarks here"
               value={value}
               onChangeText={changeTextHandler}
-              disabled
             />
           </View>
         </KeyboardAwareScrollView>
@@ -230,45 +261,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
   );
 };
 
-const handleErrorResponse = (err) => {
-  if (err.response) {
-    // The request was made and the server responded with a status code
-    // that falls out of the range of 2xx
-    const { data } = err.response;
-    console.error(err.response.data);
-    console.error(err.response.status);
-    console.error(err.response.headers);
-    if (err.response.status === 403) {
-      authActions.signOut();
-    } else {
-      switch (Math.floor(err.response.status / 100)) {
-        case 4: {
-          alert("Error", "Input error.");
-          break;
-        }
-        case 5: {
-          alert("Server Error", "Please contact your administrator.");
-          break;
-        }
-        default: {
-          alert("Request timeout", "Check your internet connection.");
-          break;
-        }
-      }
-    }
-  } else if (err.request) {
-    // The request was made but no response was received
-    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-    // http.ClientRequest in node.js
-    console.error(err.request);
-  } else {
-    // Something happened in setting up the request that triggered an Error
-    console.error("Error", err.message);
-  }
-  console.error(err.config);
-};
-
-export default RectificationDetailsScreen;
+export default QuestionDetailsScreen;
 
 const styles = StyleService.create({
   screen: {

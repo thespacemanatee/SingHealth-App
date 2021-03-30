@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Alert, Platform, Dimensions, FlatList } from "react-native";
+import { View, Alert, Platform } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -18,10 +18,12 @@ import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import moment from "moment";
 
-import alert from "../../../components/CustomAlert";
-import * as checklistActions from "../../../store/actions/checklistActions";
-import CustomDatepicker from "../../../components/CustomDatePicker";
-import ImagePage from "../../../components/ui/ImagePage";
+import alert from "../../components/CustomAlert";
+import * as checklistActions from "../../store/actions/checklistActions";
+import CustomDatepicker from "../../components/CustomDatePicker";
+import ImagePage from "../../components/ui/ImagePage";
+import ImageViewPager from "../../components/ImageViewPager";
+import { SCREEN_HEIGHT } from "../../helpers/config";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
@@ -35,10 +37,6 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   const [value, setValue] = useState("");
   const [imageArray, setImageArray] = useState([]);
   const [deadline, setDeadline] = useState();
-
-  const { width, height } = Dimensions.get("window");
-  const IMAGE_HEIGHT = height * 0.5;
-  const IMAGE_WIDTH = (IMAGE_HEIGHT / 4) * 3;
 
   const theme = useTheme();
 
@@ -238,25 +236,10 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
       </View>
       <Layout style={styles.layout}>
         <KeyboardAwareScrollView extraHeight={200}>
-          {imageArray.length > 0 ? (
-            <View style={{ width }}>
-              <FlatList
-                horizontal
-                snapToInterval={IMAGE_WIDTH + 20}
-                contentContainerStyle={[
-                  styles.contentContainer,
-                  { paddingRight: width - IMAGE_WIDTH - 20 * 3 },
-                ]}
-                decelerationRate="fast"
-                keyExtractor={(item) => item.name}
-                data={imageArray}
-                renderItem={renderListItems}
-                showsHorizontalScrollIndicator={Platform.OS === "web"}
-              />
-            </View>
-          ) : (
-            <ImagePage />
-          )}
+          <ImageViewPager
+            imageArray={imageArray}
+            renderListItems={renderListItems}
+          />
           <View style={styles.datePickerContainer}>
             <Text category="h6">Deadline: </Text>
             <CustomDatepicker onSelect={handleDateChange} deadline={deadline} />
@@ -264,7 +247,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           <View style={styles.inputContainer}>
             <Text category="h6">Remarks: </Text>
             <Input
-              height={height * 0.1}
+              height={SCREEN_HEIGHT * 0.1}
               multiline
               textStyle={styles.input}
               placeholder="Enter your remarks here"

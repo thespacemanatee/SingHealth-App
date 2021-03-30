@@ -13,13 +13,13 @@ import {
 } from "@ui-kitten/components";
 import _ from "lodash";
 import moment from "moment";
-
 import { StackActions } from "@react-navigation/routers";
-import SuccessAnimation from "../../../components/ui/SuccessAnimation";
-import CrossAnimation from "../../../components/ui/CrossAnimation";
-import * as databaseActions from "../../../store/actions/databaseActions";
-import * as authActions from "../../../store/actions/authActions";
-import alert from "../../../components/CustomAlert";
+
+import SuccessAnimation from "../../components/ui/SuccessAnimation";
+import CrossAnimation from "../../components/ui/CrossAnimation";
+import * as databaseActions from "../../store/actions/databaseActions";
+import * as authActions from "../../store/actions/authActions";
+import alert from "../../components/CustomAlert";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
