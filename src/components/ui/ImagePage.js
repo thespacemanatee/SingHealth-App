@@ -116,6 +116,12 @@ const styles = StyleService.create({
     justifyContent: "center",
     alignContent: "center",
   },
-  button: { position: "absolute", right: 0, bottom: 0 },
-  text: { textAlign: "center" },
+  button: {
+    position: "absolute",
+    right: 0,
+    bottom: 0,
+  },
+  text: {
+    textAlign: "center",
+  },
 });

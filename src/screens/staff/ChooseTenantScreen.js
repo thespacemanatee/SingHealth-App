@@ -128,7 +128,7 @@ const ChooseTenantScreen = ({ navigation }) => {
     // Subscribe for the focus Listener
     getSectionData();
     const unsubscribe = navigation.addListener("focus", () => {
-      setLoading(true);
+      // setLoading(true);
       getSectionData();
       setTimeout(() => {
         dispatch(checklistActions.resetChecklistStore());

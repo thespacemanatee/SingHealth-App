@@ -30,6 +30,7 @@ const StaffDashboardScreen = ({ navigation }) => {
   const databaseStore = useSelector((state) => state.database);
   const [state, setState] = useState({ open: false });
   const [loading, setLoading] = useState(true);
+  const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
 
@@ -104,6 +105,7 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   const getListData = useCallback(async () => {
     try {
+      setListLoading(true);
       const res = await dispatch(
         databaseActions.getStaffActiveAudits(authStore.institutionID)
       );
@@ -112,10 +114,12 @@ const StaffDashboardScreen = ({ navigation }) => {
       );
       console.log(res.data);
       setListData(res.data);
+      setListLoading(false);
       setLoading(false);
     } catch (err) {
       handleErrorResponse(err);
       setError(err.message);
+      setListLoading(false);
       setLoading(false);
     }
   }, [authStore.institutionID, dispatch]);
@@ -125,6 +129,7 @@ const StaffDashboardScreen = ({ navigation }) => {
     getListData();
 
     const unsubscribe = navigation.addListener("focus", () => {
+      setListLoading(true);
       getListData();
     });
 
@@ -156,7 +161,7 @@ const StaffDashboardScreen = ({ navigation }) => {
           data={listData}
           renderItem={renderActiveAudits}
           onRefresh={handleRefreshList}
-          refreshing={loading}
+          refreshing={listLoading}
         />
 
         <FAB.Group
