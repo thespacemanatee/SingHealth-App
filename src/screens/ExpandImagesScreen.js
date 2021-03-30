@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -22,11 +22,12 @@ const THUMBNAIL_SIZE = 80;
 const SPACING = 10;
 
 const ExpandImagesScreen = ({ route, navigation }) => {
+  const { imageArray } = route.params;
+  const { selectedIndex } = route.params;
+
   const topRef = useRef(null);
   const thumbRef = useRef(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const { imageArray } = route.params;
+  const [activeIndex, setActiveIndex] = useState(selectedIndex);
 
   const { width, height } = Dimensions.get("window");
 
@@ -38,6 +39,10 @@ const ExpandImagesScreen = ({ route, navigation }) => {
       }}
     />
   );
+
+  useEffect(() => {
+    scrollToActiveIndex(activeIndex);
+  }, []);
 
   const scrollToActiveIndex = useCallback(
     (index) => {

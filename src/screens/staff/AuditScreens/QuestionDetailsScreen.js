@@ -1,12 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  View,
-  Alert,
-  Platform,
-  Dimensions,
-  FlatList,
-  Image,
-} from "react-native";
+import { View, Alert, Platform, Dimensions, FlatList } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -40,7 +33,6 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   const { question } = route.params;
   const { section } = route.params;
   const [value, setValue] = useState("");
-  const [selectedIndex, setSelectedIndex] = useState(0);
   const [imageArray, setImageArray] = useState([]);
   const [deadline, setDeadline] = useState();
 
@@ -133,7 +125,6 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
       dispatch(
         checklistActions.addImage(section, index, fileName, destination)
       );
-      setSelectedIndex(selectedIndex + 1);
     }
   };
 
@@ -205,26 +196,26 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     );
   };
 
-  const handleExpandImage = useCallback(() => {
-    console.log(imageArray);
-    navigation.navigate("ExpandImages", {
-      // section,
-      // index,
-      // selectedIndex,
-      imageArray,
-    });
-  }, [imageArray, navigation]);
+  const handleExpandImage = useCallback(
+    (selectedIndex) => {
+      console.log(selectedIndex);
+      navigation.navigate("ExpandImages", {
+        imageArray,
+        selectedIndex,
+      });
+    },
+    [imageArray, navigation]
+  );
 
   const renderListItems = useCallback(
     (itemData) => {
-      console.log(itemData);
       return (
         <ImagePage
           imageUri={itemData.item}
           index={index}
           section={section}
           selectedIndex={itemData.index}
-          onPress={handleExpandImage}
+          onPress={() => handleExpandImage(itemData.index)}
         />
       );
     },
@@ -250,11 +241,6 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
       </View>
       <Layout style={styles.layout}>
         <KeyboardAwareScrollView extraHeight={200}>
-          {/* <ImageViewPager
-            imageArray={imageArray}
-            index={index}
-            section={section}
-          /> */}
           {imageArray.length > 0 ? (
             <View style={{ width }}>
               <FlatList

@@ -8,8 +8,8 @@ import * as checklistActions from "../../store/actions/checklistActions";
 import CenteredLoading from "./CenteredLoading";
 
 const ImagePage = (props) => {
-  const SCREEN_HEIGHT = Dimensions.get("window").height;
-  const IMAGE_HEIGHT = SCREEN_HEIGHT * 0.5;
+  const { height } = Dimensions.get("window");
+  const IMAGE_HEIGHT = height * 0.5;
   const IMAGE_WIDTH = (IMAGE_HEIGHT / 4) * 3;
 
   const { imageUri } = props;
