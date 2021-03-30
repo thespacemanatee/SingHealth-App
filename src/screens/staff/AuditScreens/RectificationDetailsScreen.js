@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Dimensions } from "react-native";
+import { View, Dimensions, Platform, FlatList } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -16,9 +16,9 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import moment from "moment";
 
 import * as checklistActions from "../../../store/actions/checklistActions";
-import ImageViewPager from "../../../components/ImageViewPager";
 import CustomDatepicker from "../../../components/CustomDatePicker";
 import * as authActions from "../../../store/actions/authActions";
+import ImagePage from "../../../components/ui/ImagePage";
 import alert from "../../../components/CustomAlert";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
@@ -34,11 +34,13 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
+  const { width, height } = Dimensions.get("window");
+  const IMAGE_HEIGHT = height * 0.5;
+  const IMAGE_WIDTH = (IMAGE_HEIGHT / 4) * 3;
+
   const theme = useTheme();
 
   const dispatch = useDispatch();
-
-  const SCREEN_HEIGHT = Dimensions.get("window").height;
 
   const handleDateChange = (date) => {
     console.log(date);
@@ -54,8 +56,6 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
   const getImages = async () => {
     try {
       setLoading(true);
-
-      // const temp = [];
 
       if (checklistStore.chosen_checklist.questions[section][index].image) {
         setLoading(true);
@@ -153,6 +153,31 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
       }}
     />
   );
+  const handleExpandImage = useCallback(
+    (selectedIndex) => {
+      navigation.navigate("ExpandImages", {
+        imageArray,
+        selectedIndex,
+      });
+    },
+    [imageArray, navigation]
+  );
+
+  const renderListItems = useCallback(
+    (itemData) => {
+      return (
+        <ImagePage
+          imageUri={itemData.item}
+          index={index}
+          section={section}
+          selectedIndex={itemData.index}
+          onPress={() => handleExpandImage(itemData.index)}
+          rectify
+        />
+      );
+    },
+    [handleExpandImage, index, section]
+  );
 
   return (
     <View style={styles.screen}>
@@ -172,14 +197,25 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
       </View>
       <Layout style={styles.layout}>
         <KeyboardAwareScrollView extraHeight={200}>
-          <ImageViewPager
-            imageArray={imageArray}
-            index={index}
-            section={section}
-            loading={loading}
-            rectify
-          />
-
+          {imageArray.length > 0 ? (
+            <View style={{ width }}>
+              <FlatList
+                horizontal
+                snapToInterval={IMAGE_WIDTH + 20}
+                contentContainerStyle={[
+                  styles.contentContainer,
+                  { paddingRight: width - IMAGE_WIDTH - 20 * 3 },
+                ]}
+                decelerationRate="fast"
+                keyExtractor={(item) => item}
+                data={imageArray}
+                renderItem={renderListItems}
+                showsHorizontalScrollIndicator={Platform.OS === "web"}
+              />
+            </View>
+          ) : (
+            <ImagePage loading />
+          )}
           <View style={styles.datePickerContainer}>
             <Text category="h6">Deadline: </Text>
             <CustomDatepicker onSelect={handleDateChange} deadline={deadline} />
@@ -187,7 +223,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
           <View style={styles.inputContainer}>
             <Text category="h6">Remarks: </Text>
             <Input
-              height={SCREEN_HEIGHT * 0.1}
+              height={height * 0.1}
               multiline
               textStyle={styles.input}
               placeholder="Enter your remarks here"
@@ -251,6 +287,9 @@ const styles = StyleService.create({
   },
   titleContainer: {
     padding: 20,
+  },
+  contentContainer: {
+    paddingBottom: 25,
   },
   text: {
     fontWeight: "bold",

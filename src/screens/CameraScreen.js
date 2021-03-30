@@ -7,10 +7,16 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Camera } from "expo-camera";
-import { Button, StyleService, Icon } from "@ui-kitten/components";
+import {
+  Button,
+  StyleService,
+  Icon,
+  TopNavigation,
+  TopNavigationAction,
+} from "@ui-kitten/components";
 
 let camera;
-const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
+const BackIcon = (props) => <Icon {...props} name="arrow-back" fill="white" />;
 const CameraIcon = (props) => <Icon {...props} name="camera" />;
 const FlashOnIcon = (props) => <Icon {...props} name="flash" />;
 const FlashOffIcon = (props) => <Icon {...props} name="flash-off" />;
@@ -23,7 +29,15 @@ const CameraScreen = ({ route, navigation }) => {
 
   const WINDOW_WIDTH = Dimensions.get("window").width;
   const CAMERA_VIEW_HEIGHT = (WINDOW_WIDTH / 3) * 4;
-  const TOOLBAR_TOP_HEIGHT = 64;
+
+  const BackAction = () => (
+    <TopNavigationAction
+      icon={BackIcon}
+      onPress={() => {
+        navigation.goBack();
+      }}
+    />
+  );
 
   const takePicture = async () => {
     const photo = await camera.takePictureAsync();
@@ -58,17 +72,7 @@ const CameraScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.screen}>
-      <View style={[styles.topContainer, { height: TOOLBAR_TOP_HEIGHT }]}>
-        <Button
-          //   style={styles.button}
-          appearance="ghost"
-          status="control"
-          onPress={() => {
-            navigation.goBack();
-          }}
-          accessoryLeft={BackIcon}
-        />
-      </View>
+      <TopNavigation style={styles.topContainer} accessoryLeft={BackAction} />
       {previewVisible && capturedImage ? (
         <ImageBackground
           source={{ uri: capturedImage && capturedImage.uri }}
@@ -164,7 +168,6 @@ const styles = StyleService.create({
     backgroundColor: "black",
   },
   topContainer: {
-    flexDirection: "row",
     backgroundColor: "black",
   },
   bottomContainer: {
