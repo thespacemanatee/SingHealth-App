@@ -49,7 +49,6 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
 
   const changeTextHandler = (val) => {
     setValue(val);
-    console.log(val);
     dispatch(checklistActions.addRemarks(section, index, val));
   };
 
@@ -124,7 +123,6 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
 
     if (storeImages) {
       const images = storeImages.map((e) => e.uri);
-      console.log("AFTER GET IMAGES:", storeImages);
       setImageArray(images);
     }
     if (storeRemarks) {
@@ -132,16 +130,6 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
     }
     if (storeDeadline) {
       setDeadline(storeDeadline);
-    } else {
-      const newDate = moment(
-        new Date(
-          new Date().getFullYear(),
-          new Date().getMonth(),
-          new Date().getDate() + 7
-        )
-      );
-      dispatch(checklistActions.changeDeadline(section, index, newDate));
-      setDeadline(newDate);
     }
   }, [checklistStore, dispatch, index, section]);
 
@@ -218,7 +206,11 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
           )}
           <View style={styles.datePickerContainer}>
             <Text category="h6">Deadline: </Text>
-            <CustomDatepicker onSelect={handleDateChange} deadline={deadline} />
+            <CustomDatepicker
+              onSelect={handleDateChange}
+              deadline={deadline}
+              rectify
+            />
           </View>
           <View style={styles.inputContainer}>
             <Text category="h6">Remarks: </Text>
@@ -229,6 +221,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
               placeholder="Enter your remarks here"
               value={value}
               onChangeText={changeTextHandler}
+              disabled
             />
           </View>
         </KeyboardAwareScrollView>

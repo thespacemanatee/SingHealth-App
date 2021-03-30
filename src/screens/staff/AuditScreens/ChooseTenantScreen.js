@@ -19,7 +19,7 @@ import SavedChecklistCard from "../../../components/SavedChecklistCard";
 import NewChecklistCard from "../../../components/NewChecklistCard";
 import alert from "../../../components/CustomAlert";
 import * as authActions from "../../../store/actions/authActions";
-import SkeletonLoading from "../../../components/ui/SkeletonLoading";
+// import SkeletonLoading from "../../../components/ui/SkeletonLoading";
 import CenteredLoading from "../../../components/ui/CenteredLoading";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
@@ -135,10 +135,6 @@ const ChooseTenantScreen = ({ navigation }) => {
     };
   }, [dispatch, getSectionData, navigation]);
 
-  const LoadingComponent = () => {
-    return Platform.OS === "web" ? <CenteredLoading /> : <SkeletonLoading />;
-  };
-
   return (
     <View style={styles.screen}>
       <TopNavigation
@@ -151,18 +147,15 @@ const ChooseTenantScreen = ({ navigation }) => {
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Choose a Tenant to Audit</Text>
         </View>
-        {!loading ? (
-          <SectionList
-            sections={sectionData}
-            keyExtractor={(item, index) => item + index}
-            renderItem={renderSectionList}
-            // contentContainerStyle={styles.contentContainer}
-            renderSectionHeader={renderSectionHeader}
-            SectionSeparatorComponent={() => <Divider />}
-          />
-        ) : (
-          <LoadingComponent />
-        )}
+        <CenteredLoading loading={loading} />
+        <SectionList
+          sections={sectionData}
+          keyExtractor={(item, index) => item + index}
+          renderItem={renderSectionList}
+          // contentContainerStyle={styles.contentContainer}
+          renderSectionHeader={renderSectionHeader}
+          SectionSeparatorComponent={() => <Divider />}
+        />
       </Layout>
     </View>
   );

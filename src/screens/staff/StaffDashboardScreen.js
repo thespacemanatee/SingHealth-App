@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View, Platform } from "react-native";
+import { View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -19,7 +19,7 @@ import * as checklistActions from "../../store/actions/checklistActions";
 import ActiveAuditCard from "../../components/ActiveAuditCard";
 import * as authActions from "../../store/actions/authActions";
 import CenteredLoading from "../../components/ui/CenteredLoading";
-import SkeletonLoading from "../../components/ui/SkeletonLoading";
+// import SkeletonLoading from "../../components/ui/SkeletonLoading";
 import alert from "../../components/CustomAlert";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
@@ -53,23 +53,31 @@ const StaffDashboardScreen = ({ navigation }) => {
   );
 
   const handleRefreshList = () => {
-    setLoading(true);
     getListData();
   };
 
   const handleOpenAudit = useCallback(
     async (auditID, tenantID) => {
       try {
+        // setLoading(true);
+        // console.log(auditID);
+        // console.log(tenantObj);
+        // await dispatch(
+        //   checklistActions.getAuditData(auditID, tenantObj.stallName)
+        // );
         setLoading(true);
-        console.log(auditID);
         const tenantObj = databaseStore.relevantTenants.find((e) => {
           return e.tenantID === tenantID;
         });
-        console.log(tenantObj);
+
+        console.log("AuditID:", auditID);
+
         await dispatch(
           checklistActions.getAuditData(auditID, tenantObj.stallName)
         );
-        navigation.navigate("Rectification", { auditID });
+
+        setLoading(false);
+        navigation.navigate("Rectification");
       } catch (err) {
         handleErrorResponse(err);
         setError(err.message);
@@ -117,7 +125,6 @@ const StaffDashboardScreen = ({ navigation }) => {
     getListData();
 
     const unsubscribe = navigation.addListener("focus", () => {
-      setLoading(true);
       getListData();
     });
 
@@ -127,10 +134,6 @@ const StaffDashboardScreen = ({ navigation }) => {
       unsubscribe;
     };
   }, [getListData, navigation]);
-
-  const LoadingComponent = () => {
-    return Platform.OS === "web" ? <CenteredLoading /> : <SkeletonLoading />;
-  };
 
   return (
     <View style={styles.screen}>
@@ -147,17 +150,14 @@ const StaffDashboardScreen = ({ navigation }) => {
         <View style={styles.textContainer}>
           <Text style={styles.text}>Rectification Progress</Text>
         </View>
-        {!loading ? (
-          <List
-            contentContainerStyle={styles.contentContainer}
-            data={listData}
-            renderItem={renderActiveAudits}
-            onRefresh={handleRefreshList}
-            refreshing={loading}
-          />
-        ) : (
-          <LoadingComponent />
-        )}
+        <CenteredLoading loading={loading} />
+        <List
+          contentContainerStyle={styles.contentContainer}
+          data={listData}
+          renderItem={renderActiveAudits}
+          onRefresh={handleRefreshList}
+          refreshing={loading}
+        />
 
         <FAB.Group
           open={open}

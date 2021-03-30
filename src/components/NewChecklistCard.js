@@ -12,9 +12,10 @@ const NewChecklistCard = ({ item, navigation, onError, onLoading }) => {
     onLoading(true);
     console.log("ITEM:", item);
     try {
-      await dispatch(checklistActions.getChecklist(undefined, item));
+      await dispatch(checklistActions.getChecklist(item.fnb, item));
 
       const now = moment(new Date()).toISOString();
+      onLoading(false);
       navigation.navigate("Checklist", { auditID: now });
     } catch (err) {
       console.error(err);

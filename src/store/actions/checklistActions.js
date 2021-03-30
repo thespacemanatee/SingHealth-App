@@ -33,8 +33,9 @@ export const getChecklist = (checklistType, tenant) => async (dispatch) => {
 export const addAuditTenantSelection = (tenant) => {
   return { type: ADD_AUDIT_TENANT_SELECTION, tenant };
 };
-export const addChosenChecklist = (checklistType = "fnb") => {
+export const addChosenChecklist = (fnb = true) => {
   return async (dispatch) => {
+    const checklistType = fnb ? "fnb" : "non_fnb";
     const options = {
       url: `${endpoint}auditForms/${checklistType}`,
       method: "get",
