@@ -78,10 +78,17 @@ const ChooseTenantScreen = ({ navigation }) => {
           navigation={navigation}
           onError={handleErrorResponse}
           onLoading={setLoading}
+          staffID={authStore._id}
+          institutionID={authStore.institutionID}
         />
       );
     },
-    [handleDeleteSavedChecklist, navigation]
+    [
+      authStore._id,
+      authStore.institutionID,
+      handleDeleteSavedChecklist,
+      navigation,
+    ]
   );
 
   const getSectionData = useCallback(async () => {

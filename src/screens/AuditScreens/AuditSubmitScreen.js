@@ -35,7 +35,6 @@ const AuditSubmitScreen = ({ navigation }) => {
     setSubmitting(true);
     const tempChosenChecklist = _.cloneDeep(checklistStore.chosen_checklist);
     const tempCovid19Checklist = _.cloneDeep(checklistStore.covid19);
-    const chosenTenant = checklistStore.chosen_tenant.tenantID;
     const chosenChecklistType = checklistStore.chosen_checklist_type;
     let chosenChecklistImages = [];
     let covid19ChecklistImages = [];
@@ -105,12 +104,7 @@ const AuditSubmitScreen = ({ navigation }) => {
     // TODO: Move metadata creation to start of audit creation
 
     const auditData = {
-      auditMetadata: {
-        staffID: "CGH_Staff1",
-        tenantID: chosenTenant,
-        institutionID: "CGH",
-        date: moment(new Date()).toISOString(),
-      },
+      auditMetadata: checklistStore.auditMetadata,
       auditForms: {
         [chosenChecklistType]: tempChosenChecklist,
         covid19: tempCovid19Checklist,
@@ -119,9 +113,9 @@ const AuditSubmitScreen = ({ navigation }) => {
 
     uploadAuditData(imageAdded, auditData, base64images, formData);
   }, [
+    checklistStore.auditMetadata,
     checklistStore.chosen_checklist,
     checklistStore.chosen_checklist_type,
-    checklistStore.chosen_tenant.tenantID,
     checklistStore.covid19,
     uploadAuditData,
   ]);

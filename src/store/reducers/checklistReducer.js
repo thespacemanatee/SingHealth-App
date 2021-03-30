@@ -3,6 +3,7 @@ import _ from "lodash";
 import {
   ADD_AUDIT_TENANT_SELECTION,
   ADD_CHOSEN_CHECKLIST,
+  CREATE_AUDIT_METADATA,
   ADD_SAVED_CHECKLIST,
   ADD_IMAGE,
   DELETE_IMAGE,
@@ -50,6 +51,13 @@ const checklistReducer = (state = initialState, action) => {
       return {
         ...state,
         covid19: action.checklist,
+      };
+    }
+
+    case CREATE_AUDIT_METADATA: {
+      return {
+        ...state,
+        auditMetadata: action.auditMetadata,
       };
     }
 
