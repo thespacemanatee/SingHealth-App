@@ -15,11 +15,11 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
 
-import QuestionCard from "../../../components/QuestionCard";
-import alert from "../../../components/CustomAlert";
-import * as authActions from "../../../store/actions/authActions";
-import SectionHeader from "../../../components/ui/SectionHeader";
-import CenteredLoading from "../../../components/ui/CenteredLoading";
+import QuestionCard from "../../components/QuestionCard";
+import alert from "../../components/CustomAlert";
+import * as authActions from "../../store/actions/authActions";
+import SectionHeader from "../../components/ui/SectionHeader";
+import CenteredLoading from "../../components/ui/CenteredLoading";
 
 export const FNB_SECTION = "F&B Checklist";
 export const NON_FNB_SECTION = "Non-F&B Checklist";
@@ -111,20 +111,23 @@ const ChecklistScreen = ({ route, navigation }) => {
     }
   };
 
-  const renderChosenChecklist = useCallback(
-    (itemData) => {
-      return (
-        <QuestionCard
-          index={itemData.index}
-          question={itemData.item.question}
-          answer={itemData.item.answer}
-          section={itemData.section.title}
-          navigation={navigation}
-        />
-      );
-    },
-    [navigation]
-  );
+  const handleOpenQuestionCard = (checked, deleted, data) => {
+    if (!checked && !deleted) {
+      navigation.navigate("QuestionDetails", data);
+    }
+  };
+
+  const renderChosenChecklist = useCallback((itemData) => {
+    return (
+      <QuestionCard
+        index={itemData.index}
+        question={itemData.item.question}
+        answer={itemData.item.answer}
+        section={itemData.section.title}
+        onPress={handleOpenQuestionCard}
+      />
+    );
+  }, []);
 
   const renderSectionHeader = useCallback(({ section: { title } }) => {
     return <SectionHeader title={title} />;

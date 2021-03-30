@@ -3,6 +3,7 @@ import { endpoint, httpClient } from "../../helpers/CustomHTTPClient";
 export const ADD_AUDIT_TENANT_SELECTION = "ADD_AUDIT_TENANT_SELECTION";
 export const ADD_CHOSEN_CHECKLIST = "ADD_CHOSEN_CHECKLIST";
 export const ADD_COVID_CHECKLIST = "ADD_COVID_CHECKLIST";
+export const CREATE_AUDIT_METADATA = "CREATE_AUDIT_METADATA";
 export const ADD_SAVED_CHECKLIST = "ADD_SAVED_CHECKLIST";
 export const ADD_IMAGE = "ADD_IMAGE";
 export const DELETE_IMAGE = "DELETE_IMAGE";
@@ -15,6 +16,8 @@ export const CHANGE_DEADLINE = "CHANGE_DEADLINE";
 export const RESET_CHECKLIST_STORE = "RESET_CHECKLIST_STORE";
 export const GET_AUDIT_DATA = "GET_AUDIT_DATA";
 export const GET_IMAGE = "GET_IMAGE";
+export const RECTIFY_CHOSEN_CHECKLIST = "RECTIFY_CHOSEN_CHECKLIST";
+export const RECTIFY_COVID_CHECKLIST = "RECTIFY_COVID_CHECKLIST";
 
 export const TYPE_FNB = "fnb";
 export const TYPE_NON_FNB = "non_fnb";
@@ -64,6 +67,10 @@ export const addCovidChecklist = () => {
     // console.log("Done fetching covid checklist", checklist);
     return dispatch({ type: ADD_COVID_CHECKLIST, checklist });
   };
+};
+
+export const createAuditMetadata = (auditMetadata) => {
+  return { type: CREATE_AUDIT_METADATA, auditMetadata };
 };
 
 export const addSavedChecklist = (data) => {
@@ -163,4 +170,12 @@ export const getImage = (fileName) => {
 
     return res;
   };
+};
+
+export const rectifyChosenChecklist = (data) => {
+  return { type: RECTIFY_CHOSEN_CHECKLIST, data };
+};
+
+export const rectifyCovidChecklist = (data) => {
+  return { type: RECTIFY_COVID_CHECKLIST, data };
 };

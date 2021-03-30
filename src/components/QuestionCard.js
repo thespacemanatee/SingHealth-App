@@ -24,7 +24,7 @@ const QuestionCard = (props) => {
   const { question } = props;
   const { answer } = props;
   const { section } = props;
-  const { navigation } = props;
+  const { onPress } = props;
 
   const leftSwipeable = useRef(null);
 
@@ -51,7 +51,7 @@ const QuestionCard = (props) => {
   );
 
   const onClickDetailHandler = () => {
-    navigation.navigate("QuestionDetails", {
+    onPress(checked, deleted, {
       index,
       question,
       section,

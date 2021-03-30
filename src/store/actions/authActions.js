@@ -44,10 +44,11 @@ export const signIn = (user, pswd, userType) => {
 
     const userToken = "dummy-auth-token";
     const { _id, email, institutionID, name } = res.data;
+    const id = _id.$oid || _id;
     const userData = {
       userType,
       userToken,
-      _id,
+      _id: id,
       email,
       institutionID,
       name,
@@ -68,14 +69,6 @@ export const signOut = () => {
       // withCredentials: true,
     };
     await httpClient(signOutOptions);
-    // .then((res) => {
-    // console.log(res);
-    // })
-    // .catch((err) => {
-    // handleErrorResponse(err);
-    // });
-
-    // const token = "dummy-auth-token";
 
     dispatch({ type: SIGN_OUT });
     removeTokenFromStorage();

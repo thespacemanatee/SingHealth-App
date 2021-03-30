@@ -14,11 +14,11 @@ import {
 } from "@ui-kitten/components";
 import moment from "moment";
 
-import alert from "../../../components/CustomAlert";
-import SectionHeader from "../../../components/ui/SectionHeader";
-import SkeletonLoading from "../../../components/ui/SkeletonLoading";
-import CenteredLoading from "../../../components/ui/CenteredLoading";
-import RectificationCard from "../../../components/RectificationCard";
+import alert from "../../components/CustomAlert";
+import SectionHeader from "../../components/ui/SectionHeader";
+import SkeletonLoading from "../../components/ui/SkeletonLoading";
+import CenteredLoading from "../../components/ui/CenteredLoading";
+import RectificationCard from "../../components/RectificationCard";
 
 export const FNB_SECTION = "F&B Checklist";
 export const NON_FNB_SECTION = "Non-F&B Checklist";
@@ -67,6 +67,12 @@ const RectificationScreen = ({ navigation }) => {
     ]);
   };
 
+  const handleOpenRectificationCard = (checked, deleted, data) => {
+    if (!checked && !deleted) {
+      navigation.navigate("RectificationDetails", data);
+    }
+  };
+
   const renderChosenChecklist = useCallback(
     (itemData) => {
       return (
@@ -75,7 +81,7 @@ const RectificationScreen = ({ navigation }) => {
           question={itemData.item.question}
           answer={itemData.item.answer}
           section={itemData.section.title}
-          navigation={navigation}
+          onPress={handleOpenRectificationCard}
         />
       );
     },

@@ -13,14 +13,14 @@ import {
 } from "@ui-kitten/components";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import * as checklistActions from "../../../store/actions/checklistActions";
-import * as databaseActions from "../../../store/actions/databaseActions";
-import SavedChecklistCard from "../../../components/SavedChecklistCard";
-import NewChecklistCard from "../../../components/NewChecklistCard";
-import alert from "../../../components/CustomAlert";
-import * as authActions from "../../../store/actions/authActions";
+import * as checklistActions from "../../store/actions/checklistActions";
+import * as databaseActions from "../../store/actions/databaseActions";
+import SavedChecklistCard from "../../components/SavedChecklistCard";
+import NewChecklistCard from "../../components/NewChecklistCard";
+import alert from "../../components/CustomAlert";
+import * as authActions from "../../store/actions/authActions";
 // import SkeletonLoading from "../../../components/ui/SkeletonLoading";
-import CenteredLoading from "../../../components/ui/CenteredLoading";
+import CenteredLoading from "../../components/ui/CenteredLoading";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -78,10 +78,17 @@ const ChooseTenantScreen = ({ navigation }) => {
           navigation={navigation}
           onError={handleErrorResponse}
           onLoading={setLoading}
+          staffID={authStore._id}
+          institutionID={authStore.institutionID}
         />
       );
     },
-    [handleDeleteSavedChecklist, navigation]
+    [
+      authStore._id,
+      authStore.institutionID,
+      handleDeleteSavedChecklist,
+      navigation,
+    ]
   );
 
   const getSectionData = useCallback(async () => {

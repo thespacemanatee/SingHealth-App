@@ -17,12 +17,12 @@ import {
 
 import StaffDashboardScreen from "../screens/staff/StaffDashboardScreen";
 // import DirectoryScreen from "../screens/staff/DirectoryScreens/DirectoryScreen";
-import ChooseTenantScreen from "../screens/staff/AuditScreens/ChooseTenantScreen";
-import ChecklistScreen from "../screens/staff/AuditScreens/ChecklistScreen";
-import RectificationScreen from "../screens/staff/AuditScreens/RectificationScreen";
-import QuestionDetailsScreen from "../screens/staff/AuditScreens/QuestionDetailsScreen";
-import RectificationDetailsScreen from "../screens/staff/AuditScreens/RectificationDetailsScreen";
-import AuditSubmitScreen from "../screens/staff/AuditScreens/AuditSubmitScreen";
+import ChooseTenantScreen from "../screens/staff/ChooseTenantScreen";
+import ChecklistScreen from "../screens/AuditScreens/ChecklistScreen";
+import RectificationScreen from "../screens/AuditScreens/RectificationScreen";
+import QuestionDetailsScreen from "../screens/AuditScreens/QuestionDetailsScreen";
+import RectificationDetailsScreen from "../screens/AuditScreens/RectificationDetailsScreen";
+import AuditSubmitScreen from "../screens/AuditScreens/AuditSubmitScreen";
 import CameraScreen from "../screens/CameraScreen";
 import TenantsDirectoryScreen from "../screens/staff/DirectoryScreens/TenantsDirectoryScreen";
 import * as authActions from "../store/actions/authActions";

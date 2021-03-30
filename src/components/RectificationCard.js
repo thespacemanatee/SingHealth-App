@@ -10,7 +10,7 @@ const QuestionCard = (props) => {
   const { question } = props;
   const { answer } = props;
   const { section } = props;
-  const { navigation } = props;
+  const { onPress } = props;
 
   const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -31,7 +31,7 @@ const QuestionCard = (props) => {
   );
 
   const onClickDetailHandler = () => {
-    navigation.navigate("RectificationDetails", {
+    onPress(checked, deleted, {
       index,
       question,
       section,
