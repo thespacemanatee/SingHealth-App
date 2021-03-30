@@ -20,13 +20,14 @@ import {
   useTheme,
   Toggle,
 } from "@ui-kitten/components";
+
 import { Formik } from "formik";
 import * as Yup from "yup";
 import CustomTextInput from "../../components/CustomTextInput";
 import * as authActions from "../../store/actions/authActions";
 import Logo from "../../components/ui/Logo";
-import CenteredLoading from "../../components/ui/CenteredLoading";
 import alert from "../../components/CustomAlert";
+import CenteredLoading from "../../components/ui/CenteredLoading";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -97,6 +98,7 @@ const LoginScreen = ({ navigation }) => {
         style={styles.screen}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
+        <CenteredLoading loading={loading} />
         <TopNavigation
           style={styles.topNavigation}
           title="Login"
@@ -105,87 +107,79 @@ const LoginScreen = ({ navigation }) => {
         />
         <Divider />
         <Layout style={styles.layout}>
-          {!loading ? (
-            <>
-              <Formik
-                initialValues={{ email: "", password: "" }}
-                onSubmit={handleSubmitForm}
-                validationSchema={LoginSchema}
-              >
-                {({
-                  handleChange,
-                  handleBlur,
-                  handleSubmit,
-                  values,
-                  errors,
-                }) => (
-                  <View style={styles.keyboardContainer}>
-                    <Logo />
-                    <CustomTextInput
-                      label="Email"
-                      returnKeyType="next"
-                      value={values.email}
-                      onChangeText={handleChange("email")}
-                      onBlur={handleBlur("email")}
-                      error={!!errors.email}
-                      errorText={errors.email}
-                      autoCapitalize="none"
-                      autoCompleteType="email"
-                      textContentType="emailAddress"
-                      keyboardType="email-address"
-                      accessoryRight={(props) => {
-                        return (
-                          !!errors.email && (
-                            <Icon
-                              {...props}
-                              name="alert-circle-outline"
-                              fill={theme["color-danger-700"]}
-                            />
-                          )
-                        );
-                      }}
-                    />
-                    <CustomTextInput
-                      label="Password"
-                      returnKeyType="done"
-                      value={values.password}
-                      onChangeText={handleChange("password")}
-                      onBlur={handleBlur("password")}
-                      error={!!errors.password}
-                      errorText={errors.password}
-                      secureTextEntry={secureTextEntry}
-                      accessoryRight={renderSecureIcon}
-                    />
-                    <View style={styles.forgotPassword}>
-                      <Toggle checked={checked} onChange={handleUserToggle}>
-                        {`Login as ${checked ? "Staff" : "Tenant"}`}
-                      </Toggle>
-                      <TouchableOpacity
-                        onPress={() => navigation.navigate("ForgotPassword")}
-                      >
-                        <Text style={styles.forgot}>Forgot your password?</Text>
-                      </TouchableOpacity>
-                    </View>
-                    <View style={styles.buttonContainer}>
-                      <Button mode="contained" onPress={handleSubmit}>
-                        Login
-                      </Button>
-                    </View>
+          {/* {!loading ? ( */}
+          <>
+            <Formik
+              initialValues={{ email: "", password: "" }}
+              onSubmit={handleSubmitForm}
+              validationSchema={LoginSchema}
+            >
+              {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+                <View style={styles.keyboardContainer}>
+                  <Logo />
+                  <CustomTextInput
+                    label="Email"
+                    returnKeyType="next"
+                    value={values.email}
+                    onChangeText={handleChange("email")}
+                    onBlur={handleBlur("email")}
+                    error={!!errors.email}
+                    errorText={errors.email}
+                    autoCapitalize="none"
+                    autoCompleteType="email"
+                    textContentType="emailAddress"
+                    keyboardType="email-address"
+                    accessoryRight={(props) => {
+                      return (
+                        !!errors.email && (
+                          <Icon
+                            {...props}
+                            name="alert-circle-outline"
+                            fill={theme["color-danger-700"]}
+                          />
+                        )
+                      );
+                    }}
+                  />
+                  <CustomTextInput
+                    label="Password"
+                    returnKeyType="done"
+                    value={values.password}
+                    onChangeText={handleChange("password")}
+                    onBlur={handleBlur("password")}
+                    error={!!errors.password}
+                    errorText={errors.password}
+                    secureTextEntry={secureTextEntry}
+                    accessoryRight={renderSecureIcon}
+                  />
+                  <View style={styles.forgotPassword}>
+                    <Toggle checked={checked} onChange={handleUserToggle}>
+                      {`Login as ${checked ? "Staff" : "Tenant"}`}
+                    </Toggle>
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate("ForgotPassword")}
+                    >
+                      <Text style={styles.forgot}>Forgot your password?</Text>
+                    </TouchableOpacity>
                   </View>
-                )}
-              </Formik>
-              <View style={styles.row}>
-                <Text>Don’t have an account? </Text>
-                <TouchableOpacity
-                  onPress={() => navigation.replace("Register")}
-                >
-                  <Text style={styles.link}>Sign up</Text>
-                </TouchableOpacity>
-              </View>
-            </>
-          ) : (
+                  <View style={styles.buttonContainer}>
+                    <Button mode="contained" onPress={handleSubmit}>
+                      Login
+                    </Button>
+                  </View>
+                </View>
+              )}
+            </Formik>
+            <View style={styles.row}>
+              <Text>Don’t have an account? </Text>
+              <TouchableOpacity onPress={() => navigation.replace("Register")}>
+                <Text style={styles.link}>Sign up</Text>
+              </TouchableOpacity>
+            </View>
+          </>
+          {/* ) : (
             <CenteredLoading />
-          )}
+          )} */}
         </Layout>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
@@ -200,10 +194,10 @@ const handleErrorResponse = (err) => {
     console.error(err.response.data);
     console.error(err.response.status);
     console.error(err.response.headers);
-    if (data.status === 403) {
+    if (err.response.status === 403) {
       authActions.signOut();
     } else {
-      switch (Math.floor(data.status / 100)) {
+      switch (Math.floor(err.response.status / 100)) {
         case 4: {
           alert("Error", "Input error.");
           break;

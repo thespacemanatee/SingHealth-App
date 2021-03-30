@@ -1,0 +1,19 @@
+{
+    "_id": "mkjhybh35b4wk486757",
+    "name": "Zark Muckerberg",
+    "email": "zm@fatbook.com",
+    "pswd": "lalala",
+    "institutionID": "CGH",
+    "stall": {
+        "name": "Continental Electronics",
+        "companyName": "CE PTE LTD",
+        "companyPOC": {
+            "name": "Ms Priscilla",
+            "email": "mp@ce.com"
+        },
+        "address": { "unitNo": "11-111" },
+        "fnb": false,
+	"createdBy" : "x68765yt34rgTHYTJUI*&U^Y%T$R",
+	"dateCreated" : "01/03/2021"
+    }
+}

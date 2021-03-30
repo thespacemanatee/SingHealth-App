@@ -2,38 +2,34 @@
 ---
 
 ## Endpoints
-- [x] [`GET /tenants/<institutionId>`](#`GET-/tenants/<institutionId>`)
+- [x] [`GET /tenants/{institutionId}`](#`GET-/tenants/{institutionId}`)
 - [x] [`GET /auditForms/<form_type>`](#`GET-/auditForms/<form_type>`)
 - [x] [`POST /audits`](#`POST-/audits`)
 - [x] [`POST /images`](#`POST-/images`)
 - [x] [`GET /images`](#`GET-/images`)
 - [x] [`GET /login/tenant`](#`GET-/login/tenant`)
 - [x] [`GET /login/staff`](#`GET-/login/staff`)
-- [ ] [`GET /audits/<auditID>`](#`GET-/audits/auditID`)
-- [ ] [`PATCH /audits/<auditID>/tenant`](#`PATCH-/audits/auditID/tenant`)
-- [ ] [`PATCH /audits/<auditID>/staff`](#`PATCH-/audits/auditID/staff`)
+- [x] [`GET /audits/<auditID>`](#`GET-/audits/auditID`)
+- [x] [`PATCH /audits/<auditID>/tenant`](#`PATCH-/audits/auditID/tenant`)
+- [x] [`PATCH /audits/<auditID>/staff`](#`PATCH-/audits/auditID/staff`)
 - [ ] [`GET /audits/saved`](#`GET-/audits/saved`)
 - [x] [`GET /audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`)
 - [x] [`GET /audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`)
-- [x] [`POST /tenant`](#POST-/tenant`)
-- [x] [`DELETE /tenant/<tenantID>`](#POST-/tenant\{tenantID}`)
-- [x] [`GET /tenant/<tenantID>`](#GET-/tenant\{tenantID}`)
 ---
 
 
-## `GET /tenants/<institutionID>`
+## `GET /tenants/{institutionId}`
 ### JSON body parameters
 Param | Description
 -|-
-`<institutionID>` | Unique identifier for institution
+`institutionId` | Unique identifier for institution
 
 ### Sample request
 ```
-localhost:5000/tenants/CGH
+localhost:5000/tenants/{institutionId}
 ```
 
-### Sample responses
-#### Success
+### Sample success response
 ```
 {
   "status": 200,
@@ -48,26 +44,9 @@ localhost:5000/tenants/CGH
         "stallName": "Jollibean"
       }
   ]
+  
 }
 ```
-
-#### Failure
-##### No matching data found
-```
-{
-  "status": 404,
-  "description": "No tenant with the institution ID found"
-}
-```
-
-##### Server Connection error
-```
-{
-  "status": 404,
-  "description": "Error in connection"
-}
-```
-
 ### Response definitions
 `tenantID`
 ~ Unique identifier for tenant
@@ -87,7 +66,6 @@ Param | Description
 localhost:5000/auditForms/fnb
 ```
 ### Sample Response
-#### Success
 ```js
 {
   "description": "Success",
@@ -120,24 +98,6 @@ localhost:5000/auditForms/fnb
   }
 }
 ```
-
-#### Failure
-##### No matching data found
-```
-{
-  "status": 404,
-  "description": "No matching form"
-}
-```
-
-##### Server Connection error
-```
-{
-  "status": 404,
-  "description": "Error in connection"
-}
-```
-
 
 
 <br>
@@ -359,6 +319,11 @@ localhost:5000/auditForms/tegtethg4355g4gbtr
 
 
 ## `PATCH /audits/<auditID>/tenant`
+### Request Arguments
+URL Query Parameter | Description
+-|-
+`AuditID`|The unique identifier for the audit
+
 ### JSON Body parameters
 JSON param | Description
 -|-
@@ -420,19 +385,85 @@ Tenants will only be allowed to create these 3 fields through this endpoint: `re
 #### Success
 ```js
 {
-    "status": 200,
-    "description": "All patches saved and added to database"
+    "data": [
+        {
+            "patch": {
+                "acceptedRequest": false,
+                "category": "Workplace Safety and Health",
+                "deadline": "2021-03-29T11:08:15+0000",
+                "index": 1,
+                "rectified": false
+            },
+            "status": true
+        },
+        {
+            "patch": {
+                "acceptedRequest": false,
+                "category": "Workplace Safety and Health",
+                "deadline": "2021-03-29T11:08:15+0000",
+                "index": 2,
+                "rectified": false
+            },
+            "status": true
+        },
+        <PatchResult/>,
+        <PatchResult/>,
+        ...
+    ],
+    "status": "Changes sent to the database.",
+    "status_code": 200
 }
 ```
 #### Failure
+##### Invalid Patch Keys
+When tenant tries to send anything other than the stated alllowed keys above.
 ```js
 {
     "status": 400,
-    "description": "Wrong form name: fmb"    
+    "description": "Invalid keys provided. You are trying to modify fields that are locked for modifying."    
+}
+```
+##### Insufficient Required Keys
+The following keys are required: `category` & `index`, in every Patch Object.
+```js
+{
+    "status": 400,
+    "description": "Unable to narrow down the line item in the audit that you want to edit."    
+}
+```
+
+##### Modifying a line item marked as "Compliant"
+Tenants are not allowed to modify line items that are already compliant/rectified.
+```js
+{
+    "status": 400,
+    "description": "You are editing a line item that was previously marked as compliant"
+}
+```
+
+##### Modifying a line item marked as "Rectified"
+Tenants are not allowed to modify line items that are already compliant/rectified.
+```js
+{
+    "status": 400,
+    "description": "You are editing a line item that was previously marked as rectified"
+}
+```
+
+##### Form type doesn't exist
+When the tenant is from fnb but the request was trying to modify non_fnb
+```js
+{
+    "status": 400,
+    "description": "The form(fnb) you were trying to edit does not exist."
 }
 ```
 
 ## `PATCH /audits/<auditID>/staff`
+### Request Arguments
+Request args | Description
+-|-
+`auditID`|The unique identifier for the audit
 ### JSON Body parameters
 Check out the example below on how all these parameters are arranged in the actual request.
 JSON param | Description
@@ -440,7 +471,7 @@ JSON param | Description
 `<formType>` | I.e. `fnb`, `non_fnb`, etc
 `category` | The part of the form to edit
 `index` | The line item to target
-`rectified` | [Required]: Whether the rectification has been accepted by the staff.
+`rectified` | [Required]: Whether the rectification has been accepted by the staff. Staff are allowed to modify this field even if `rectified = True`
 `acceptedRequest` | A record of whether the request for time extension has been granted.
 `deadline` | The new deadline if time extension has been granted
 
@@ -506,23 +537,38 @@ This PATCH request can be repeated many times. The `deadline`, `acceptedRequest`
 #### Success
 ```js
 {
-    "status": 200,
-    "description": "All patches saved and added to database"
+    "patchResults": [
+        {
+            "patch": {
+                "acceptedRequest": false,
+                "category": "Workplace Safety and Health",
+                "deadline": "2021-03-29T11:08:15+0000",
+                "index": 1,
+                "rectified": false
+            },
+            "status": true
+        },
+        {
+            "patch": {
+                "acceptedRequest": false,
+                "category": "Workplace Safety and Health",
+                "deadline": "2021-03-29T11:08:15+0000",
+                "index": 2,
+                "rectified": false
+            },
+            "status": true
+        },
+        <PatchResult/>,
+        <PatchResult/>,
+        ...
+    ],
+    "rectificationProgress": 0.0,
+    "updatedRectProgress": true
 }
 ```
 #### Failure
-```js
-{
-    "status": 400,
-    "description": "Wrong form name: fmb"    
-}
-
-{
-    "status": 400,
-    "description": "Line item already compliant and is not open for editing"    
-}
-```
-
+The failure messages are similar to those of `PATCH /audits/<auditID>/tenant`
+<br>
 ## `POST /audits`
 ---
 ### Side effects
@@ -729,200 +775,42 @@ localhost:5000/audits/unrectified/recent/staff/grwrbgbgbewvw/4
 }
 ```
 
-## `POST /tenant`
+## `GET /audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`
 ### Description of use case
-The staff to add new tenant.
-### Compulsory JSON Query string parameters
-JSON param | Description
+The tenant is interested in seeing any past audits that have not been rectified and needs to query only his own audits.
+### URL parameters
+URL param | Description
 -|-
-`name` | Tenant's full name in upper case.
-`email` | The user email of a tenant.
-`pswd` | The password credentials for a tenant.
-`institutionID` | The institution where a tenant operates under.
-`stall_name` | Name of the stall.
-`company_name` | Name of the company the stall is representing.
-`company_POC_name` | Name of the company POC.
-`company_POC_email` | Email of the company POC.
-`unit_no` | The unit number. I.e. 02-212 (without hashes).
-`fnb` | Whether the stall is an F&B stall.
-`staffID` | ID of staff who created this account.
-`tenantDateStart` | Date when tenantship started, without including exact date. I.e. MM/YYYY
-`tenantDateEnd` | The unique identifier for the tenant account. I.e. MM/YYYY
-
-### Optional JSON Query string parameters
-JSON param | Description
--|-
-`blk` | blk number. I.e. 243A.
-`street` | Street name.
-`bldg` | Name of the building.
-`zipcode` | The zipcode of the stall. I.e. 123456 (only numbers).
-
+`tenantID` | The unique identifier for the tenant account
+`daysBefore` | An integer indicating how early the audits to query from. If 0, all unrectified audits regardless of time will be returned.
 
 ### Sample request
-#### With only compulsory data
+#### With date range
 ```js
-{
-    "name": "myname",
-    "email": "myemail.gg.com",
-    "pswd": "mypassword",
-    "institutionID": "myinstitution",
-    "stall_name": "mystall",
-    "company_name": "mycompany",
-    "company_POC_name": "my_poc_name",
-    "company_POC_email": "my_poc_email",
-    "unit_no": "01-001",
-    "fnb": true,
-    "staffID": "000111",
-    "stall_number": "stall 7",
-  	"tenantDateStart": "03/2021",
-  	"tenantDateEnd": "05/2025"
-}
+localhost:5000/audits/unrectified/recent/tenant/grwrbgbgbewvw/4
 ```
-#### With complete data
+#### Without date range
 ```js
-{
-    "name": "myname",
-    "email": "myemail.gg.com",
-    "pswd": "mypassword",
-    "institutionID": "myinstitution",
-    "stall_name": "mystall",
-    "company_name": "mycompany",
-    "company_POC_name": "my_poc_name",
-    "company_POC_email": "my_poc_email",
-    "blk" : "myblk",
-    "street": "mystreet",
-    "bldg": "bldg",
-    "unit_no": "01-001",
-    "zipcode": 123456,
-    "fnb": true,
-    "staffID": "000111",
-    "stall_number": "stall 7",
-  	"tenantDateStart": "03/2021",
-  	"tenantDateEnd": "05/2025"
-}
+localhost:5000/audits/unrectified/recent/tenant/grwrbgbgbewvw/0
 ```
 ### Sample response
 #### Success
 ```js
 {
-    "status": 201,
-    "description": "Tenant Added"
+    "status": 200,
+    "description": "Forms found",
+    "data": [
+        <Audit object>,
+        <Audit object>
     ]
 }
 ```
 
-#### Partial Success
-##### Missing keys, null or empty value received for compulsory data fields
-```js
-{
-    "status": 200,
-    "description": "Insufficient/Error in data to add new tenant",
-    "data": [{
-      "missing_keys": ["key1", "key2", ...]
-      "key_value_error": ["key3", "key4", ...]
-    }]
-    
-}
-```
-
 #### Failure
-##### No response received
 ```js
 {
     "status": 404,
-    "description": "No response received"
-}
-```
-
-##### Unable to upload data
-```js
-{
-    "status": 404,
-    "description": "Cannot upload data to server"
-}
-```
-
-## `DELETE /tenant/<tenantID>`
-### Description of use case
-The staff to delete existing tenant.
-### URL Query Parameters
-URL Param | Description
--|-
-`tenantID` | The unique identifier for tenant
-
-### Sample request
-```
-localhost:5000/tenant/0ta2b2kjq
-```
-
-### Sample responses
-#### Success
-```js
-{
-  "status": 200,
-  "description": "Tenant with ID 0ta2b2kjq deleted"
-}
-```
-
-#### Failure
-##### TenantID not found
-```js
-{
-  "status": 404,
-  "description": "No matching tenant ID found"
-}
-```
-
-##### Server Error
-```js
-{
-  "status": 404,
-  "description": "Error connecting to server"
-}
-```
-
-## `GET /tenant/<tenantID>`
-### Description of use case
-The staff to view existing tenant.
-### URL Query Parameters
-URL Param | Description
--|-
-`tenantID` | The unique identifier for tenant
-
-### Sample request
-```
-localhost:5000/tenant/0ta2b2kjq
-```
-
-### Sample responses
-#### Success
-```js
-{
-  "status": 200,
-  "description": "Success",
-  "data": {
-    "name": "myname",
-    "email": "myemail@gg.com",
-    ...
-  }
-
-  ]
-}
-```
-
-#### Failure
-##### TenantID not found
-```js
-{
-  "status": 404,
-  "description": "No matching tenant ID found"
-}
-```
-
-##### Server Error
-```js
-{
-  "status": 404,
-  "description": "Error connecting to server"
+    "description": "No matching Forms",
+    "data": []
 }
 ```

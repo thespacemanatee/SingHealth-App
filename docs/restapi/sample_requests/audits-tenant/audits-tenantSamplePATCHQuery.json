@@ -1,0 +1,45 @@
+{
+    "non_fnb": [
+            {
+                "category": "Professionalism and Staff Hygiene",
+                "index": 1,
+                "rectificationImages": ["filename1.jpg", "filename2.jpg"],
+                "rectificationRemarks": "donezo1",
+                "requestForExt": false
+            },
+            {
+                "category": "Professionalism and Staff Hygiene",
+                "index": 2,
+                "rectificationRemarks": "Pls gimme chance la",
+                "requestForExt": true
+            },  
+            {
+                "category": "Housekeeping and General Cleanliness",
+                "index": 1,
+                "rectificationImages": ["filename12,jpg", "filename22.jpg"],
+                "rectificationRemarks": "donezo1",
+                "requestForExt": false
+            },  
+            {
+                "category": "Housekeeping and General Cleanliness",
+                "index": 2,
+                "rectificationImages": null,
+                "rectificationRemarks": "Remarks",
+                "requestForExt": true
+            },
+            {
+                "category": "Workplace Safety and Health",
+                "index": 1,
+                "rectificationRemarks": "Remarks",
+                "requestForExt": true
+            },  
+            {
+                "category": "Workplace Safety and Health",
+                "index": 2,
+                "rectificationImages": ["filename13.png", "filename23.jpg"],
+                "rectificationRemarks": "Remarks",
+                "requestForExt": false
+            }
+    ]
+    
+}

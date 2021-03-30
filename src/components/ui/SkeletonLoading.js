@@ -8,8 +8,8 @@ if (Platform.OS !== "web") {
   SkeletonPlaceholder = require("react-native-skeleton-placeholder").default;
 }
 
-const SkeletonLoading = () => {
-  return (
+const SkeletonLoading = ({ loading }) => {
+  return loading ? (
     <SkeletonPlaceholder>
       <View style={styles.skeletonContainer}>
         {/* <View style={{ width: 60, height: 60, borderRadius: 50 }} /> */}
@@ -20,7 +20,7 @@ const SkeletonLoading = () => {
         <View style={styles.skeleton} />
       </View>
     </SkeletonPlaceholder>
-  );
+  ) : null;
 };
 
 export default SkeletonLoading;

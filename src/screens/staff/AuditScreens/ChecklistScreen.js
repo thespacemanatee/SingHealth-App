@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { View, SectionList, Platform } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   Button,
   Divider,
@@ -10,19 +10,15 @@ import {
   Icon,
   Text,
   StyleService,
-  Radio,
-  RadioGroup,
   useTheme,
 } from "@ui-kitten/components";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
 
-import * as checklistActions from "../../../store/actions/checklistActions";
 import QuestionCard from "../../../components/QuestionCard";
 import alert from "../../../components/CustomAlert";
 import * as authActions from "../../../store/actions/authActions";
 import SectionHeader from "../../../components/ui/SectionHeader";
-import SkeletonLoading from "../../../components/ui/SkeletonLoading";
 import CenteredLoading from "../../../components/ui/CenteredLoading";
 
 export const FNB_SECTION = "F&B Checklist";
@@ -31,21 +27,13 @@ export const COVID_SECTION = "COVID-19 Checklist";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const SaveIcon = (props) => <Icon {...props} name="save-outline" />;
-const RetryIcon = (props) => <Icon {...props} name="refresh-outline" />;
 
 const ChecklistScreen = ({ route, navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
   const [completeChecklist, setCompleteChecklist] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(
-    checklistStore.chosen_checklist_type === "non_fnb" ? 1 : 0
-  );
 
   const { auditID } = route.params;
-  const tenant = checklistStore.chosen_tenant;
-
-  const dispatch = useDispatch();
 
   const theme = useTheme();
 
@@ -71,37 +59,6 @@ const ChecklistScreen = ({ route, navigation }) => {
     />
   );
 
-  const loadForm = async (index) => {
-    try {
-      setSelectedIndex(index);
-      const checklistType = index === 0 ? "fnb" : "non_fnb";
-      setError(false);
-      setLoading(true);
-      await dispatch(checklistActions.getChecklist(checklistType, tenant));
-      createNewSections();
-      setLoading(false);
-    } catch (err) {
-      handleErrorResponse(err);
-      setError(true);
-      setLoading(false);
-    }
-  };
-
-  const handleChangeFormType = (index) => {
-    alert(
-      "WARNING!",
-      "If you change the form type, your progress will be erased.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Confirm",
-          style: "destructive",
-          onPress: () => loadForm(index),
-        },
-      ]
-    );
-  };
-
   const saveChecklists = async () => {
     try {
       const toSave = {
@@ -122,8 +79,7 @@ const ChecklistScreen = ({ route, navigation }) => {
         AsyncStorage.setItem("savedChecklists", JSON.stringify(temp));
       }
     } catch (err) {
-      handleErrorResponse(err);
-      setError(err.message);
+      alert("Saving failed", "Please try again!");
       setLoading(false);
     }
   };
@@ -220,38 +176,6 @@ const ChecklistScreen = ({ route, navigation }) => {
     setLoading(false);
   }, [createNewSections]);
 
-  if (error) {
-    return (
-      <View style={styles.screen}>
-        <TopNavigation
-          title="Checklist"
-          alignment="center"
-          accessoryLeft={BackAction}
-        />
-        <Divider />
-        <Layout style={styles.layout}>
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>{error}</Text>
-            <View>
-              <Button
-                accessoryLeft={RetryIcon}
-                onPress={() => {
-                  loadForm();
-                }}
-              >
-                Retry
-              </Button>
-            </View>
-          </View>
-        </Layout>
-      </View>
-    );
-  }
-
-  const LoadingComponent = () => {
-    return Platform.OS === "web" ? <CenteredLoading /> : <SkeletonLoading />;
-  };
-
   return (
     <View style={styles.screen}>
       <TopNavigation
@@ -279,74 +203,24 @@ const ChecklistScreen = ({ route, navigation }) => {
               .join(" ")}
           </Text>
         </View>
-        <RadioGroup
-          selectedIndex={selectedIndex}
-          onChange={handleChangeFormType}
-          style={styles.radioGroup}
-        >
-          <Radio>F&B</Radio>
-          <Radio>Non-F&B</Radio>
-        </RadioGroup>
-        {!loading ? (
-          <>
-            <SectionList
-              sections={completeChecklist}
-              keyExtractor={(item, index) => item + index}
-              renderItem={renderChosenChecklist}
-              initialNumToRender={40}
-              renderSectionHeader={renderSectionHeader}
-              SectionSeparatorComponent={() => <Divider />}
-            />
-            <View style={styles.bottomContainer}>
-              <Button status="primary" onPress={onSubmitHandler}>
-                SUBMIT
-              </Button>
-            </View>
-          </>
-        ) : (
-          <LoadingComponent />
-        )}
+
+        <CenteredLoading loading={loading} />
+        <SectionList
+          sections={completeChecklist}
+          keyExtractor={(item, index) => item + index}
+          renderItem={renderChosenChecklist}
+          initialNumToRender={40}
+          renderSectionHeader={renderSectionHeader}
+          SectionSeparatorComponent={() => <Divider />}
+        />
+        <View style={styles.bottomContainer}>
+          <Button status="primary" onPress={onSubmitHandler}>
+            SUBMIT
+          </Button>
+        </View>
       </Layout>
     </View>
   );
-};
-
-const handleErrorResponse = (err) => {
-  if (err.response) {
-    // The request was made and the server responded with a status code
-    // that falls out of the range of 2xx
-    const { data } = err.response;
-    console.error(err.response.data);
-    console.error(err.response.status);
-    console.error(err.response.headers);
-    if (err.response.status === 403) {
-      authActions.signOut();
-    } else {
-      switch (Math.floor(err.response.status / 100)) {
-        case 4: {
-          alert("Error", "Input error.");
-          break;
-        }
-        case 5: {
-          alert("Server Error", "Please contact your administrator.");
-          break;
-        }
-        default: {
-          alert("Request timeout", "Check your internet connection.");
-          break;
-        }
-      }
-    }
-  } else if (err.request) {
-    // The request was made but no response was received
-    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-    // http.ClientRequest in node.js
-    console.error(err.request);
-  } else {
-    // Something happened in setting up the request that triggered an Error
-    console.error("Error", err.message);
-  }
-  console.error(err.config);
 };
 
 const styles = StyleService.create({

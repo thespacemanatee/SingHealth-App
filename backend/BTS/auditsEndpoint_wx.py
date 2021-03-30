@@ -16,7 +16,8 @@ def addWenXinEndpoints(app, mongo):
 
             result = [{
                 'tenantID': str(tenant['_id']),
-                'stallName': tenant["stall"]["name"]
+                'stallName': tenant["stall"]["name"],
+                'fnb': tenant["stall"]["fnb"]
             }
                 for tenant in tenants]
 
