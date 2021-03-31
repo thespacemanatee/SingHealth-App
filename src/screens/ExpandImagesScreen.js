@@ -103,7 +103,7 @@ const ExpandImagesScreen = ({ route, navigation }) => {
   );
 
   return (
-    <SafeAreaView style={styles.screen}>
+    <View style={styles.screen}>
       <View>
         <FlatList
           ref={topRef}
@@ -133,7 +133,7 @@ const ExpandImagesScreen = ({ route, navigation }) => {
       <TouchableOpacity style={styles.crossButton} onPress={handleClose}>
         <BackIcon />
       </TouchableOpacity>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -148,7 +148,8 @@ const styles = StyleService.create({
     position: "absolute",
     borderRadius: CROSS_SIZE / 2,
     backgroundColor: "white",
-    margin: CROSS_SIZE / 2,
+    marginLeft: CROSS_SIZE / 2,
+    marginTop: Platform.OS === "ios" ? CROSS_SIZE : CROSS_SIZE / 2,
   },
   topContainer: {
     backgroundColor: "black",
