@@ -431,7 +431,9 @@ const TenantRectificationScreen = ({ route, navigation }) => {
               onChange={onToggleChange}
               disabled={disableToggle}
             >
-              Request for Extension
+              {toggle
+                ? "You have requested for an extension"
+                : "Request for extension"}
             </Toggle>
           </View>
           <View style={styles.inputContainer}>

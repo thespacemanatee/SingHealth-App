@@ -20,7 +20,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import alert from "../../components/CustomAlert";
 import * as authActions from "../../store/actions/authActions";
 import * as checklistActions from "../../store/actions/checklistActions";
-import * as databaseActions from "../../store/actions/databaseActions";
 import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
 import { SCREEN_HEIGHT } from "../../helpers/config";
@@ -36,84 +35,23 @@ const StaffRectificationScreen = ({ route, navigation }) => {
   const { section } = route.params;
   const [value, setValue] = useState("");
   const [imageArray, setImageArray] = useState([]);
-  const [uploadImageArray, setUploadImageArray] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadDialog, setLoadDialog] = useState(false);
   const [error, setError] = useState(false);
   const [toggle, setToggle] = useState(false);
 
-  const onToggleChange = (isChecked) => {
-    if (isChecked) {
-      alert("Are you sure?", "You can only do this once.", [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Confirm",
-          onPress: () => {
-            setToggle(isChecked);
-          },
-        },
-      ]);
-    } else {
-      setToggle(isChecked);
-    }
-  };
-
   const theme = useTheme();
 
   const dispatch = useDispatch();
 
-  const handleSubmitRectification = async () => {
-    try {
-      setLoadDialog(true);
-      const temp = uploadImageArray.map((e) => e.name);
-      const data = {
-        [checklistType]: [
-          {
-            category: section,
-            index,
-            rectificationImages: temp,
-            rectificationRemarks: value,
-            requestForExt: toggle,
-          },
-        ],
-      };
-
-      const base64images = { images: [] };
-
-      uploadImageArray.forEach((image) => {
-        base64images.images.push({
-          fileName: image.name,
-          uri: image.uri,
-        });
-      });
-
-      console.log(base64images);
-
-      // let res;
-      if (base64images.images.length > 0) {
-        await Promise.all([
-          dispatch(
-            checklistActions.submitRectification(
-              checklistStore.auditMetadata._id,
-              data
-            )
-          ),
-          dispatch(databaseActions.postAuditImagesWeb(base64images)),
-        ]);
-      } else {
-        await dispatch(
-          checklistActions.submitRectification(
-            checklistStore.auditMetadata._id,
-            data
-          )
-        );
-      }
-
-      // console.log("RESPONSE:", res);
-    } catch (err) {
-      handleErrorResponse(err);
-    }
-    setLoadDialog(false);
+  const handleSubmitApproval = () => {
+    alert("Are you sure?", "You can only do this once.", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Confirm",
+        onPress: () => {},
+      },
+    ]);
   };
 
   const getImages = async () => {
@@ -188,7 +126,6 @@ const StaffRectificationScreen = ({ route, navigation }) => {
     if (storeImages) {
       const images = storeImages.map((e) => e.uri);
       setImageArray(images);
-      setUploadImageArray(storeImages);
     }
     if (storeRemarks) {
       setValue(storeRemarks);
@@ -278,7 +215,7 @@ const StaffRectificationScreen = ({ route, navigation }) => {
       >
         <Text style={styles.text}>{question}</Text>
       </View>
-      <Button onPress={handleSubmitRectification}>SUBMIT RECTIFICATION</Button>
+      <Button onPress={handleSubmitApproval}>APPROVE</Button>
       <CenteredLoading loading={loadDialog} />
       <Layout style={styles.layout}>
         <KeyboardAwareScrollView extraHeight={200}>
@@ -287,13 +224,8 @@ const StaffRectificationScreen = ({ route, navigation }) => {
             renderListItems={renderListItems}
           />
           <View style={styles.toggleContainer}>
-            <Toggle
-              style={styles.toggle}
-              checked={toggle}
-              onChange={onToggleChange}
-              disabled
-            >
-              {`Tenant has ${toggle ? "" : "not"} requested for extension`}
+            <Toggle style={styles.toggle} checked={toggle} disabled>
+              {`Tenant has ${toggle ? "" : "not"}requested for extension`}
             </Toggle>
           </View>
           <View style={styles.inputContainer}>
