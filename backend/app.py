@@ -1,3 +1,4 @@
+from gevent import monkey; monkey.patch_all()
 from BTS.auditsEndpoint import addAuditsEndpoint
 from BTS.loginEndpoints import addLoginEndpointsForTenantAndStaff
 from BTS.imagesEndpoint import addImagesEndpoint
