@@ -22,6 +22,7 @@ import ChecklistScreen from "../screens/AuditScreens/ChecklistScreen";
 import RectificationScreen from "../screens/AuditScreens/RectificationScreen";
 import QuestionDetailsScreen from "../screens/AuditScreens/QuestionDetailsScreen";
 import RectificationDetailsScreen from "../screens/AuditScreens/RectificationDetailsScreen";
+import StaffRectificationScreen from "../screens/AuditScreens/StaffRectificationScreen";
 import AuditSubmitScreen from "../screens/AuditScreens/AuditSubmitScreen";
 import CameraScreen from "../screens/CameraScreen";
 import TenantsDirectoryScreen from "../screens/staff/DirectoryScreens/TenantsDirectoryScreen";
@@ -137,6 +138,7 @@ const StaffDashboardStackNavigator = () => {
         name="RectificationDetails"
         component={RectificationDetailsScreen}
       />
+      <Screen name="StaffRectification" component={StaffRectificationScreen} />
       <Screen name="AuditSubmit" component={AuditSubmitScreen} />
     </Navigator>
   );

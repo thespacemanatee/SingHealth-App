@@ -41,6 +41,22 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
 
   const dispatch = useDispatch();
 
+  const handleGoToTenantRectifications = () => {
+    if (authStore.userType === "staff") {
+      navigation.navigate("StaffRectification", {
+        index,
+        question,
+        section,
+      });
+    } else {
+      navigation.navigate("TenantRectification", {
+        index,
+        question,
+        section,
+      });
+    }
+  };
+
   const handleDateChange = (date) => {
     console.log(date);
     dispatch(checklistActions.changeDeadline(section, index, date));
@@ -128,7 +144,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
       setValue(storeRemarks);
     }
     if (storeDeadline) {
-      setDeadline(storeDeadline);
+      setDeadline(storeDeadline.$date);
     }
   }, [checklistStore, dispatch, index, section]);
 
@@ -183,7 +199,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
       >
         <Text style={styles.text}>{question}</Text>
       </View>
-      <Button>
+      <Button onPress={handleGoToTenantRectifications}>
         {authStore.userType === "staff" ? "CHECK STATUS" : "RECTIFY NOW"}
       </Button>
       <Layout style={styles.layout}>

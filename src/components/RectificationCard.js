@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Dimensions, Platform, View } from "react-native";
+import { Platform, View } from "react-native";
 
 import { Text, Card, StyleService, CheckBox } from "@ui-kitten/components";
+import { SCREEN_WIDTH } from "../helpers/config";
 
 const QuestionCard = (props) => {
   const [checked, setChecked] = useState(false);
@@ -11,8 +12,6 @@ const QuestionCard = (props) => {
   const { answer } = props;
   const { section } = props;
   const { onPress } = props;
-
-  const SCREEN_WIDTH = Dimensions.get("window").width;
 
   useEffect(() => {
     if (answer === null) {

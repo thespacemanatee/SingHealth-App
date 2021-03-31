@@ -11,16 +11,15 @@ import {
   Input,
   Text,
   useTheme,
+  Button,
 } from "@ui-kitten/components";
 import { Camera } from "expo-camera";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import moment from "moment";
 
 import alert from "../../components/CustomAlert";
 import * as checklistActions from "../../store/actions/checklistActions";
-import CustomDatepicker from "../../components/CustomDatePicker";
 import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
 import { SCREEN_HEIGHT } from "../../helpers/config";
@@ -36,43 +35,39 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   const { section } = route.params;
   const [value, setValue] = useState("");
   const [imageArray, setImageArray] = useState([]);
-  const [deadline, setDeadline] = useState();
 
   const theme = useTheme();
 
   const dispatch = useDispatch();
 
-  const handleDateChange = (date) => {
-    console.log(date);
-    dispatch(checklistActions.changeDeadline(section, index, date));
-  };
+  const handleSubmitRectification = () => {};
 
   const changeTextHandler = (val) => {
     setValue(val);
     console.log(val);
-    dispatch(checklistActions.addRemarks(section, index, val));
+    // dispatch(checklistActions.addRectificationRemarks(section, index, val));
   };
 
   useEffect(() => {
     let storeImages;
     let storeRemarks;
-    let storeDeadline;
     if (
       Object.prototype.hasOwnProperty.call(
         checklistStore.covid19.questions,
         section
       )
     ) {
-      storeImages = checklistStore.covid19.questions[section][index].image;
-      storeRemarks = checklistStore.covid19.questions[section][index].remarks;
-      storeDeadline = checklistStore.covid19.questions[section][index].deadline;
+      storeImages =
+        checklistStore.covid19.questions[section][index].rectificationImages;
+      storeRemarks =
+        checklistStore.covid19.questions[section][index].rectificationRemarks;
     } else {
       storeImages =
-        checklistStore.chosen_checklist.questions[section][index].image;
+        checklistStore.chosen_checklist.questions[section][index]
+          .rectificationImages;
       storeRemarks =
-        checklistStore.chosen_checklist.questions[section][index].remarks;
-      storeDeadline =
-        checklistStore.chosen_checklist.questions[section][index].deadline;
+        checklistStore.chosen_checklist.questions[section][index]
+          .rectificationRemarks;
     }
 
     if (storeImages) {
@@ -81,23 +76,6 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     }
     if (storeRemarks) {
       setValue(storeRemarks);
-    }
-    if (storeDeadline) {
-      setDeadline(storeDeadline);
-    } else {
-      dispatch(
-        checklistActions.changeDeadline(
-          section,
-          index,
-          moment(
-            new Date(
-              new Date().getFullYear(),
-              new Date().getMonth(),
-              new Date().getDate() + 7
-            )
-          )
-        )
-      );
     }
   }, [checklistStore, dispatch, index, section]);
 
@@ -120,9 +98,9 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           to: destination,
         });
       }
-      dispatch(
-        checklistActions.addImage(section, index, fileName, destination)
-      );
+      const temp = [...imageArray];
+      temp.push(destination);
+      setImageArray(temp);
     }
   };
 
@@ -202,6 +180,17 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     [imageArray, navigation]
   );
 
+  const handleDeleteImage = useCallback((selectedIndex) => {
+    alert("Delete Image", "Are you sure?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: () => {},
+      },
+    ]);
+  }, []);
+
   const renderListItems = useCallback(
     (itemData) => {
       return (
@@ -211,10 +200,11 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           section={section}
           selectedIndex={itemData.index}
           onPress={() => handleExpandImage(itemData.index)}
+          onDelete={handleDeleteImage}
         />
       );
     },
-    [handleExpandImage, index, section]
+    [handleDeleteImage, handleExpandImage, index, section]
   );
 
   return (
@@ -234,16 +224,13 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
       >
         <Text style={styles.text}>{question}</Text>
       </View>
+      <Button onPress={handleSubmitRectification}>SUBMIT RECTIFICATION</Button>
       <Layout style={styles.layout}>
         <KeyboardAwareScrollView extraHeight={200}>
           <ImageViewPager
             imageArray={imageArray}
             renderListItems={renderListItems}
           />
-          <View style={styles.datePickerContainer}>
-            <Text category="h6">Deadline: </Text>
-            <CustomDatepicker onSelect={handleDateChange} deadline={deadline} />
-          </View>
           <View style={styles.inputContainer}>
             <Text category="h6">Remarks: </Text>
             <Input
@@ -280,12 +267,8 @@ const styles = StyleService.create({
   text: {
     fontWeight: "bold",
   },
-  datePickerContainer: {
-    marginTop: 20,
-    marginBottom: 10,
-  },
   inputContainer: {
-    // margin: 20,
+    marginTop: 20,
   },
   input: {
     minHeight: 64,

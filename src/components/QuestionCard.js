@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect, useRef } from "react";
-import { Dimensions, Platform, View } from "react-native";
+import { Platform, View } from "react-native";
 import { useDispatch } from "react-redux";
 import {
   Button,
@@ -13,6 +13,7 @@ import {
 import Swipeable from "react-native-gesture-handler/Swipeable";
 
 import * as checklistActions from "../store/actions/checklistActions";
+import { SCREEN_WIDTH } from "../helpers/config";
 
 const TrashIcon = (props) => <Icon {...props} name="trash" />;
 const UndoIcon = (props) => <Icon {...props} name="undo" />;
@@ -31,8 +32,6 @@ const QuestionCard = (props) => {
   const theme = useTheme();
 
   const dispatch = useDispatch();
-
-  const SCREEN_WIDTH = Dimensions.get("window").width;
 
   useEffect(() => {
     if (answer === null) {

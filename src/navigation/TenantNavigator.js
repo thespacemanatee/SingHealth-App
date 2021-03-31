@@ -18,6 +18,7 @@ import {
 import TenantDashboardScreen from "../screens/tenant/TenantDashboardScreen";
 import RectificationScreen from "../screens/AuditScreens/RectificationScreen";
 import RectificationDetailsScreen from "../screens/AuditScreens/RectificationDetailsScreen";
+import TenantRectificationScreen from "../screens/AuditScreens/TenantRectificationScreen";
 import CameraScreen from "../screens/CameraScreen";
 import ExpandImagesScreen from "../screens/ExpandImagesScreen";
 import * as authActions from "../store/actions/authActions";
@@ -118,6 +119,10 @@ const TenantDashboardStackNavigator = () => {
       <Screen
         name="RectificationDetails"
         component={RectificationDetailsScreen}
+      />
+      <Screen
+        name="TenantRectification"
+        component={TenantRectificationScreen}
       />
     </Navigator>
   );

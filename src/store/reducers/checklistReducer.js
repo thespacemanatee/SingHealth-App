@@ -13,8 +13,8 @@ import {
   CHANGE_DEADLINE,
   RESET_CHECKLIST_STORE,
   GET_AUDIT_DATA,
-  RECTIFY_CHOSEN_CHECKLIST,
-  RECTIFY_COVID_CHECKLIST,
+  // RECTIFY_CHOSEN_CHECKLIST,
+  // RECTIFY_COVID_CHECKLIST,
 } from "../actions/checklistActions";
 
 const initialState = {
@@ -233,43 +233,43 @@ const checklistReducer = (state = initialState, action) => {
       };
     }
 
-    case RECTIFY_CHOSEN_CHECKLIST: {
-      const { category, index } = action.data;
-      const key = Object.keys(state.rectify_chosen_checklist)[0];
-      const temp = state.rectify_chosen_checklist[key];
-      const found = temp.find(
-        (e) => e.category === category && e.index === index
-      );
-      console.log("KEY", key, "FOUND:", found, "TEMP:", temp);
-      if (found !== -1) {
-        temp[found] = action.data;
-      } else {
-        temp.push(action.data);
-      }
-      return {
-        ...state,
-        rectify_chosen_checklist: { [key]: temp },
-      };
-    }
+    // case RECTIFY_CHOSEN_CHECKLIST: {
+    //   const { category, index } = action.data;
+    //   const key = Object.keys(state.rectify_chosen_checklist)[0];
+    //   const temp = state.rectify_chosen_checklist[key];
+    //   const found = temp.find(
+    //     (e) => e.category === category && e.index === index
+    //   );
+    //   console.log("KEY", key, "FOUND:", found, "TEMP:", temp);
+    //   if (found !== -1) {
+    //     temp[found] = action.data;
+    //   } else {
+    //     temp.push(action.data);
+    //   }
+    //   return {
+    //     ...state,
+    //     rectify_chosen_checklist: { [key]: temp },
+    //   };
+    // }
 
-    case RECTIFY_COVID_CHECKLIST: {
-      const { category, index } = action.data;
-      const key = Object.keys(state.rectify_covid_checklist)[0];
-      const temp = state.rectify_covid_checklist[key];
-      const found = temp.find(
-        (e) => e.category === category && e.index === index
-      );
-      console.log("KEY", key, "FOUND:", found, "TEMP:", temp);
-      if (found !== -1) {
-        temp[found] = action.data;
-      } else {
-        temp.push(action.data);
-      }
-      return {
-        ...state,
-        rectify_covid_checklist: { [key]: temp },
-      };
-    }
+    // case RECTIFY_COVID_CHECKLIST: {
+    //   const { category, index } = action.data;
+    //   const key = Object.keys(state.rectify_covid_checklist)[0];
+    //   const temp = state.rectify_covid_checklist[key];
+    //   const found = temp.find(
+    //     (e) => e.category === category && e.index === index
+    //   );
+    //   console.log("KEY", key, "FOUND:", found, "TEMP:", temp);
+    //   if (found !== -1) {
+    //     temp[found] = action.data;
+    //   } else {
+    //     temp.push(action.data);
+    //   }
+    //   return {
+    //     ...state,
+    //     rectify_covid_checklist: { [key]: temp },
+    //   };
+    // }
 
     default:
       return state;
