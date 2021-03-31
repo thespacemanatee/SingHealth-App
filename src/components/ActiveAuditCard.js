@@ -36,7 +36,7 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
       <View style={styles.cardContainer}>
         <View style={{}}>
           <Text style={styles.timeStamp}>
-            {moment(item.date)
+            {moment(item.date.$date)
               .toLocaleString()
               .split(" ")
               .slice(0, 5)

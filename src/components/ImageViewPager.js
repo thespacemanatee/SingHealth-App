@@ -22,7 +22,7 @@ const ImageViewPager = (props) => {
           { paddingRight: SCREEN_WIDTH - IMAGE_WIDTH - 20 * 3 },
         ]}
         decelerationRate="fast"
-        keyExtractor={(item) => item}
+        keyExtractor={(item, index) => String(index)}
         data={imageArray}
         renderItem={renderListItems}
         showsHorizontalScrollIndicator={Platform.OS === "web"}

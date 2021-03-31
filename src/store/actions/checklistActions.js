@@ -16,8 +16,8 @@ export const CHANGE_DEADLINE = "CHANGE_DEADLINE";
 export const RESET_CHECKLIST_STORE = "RESET_CHECKLIST_STORE";
 export const GET_AUDIT_DATA = "GET_AUDIT_DATA";
 export const GET_IMAGE = "GET_IMAGE";
-export const RECTIFY_CHOSEN_CHECKLIST = "RECTIFY_CHOSEN_CHECKLIST";
-export const RECTIFY_COVID_CHECKLIST = "RECTIFY_COVID_CHECKLIST";
+// export const RECTIFY_CHOSEN_CHECKLIST = "RECTIFY_CHOSEN_CHECKLIST";
+// export const RECTIFY_COVID_CHECKLIST = "RECTIFY_COVID_CHECKLIST";
 
 export const TYPE_FNB = "fnb";
 export const TYPE_NON_FNB = "non_fnb";
@@ -80,43 +80,76 @@ export const addSavedChecklist = (data) => {
   };
 };
 
-export const addImage = (section, index, fileName, imageUri) => {
+export const addImage = (
+  checklistType,
+  section,
+  index,
+  fileName,
+  imageUri,
+  rectify = false
+) => {
   return {
     type: ADD_IMAGE,
+    checklistType,
     section,
     index,
     fileName,
     imageUri,
+    rectify,
   };
 };
-export const deleteImage = (section, index, selectedIndex) => {
+export const deleteImage = (
+  checklistType,
+  section,
+  index,
+  selectedIndex,
+  rectify = false
+) => {
   return {
+    checklistType,
     type: DELETE_IMAGE,
     section,
     index,
     selectedIndex,
+    rectify,
   };
 };
-export const addRemarks = (section, index, remarks) => {
+export const addRemarks = (
+  checklistType,
+  section,
+  index,
+  remarks,
+  rectify = false
+) => {
   return {
+    checklistType,
     type: ADD_REMARKS,
     section,
     index,
     remarks,
+    rectify,
   };
 };
-export const changeAnswer = (section, index, deleted, checked) => {
+export const changeAnswer = (
+  checklistType,
+  section,
+  index,
+  deleted,
+  checked
+) => {
   return {
     type: CHANGE_ANSWER,
+    checklistType,
     section,
     index,
     deleted,
     checked,
   };
 };
-export const changeDeadline = (section, index, date) => {
+export const changeDeadline = (checklistType, section, index, date) => {
   return {
     type: CHANGE_DEADLINE,
+    checklistType,
     section,
     index,
     date,
@@ -172,10 +205,20 @@ export const getImage = (fileName) => {
   };
 };
 
-export const rectifyChosenChecklist = (data) => {
-  return { type: RECTIFY_CHOSEN_CHECKLIST, data };
-};
+export const submitRectification = (auditID, data) => {
+  return async () => {
+    const options = {
+      url: `${endpoint}audits/${auditID}/tenant`,
+      method: "patch",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      data,
+    };
 
-export const rectifyCovidChecklist = (data) => {
-  return { type: RECTIFY_COVID_CHECKLIST, data };
+    const res = await httpClient(options);
+
+    return res;
+  };
 };

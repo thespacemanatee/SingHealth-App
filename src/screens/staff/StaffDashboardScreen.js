@@ -30,6 +30,7 @@ const StaffDashboardScreen = ({ navigation }) => {
   const databaseStore = useSelector((state) => state.database);
   const [state, setState] = useState({ open: false });
   const [loading, setLoading] = useState(true);
+  const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
 
@@ -104,6 +105,7 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   const getListData = useCallback(async () => {
     try {
+      setListLoading(true);
       const res = await dispatch(
         databaseActions.getStaffActiveAudits(authStore.institutionID)
       );
@@ -112,10 +114,11 @@ const StaffDashboardScreen = ({ navigation }) => {
       );
       console.log(res.data);
       setListData(res.data);
+      setListLoading(false);
       setLoading(false);
     } catch (err) {
       handleErrorResponse(err);
-      setError(err.message);
+      setListLoading(false);
       setLoading(false);
     }
   }, [authStore.institutionID, dispatch]);
@@ -125,6 +128,7 @@ const StaffDashboardScreen = ({ navigation }) => {
     getListData();
 
     const unsubscribe = navigation.addListener("focus", () => {
+      setListLoading(true);
       getListData();
     });
 
@@ -134,6 +138,44 @@ const StaffDashboardScreen = ({ navigation }) => {
       unsubscribe;
     };
   }, [getListData, navigation]);
+
+  const handleErrorResponse = (err) => {
+    if (err.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      const { data } = err.response;
+      console.error(err.response.data);
+      console.error(err.response.status);
+      console.error(err.response.headers);
+      if (err.response.status === 403) {
+        dispatch(authActions.signOut());
+      } else {
+        switch (Math.floor(err.response.status / 100)) {
+          case 4: {
+            alert("Error", err.response.message);
+            break;
+          }
+          case 5: {
+            alert("Server Error", "Please contact your administrator.");
+            break;
+          }
+          default: {
+            alert("Request timeout", "Check your internet connection.");
+            break;
+          }
+        }
+      }
+    } else if (err.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      console.error(err.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error("Error", err.message);
+    }
+    console.error(err.config);
+  };
 
   return (
     <View style={styles.screen}>
@@ -156,7 +198,7 @@ const StaffDashboardScreen = ({ navigation }) => {
           data={listData}
           renderItem={renderActiveAudits}
           onRefresh={handleRefreshList}
-          refreshing={loading}
+          refreshing={listLoading}
         />
 
         <FAB.Group
@@ -187,44 +229,6 @@ const StaffDashboardScreen = ({ navigation }) => {
       </Layout>
     </View>
   );
-};
-
-const handleErrorResponse = (err) => {
-  if (err.response) {
-    // The request was made and the server responded with a status code
-    // that falls out of the range of 2xx
-    const { data } = err.response;
-    console.error(err.response.data);
-    console.error(err.response.status);
-    console.error(err.response.headers);
-    if (err.response.status === 403) {
-      authActions.signOut();
-    } else {
-      switch (Math.floor(err.response.status / 100)) {
-        case 4: {
-          alert("Error", err.response.message);
-          break;
-        }
-        case 5: {
-          alert("Server Error", "Please contact your administrator.");
-          break;
-        }
-        default: {
-          alert("Request timeout", "Check your internet connection.");
-          break;
-        }
-      }
-    }
-  } else if (err.request) {
-    // The request was made but no response was received
-    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-    // http.ClientRequest in node.js
-    console.error(err.request);
-  } else {
-    // Something happened in setting up the request that triggered an Error
-    console.error("Error", err.message);
-  }
-  console.error(err.config);
 };
 
 export default StaffDashboardScreen;

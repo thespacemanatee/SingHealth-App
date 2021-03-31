@@ -30,6 +30,7 @@ const RectificationScreen = ({ navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
   const [completeChecklist, setCompleteChecklist] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [covid19Keys, setCovid19Keys] = useState(true);
 
   const theme = useTheme();
 
@@ -67,17 +68,24 @@ const RectificationScreen = ({ navigation }) => {
     ]);
   };
 
-  const handleOpenRectificationCard = (checked, deleted, data) => {
-    if (!checked && !deleted) {
-      navigation.navigate("RectificationDetails", data);
-    }
-  };
+  const handleOpenRectificationCard = useCallback(
+    (checked, deleted, data) => {
+      if (!checked && !deleted) {
+        navigation.navigate("RectificationDetails", data);
+      }
+    },
+    [navigation]
+  );
 
   const renderChosenChecklist = useCallback(
     (itemData) => {
+      const checklistType = covid19Keys.includes(itemData.section.title)
+        ? "covid19"
+        : checklistStore.chosen_checklist_type;
       return (
         <RectificationCard
           index={itemData.index}
+          checklistType={checklistType}
           question={itemData.item.question}
           answer={itemData.item.answer}
           section={itemData.section.title}
@@ -85,7 +93,11 @@ const RectificationScreen = ({ navigation }) => {
         />
       );
     },
-    [navigation]
+    [
+      checklistStore.chosen_checklist_type,
+      covid19Keys,
+      handleOpenRectificationCard,
+    ]
   );
 
   const renderSectionHeader = useCallback(({ section: { title } }) => {
@@ -121,7 +133,6 @@ const RectificationScreen = ({ navigation }) => {
       });
     });
 
-    // console.log(checklist);
     setCompleteChecklist(checklist);
   }, [
     checklistStore.chosen_checklist.questions,
@@ -131,8 +142,9 @@ const RectificationScreen = ({ navigation }) => {
 
   useEffect(() => {
     createNewSections();
+    setCovid19Keys(Object.keys(checklistStore.covid19.questions));
     setLoading(false);
-  }, [createNewSections]);
+  }, [checklistStore.covid19.questions, createNewSections]);
 
   return (
     <View style={styles.screen}>
@@ -153,7 +165,7 @@ const RectificationScreen = ({ navigation }) => {
             Audit: {checklistStore.chosen_tenant.stallName}
           </Text>
           <Text>
-            {moment(checklistStore.auditMetadata.date)
+            {moment(checklistStore.auditMetadata.date.$date)
               .toLocaleString()
               .split(" ")
               .slice(0, 5)

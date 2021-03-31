@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Dimensions, Platform, View } from "react-native";
+import { Platform, View } from "react-native";
 
 import { Text, Card, StyleService, CheckBox } from "@ui-kitten/components";
+import { SCREEN_WIDTH } from "../helpers/config";
 
-const QuestionCard = (props) => {
+const RectificationCard = (props) => {
   const [checked, setChecked] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const { index } = props;
+  const { checklistType } = props;
   const { question } = props;
   const { answer } = props;
   const { section } = props;
   const { onPress } = props;
-
-  const SCREEN_WIDTH = Dimensions.get("window").width;
 
   useEffect(() => {
     if (answer === null) {
@@ -33,6 +33,7 @@ const QuestionCard = (props) => {
   const onClickDetailHandler = () => {
     onPress(checked, deleted, {
       index,
+      checklistType,
       question,
       section,
     });
@@ -65,7 +66,7 @@ const areEqual = (prevProps, nextProps) => {
   return isSelectedEqual;
 };
 
-export default React.memo(QuestionCard, areEqual);
+export default React.memo(RectificationCard, areEqual);
 
 const styles = StyleService.create({
   questionContainer: {

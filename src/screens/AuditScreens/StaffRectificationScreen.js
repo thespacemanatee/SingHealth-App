@@ -1,20 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Alert, Platform } from "react-native";
+import { View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
   Layout,
   TopNavigation,
-  TopNavigationAction,
-  Icon,
   StyleService,
   Input,
   Text,
   useTheme,
 } from "@ui-kitten/components";
-import { Camera } from "expo-camera";
-import * as FileSystem from "expo-file-system";
-import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import moment from "moment";
 
@@ -25,11 +20,7 @@ import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
 import { SCREEN_HEIGHT } from "../../helpers/config";
 
-const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
-const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
-const ImageIcon = (props) => <Icon {...props} name="image-outline" />;
-
-const QuestionDetailsScreen = ({ route, navigation }) => {
+const StaffRectificationScreen = ({ route, navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
   const { index } = route.params;
   const { checklistType } = route.params;
@@ -48,12 +39,6 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     dispatch(
       checklistActions.changeDeadline(checklistType, section, index, date)
     );
-  };
-
-  const changeTextHandler = (val) => {
-    setValue(val);
-    console.log(val);
-    dispatch(checklistActions.addRemarks(checklistType, section, index, val));
   };
 
   useEffect(() => {
@@ -86,7 +71,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
       setValue(storeRemarks);
     }
     if (storeDeadline) {
-      setDeadline(storeDeadline.$date);
+      setDeadline(storeDeadline);
     } else {
       dispatch(
         checklistActions.changeDeadline(
@@ -103,104 +88,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
         )
       );
     }
-  }, [checklistStore, checklistType, dispatch, index, section]);
-
-  const onSave = async (imageData) => {
-    if (imageArray.length > 2) {
-      alert("Upload Failed", "Max upload count is 3.", [{ text: "OK" }]);
-    } else {
-      const fileName = `${`${checklistStore.chosen_tenant.tenantID}${Math.round(
-        Date.now() * Math.random()
-      )}`}.jpg`;
-      // const fileName = checklistStore.chosen_tenant.stallName + Date.now();
-      let destination;
-      if (Platform.OS === "web") {
-        destination = imageData.uri;
-      } else {
-        destination = FileSystem.cacheDirectory + fileName.replace(/\s+/g, "");
-        // console.log(destination);
-        await FileSystem.copyAsync({
-          from: imageData.uri,
-          to: destination,
-        });
-      }
-      dispatch(
-        checklistActions.addImage(
-          checklistType,
-          section,
-          index,
-          fileName,
-          destination
-        )
-      );
-    }
-  };
-
-  const startCamera = async () => {
-    const { status } = await Camera.requestPermissionsAsync();
-    if (status === "granted") {
-      navigation.navigate("CameraModal", { onSave });
-    } else {
-      Alert.alert("Access denied");
-    }
-  };
-
-  const imagePickerHandler = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [3, 4],
-      quality: 1,
-    });
-
-    if (!result.cancelled) {
-      onSave(result);
-    }
-  };
-
-  const BackAction = () => (
-    <TopNavigationAction
-      icon={BackIcon}
-      onPress={() => {
-        navigation.goBack();
-      }}
-    />
-  );
-
-  const CameraAction = () => (
-    <TopNavigationAction
-      icon={CameraIcon}
-      onPress={() => {
-        if (Platform.OS === "web") {
-          navigation.navigate("CameraModal", { onSave });
-        } else {
-          startCamera();
-        }
-      }}
-    />
-  );
-
-  const ImageAction = () => (
-    <TopNavigationAction
-      icon={ImageIcon}
-      onPress={() => {
-        // if (Platform.OS === "web") {
-        //   navigation.navigate("CameraModal", { onSave: onSave });
-        // } else {
-        imagePickerHandler();
-        // }
-      }}
-    />
-  );
-
-  const renderRightActions = () => {
-    return (
-      <>
-        <CameraAction />
-        <ImageAction />
-      </>
-    );
-  };
+  }, [checklistStore, dispatch, index, section]);
 
   const handleExpandImage = useCallback(
     (selectedIndex) => {
@@ -212,29 +100,6 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     [imageArray, navigation]
   );
 
-  const handleDeleteImage = useCallback(
-    (selectedIndex) => {
-      alert("Delete Image", "Are you sure?", [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => {
-            dispatch(
-              checklistActions.deleteImage(
-                checklistType,
-                section,
-                index,
-                selectedIndex
-              )
-            );
-          },
-        },
-      ]);
-    },
-    [checklistType, dispatch, index, section]
-  );
-
   const renderListItems = useCallback(
     (itemData) => {
       return (
@@ -244,21 +109,15 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           section={section}
           selectedIndex={itemData.index}
           onPress={() => handleExpandImage(itemData.index)}
-          onDelete={handleDeleteImage}
         />
       );
     },
-    [handleDeleteImage, handleExpandImage, index, section]
+    [handleExpandImage, index, section]
   );
 
   return (
     <View style={styles.screen}>
-      <TopNavigation
-        title="Details"
-        alignment="center"
-        accessoryLeft={BackAction}
-        accessoryRight={renderRightActions}
-      />
+      <TopNavigation title="Details" alignment="center" />
       <Divider />
       <View
         style={[
@@ -286,7 +145,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
               textStyle={styles.input}
               placeholder="Enter your remarks here"
               value={value}
-              onChangeText={changeTextHandler}
+              disabled
             />
           </View>
         </KeyboardAwareScrollView>
@@ -295,7 +154,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   );
 };
 
-export default QuestionDetailsScreen;
+export default StaffRectificationScreen;
 
 const styles = StyleService.create({
   screen: {
