@@ -207,7 +207,6 @@ export const getImage = (fileName) => {
 
 export const submitRectification = (auditID, data) => {
   return async () => {
-    console.log("DATA", data);
     const options = {
       url: `${endpoint}audits/${auditID}/tenant`,
       method: "patch",
@@ -223,11 +222,3 @@ export const submitRectification = (auditID, data) => {
     return res;
   };
 };
-
-// export const rectifyChosenChecklist = (data) => {
-//   return { type: RECTIFY_CHOSEN_CHECKLIST, data };
-// };
-
-// export const rectifyCovidChecklist = (data) => {
-//   return { type: RECTIFY_COVID_CHECKLIST, data };
-// };

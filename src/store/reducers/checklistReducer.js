@@ -184,8 +184,6 @@ const checklistReducer = (state = initialState, action) => {
         newChecklist.questions[action.section][action.index].answer = false;
       }
 
-      console.log(newChecklist);
-
       if (action.checklistType === "covid19") {
         return {
           ...state,
@@ -208,8 +206,6 @@ const checklistReducer = (state = initialState, action) => {
 
       newChecklist.questions[action.section][action.index].deadline =
         action.date;
-
-      console.log(newChecklist);
 
       if (action.checklistType === "covid19") {
         return {
