@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { SectionList, View, Platform } from "react-native";
+import { SectionList, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,

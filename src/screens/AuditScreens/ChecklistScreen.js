@@ -17,7 +17,6 @@ import moment from "moment";
 
 import QuestionCard from "../../components/QuestionCard";
 import alert from "../../components/CustomAlert";
-import * as authActions from "../../store/actions/authActions";
 import SectionHeader from "../../components/ui/SectionHeader";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 

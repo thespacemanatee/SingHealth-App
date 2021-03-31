@@ -16,7 +16,6 @@ import moment from "moment";
 
 import alert from "../../components/CustomAlert";
 import SectionHeader from "../../components/ui/SectionHeader";
-import SkeletonLoading from "../../components/ui/SkeletonLoading";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import RectificationCard from "../../components/RectificationCard";
 

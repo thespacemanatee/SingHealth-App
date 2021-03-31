@@ -8,7 +8,6 @@ import {
   Platform,
   TouchableOpacity,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Icon, StyleService } from "@ui-kitten/components";
 
 const THUMBNAIL_SIZE = 80;
