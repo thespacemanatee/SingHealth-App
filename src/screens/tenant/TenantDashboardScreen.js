@@ -23,9 +23,8 @@ import alert from "../../components/CustomAlert";
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 
-const StaffDashboardScreen = ({ navigation }) => {
+const TenantDashboardScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
-  const databaseStore = useSelector((state) => state.database);
   const [loading, setLoading] = useState(true);
   const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -89,16 +88,17 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   const getListData = useCallback(async () => {
     try {
+      setListLoading(true);
       const res = await dispatch(
         databaseActions.getTenantActiveAudits(authStore._id)
       );
       setListData(res.data);
-      setLoading(false);
       setListLoading(false);
+      setLoading(false);
     } catch (err) {
       handleErrorResponse(err);
-      setLoading(false);
       setListLoading(false);
+      setLoading(false);
     }
   }, [authStore._id, dispatch]);
 
@@ -183,7 +183,7 @@ const handleErrorResponse = (err) => {
   console.error(err.config);
 };
 
-export default StaffDashboardScreen;
+export default TenantDashboardScreen;
 
 const styles = StyleService.create({
   screen: {

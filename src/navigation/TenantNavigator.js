@@ -7,11 +7,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Drawer,
   DrawerItem,
+  Divider,
   IndexPath,
   BottomNavigation,
   BottomNavigationTab,
   Icon,
-  Divider,
   StyleService,
 } from "@ui-kitten/components";
 
@@ -23,6 +23,27 @@ import ExpandImagesScreen from "../screens/ExpandImagesScreen";
 import * as authActions from "../store/actions/authActions";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
+
+const useBottomNavigationState = (initialState = 0) => {
+  const [selectedIndex, setSelectedIndex] = useState(initialState);
+  return { selectedIndex, onSelect: setSelectedIndex };
+};
+
+export const BottomNavigationAccessoriesShowcase = ({ navigation, state }) => {
+  const topState = useBottomNavigationState();
+
+  return (
+    <BottomNavigation
+      style={styles.bottomNavigation}
+      {...topState}
+      selectedIndex={state.index}
+      onSelect={(index) => navigation.navigate(state.routeNames[index])}
+    >
+      <BottomNavigationTab title="DASHBOARD" icon={DashboardIcon} />
+      {/* <BottomNavigationTab title="DIRECTORY" icon={DirectoryIcon} /> */}
+    </BottomNavigation>
+  );
+};
 
 const Footer = () => {
   const dispatch = useDispatch();
@@ -56,7 +77,7 @@ const TenantNavigator = () => {
   const { Navigator, Screen } = createDrawerNavigator();
   return (
     <Navigator drawerContent={(props) => <DrawerContent {...props} />}>
-      <Screen name="Tenant" component={TenantModalStackNavigator} />
+      <Screen name="TenantModalStack" component={TenantModalStackNavigator} />
     </Navigator>
   );
 };
@@ -72,27 +93,6 @@ const TenantModalStackNavigator = () => {
   );
 };
 
-const useBottomNavigationState = (initialState = 0) => {
-  const [selectedIndex, setSelectedIndex] = useState(initialState);
-  return { selectedIndex, onSelect: setSelectedIndex };
-};
-
-export const BottomNavigationAccessoriesShowcase = ({ navigation, state }) => {
-  const topState = useBottomNavigationState();
-
-  return (
-    <BottomNavigation
-      style={styles.bottomNavigation}
-      {...topState}
-      selectedIndex={state.index}
-      onSelect={(index) => navigation.navigate(state.routeNames[index])}
-    >
-      <BottomNavigationTab title="DASHBOARD" icon={DashboardIcon} />
-      {/* <BottomNavigationTab title="DIRECTORY" icon={DirectoryIcon} /> */}
-    </BottomNavigation>
-  );
-};
-
 const TenantTabNavigator = () => {
   const { Navigator, Screen } = createBottomTabNavigator();
   return (
@@ -100,15 +100,26 @@ const TenantTabNavigator = () => {
       <Navigator
         tabBar={(props) => <BottomNavigationAccessoriesShowcase {...props} />}
       >
-        <Screen name="TenantDashboard" component={TenantDashboardScreen} />
-        <Screen name="Rectification" component={RectificationScreen} />
         <Screen
-          name="RectificationDetails"
-          component={RectificationDetailsScreen}
+          name="TenantDashboardStack"
+          component={TenantDashboardStackNavigator}
         />
-        {/* <Screen name="Directory" component={DirectoryScreen} /> */}
       </Navigator>
     </SafeAreaView>
+  );
+};
+
+const TenantDashboardStackNavigator = () => {
+  const { Navigator, Screen } = createStackNavigator();
+  return (
+    <Navigator headerMode="none">
+      <Screen name="TenantDashboard" component={TenantDashboardScreen} />
+      <Screen name="Rectification" component={RectificationScreen} />
+      <Screen
+        name="RectificationDetails"
+        component={RectificationDetailsScreen}
+      />
+    </Navigator>
   );
 };
 

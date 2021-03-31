@@ -118,7 +118,6 @@ const StaffDashboardScreen = ({ navigation }) => {
       setLoading(false);
     } catch (err) {
       handleErrorResponse(err);
-      setError(err.message);
       setListLoading(false);
       setLoading(false);
     }

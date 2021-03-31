@@ -67,11 +67,14 @@ const RectificationScreen = ({ navigation }) => {
     ]);
   };
 
-  const handleOpenRectificationCard = (checked, deleted, data) => {
-    if (!checked && !deleted) {
-      navigation.navigate("RectificationDetails", data);
-    }
-  };
+  const handleOpenRectificationCard = useCallback(
+    (checked, deleted, data) => {
+      if (!checked && !deleted) {
+        navigation.navigate("RectificationDetails", data);
+      }
+    },
+    [navigation]
+  );
 
   const renderChosenChecklist = useCallback(
     (itemData) => {
@@ -85,7 +88,7 @@ const RectificationScreen = ({ navigation }) => {
         />
       );
     },
-    [navigation]
+    [handleOpenRectificationCard]
   );
 
   const renderSectionHeader = useCallback(({ section: { title } }) => {
@@ -121,7 +124,7 @@ const RectificationScreen = ({ navigation }) => {
       });
     });
 
-    // console.log(checklist);
+    console.log("COMPLETE CHECKLIST:", checklist);
     setCompleteChecklist(checklist);
   }, [
     checklistStore.chosen_checklist.questions,
@@ -153,7 +156,7 @@ const RectificationScreen = ({ navigation }) => {
             Audit: {checklistStore.chosen_tenant.stallName}
           </Text>
           <Text>
-            {moment(checklistStore.auditMetadata.date)
+            {moment(checklistStore.auditMetadata.date.$date)
               .toLocaleString()
               .split(" ")
               .slice(0, 5)
