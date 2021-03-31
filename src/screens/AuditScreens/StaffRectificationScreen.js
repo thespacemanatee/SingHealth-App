@@ -23,6 +23,7 @@ import { SCREEN_HEIGHT } from "../../helpers/config";
 const StaffRectificationScreen = ({ route, navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
   const { index } = route.params;
+  const { checklistType } = route.params;
   const { question } = route.params;
   const { section } = route.params;
   const [value, setValue] = useState("");
@@ -35,7 +36,9 @@ const StaffRectificationScreen = ({ route, navigation }) => {
 
   const handleDateChange = (date) => {
     console.log(date);
-    dispatch(checklistActions.changeDeadline(section, index, date));
+    dispatch(
+      checklistActions.changeDeadline(checklistType, section, index, date)
+    );
   };
 
   useEffect(() => {
@@ -72,6 +75,7 @@ const StaffRectificationScreen = ({ route, navigation }) => {
     } else {
       dispatch(
         checklistActions.changeDeadline(
+          checklistType,
           section,
           index,
           moment(

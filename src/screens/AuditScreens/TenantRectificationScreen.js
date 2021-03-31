@@ -19,6 +19,7 @@ import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import alert from "../../components/CustomAlert";
+import * as authActions from "../../store/actions/authActions";
 import * as checklistActions from "../../store/actions/checklistActions";
 import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
@@ -28,25 +29,108 @@ const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
 const ImageIcon = (props) => <Icon {...props} name="image-outline" />;
 
-const QuestionDetailsScreen = ({ route, navigation }) => {
+const TenantRectificationScreen = ({ route, navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
   const { index } = route.params;
+  const { checklistType } = route.params;
   const { question } = route.params;
   const { section } = route.params;
   const [value, setValue] = useState("");
   const [imageArray, setImageArray] = useState([]);
+  const [uploadImageArray, setUploadImageArray] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   const theme = useTheme();
 
   const dispatch = useDispatch();
 
-  const handleSubmitRectification = () => {};
+  const handleSubmitRectification = async () => {
+    try {
+      const data = {
+        [checklistType]: [
+          {
+            category: section,
+            index,
+            rectificationImages: uploadImageArray,
+            rectificationRemarks: value,
+            requestForExt: false,
+          },
+        ],
+      };
+      await dispatch(
+        checklistActions.submitRectification(
+          checklistStore.auditMetadata._id,
+          data
+        )
+      );
+      uploadImageArray.forEach((image) => {
+        dispatch(
+          checklistActions.addImage(
+            checklistType,
+            section,
+            index,
+            image.name,
+            image.uri,
+            true
+          )
+        );
+      });
+
+      dispatch(
+        checklistActions.addRemarks(checklistType, section, index, value, true)
+      );
+    } catch (err) {
+      handleErrorResponse(err);
+    }
+  };
 
   const changeTextHandler = (val) => {
     setValue(val);
     console.log(val);
     // dispatch(checklistActions.addRectificationRemarks(section, index, val));
   };
+
+  const getImages = async () => {
+    if (
+      checklistStore.chosen_checklist.questions[section][index]
+        .rectificationImages
+    ) {
+      setLoading(true);
+      try {
+        await Promise.all(
+          checklistStore.chosen_checklist.questions[section][
+            index
+          ].rectificationImages.map(async (fileName) => {
+            if (!fileName.name) {
+              const res = await dispatch(checklistActions.getImage(fileName));
+              dispatch(
+                checklistActions.addImage(
+                  checklistType,
+                  section,
+                  index,
+                  fileName,
+                  `data:image/jpg;base64,${res.data}`,
+                  true
+                )
+              );
+            }
+          })
+        );
+        setLoading(false);
+      } catch (err) {
+        setError(err);
+        setLoading(false);
+        handleErrorResponse(err);
+      }
+    }
+  };
+
+  // TODO: Cleanup memory leak when user leaves screen before image is loaded
+  useEffect(() => {
+    console.log("USEEFFECT");
+    getImages();
+  }, []);
 
   useEffect(() => {
     let storeImages;
@@ -70,9 +154,12 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           .rectificationRemarks;
     }
 
+    console.log(storeImages);
+
     if (storeImages) {
       const images = storeImages.map((e) => e.uri);
       setImageArray(images);
+      setUploadImageArray(storeImages);
     }
     if (storeRemarks) {
       setValue(storeRemarks);
@@ -98,9 +185,12 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           to: destination,
         });
       }
-      const temp = [...imageArray];
-      temp.push(destination);
-      setImageArray(temp);
+      const tempImageArray = [...imageArray];
+      const tempUploadImageArray = [...uploadImageArray];
+      tempImageArray.push(destination);
+      tempUploadImageArray.push({ uri: destination, name: fileName });
+      setImageArray(tempImageArray);
+      setUploadImageArray(tempUploadImageArray);
     }
   };
 
@@ -180,16 +270,23 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     [imageArray, navigation]
   );
 
-  const handleDeleteImage = useCallback((selectedIndex) => {
-    alert("Delete Image", "Are you sure?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: () => {},
-      },
-    ]);
-  }, []);
+  const handleDeleteImage = useCallback(
+    (selectedIndex) => {
+      alert("Delete Image", "Are you sure?", [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            const temp = [...imageArray];
+            temp.splice(selectedIndex, 1);
+            setImageArray(temp);
+          },
+        },
+      ]);
+    },
+    [imageArray]
+  );
 
   const renderListItems = useCallback(
     (itemData) => {
@@ -201,10 +298,11 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           selectedIndex={itemData.index}
           onPress={() => handleExpandImage(itemData.index)}
           onDelete={handleDeleteImage}
+          loading={loading}
         />
       );
     },
-    [handleDeleteImage, handleExpandImage, index, section]
+    [handleDeleteImage, handleExpandImage, index, loading, section]
   );
 
   return (
@@ -248,7 +346,45 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   );
 };
 
-export default QuestionDetailsScreen;
+const handleErrorResponse = (err) => {
+  if (err.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    const { data } = err.response;
+    console.error(err.response.data);
+    console.error(err.response.status);
+    console.error(err.response.headers);
+    if (err.response.status === 403) {
+      authActions.signOut();
+    } else {
+      switch (Math.floor(err.response.status / 100)) {
+        case 4: {
+          alert("Error", "Input error.");
+          break;
+        }
+        case 5: {
+          alert("Server Error", "Please contact your administrator.");
+          break;
+        }
+        default: {
+          alert("Request timeout", "Check your internet connection.");
+          break;
+        }
+      }
+    }
+  } else if (err.request) {
+    // The request was made but no response was received
+    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+    // http.ClientRequest in node.js
+    console.error(err.request);
+  } else {
+    // Something happened in setting up the request that triggered an Error
+    console.error("Error", err.message);
+  }
+  console.error(err.config);
+};
+
+export default TenantRectificationScreen;
 
 const styles = StyleService.create({
   screen: {

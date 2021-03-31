@@ -22,6 +22,7 @@ const QuestionCard = (props) => {
   const [checked, setChecked] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const { index } = props;
+  const { checklistType } = props;
   const { question } = props;
   const { answer } = props;
   const { section } = props;
@@ -52,8 +53,9 @@ const QuestionCard = (props) => {
   const onClickDetailHandler = () => {
     onPress(checked, deleted, {
       index,
-      question,
+      checklistType,
       section,
+      question,
     });
   };
 
@@ -74,23 +76,37 @@ const QuestionCard = (props) => {
   }, [theme, deleted]);
 
   const rightSwipe = useCallback(() => {
-    console.log(section, index, deleted, checked);
+    console.log(checklistType, section, index, deleted, checked);
     setDeleted(!deleted);
     // dispatch(checklistActions.changeMaximumScore(!deleted, checked));
-    dispatch(checklistActions.changeAnswer(section, index, !deleted, checked));
+    dispatch(
+      checklistActions.changeAnswer(
+        checklistType,
+        section,
+        index,
+        !deleted,
+        checked
+      )
+    );
     leftSwipeable.current.close();
-  }, [section, index, deleted, checked, dispatch]);
+  }, [checklistType, section, index, deleted, checked, dispatch]);
 
   const onChangeHandler = useCallback(
     (nextChecked) => {
-      console.log(section, index, deleted, checked);
+      console.log(checklistType, section, index, deleted, checked);
       setChecked(nextChecked);
       // dispatch(checklistActions.changeCurrentScore(nextChecked));
       dispatch(
-        checklistActions.changeAnswer(section, index, deleted, nextChecked)
+        checklistActions.changeAnswer(
+          checklistType,
+          section,
+          index,
+          deleted,
+          nextChecked
+        )
       );
     },
-    [section, index, deleted, checked, dispatch]
+    [checklistType, section, index, deleted, checked, dispatch]
   );
 
   return (

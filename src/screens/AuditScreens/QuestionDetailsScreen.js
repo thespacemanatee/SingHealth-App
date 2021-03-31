@@ -32,6 +32,7 @@ const ImageIcon = (props) => <Icon {...props} name="image-outline" />;
 const QuestionDetailsScreen = ({ route, navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
   const { index } = route.params;
+  const { checklistType } = route.params;
   const { question } = route.params;
   const { section } = route.params;
   const [value, setValue] = useState("");
@@ -44,13 +45,15 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
 
   const handleDateChange = (date) => {
     console.log(date);
-    dispatch(checklistActions.changeDeadline(section, index, date));
+    dispatch(
+      checklistActions.changeDeadline(checklistType, section, index, date)
+    );
   };
 
   const changeTextHandler = (val) => {
     setValue(val);
     console.log(val);
-    dispatch(checklistActions.addRemarks(section, index, val));
+    dispatch(checklistActions.addRemarks(checklistType, section, index, val));
   };
 
   useEffect(() => {
@@ -87,6 +90,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     } else {
       dispatch(
         checklistActions.changeDeadline(
+          checklistType,
           section,
           index,
           moment(
@@ -99,7 +103,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
         )
       );
     }
-  }, [checklistStore, dispatch, index, section]);
+  }, [checklistStore, checklistType, dispatch, index, section]);
 
   const onSave = async (imageData) => {
     if (imageArray.length > 2) {
@@ -121,7 +125,13 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
         });
       }
       dispatch(
-        checklistActions.addImage(section, index, fileName, destination)
+        checklistActions.addImage(
+          checklistType,
+          section,
+          index,
+          fileName,
+          destination
+        )
       );
     }
   };
@@ -211,13 +221,18 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           style: "destructive",
           onPress: () => {
             dispatch(
-              checklistActions.deleteImage(section, index, selectedIndex)
+              checklistActions.deleteImage(
+                checklistType,
+                section,
+                index,
+                selectedIndex
+              )
             );
           },
         },
       ]);
     },
-    [dispatch, index, section]
+    [checklistType, dispatch, index, section]
   );
 
   const renderListItems = useCallback(

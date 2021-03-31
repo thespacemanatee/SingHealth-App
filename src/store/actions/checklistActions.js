@@ -80,43 +80,69 @@ export const addSavedChecklist = (data) => {
   };
 };
 
-export const addImage = (section, index, fileName, imageUri) => {
+export const addImage = (
+  checklistType,
+  section,
+  index,
+  fileName,
+  imageUri,
+  rectify = false
+) => {
   return {
     type: ADD_IMAGE,
+    checklistType,
     section,
     index,
     fileName,
     imageUri,
+    rectify,
   };
 };
-export const deleteImage = (section, index, selectedIndex) => {
+export const deleteImage = (checklistType, section, index, selectedIndex) => {
   return {
+    checklistType,
     type: DELETE_IMAGE,
     section,
     index,
     selectedIndex,
   };
 };
-export const addRemarks = (section, index, remarks) => {
+export const addRemarks = (
+  checklistType,
+  section,
+  index,
+  remarks,
+  rectify = false
+) => {
   return {
+    checklistType,
     type: ADD_REMARKS,
     section,
     index,
     remarks,
+    rectify,
   };
 };
-export const changeAnswer = (section, index, deleted, checked) => {
+export const changeAnswer = (
+  checklistType,
+  section,
+  index,
+  deleted,
+  checked
+) => {
   return {
     type: CHANGE_ANSWER,
+    checklistType,
     section,
     index,
     deleted,
     checked,
   };
 };
-export const changeDeadline = (section, index, date) => {
+export const changeDeadline = (checklistType, section, index, date) => {
   return {
     type: CHANGE_DEADLINE,
+    checklistType,
     section,
     index,
     date,
@@ -164,6 +190,25 @@ export const getImage = (fileName) => {
       params: {
         fileName,
       },
+    };
+
+    const res = await httpClient(options);
+
+    return res;
+  };
+};
+
+export const submitRectification = (auditID, data) => {
+  return async () => {
+    console.log("DATA", data);
+    const options = {
+      url: `${endpoint}audits/${auditID}/tenant`,
+      method: "patch",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      data,
     };
 
     const res = await httpClient(options);
