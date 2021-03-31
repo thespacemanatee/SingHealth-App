@@ -27,6 +27,7 @@ export const COVID_SECTION = "COVID-19 Checklist";
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const RectificationScreen = ({ navigation }) => {
+  const authStore = useSelector((state) => state.auth);
   const checklistStore = useSelector((state) => state.checklist);
   const [completeChecklist, setCompleteChecklist] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,26 +35,29 @@ const RectificationScreen = ({ navigation }) => {
 
   const theme = useTheme();
 
-  const BackAction = () => (
-    <TopNavigationAction
-      icon={BackIcon}
-      onPress={() => {
-        alert(
-          "Are you sure?",
-          "Your progress will be lost if you go back. Consider saving first.",
-          [
-            { text: "Cancel", style: "cancel" },
-            {
-              text: "Confirm",
-              onPress: () => {
-                navigation.goBack();
-              },
-              style: "destructive",
+  const handleGoBack = () => {
+    if (authStore.userType === "tenant") {
+      alert(
+        "Are you sure?",
+        "Your progress will be lost if you go back. Consider submitting rectifications first.",
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Confirm",
+            onPress: () => {
+              navigation.goBack();
             },
-          ]
-        );
-      }}
-    />
+            style: "destructive",
+          },
+        ]
+      );
+    } else {
+      navigation.goBack();
+    }
+  };
+
+  const BackAction = () => (
+    <TopNavigationAction icon={BackIcon} onPress={handleGoBack} />
   );
 
   const onSubmitHandler = () => {
