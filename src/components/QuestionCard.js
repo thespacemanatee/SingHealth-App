@@ -1,19 +1,11 @@
 import React, { useCallback, useState, useEffect, useRef } from "react";
-import { Platform, View } from "react-native";
+import { View } from "react-native";
 import { useDispatch } from "react-redux";
-import {
-  Button,
-  Text,
-  Card,
-  StyleService,
-  CheckBox,
-  Icon,
-  useTheme,
-} from "@ui-kitten/components";
+import { Button, StyleService, Icon, useTheme } from "@ui-kitten/components";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 
 import * as checklistActions from "../store/actions/checklistActions";
-import { SCREEN_WIDTH } from "../helpers/config";
+import CustomCard from "./ui/CustomCard";
 
 const TrashIcon = (props) => <Icon {...props} name="trash" />;
 const UndoIcon = (props) => <Icon {...props} name="undo" />;
@@ -43,12 +35,6 @@ const QuestionCard = (props) => {
       setDeleted(false);
     }
   }, [answer]);
-
-  const Header = (headerProps) => (
-    <View {...headerProps}>
-      <Text>{index + 1}</Text>
-    </View>
-  );
 
   const onClickDetailHandler = () => {
     onPress(checked, deleted, {
@@ -116,26 +102,14 @@ const QuestionCard = (props) => {
       onSwipeableOpen={rightSwipe}
       friction={2}
     >
-      <Card onPress={onClickDetailHandler} header={Header}>
-        <View style={styles.questionContainer}>
-          <CheckBox
-            checked={checked}
-            onChange={onChangeHandler}
-            disabled={deleted}
-          />
-          <View style={styles.questionTextContainer}>
-            <Text
-              // eslint-disable-next-line react-native/no-inline-styles
-              style={{
-                width: Platform.OS === "web" ? SCREEN_WIDTH - 100 : null,
-                textDecorationLine: deleted ? "line-through" : null,
-              }}
-            >
-              {question}
-            </Text>
-          </View>
-        </View>
-      </Card>
+      <CustomCard
+        index={index}
+        onClick={onClickDetailHandler}
+        onChange={onChangeHandler}
+        checked={checked}
+        deleted={deleted}
+        question={question}
+      />
     </Swipeable>
   );
 };

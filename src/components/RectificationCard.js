@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Platform, View } from "react-native";
-
-import { Text, Card, StyleService, CheckBox } from "@ui-kitten/components";
-import { SCREEN_WIDTH } from "../helpers/config";
+import CustomCard from "./ui/CustomCard";
 
 const RectificationCard = (props) => {
   const [checked, setChecked] = useState(false);
@@ -24,12 +21,6 @@ const RectificationCard = (props) => {
     }
   }, [answer]);
 
-  const Header = (headerProps) => (
-    <View {...headerProps}>
-      <Text>{index + 1}</Text>
-    </View>
-  );
-
   const onClickDetailHandler = () => {
     onPress(checked, deleted, {
       index,
@@ -40,22 +31,14 @@ const RectificationCard = (props) => {
   };
 
   return (
-    <Card onPress={onClickDetailHandler} header={Header}>
-      <View style={styles.questionContainer}>
-        <CheckBox checked={checked} disabled />
-        <View style={styles.questionTextContainer}>
-          <Text
-            // eslint-disable-next-line react-native/no-inline-styles
-            style={{
-              width: Platform.OS === "web" ? SCREEN_WIDTH - 100 : null,
-              textDecorationLine: deleted ? "line-through" : null,
-            }}
-          >
-            {question}
-          </Text>
-        </View>
-      </View>
-    </Card>
+    <CustomCard
+      index={index}
+      onClick={onClickDetailHandler}
+      checked={checked}
+      deleted={deleted}
+      checkboxDisabled
+      question={question}
+    />
   );
 };
 
@@ -67,12 +50,3 @@ const areEqual = (prevProps, nextProps) => {
 };
 
 export default React.memo(RectificationCard, areEqual);
-
-const styles = StyleService.create({
-  questionContainer: {
-    flexDirection: "row",
-  },
-  questionTextContainer: {
-    paddingLeft: 10,
-  },
-});
