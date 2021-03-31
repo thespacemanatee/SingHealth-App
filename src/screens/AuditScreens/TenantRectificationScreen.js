@@ -87,7 +87,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
 
   const changeTextHandler = (val) => {
     setValue(val);
-    console.log(val);
+    // console.log(val);
     // dispatch(checklistActions.addRectificationRemarks(section, index, val));
   };
 
@@ -153,8 +153,6 @@ const TenantRectificationScreen = ({ route, navigation }) => {
         checklistStore.chosen_checklist.questions[section][index]
           .rectificationRemarks;
     }
-
-    console.log(storeImages);
 
     if (storeImages) {
       const images = storeImages.map((e) => e.uri);
@@ -278,14 +276,26 @@ const TenantRectificationScreen = ({ route, navigation }) => {
           text: "Delete",
           style: "destructive",
           onPress: () => {
-            const temp = [...imageArray];
-            temp.splice(selectedIndex, 1);
-            setImageArray(temp);
+            const tempImageArray = [...imageArray];
+            const tempUploadImageArray = [...uploadImageArray];
+            tempImageArray.splice(selectedIndex, 1);
+            tempUploadImageArray.splice(selectedIndex, 1);
+            dispatch(
+              checklistActions.deleteImage(
+                checklistType,
+                section,
+                index,
+                selectedIndex,
+                true
+              )
+            );
+            setImageArray(tempImageArray);
+            setUploadImageArray(tempUploadImageArray);
           },
         },
       ]);
     },
-    [imageArray]
+    [checklistType, dispatch, imageArray, index, section, uploadImageArray]
   );
 
   const renderListItems = useCallback(

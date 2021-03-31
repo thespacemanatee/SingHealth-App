@@ -98,13 +98,20 @@ export const addImage = (
     rectify,
   };
 };
-export const deleteImage = (checklistType, section, index, selectedIndex) => {
+export const deleteImage = (
+  checklistType,
+  section,
+  index,
+  selectedIndex,
+  rectify = false
+) => {
   return {
     checklistType,
     type: DELETE_IMAGE,
     section,
     index,
     selectedIndex,
+    rectify,
   };
 };
 export const addRemarks = (

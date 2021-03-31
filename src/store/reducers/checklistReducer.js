@@ -110,7 +110,14 @@ const checklistReducer = (state = initialState, action) => {
       } else {
         newChecklist = _.cloneDeep(state.chosen_checklist);
       }
-      newChecklist.questions[action.section][action.index].image.splice(
+
+      let image = "image";
+
+      if (action.rectify) {
+        image = "rectificationImages";
+      }
+
+      newChecklist.questions[action.section][action.index][image].splice(
         action.selectedIndex,
         1
       );
