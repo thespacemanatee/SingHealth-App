@@ -99,10 +99,6 @@ const AuditSubmitScreen = ({ navigation }) => {
       });
     });
 
-    // console.log(formData);
-
-    // TODO: Move metadata creation to start of audit creation
-
     const auditData = {
       auditMetadata: checklistStore.auditMetadata,
       auditForms: {

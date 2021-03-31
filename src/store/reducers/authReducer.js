@@ -9,6 +9,7 @@ const initialState = {
   email: null,
   institutionID: null,
   name: null,
+  stall: null,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -21,7 +22,9 @@ const authReducer = (state = initialState, action) => {
         email,
         institutionID,
         name,
+        stall,
       } = action.userData;
+
       return {
         ...state,
         userToken,
@@ -32,6 +35,7 @@ const authReducer = (state = initialState, action) => {
         institutionID,
         name,
         isLoading: false,
+        stall,
       };
     }
     case SIGN_IN: {
@@ -42,6 +46,7 @@ const authReducer = (state = initialState, action) => {
         email,
         institutionID,
         name,
+        stall,
       } = action.userData;
       return {
         ...state,
@@ -53,6 +58,7 @@ const authReducer = (state = initialState, action) => {
         email,
         institutionID,
         name,
+        stall,
       };
     }
     case SIGN_OUT: {
