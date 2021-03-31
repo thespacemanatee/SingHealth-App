@@ -60,18 +60,6 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
     }
   };
 
-  const handleDateChange = (date) => {
-    console.log(date);
-    dispatch(
-      checklistActions.changeDeadline(checklistType, section, index, date)
-    );
-  };
-
-  const changeTextHandler = (val) => {
-    setValue(val);
-    dispatch(checklistActions.addRemarks(checklistType, section, index, val));
-  };
-
   const getImages = async () => {
     if (checklistStore.chosen_checklist.questions[section][index].image) {
       setLoading(true);
@@ -239,11 +227,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
           />
           <View style={styles.datePickerContainer}>
             <Text category="h6">Deadline: </Text>
-            <CustomDatepicker
-              onSelect={handleDateChange}
-              deadline={deadline}
-              rectify
-            />
+            <CustomDatepicker deadline={deadline} disabled />
           </View>
           <View style={styles.inputContainer}>
             <Text category="h6">Remarks: </Text>
@@ -253,7 +237,6 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
               textStyle={styles.input}
               placeholder="Enter your remarks here"
               value={value}
-              onChangeText={changeTextHandler}
               disabled
             />
           </View>

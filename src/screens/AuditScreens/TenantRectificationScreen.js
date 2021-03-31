@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Alert, Platform } from "react-native";
+import { View, Platform } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -246,7 +246,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
     if (status === "granted") {
       navigation.navigate("CameraModal", { onSave });
     } else {
-      Alert.alert("Access denied");
+      alert("Access denied");
     }
   };
 
@@ -473,9 +473,10 @@ const styles = StyleService.create({
   toggleContainer: {
     flex: 1,
     alignItems: "flex-start",
+    marginVertical: 20,
   },
   inputContainer: {
-    marginVertical: 20,
+    // marginVertical: 20,
   },
   input: {
     minHeight: 64,
