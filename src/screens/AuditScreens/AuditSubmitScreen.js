@@ -125,24 +125,26 @@ const AuditSubmitScreen = ({ navigation }) => {
   const uploadAuditData = useCallback(
     async (imageAdded, auditData, base64images, formData) => {
       try {
-        let res;
+        let imageRes;
         if (imageAdded) {
-          // await dispatch(databaseActions.postAuditForm(auditData));
           if (Platform.OS === "web") {
-            res = await Promise.all([
-              dispatch(databaseActions.postAuditForm(auditData)),
-              dispatch(databaseActions.postAuditImagesWeb(base64images)),
-            ]);
+            imageRes = dispatch(
+              databaseActions.postAuditImagesWeb(base64images)
+            );
           } else {
-            res = await Promise.all([
-              dispatch(databaseActions.postAuditForm(auditData)),
-              dispatch(databaseActions.postAuditImages(formData)),
-            ]);
+            imageRes = await dispatch(
+              databaseActions.postAuditImages(formData)
+            );
           }
-        } else {
-          res = await dispatch(databaseActions.postAuditForm(auditData));
         }
-        console.log(res);
+
+        console.log(imageRes);
+
+        const formRes = await dispatch(
+          databaseActions.postAuditForm(auditData)
+        );
+
+        console.log(formRes);
         setSubmitting(false);
       } catch (err) {
         setError(true);

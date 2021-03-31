@@ -42,7 +42,7 @@ const CameraScreen = ({ route, navigation }) => {
   const takePicture = async () => {
     const photo = await camera.takePictureAsync({
       base64: true,
-      quality: 0,
+      quality: 0.5,
     });
     console.log(photo);
     setPreviewVisible(true);

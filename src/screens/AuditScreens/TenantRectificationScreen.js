@@ -255,7 +255,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [3, 4],
-      quality: 0,
+      quality: 0.5,
       base64: true,
     });
 
