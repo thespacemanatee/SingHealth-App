@@ -11,6 +11,7 @@ const CustomCard = (props) => {
   const { checked } = props;
   const { deleted } = props;
   const { question } = props;
+  const { rectified } = props;
   const { checkboxDisabled } = props;
 
   const Header = (headerProps) => (
@@ -23,7 +24,7 @@ const CustomCard = (props) => {
     <Card
       header={Header}
       onPress={onClick}
-      status={checkboxDisabled && !checked ? "danger" : "success"}
+      status={checkboxDisabled && !checked && !rectified ? "danger" : "success"}
     >
       <View style={styles.questionContainer}>
         <CheckBox

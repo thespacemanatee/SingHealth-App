@@ -206,10 +206,10 @@ export const getImage = (fileName) => {
   };
 };
 
-export const submitRectification = (auditID, data) => {
+export const submitRectification = (auditID, data, userType) => {
   return async () => {
     const options = {
-      url: `${endpoint}audits/${auditID}/tenant`,
+      url: `${endpoint}audits/${auditID}/${userType}`,
       method: "patch",
       headers: {
         Accept: "application/json",

@@ -32,6 +32,7 @@ const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
 const ImageIcon = (props) => <Icon {...props} name="image-outline" />;
 
 const TenantRectificationScreen = ({ route, navigation }) => {
+  const authStore = useSelector((state) => state.auth);
   const checklistStore = useSelector((state) => state.checklist);
   const { index } = route.params;
   const { checklistType } = route.params;
@@ -108,7 +109,8 @@ const TenantRectificationScreen = ({ route, navigation }) => {
         await dispatch(
           checklistActions.submitRectification(
             checklistStore.auditMetadata._id,
-            data
+            data,
+            authStore.userType
           )
         );
       }

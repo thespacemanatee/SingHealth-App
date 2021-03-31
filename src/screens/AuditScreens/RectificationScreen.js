@@ -88,6 +88,7 @@ const RectificationScreen = ({ navigation }) => {
           checklistType={checklistType}
           question={itemData.item.question}
           answer={itemData.item.answer}
+          rectified={itemData.item.rectified}
           section={itemData.section.title}
           onPress={handleOpenRectificationCard}
         />

@@ -28,6 +28,7 @@ import CenteredLoading from "../../components/ui/CenteredLoading";
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const StaffRectificationScreen = ({ route, navigation }) => {
+  const authStore = useSelector((state) => state.auth);
   const checklistStore = useSelector((state) => state.checklist);
   const { index } = route.params;
   const { checklistType } = route.params;
@@ -44,12 +45,41 @@ const StaffRectificationScreen = ({ route, navigation }) => {
 
   const dispatch = useDispatch();
 
+  const submitApproval = async () => {
+    try {
+      setLoadDialog(true);
+      const data = {
+        [checklistType]: [
+          {
+            category: section,
+            index,
+            rectified: true,
+          },
+        ],
+      };
+
+      const res = await dispatch(
+        checklistActions.submitRectification(
+          checklistStore.auditMetadata._id,
+          data,
+          authStore.userType
+        )
+      );
+
+      console.log(res);
+    } catch (err) {
+      handleErrorResponse(err);
+    }
+
+    setLoadDialog(false);
+  };
+
   const handleSubmitApproval = () => {
     alert("Are you sure?", "You can only do this once.", [
       { text: "Cancel", style: "cancel" },
       {
         text: "Confirm",
-        onPress: () => {},
+        onPress: submitApproval,
       },
     ]);
   };
@@ -225,7 +255,7 @@ const StaffRectificationScreen = ({ route, navigation }) => {
           />
           <View style={styles.toggleContainer}>
             <Toggle style={styles.toggle} checked={toggle} disabled>
-              {`Tenant has ${toggle ? "" : "not"}requested for extension`}
+              {`Tenant has ${toggle ? "" : "not"} requested for extension`}
             </Toggle>
           </View>
           <View style={styles.inputContainer}>

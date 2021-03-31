@@ -8,6 +8,7 @@ const RectificationCard = (props) => {
   const { checklistType } = props;
   const { question } = props;
   const { answer } = props;
+  const { rectified } = props;
   const { section } = props;
   const { onPress } = props;
 
@@ -38,6 +39,7 @@ const RectificationCard = (props) => {
       deleted={deleted}
       checkboxDisabled
       question={question}
+      rectified={rectified}
     />
   );
 };
