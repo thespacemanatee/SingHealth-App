@@ -85,7 +85,7 @@ const StaffDashboardScreen = ({ navigation }) => {
         setLoading(false);
       }
     },
-    [databaseStore.relevantTenants, dispatch, navigation]
+    [databaseStore.relevantTenants, dispatch, handleErrorResponse, navigation]
   );
 
   const renderActiveAudits = useCallback(
@@ -121,7 +121,7 @@ const StaffDashboardScreen = ({ navigation }) => {
       setListLoading(false);
       setLoading(false);
     }
-  }, [authStore.institutionID, dispatch]);
+  }, [authStore.institutionID, dispatch, handleErrorResponse]);
 
   useEffect(() => {
     // Subscribe for the focus Listener
@@ -139,43 +139,46 @@ const StaffDashboardScreen = ({ navigation }) => {
     };
   }, [getListData, navigation]);
 
-  const handleErrorResponse = (err) => {
-    if (err.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      const { data } = err.response;
-      console.error(err.response.data);
-      console.error(err.response.status);
-      console.error(err.response.headers);
-      if (err.response.status === 403) {
-        dispatch(authActions.signOut());
-      } else {
-        switch (Math.floor(err.response.status / 100)) {
-          case 4: {
-            alert("Error", err.response.message);
-            break;
-          }
-          case 5: {
-            alert("Server Error", "Please contact your administrator.");
-            break;
-          }
-          default: {
-            alert("Request timeout", "Check your internet connection.");
-            break;
+  const handleErrorResponse = useCallback(
+    (err) => {
+      if (err.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        const { data } = err.response;
+        console.error(err.response.data);
+        console.error(err.response.status);
+        console.error(err.response.headers);
+        if (err.response.status === 403) {
+          dispatch(authActions.signOut());
+        } else {
+          switch (Math.floor(err.response.status / 100)) {
+            case 4: {
+              alert("Error", err.response.message);
+              break;
+            }
+            case 5: {
+              alert("Server Error", "Please contact your administrator.");
+              break;
+            }
+            default: {
+              alert("Request timeout", "Check your internet connection.");
+              break;
+            }
           }
         }
+      } else if (err.request) {
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+        // http.ClientRequest in node.js
+        console.error(err.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error", err.message);
       }
-    } else if (err.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-      // http.ClientRequest in node.js
-      console.error(err.request);
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.error("Error", err.message);
-    }
-    console.error(err.config);
-  };
+      console.error(err.config);
+    },
+    [dispatch]
+  );
 
   return (
     <View style={styles.screen}>

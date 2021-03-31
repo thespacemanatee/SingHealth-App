@@ -197,6 +197,7 @@ export const getImage = (fileName) => {
       params: {
         fileName,
       },
+      timeout: 30000,
     };
 
     const res = await httpClient(options);

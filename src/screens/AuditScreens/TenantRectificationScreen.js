@@ -12,18 +12,20 @@ import {
   Text,
   useTheme,
   Button,
+  Toggle,
 } from "@ui-kitten/components";
 import { Camera } from "expo-camera";
-import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import alert from "../../components/CustomAlert";
 import * as authActions from "../../store/actions/authActions";
 import * as checklistActions from "../../store/actions/checklistActions";
+import * as databaseActions from "../../store/actions/databaseActions";
 import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
 import { SCREEN_HEIGHT } from "../../helpers/config";
+import CenteredLoading from "../../components/ui/CenteredLoading";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
@@ -39,7 +41,26 @@ const TenantRectificationScreen = ({ route, navigation }) => {
   const [imageArray, setImageArray] = useState([]);
   const [uploadImageArray, setUploadImageArray] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadDialog, setLoadDialog] = useState(false);
   const [error, setError] = useState(false);
+  const [toggle, setToggle] = useState(false);
+  const [disableToggle, setDisableToggle] = useState(false);
+
+  const onToggleChange = (isChecked) => {
+    if (isChecked) {
+      alert("Are you sure?", "You can only do this once.", [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Confirm",
+          onPress: () => {
+            setToggle(isChecked);
+          },
+        },
+      ]);
+    } else {
+      setToggle(isChecked);
+    }
+  };
 
   const theme = useTheme();
 
@@ -47,48 +68,64 @@ const TenantRectificationScreen = ({ route, navigation }) => {
 
   const handleSubmitRectification = async () => {
     try {
+      setLoadDialog(true);
+      const temp = uploadImageArray.map((e) => e.name);
       const data = {
         [checklistType]: [
           {
             category: section,
             index,
-            rectificationImages: uploadImageArray,
+            rectificationImages: temp,
             rectificationRemarks: value,
-            requestForExt: false,
+            requestForExt: toggle,
           },
         ],
       };
-      await dispatch(
-        checklistActions.submitRectification(
-          checklistStore.auditMetadata._id,
-          data
-        )
-      );
+
+      const base64images = { images: [] };
+
       uploadImageArray.forEach((image) => {
-        dispatch(
-          checklistActions.addImage(
-            checklistType,
-            section,
-            index,
-            image.name,
-            image.uri,
-            true
-          )
-        );
+        base64images.images.push({
+          fileName: image.name,
+          uri: image.uri,
+        });
       });
 
-      dispatch(
-        checklistActions.addRemarks(checklistType, section, index, value, true)
-      );
+      console.log(base64images);
+
+      // let res;
+      if (base64images.images.length > 0) {
+        await Promise.all([
+          dispatch(
+            checklistActions.submitRectification(
+              checklistStore.auditMetadata._id,
+              data
+            )
+          ),
+          dispatch(databaseActions.postAuditImagesWeb(base64images)),
+        ]);
+      } else {
+        await dispatch(
+          checklistActions.submitRectification(
+            checklistStore.auditMetadata._id,
+            data
+          )
+        );
+      }
+
+      // console.log("RESPONSE:", res);
     } catch (err) {
       handleErrorResponse(err);
     }
+    setLoadDialog(false);
   };
 
   const changeTextHandler = (val) => {
     setValue(val);
     // console.log(val);
-    // dispatch(checklistActions.addRectificationRemarks(section, index, val));
+    dispatch(
+      checklistActions.addRemarks(checklistType, section, index, val, true)
+    );
   };
 
   const getImages = async () => {
@@ -130,17 +167,23 @@ const TenantRectificationScreen = ({ route, navigation }) => {
   useEffect(() => {
     console.log("USEEFFECT");
     getImages();
+    if (checklistType === "covid") {
+      // eslint-disable-next-line no-unused-expressions
+      checklistStore.covid19.questions[section][index].requestForExt
+        ? (setToggle(true), setDisableToggle(true))
+        : (setToggle(false), setDisableToggle(false));
+    } else {
+      // eslint-disable-next-line no-unused-expressions
+      checklistStore.chosen_checklist.questions[section][index].requestForExt
+        ? (setToggle(true), setDisableToggle(true))
+        : (setToggle(false), setDisableToggle(false));
+    }
   }, []);
 
   useEffect(() => {
     let storeImages;
     let storeRemarks;
-    if (
-      Object.prototype.hasOwnProperty.call(
-        checklistStore.covid19.questions,
-        section
-      )
-    ) {
+    if (checklistType === "covid19") {
       storeImages =
         checklistStore.covid19.questions[section][index].rectificationImages;
       storeRemarks =
@@ -162,7 +205,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
     if (storeRemarks) {
       setValue(storeRemarks);
     }
-  }, [checklistStore, dispatch, index, section]);
+  }, [checklistStore, checklistType, dispatch, index, section]);
 
   const onSave = async (imageData) => {
     if (imageArray.length > 2) {
@@ -171,24 +214,30 @@ const TenantRectificationScreen = ({ route, navigation }) => {
       const fileName = `${`${checklistStore.chosen_tenant.tenantID}${Math.round(
         Date.now() * Math.random()
       )}`}.jpg`;
-      // const fileName = checklistStore.chosen_tenant.stallName + Date.now();
+
       let destination;
       if (Platform.OS === "web") {
         destination = imageData.uri;
       } else {
-        destination = FileSystem.cacheDirectory + fileName.replace(/\s+/g, "");
-        // console.log(destination);
-        await FileSystem.copyAsync({
-          from: imageData.uri,
-          to: destination,
-        });
+        destination = `data:image/jpg;base64,${imageData.base64}`;
       }
+
       const tempImageArray = [...imageArray];
       const tempUploadImageArray = [...uploadImageArray];
       tempImageArray.push(destination);
       tempUploadImageArray.push({ uri: destination, name: fileName });
       setImageArray(tempImageArray);
       setUploadImageArray(tempUploadImageArray);
+      dispatch(
+        checklistActions.addImage(
+          checklistType,
+          section,
+          index,
+          fileName,
+          destination,
+          true
+        )
+      );
     }
   };
 
@@ -207,6 +256,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
       allowsEditing: true,
       aspect: [3, 4],
       quality: 1,
+      base64: true,
     });
 
     if (!result.cancelled) {
@@ -317,8 +367,6 @@ const TenantRectificationScreen = ({ route, navigation }) => {
 
   const handleErrorResponse = (err) => {
     if (err.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
       const { data } = err.response;
       console.error(err.response.data);
       console.error(err.response.status);
@@ -328,7 +376,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
       } else {
         switch (Math.floor(err.response.status / 100)) {
           case 4: {
-            alert("Error", err.response.message);
+            alert("Error", "Upload failed.");
             break;
           }
           case 5: {
@@ -367,12 +415,23 @@ const TenantRectificationScreen = ({ route, navigation }) => {
         <Text style={styles.text}>{question}</Text>
       </View>
       <Button onPress={handleSubmitRectification}>SUBMIT RECTIFICATION</Button>
+      <CenteredLoading loading={loadDialog} />
       <Layout style={styles.layout}>
         <KeyboardAwareScrollView extraHeight={200}>
           <ImageViewPager
             imageArray={imageArray}
             renderListItems={renderListItems}
           />
+          <View style={styles.toggleContainer}>
+            <Toggle
+              style={styles.toggle}
+              checked={toggle}
+              onChange={onToggleChange}
+              disabled={disableToggle}
+            >
+              Request for Extension
+            </Toggle>
+          </View>
           <View style={styles.inputContainer}>
             <Text category="h6">Remarks: </Text>
             <Input
@@ -409,8 +468,12 @@ const styles = StyleService.create({
   text: {
     fontWeight: "bold",
   },
+  toggleContainer: {
+    flex: 1,
+    alignItems: "flex-start",
+  },
   inputContainer: {
-    marginTop: 20,
+    marginVertical: 20,
   },
   input: {
     minHeight: 64,
