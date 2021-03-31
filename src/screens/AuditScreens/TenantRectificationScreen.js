@@ -252,12 +252,14 @@ const TenantRectificationScreen = ({ route, navigation }) => {
 
   const imagePickerHandler = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [3, 4],
-      quality: 1,
+      quality: 0,
       base64: true,
     });
+
+    console.log(result);
 
     if (!result.cancelled) {
       onSave(result);
