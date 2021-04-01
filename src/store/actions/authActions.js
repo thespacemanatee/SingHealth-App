@@ -25,7 +25,7 @@ export const restoreToken = () => {
   };
 };
 
-export const signIn = (user, pswd, userType, expoToken) => {
+export const signIn = (user, pswd, expoToken, userType) => {
   return async (dispatch) => {
     const loginOptions = {
       url: `${endpoint}login/${userType}`,

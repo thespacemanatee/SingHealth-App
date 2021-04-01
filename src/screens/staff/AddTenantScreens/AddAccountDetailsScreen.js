@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-  KeyboardAvoidingView,
   Platform,
 } from "react-native";
 import {
@@ -13,26 +12,26 @@ import {
   Layout,
   TopNavigation,
   TopNavigationAction,
-  Text,
   Icon,
   StyleService,
   useTheme,
+  Text,
 } from "@ui-kitten/components";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import CustomTextInput from "../../../components/CustomTextInput";
 import Logo from "../../../components/ui/Logo";
+import CustomDatepicker from "../../../components/CustomDatePicker";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const AddAccountDetails = ({ navigation }) => {
-  const [secureTextEntry, setSecureTextEntry] = useState(true);
-
   const theme = useTheme();
 
   const handleSubmitForm = async (values) => {
     console.log(values);
-    navigation.navigate("AddAccountDetails", { values });
+    // navigation.navigate("AddAccountDetails", { values });
   };
 
   const BackAction = () => (
@@ -45,28 +44,25 @@ const AddAccountDetails = ({ navigation }) => {
   );
 
   const RegisterSchema = Yup.object().shape({
-    name: Yup.string().required("Please enter your name!"),
-    email: Yup.string()
-      .email("Invalid email!")
-      .required("Please enter your email!"),
-    password: Yup.string()
-      .required("Please enter your password!")
-      .min(8, "Password is too short - should be 8 chars minimum."),
-    passwordConfirmation: Yup.string().oneOf(
-      [Yup.ref("password"), null],
-      "Passwords must match"
+    stallName: Yup.string().required("Please enter tenant's stall name!"),
+    companyName: Yup.string().required("Please enter tenant's company name!"),
+    companyPOCName: Yup.string().required(
+      "Please enter tenant's company POC name!"
     ),
+    companyPOCEmail: Yup.string()
+      .email("Invalid email!")
+      .required("Please enter tenant's POC email!"),
+    unitNo: Yup.string().required("Please enter tenant's unit no.!"),
+    fnb: Yup.boolean().required(
+      "Please indicate if the stall is FNB or non-FNB!"
+    ),
+    tenantDateStart: Yup.date().required("Please enter tenant's start date!"),
+    tenantDateEnd: Yup.date().required("Please enter tenant's end date!"),
+    block: Yup.string().optional(),
+    street: Yup.string().optional(),
+    building: Yup.string().optional(),
+    zipCode: Yup.number().optional(),
   });
-
-  const renderSecureIcon = (props) => (
-    <TouchableOpacity
-      onPress={() => {
-        setSecureTextEntry(!secureTextEntry);
-      }}
-    >
-      <Icon {...props} name={secureTextEntry ? "eye-off" : "eye"} />
-    </TouchableOpacity>
-  );
 
   return (
     <TouchableWithoutFeedback
@@ -76,7 +72,7 @@ const AddAccountDetails = ({ navigation }) => {
         }
       }}
     >
-      <KeyboardAvoidingView
+      <KeyboardAwareScrollView
         style={styles.screen}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
@@ -88,7 +84,7 @@ const AddAccountDetails = ({ navigation }) => {
         <Divider />
         <Layout style={styles.layout}>
           <Formik
-            initialValues={{ name: "", email: "", password: "" }}
+            initialValues={{ stallName: "", email: "", password: "" }}
             onSubmit={handleSubmitForm}
             validationSchema={RegisterSchema}
           >
@@ -96,16 +92,16 @@ const AddAccountDetails = ({ navigation }) => {
               <View style={styles.keyboardContainer}>
                 <Logo />
                 <CustomTextInput
-                  label="Name"
+                  label="Stall Name"
                   returnKeyType="next"
-                  value={values.name}
-                  onChangeText={handleChange("name")}
-                  onBlur={handleBlur("name")}
-                  error={!!errors.name}
-                  errorText={errors.name}
+                  value={values.stallName}
+                  onChangeText={handleChange("stallName")}
+                  onBlur={handleBlur("stallName")}
+                  error={!!errors.stallName}
+                  errorText={errors.stallName}
                   accessoryRight={(props) => {
                     return (
-                      !!errors.name && (
+                      !!errors.stallName && (
                         <Icon
                           {...props}
                           name="alert-circle-outline"
@@ -116,20 +112,60 @@ const AddAccountDetails = ({ navigation }) => {
                   }}
                 />
                 <CustomTextInput
-                  label="Email"
+                  label="Company Name"
                   returnKeyType="next"
-                  value={values.email}
-                  onChangeText={handleChange("email")}
-                  onBlur={handleBlur("email")}
-                  error={!!errors.email}
-                  errorText={errors.email}
+                  value={values.companyName}
+                  onChangeText={handleChange("companyName")}
+                  onBlur={handleBlur("companyName")}
+                  error={!!errors.companyName}
+                  errorText={errors.companyName}
+                  accessoryRight={(props) => {
+                    return (
+                      !!errors.companyName && (
+                        <Icon
+                          {...props}
+                          name="alert-circle-outline"
+                          fill={theme["color-danger-700"]}
+                        />
+                      )
+                    );
+                  }}
+                />
+                <CustomTextInput
+                  label="Company POC Name"
+                  returnKeyType="next"
+                  value={values.companyPOCName}
+                  onChangeText={handleChange("companyPOCName")}
+                  onBlur={handleBlur("companyPOCName")}
+                  error={!!errors.companyPOCName}
+                  errorText={errors.companyPOCName}
+                  accessoryRight={(props) => {
+                    return (
+                      !!errors.companyPOCName && (
+                        <Icon
+                          {...props}
+                          name="alert-circle-outline"
+                          fill={theme["color-danger-700"]}
+                        />
+                      )
+                    );
+                  }}
+                />
+                <CustomTextInput
+                  label="Company POC Email"
+                  returnKeyType="next"
+                  value={values.companyPOCEmail}
+                  onChangeText={handleChange("companyPOCEmail")}
+                  onBlur={handleBlur("companyPOCEmail")}
+                  error={!!errors.companyPOCEmail}
+                  errorText={errors.companyPOCEmail}
                   autoCapitalize="none"
                   autoCompleteType="email"
                   textContentType="emailAddress"
                   keyboardType="email-address"
                   accessoryRight={(props) => {
                     return (
-                      !!errors.email && (
+                      !!errors.companyPOCEmail && (
                         <Icon
                           {...props}
                           name="alert-circle-outline"
@@ -140,16 +176,27 @@ const AddAccountDetails = ({ navigation }) => {
                   }}
                 />
                 <CustomTextInput
-                  label="Password"
-                  returnKeyType="done"
-                  value={values.password}
-                  onChangeText={handleChange("password")}
-                  onBlur={handleBlur("password")}
-                  error={!!errors.password}
-                  errorText={errors.password}
-                  secureTextEntry={secureTextEntry}
-                  accessoryRight={renderSecureIcon}
+                  label="Unit No."
+                  returnKeyType="next"
+                  value={values.unitNo}
+                  onChangeText={handleChange("unitNo")}
+                  onBlur={handleBlur("unitNo")}
+                  error={!!errors.unitNo}
+                  errorText={errors.unitNo}
+                  accessoryRight={(props) => {
+                    return (
+                      !!errors.unitNo && (
+                        <Icon
+                          {...props}
+                          name="alert-circle-outline"
+                          fill={theme["color-danger-700"]}
+                        />
+                      )
+                    );
+                  }}
                 />
+                <CustomDatepicker label="Tenant Start Date" />
+                <CustomDatepicker label="Tenant End Date" />
                 <View style={styles.buttonContainer}>
                   <Button onPress={handleSubmit} style={styles.button}>
                     Add Account Details
@@ -159,7 +206,7 @@ const AddAccountDetails = ({ navigation }) => {
             )}
           </Formik>
         </Layout>
-      </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>
   );
 };
