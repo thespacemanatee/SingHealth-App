@@ -830,11 +830,11 @@ JSON param | Description
 `email` | The user email of a tenant. Unique for each tenant.
 `pswd` | The password credentials for a tenant.
 `institutionID` | The institution where a tenant operates under.
-`stall_name` | Name of the stall.
-`company_name` | Name of the company the stall is representing.
-`company_POC_name` | Name of the company POC.
-`company_POC_email` | Email of the company POC.
-`unit_no` | The unit number. I.e. 02-212 (without hashes).
+`stallName` | Name of the stall.
+`companyName` | Name of the company the stall is representing.
+`companyPOCName` | Name of the company POC.
+`companyPOCEmail` | Email of the company POC.
+`unitNo` | The unit number. I.e. 02-212 (without hashes).
 `fnb` | Whether the stall is an F&B stall.
 `staffID` | ID of staff who created this account.
 `tenantDateStart` | Date when tenantship started, without including exact date. I.e. MM/YYYY
@@ -846,7 +846,7 @@ JSON param | Description
 `blk` | blk number. I.e. 243A.
 `street` | Street name.
 `bldg` | Name of the building.
-`zipcode` | The zipcode of the stall. I.e. 123456 (only numbers).
+`zipCode` | The zipcode of the stall. I.e. 123456 (only numbers).
 
 
 ### Sample request
@@ -883,7 +883,7 @@ JSON param | Description
     "blk" : "myblk",
     "street": "mystreet",
     "bldg": "bldg",
-    "unit_no": "01-001",
+    "unitNo": "01-001",
     "zipCode": 123456,
     "fnb": true,
     "staffID": "000111",
