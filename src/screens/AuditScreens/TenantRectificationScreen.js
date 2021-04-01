@@ -38,6 +38,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
   const { checklistType } = route.params;
   const { question } = route.params;
   const { section } = route.params;
+  const { rectified } = route.params;
   const [value, setValue] = useState("");
   const [imageArray, setImageArray] = useState([]);
   const [uploadImageArray, setUploadImageArray] = useState([]);
@@ -46,6 +47,8 @@ const TenantRectificationScreen = ({ route, navigation }) => {
   const [error, setError] = useState(false);
   const [toggle, setToggle] = useState(false);
   const [disableToggle, setDisableToggle] = useState(false);
+
+  console.log("RECTIFIED:", rectified);
 
   const onToggleChange = (isChecked) => {
     if (isChecked) {
@@ -418,7 +421,9 @@ const TenantRectificationScreen = ({ route, navigation }) => {
       >
         <Text style={styles.text}>{question}</Text>
       </View>
-      <Button onPress={handleSubmitRectification}>SUBMIT RECTIFICATION</Button>
+      <Button onPress={handleSubmitRectification} disabled={rectified}>
+        {rectified ? "SUBMISSION APPROVED" : "SUBMIT FOR APPROVAL"}
+      </Button>
       <CenteredLoading loading={loadDialog} />
       <Layout style={styles.layout}>
         <KeyboardAwareScrollView extraHeight={200}>

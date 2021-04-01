@@ -28,6 +28,7 @@ const RectificationCard = (props) => {
       checklistType,
       question,
       section,
+      rectified,
     });
   };
 

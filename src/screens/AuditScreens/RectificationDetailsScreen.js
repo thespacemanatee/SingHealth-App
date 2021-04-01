@@ -32,6 +32,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
   const { checklistType } = route.params;
   const { question } = route.params;
   const { section } = route.params;
+  const { rectified } = route.params;
   const [value, setValue] = useState("");
   const [imageArray, setImageArray] = useState([]);
   const [deadline, setDeadline] = useState();
@@ -56,6 +57,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
         checklistType,
         question,
         section,
+        rectified,
       });
     }
   };

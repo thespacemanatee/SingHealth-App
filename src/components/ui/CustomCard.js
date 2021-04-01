@@ -24,7 +24,10 @@ const CustomCard = (props) => {
     <Card
       header={Header}
       onPress={onClick}
-      status={checkboxDisabled && !checked && !rectified ? "danger" : "success"}
+      status={
+        // eslint-disable-next-line no-nested-ternary
+        deleted ? "warning" : !checked && !rectified ? "danger" : "success"
+      }
     >
       <View style={styles.questionContainer}>
         <CheckBox
