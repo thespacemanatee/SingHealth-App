@@ -13,8 +13,11 @@ def printJ(data):
 
 
 def serverResponse(data, status_code, msg):
-    r = make_response(jsonify(parse_json(data)))
-    r.status = msg
+    packet = {
+        "data": data, 
+        "description": msg
+        }
+    r = make_response(jsonify(parse_json(packet)))
     r.status_code = status_code
     return r
 

@@ -6,6 +6,7 @@ Created on Fri Mar  5 02:46:03 2021
 """
 
 from .utils import serverResponse, validate_required_info
+from flask_login import login_required
 
 def addWenXinEndpoints(app, mongo):
     # Able to retrieve tenant and audit form information and return as json string
