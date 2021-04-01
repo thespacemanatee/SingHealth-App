@@ -99,10 +99,7 @@ const LoginScreen = ({ navigation }) => {
       } else {
         switch (Math.floor(err.response.status / 100)) {
           case 4: {
-            alert(
-              "Invalid Login",
-              "You have entered the wrong credentials. Check if you are signing in as a Tenant or Staff"
-            );
+            alert("Invalid Login", data.description);
             break;
           }
           case 5: {

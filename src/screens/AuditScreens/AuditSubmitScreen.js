@@ -182,28 +182,23 @@ const AuditSubmitScreen = ({ navigation }) => {
       if (err.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
+        console.error(err.response);
         const { data } = err.response;
-        console.error(err.response.data);
-        console.error(err.response.status);
-        console.error(err.response.headers);
+        // console.error(err.response.data);
+        // console.error(err.response.status);
+        // console.error(err.response.headers);
         if (err.response.status === 403) {
           dispatch(authActions.signOut());
         } else {
           switch (Math.floor(err.response.status / 100)) {
             case 4: {
-              alert(
-                "Error",
-                `${data.description} in question ${data.index + 1}, under the ${
-                  data.category
-                } section.`,
-                [
-                  { text: "Cancel", style: "cancel" },
-                  {
-                    text: "Go back",
-                    onPress: handleGoBack,
-                  },
-                ]
-              );
+              alert("Error", data.description, [
+                { text: "Cancel", style: "cancel" },
+                {
+                  text: "Go back",
+                  onPress: handleGoBack,
+                },
+              ]);
               break;
             }
             case 5: {

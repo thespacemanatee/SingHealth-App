@@ -92,8 +92,8 @@ const TenantDashboardScreen = ({ navigation }) => {
       const res = await dispatch(
         databaseActions.getTenantActiveAudits(authStore._id)
       );
-      console.log(res.data);
-      setListData(res.data);
+      console.log(res.data.data);
+      setListData(res.data.data);
       setListLoading(false);
       setLoading(false);
     } catch (err) {
@@ -133,7 +133,7 @@ const TenantDashboardScreen = ({ navigation }) => {
         } else {
           switch (Math.floor(err.response.status / 100)) {
             case 4: {
-              alert("Error", err.response.message);
+              alert("Error", data.description);
               break;
             }
             case 5: {

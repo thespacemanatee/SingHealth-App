@@ -23,18 +23,23 @@ import * as Yup from "yup";
 import CustomTextInput from "../../../components/CustomTextInput";
 import Logo from "../../../components/ui/Logo";
 
-const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
+const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
-const AddTenantCredScreen = ({ navigation }) => {
+const AddAccountDetails = ({ navigation }) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
 
   const theme = useTheme();
 
-  const DrawerAction = () => (
+  const handleSubmitForm = async (values) => {
+    console.log(values);
+    navigation.navigate("AddAccountDetails", { values });
+  };
+
+  const BackAction = () => (
     <TopNavigationAction
-      icon={DrawerIcon}
+      icon={BackIcon}
       onPress={() => {
-        navigation.openDrawer();
+        navigation.goBack();
       }}
     />
   );
@@ -76,20 +81,15 @@ const AddTenantCredScreen = ({ navigation }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <TopNavigation
-          title="Add Tenant"
+          title="Account Details"
           alignment="center"
-          accessoryLeft={DrawerAction}
+          accessoryLeft={BackAction}
         />
         <Divider />
         <Layout style={styles.layout}>
           <Formik
             initialValues={{ name: "", email: "", password: "" }}
-            onSubmit={(values) => {
-              console.log(values);
-              // dispatch(
-              //   authActions.signIn(values.email, values.password, "staff")
-              // );
-            }}
+            onSubmit={handleSubmitForm}
             validationSchema={RegisterSchema}
           >
             {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
@@ -152,18 +152,12 @@ const AddTenantCredScreen = ({ navigation }) => {
                 />
                 <View style={styles.buttonContainer}>
                   <Button onPress={handleSubmit} style={styles.button}>
-                    Sign Up
+                    Add Account Details
                   </Button>
                 </View>
               </View>
             )}
           </Formik>
-          <View style={styles.row}>
-            <Text>Already have an account? </Text>
-            <TouchableOpacity onPress={() => navigation.replace("Login")}>
-              <Text style={styles.link}>Login</Text>
-            </TouchableOpacity>
-          </View>
         </Layout>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
@@ -207,4 +201,4 @@ const styles = StyleService.create({
   },
 });
 
-export default AddTenantCredScreen;
+export default AddAccountDetails;

@@ -27,8 +27,10 @@ import AuditSubmitScreen from "../screens/AuditScreens/AuditSubmitScreen";
 import CameraScreen from "../screens/CameraScreen";
 import TenantsDirectoryScreen from "../screens/staff/DirectoryScreens/TenantsDirectoryScreen";
 import * as authActions from "../store/actions/authActions";
-import AddTenantCredScreen from "../screens/staff/AddTenantScreens/AddTenantCredScreen";
+import ManageTenantAccountsScreen from "../screens/staff/AddTenantScreens/ManageTenantAccountsScreen";
+import CreateTenantScreen from "../screens/staff/AddTenantScreens/CreateTenantScreen";
 import ExpandImagesScreen from "../screens/ExpandImagesScreen";
+import AddAccountDetailsScreen from "../screens/staff/AddTenantScreens/AddAccountDetailsScreen";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
 
@@ -144,22 +146,17 @@ const StaffDashboardStackNavigator = () => {
   );
 };
 
-// const QuestionDetailsStackNavigator = () => {
-//   const { Navigator, Screen } = createStackNavigator();
-//   return (
-//     <Navigator headerMode="none" mode="modal">
-//       <Screen name="Question" component={QuestionDetailsScreen} />
-//       <Screen name="ExpandImages" component={ExpandImagesScreen} />
-//     </Navigator>
-//   );
-// };
-
 const AddTenantStackNavigator = () => {
   const { Navigator, Screen } = createStackNavigator();
   return (
     <SafeAreaView style={styles.screen}>
       <Navigator headerMode="none">
-        <Screen name="AddTenantCred" component={AddTenantCredScreen} />
+        <Screen
+          name="ManageTenantAccounts"
+          component={ManageTenantAccountsScreen}
+        />
+        <Screen name="CreateTenant" component={CreateTenantScreen} />
+        <Screen name="AddAccountDetails" component={AddAccountDetailsScreen} />
       </Navigator>
     </SafeAreaView>
   );

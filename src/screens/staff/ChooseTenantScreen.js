@@ -98,11 +98,11 @@ const ChooseTenantScreen = ({ navigation }) => {
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
 
-      console.log(res.data);
+      console.log(res.data.data);
       const tempChecklists = [
         {
           title: "Available Tenants",
-          data: res.data,
+          data: res.data.data,
         },
       ];
 
@@ -157,7 +157,7 @@ const ChooseTenantScreen = ({ navigation }) => {
         } else {
           switch (Math.floor(err.response.status / 100)) {
             case 4: {
-              alert("Error", "No tenants found.");
+              alert("Error", data.description);
               break;
             }
             case 5: {

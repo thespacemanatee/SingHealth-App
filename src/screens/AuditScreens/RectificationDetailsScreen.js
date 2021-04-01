@@ -84,7 +84,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
                       section,
                       index,
                       fileName,
-                      `data:image/jpg;base64,${res.data}`
+                      `data:image/jpg;base64,${res.data.data}`
                     )
                   );
                 }
@@ -193,7 +193,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
       } else {
         switch (Math.floor(err.response.status / 100)) {
           case 4: {
-            alert("Error", err.response.message);
+            alert("Error", data.description);
             break;
           }
           case 5: {

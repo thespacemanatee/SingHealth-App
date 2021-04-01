@@ -10,7 +10,6 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
     login_manager.session_protection = None
     login_manager.init_app(app)
 
-
     @app.route('/login/staff',  methods=["POST"])
     def login_for_staff():
         """
@@ -29,35 +28,35 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                     session['account_type'] = "staff"
                     currentTokens = user["expoToken"]
 
-                    #TODO: Append the token to the DB
+                    # TODO: Append the token to the DB
                     if expoToken is not None:
                         mongo.db.staff.update_one(
                             {"email": credentials["user"]},
                             {
-                                "$set": {                               
+                                "$set": {
                                     "expoToken": currentTokens.append(expoToken)
                                 }
-                                
+
                             }
                         )
                     return serverResponse(
-                        user, 
-                        200, 
+                        user,
+                        200,
                         f"You are now logged in as a staff under: {user['email']}"
-                        )
+                    )
                 else:
                     return serverResponse(
-                        None, 
-                        404, 
+                        None,
+                        404,
                         "Either user email or pswd is wrong"
-                        )
+                    )
 
             else:
                 return serverResponse(
                     None,
                     404,
                     f"{credentials['user']} account does not exist"
-                    )
+                )
 
     @app.route('/login/tenant',  methods=["POST"])
     def login_for_tenant():
@@ -68,7 +67,8 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
         if request.method == "POST":
             credentials = request.json
             expoToken = credentials.get("expoToken", None)
-            user = mongo.db.tenant.find_one({"email": credentials["user"].upper()})
+            user = mongo.db.tenant.find_one(
+                {"email": credentials["user"].upper()})
             if user:
                 # check_password_hash(user["pswd"], credentials["pswd"]):
                 if user["pswd"] == credentials["pswd"]:
@@ -76,45 +76,46 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                     login_user(user_obj, remember=True)
                     session['account_type'] = "tenant"
                     currentTokens = user["expoToken"]
-                    
-                    #TODO: Append the token to the DB
+
+                    # TODO: Append the token to the DB
                     if expoToken is not None:
                         mongo.db.tenant.update_one(
                             {"email": credentials["user"]},
                             {
-                                "$set": {                               
+                                "$set": {
                                     "expoToken": currentTokens.append(expoToken)
                                 }
-                                
+
                             }
                         )
 
                     return serverResponse(
-                        user, 
-                        200, 
+                        user,
+                        200,
                         f"You are now logged in as a tenant under: {user['email']}"
-                        )
+                    )
                 else:
                     return serverResponse(
-                        None, 
-                        400, 
+                        None,
+                        400,
                         "Either user email or pswd is incorrect"
-                        )
+                    )
 
             else:
                 return serverResponse(
-                    None, 
+                    None,
                     404,
                     f"{credentials['user']} account does not exist"
-                    )
+                )
 
     @app.route('/logout')
     @login_required
     def logout():
         session.pop('account_type')
         logout_user()
+        credentials = request.json
 
-        #TODO：Remove the token from the DB
+        # TODO：Remove the token from the DB
         userEmail = current_user.get_id()
         user = mongo.db.tenant.find_one({"email": credentials["user"]})
 
@@ -122,7 +123,7 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
             None,
             200,
             "You are now logged out"
-            )
+        )
 
     @login_manager.user_loader
     def load_user(user_email):
