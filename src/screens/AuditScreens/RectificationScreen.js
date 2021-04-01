@@ -33,6 +33,8 @@ const RectificationScreen = ({ navigation }) => {
 
   const theme = useTheme();
 
+  console.log(checklistStore.auditMetadata);
+
   const handleGoBack = () => {
     if (authStore.userType === "tenant") {
       alert(

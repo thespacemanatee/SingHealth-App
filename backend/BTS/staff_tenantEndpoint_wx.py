@@ -8,7 +8,7 @@ Created on Fri Mar 26 01:47:13 2021
 from flask import request
 from flask_login import login_required
 from flask_pymongo import ObjectId
-from .utils import serverResponse, validate_required_info
+from .utils import serverResponse, validate_required_info, check_duplicate
 import datetime
 
 
@@ -16,7 +16,7 @@ import datetime
 def change_tenant_info(app, mongo):
     def find_tenant_by_id(tenantID):
         try:
-            tenant = mongo.db.tenant.find_one({"_id" : ObjectId(tenantID)})
+            tenant = mongo.db.tenant.find_one({"_id" : tenantID})
             
             if tenant is not None:
                 return True, tenant
@@ -37,11 +37,14 @@ def change_tenant_info(app, mongo):
         try:
             if request.method == "POST":
                 tenant_info = request.json
-                
-            validated, message = validate_required_info(tenant_info, required_info)
             
-            if validated:
+            #validate and check duplicate email
+            validated, message = validate_required_info(tenant_info, required_info)
+            duplicate = check_duplicate(mongo, "tenant", "email", tenant_info["email"])
+            
+            if validated and not duplicate:
                 data = {
+                        "_id": str(ObjectId()),
                         "name":tenant_info["name"],
                         "email":tenant_info["email"],
                         "pswd":tenant_info["pswd"],
@@ -63,15 +66,19 @@ def change_tenant_info(app, mongo):
                         "dateCreated":datetime.datetime.now().isoformat(),
                         "tenantDateStart": tenant_info.get("tenantDateStart", None),
                         "tenantDateEnd": tenant_info.get("tenantDateEnd", None)
-                         }
-                
+                         }                
                 try:
                     mongo.db.tenant.insert_one(data)
                 except:
                     return serverResponse(None, 404, "Cannot upload data to server")
             else:
-                return serverResponse(message, 200, "Insufficient/Error in data to add new tenant")
-
+                #send appropriate error messages
+                if not validated and not duplicate:
+                    return serverResponse(message, 200, "Insufficient/Error in data to add new tenant")
+                elif validated and duplicate:
+                    return serverResponse(None, 404, "Duplicate email found")
+                else:
+                    return serverResponse(message, 404, "Duplicate email and insufficient/error in data to add new tenant")
         except:
             return serverResponse(None, 404, "No response received")
         
@@ -99,13 +106,18 @@ def change_tenant_info(app, mongo):
         if tenant_found is not None:
             if tenant_found:
                 try:
-                    mongo.db.tenant.delete_one( {"_id": ObjectId(tenantID)});
+                    mongo.db.tenant.delete_one( {"_id": tenantID});
                 except:
                     return serverResponse(None, 404, "Error connecting to server")
                 
-                return serverResponse(None, 200, "Tenant with ID " + tenantID + " deleted")
+                #check if tenant is still there after deleting
+                tenant_found, tenant_info = find_tenant_by_id(tenantID)
+                
+                if not tenant_found:
+                    return serverResponse(None, 200, "Tenant with ID " + tenantID + " deleted")
+                else:
+                    return serverResponse(None, 404, "Error deleting the tenant")
             else:
                 return serverResponse(None, 404, "No matching tenant ID found")
         else:
             return serverResponse(None, 404, "Error connecting to server")
-

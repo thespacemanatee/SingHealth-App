@@ -60,3 +60,10 @@ def validate_required_info(mydict, key_arr):
                 error_message["key_value_error"] = key_value_error
 
         return False, [error_message]
+    
+def check_duplicate(mongo, collection, key, value):
+    results = mongo.db[collection].find({key: value}).count()
+    if(results != 0):
+        return True
+    else:
+        return False
