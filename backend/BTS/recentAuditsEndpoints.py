@@ -35,24 +35,29 @@ def addRecentAuditsEndpoints(app, mongo):
     # @login_required
     def unrectified_audits_staff(institutionID, daysBefore):
         if request.method == 'GET':
-            # if session["account_type"] == "staff":
-            queryDict = {}
-            queryDict["institutionID"] = institutionID
-            queryDict["rectificationProgress"] = {"$lt": 1}
-            if daysBefore > 0:
-                queryDict["date"] = {
-                    "$gt": datetime.utcnow() - datetime.timedelta(days=daysBefore)
-                }
+            if session["account_type"] == "staff":
+                queryDict = {}
+                queryDict["institutionID"] = institutionID
+                queryDict["rectificationProgress"] = {"$lt": 1}
+                if daysBefore > 0:
+                    queryDict["date"] = {
+                        "$gt": datetime.utcnow() - datetime.timedelta(days=daysBefore)
+                    }
 
-            audits = mongo.db.audits.find(queryDict)
-            auditsList = []
-            for audit in audits:
-                auditsList.append(audit)
+                audits = mongo.db.audits.find(queryDict)
+                auditsList = []
+                for audit in audits:
+                    tenantID = audit["tenantID"]
+                    tenant = mongo.db.tenant.find_one({"_id": tenantID})
+                    if tenant:
+                        tenantStallName = tenant["stall"]["name"]
+                        audit["stallName"] = tenantStallName
+                    auditsList.append(audit)
 
-            if len(auditsList) == 0:
-                return serverResponse(None, 404, "No matching forms")
+                if len(auditsList) == 0:
+                    return serverResponse(None, 404, "No matching forms")
 
-            return serverResponse(auditsList, 200, "Forms found")
+                return serverResponse(auditsList, 200, "Forms found")
 
-            # else:
-            #     return serverResponse(None, 403, "You do not have access to this as you are not a staff")
+            else:
+                return serverResponse(None, 403, "You do not have access to this page as you are not a staff")

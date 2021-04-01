@@ -28,10 +28,10 @@ def change_tenant_info(app, mongo):
     @app.route("/tenant", methods=["POST"])
     # @login_required
     def add_tenant():
-        required_info = ["name", "email", "pswd", "institutionID",
-                         "stall_name", "company_name",
-                         "company_POC_name", "company_POC_email",
-                         "unit_no", "fnb",
+        required_info = [ "name", "email", "pswd", "institutionID", 
+                         "stallName", "companyName", 
+                         "companyPOCName", "companyPOCEmail",
+                         "unitNo", "fnb",
                          "staffID", "tenantDateStart", "tenantDateEnd"]
 
         try:
@@ -46,29 +46,29 @@ def change_tenant_info(app, mongo):
 
             if validated and not duplicate:
                 data = {
-                    "_id": str(ObjectId()),
-                    "name": tenant_info["name"],
-                    "email": tenant_info["email"],
-                    "pswd": tenant_info["pswd"],
-                    "institutionID": tenant_info["institutionID"],
-                    "stall": {
-                        "name": tenant_info["stall_name"],
-                        "companyName": tenant_info["company_name"],
-                        "companyPOC": {
-                            "name": tenant_info["company_POC_name"],
-                            "email": tenant_info["company_POC_email"]},
-                        "address": {
-                            "blk": tenant_info.get("blk", None),
-                            "street": tenant_info.get("street", None),
-                            "bldg": tenant_info.get("bldg", None),
-                            "unitNo": tenant_info["unit_no"],
-                            "zipcode": tenant_info.get("zipcode", None)},
-                        "fnb": tenant_info["fnb"]},
-                    "createdBy": tenant_info["staffID"],
-                    "dateCreated": datetime.datetime.now().isoformat(),
-                    "tenantDateStart": tenant_info.get("tenantDateStart", None),
-                    "tenantDateEnd": tenant_info.get("tenantDateEnd", None)
-                }
+                        "_id": str(ObjectId()),
+                        "name":tenant_info["name"],
+                        "email":tenant_info["email"],
+                        "pswd":tenant_info["pswd"],
+                        "institutionID":tenant_info["institutionID"],
+                        "stall":{
+                            "name":tenant_info["stallName"],
+                            "companyName":tenant_info["companyName"],
+                            "companyPOC":{
+                                "name":tenant_info["companyPOCName"],
+                                "email":tenant_info["companyPOCWmail"]},
+                            "address":{
+                                "blk":tenant_info.get("blk", None),
+                                "street":tenant_info.get("street", None),
+                                "bldg":tenant_info.get("bldg", None),
+                                "unitNo":tenant_info["unitNo"],
+                                "zipCode": tenant_info.get("zipCode", None)},
+                            "fnb":tenant_info["fnb"]},
+                        "createdBy":tenant_info["staffID"],
+                        "dateCreated":datetime.datetime.now().isoformat(),
+                        "tenantDateStart": tenant_info.get("tenantDateStart", None),
+                        "tenantDateEnd": tenant_info.get("tenantDateEnd", None)
+                         }                
                 try:
                     mongo.db.tenant.insert_one(data)
                 except:

@@ -10,7 +10,7 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
   const [progress, setProgress] = useState(1);
 
   const handleOnPress = () => {
-    onPress(item._id, item.tenantID);
+    onPress(item._id);
   };
 
   useEffect(() => {
@@ -31,6 +31,7 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
     >
       <View style={styles.cardContainer}>
         <View style={{}}>
+          <Text style={styles.timeStamp}>{item.stallName}</Text>
           <Text style={styles.timeStamp}>
             {moment(item.date.$date)
               .toLocaleString()
