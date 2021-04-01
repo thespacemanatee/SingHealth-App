@@ -17,6 +17,7 @@
                 "properties": {
                     "question": {"type": "string"},
                     "answer": {"type": "boolean"},
+                    "index": {"type": "integer"},
                     "images": {
                         "description": "The URL to query for the image",
                         "type": "array",

@@ -10,20 +10,6 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
     login_manager.session_protection = None
     login_manager.init_app(app)
 
-    if app.config.get("SECRET_KEY", None) == None:
-        raise Exception("""
-            Please set a valid session secret key with the following code into app.py:
-            import secrets
-            app.config["SECRET_KEY"] = secrets.token_urlsafe(nbytes=32)
-            """)
-
-    # @app.route('/login/status',  methods=["GET"])
-    # def login_status():
-    #     if request.method == "GET":
-    #         loginStatus = current_user.is_authenticated
-    #         userEmail = current_user.userEmail
-    #         returnJson = {"userEmail": userEmail, "loginStatus": loginStatus}
-    #         return serverResponse(returnJson, 200, )
 
     @app.route('/login/staff',  methods=["POST"])
     def login_for_staff():
@@ -33,6 +19,7 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
         """
         if request.method == "POST":
             credentials = request.json
+            expoToken = credentials.get("expoToken", None)
             user = mongo.db.staff.find_one({"email": credentials["user"]})
             if user:
                 # check_password_hash(user["pswd"], credentials["pswd"]):
@@ -40,12 +27,37 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                     user_obj = User(userEmail=user['email'])
                     login_user(user_obj, remember=True)
                     session['account_type'] = "staff"
-                    return serverResponse(user, 200, f"You are now logged in as a staff under: {user['email']}")
+                    currentTokens = user["expoToken"]
+
+                    #TODO: Append the token to the DB
+                    if expoToken is not None:
+                        mongo.db.staff.update_one(
+                            {"email": credentials["user"]},
+                            {
+                                "$set": {                               
+                                    "expoToken": currentTokens.append(expoToken)
+                                }
+                                
+                            }
+                        )
+                    return serverResponse(
+                        user, 
+                        200, 
+                        f"You are now logged in as a staff under: {user['email']}"
+                        )
                 else:
-                    return serverResponse(None, 404, "Either user email or pswd is wrong")
+                    return serverResponse(
+                        None, 
+                        404, 
+                        "Either user email or pswd is wrong"
+                        )
 
             else:
-                return serverResponse(None, 404, f"{credentials['user']} account does not exist")
+                return serverResponse(
+                    None,
+                    404,
+                    f"{credentials['user']} account does not exist"
+                    )
 
     @app.route('/login/tenant',  methods=["POST"])
     def login_for_tenant():
@@ -54,37 +66,70 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
         implement password hashing
         """
         if request.method == "POST":
-            credentials = request.get_json(silent=True)
-            user = mongo.db.tenant.find_one({"email": credentials["user"]})
+            credentials = request.json
+            expoToken = credentials.get("expoToken", None)
+            user = mongo.db.tenant.find_one({"email": credentials["user"].upper()})
             if user:
                 # check_password_hash(user["pswd"], credentials["pswd"]):
                 if user["pswd"] == credentials["pswd"]:
                     user_obj = User(userEmail=user['email'])
                     login_user(user_obj, remember=True)
                     session['account_type'] = "tenant"
-                    return serverResponse(user, 200, f"You are now logged in as a tenant under: {user['email']}")
+                    currentTokens = user["expoToken"]
+                    
+                    #TODO: Append the token to the DB
+                    if expoToken is not None:
+                        mongo.db.tenant.update_one(
+                            {"email": credentials["user"]},
+                            {
+                                "$set": {                               
+                                    "expoToken": currentTokens.append(expoToken)
+                                }
+                                
+                            }
+                        )
+
+                    return serverResponse(
+                        user, 
+                        200, 
+                        f"You are now logged in as a tenant under: {user['email']}"
+                        )
                 else:
-                    return serverResponse(None, 400, "Either user email or pswd is incorrect")
+                    return serverResponse(
+                        None, 
+                        400, 
+                        "Either user email or pswd is incorrect"
+                        )
 
             else:
-                return serverResponse(None, 404, f"{credentials['user']} account does not exist")
+                return serverResponse(
+                    None, 
+                    404,
+                    f"{credentials['user']} account does not exist"
+                    )
 
     @app.route('/logout')
-    # @login_required
+    @login_required
     def logout():
-        # session.pop('account_type')
-        # logout_user()
-        return serverResponse(None, 200, "You are now logged out")
+        session.pop('account_type')
+        logout_user()
+
+        #TODO：Remove the token from the DB
+        return serverResponse(
+            None,
+            200,
+            "You are now logged out"
+            )
 
     @login_manager.user_loader
     def load_user(user_email):
         if session["account_type"] == "tenant":
-            exists = mongo.db.tenant.find_one({"email": user_email})
+            exists = mongo.db.tenant.find_one({"email": user_email.upper()})
         elif session["account_type"] == "staff":
-            exists = mongo.db.staff.find_one({"email": user_email})
+            exists = mongo.db.staff.find_one({"email": user_email.upper()})
         if not exists:
             return None
-        return User(userEmail=exists["email"])
+        return User(userEmail=exists["email"].upper())
 
     @app.route('/test_login/staff')
     def test_login_staff():

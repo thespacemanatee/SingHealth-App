@@ -24,6 +24,14 @@
         "institutionID": {
             "description": "The ID of the institution that the staff is from",
             "type": "string"
+        },
+        "expoToken": {
+            "description": "The device identifier used to send push notifications to that device",
+            "type": "array",
+            "minItems": 0,
+            "items": {
+                "type":"string"
+            }
         }
     },
     "required": [ "_id", "name", "email", "pswd", "institutionID" ]

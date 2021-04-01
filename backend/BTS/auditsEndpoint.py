@@ -10,9 +10,6 @@ allowedTenantPatchKeys = ["rectificationImages", "rectificationRemarks", "reques
 
 allowedStaffPatchKeys = ["rectified", "acceptedRequest", "deadline"]
 
-
-
-
 def compliant(answer):
     return answer["answer"]
 
@@ -102,6 +99,13 @@ def validateFilledAuditForms(filledAuditForms):
                             return False, category, index, "Please provide an ISO format for the deadline"
 
         return True, "Form is valid and ready for uploading"
+    
+    formTypes = filledAuditForms.keys()
+    if set(formTypes).issubset({"non_fnb", "fnb", "covid19"}):
+        if "non_fnb" in formTypes and "fnb" in formTypes:
+            return False, "Form contains conflicting types of forms: fnb & non_fnb"
+    else:
+        return False, "Form contains unknown form types"
     for formType, form in filledAuditForms.items():
         isValid = validateFilledAuditForm(form)
         if not isValid[0]:
@@ -150,8 +154,6 @@ def postProcessLineItem(lineItem):
 
 def post_process_filledAuditForms(filledAuditForms):
     output = {}
-    # pp = pprint.PrettyPrinter(indent=4)
-    # pp.pprint(filledAuditForms)
     for formType, filledAuditForm in filledAuditForms.items():
         filledAuditForm_cp = filledAuditForm.copy()
         filledAuditForm_cp["answers"] = filledAuditForm["questions"]
@@ -165,8 +167,6 @@ def post_process_filledAuditForms(filledAuditForms):
             processedFilledAuditForm[category] = processedAnswerList
         filledAuditForm_cp["answers"] = processedFilledAuditForm
         output[formType] = filledAuditForm_cp
-    # print()
-    # pp.pprint(output)
     return output
 
 
@@ -268,7 +268,7 @@ def mongoUpdateGivenFields(mongo, patches, fields, auditChecklists):
 
 def addAuditsEndpoint(app, mongo):
     @app.route("/audits", methods=['POST'])
-    # @login_required
+    @login_required
     def audits():
         if request.method == 'POST':
             auditData = request.json
@@ -285,11 +285,16 @@ def addAuditsEndpoint(app, mongo):
             if not allFormsAreValid[0]:
                 errorDescription = allFormsAreValid[1]
                 jsonMsg = {
-                    "category": errorDescription[0], "index": errorDescription[1], "description": errorDescription[2]}
-                return serverResponse(jsonMsg, 400, errorDescription[-1])
+                    "category": errorDescription[0], 
+                    "index": errorDescription[1],
+                    "description": errorDescription[2]
+                    }
+                return serverResponse(jsonMsg, 400, errorDescription[2])
 
             auditMetaData_ID, filledAuditForms_ID = generateIDs(
-                auditMetaData, filledAuditForms)
+                auditMetaData, 
+                filledAuditForms
+                )
             filledAuditForms_ID_processed = post_process_filledAuditForms(
                 filledAuditForms_ID)
             auditMetaData_ID_processed = post_process_AuditMetadata(
@@ -319,7 +324,7 @@ def addAuditsEndpoint(app, mongo):
             return serverResponse(None, 200, "Forms have been submitted successfully!")
 
     @app.route("/audits/<auditID>", methods=['GET'])
-    # @login_required
+    @login_required
     def get_audit(auditID):
         if request.method == "GET":
             responseJson = {}
@@ -358,7 +363,7 @@ def addAuditsEndpoint(app, mongo):
 
     
     @app.route("/audits/<auditID>/tenant", methods=['PATCH'])
-    # @login_required
+    @login_required
     def patch_audit_tenant(auditID):
         if request.method == "PATCH":
             patches = request.json
@@ -391,7 +396,7 @@ def addAuditsEndpoint(app, mongo):
             return serverResponse(patchResults, 200, "Changes sent to the database.")
 
     @app.route("/audits/<auditID>/staff", methods=['PATCH'])
-    # @login_required
+    @login_required
     def patch_audit_staff(auditID):
         if request.method == "PATCH":
             patches = request.json

@@ -6,6 +6,7 @@ Created on Fri Mar 26 01:47:13 2021
 """
 
 from flask import request
+from flask_login import login_required
 from flask_pymongo import ObjectId
 from .utils import serverResponse, validate_required_info
 import datetime
@@ -25,6 +26,7 @@ def change_tenant_info(app, mongo):
             return None, None
     
     @app.route("/tenant", methods = ["POST"])
+    @login_required
     def add_tenant():
         required_info = [ "name", "email", "pswd", "institutionID", 
                          "stall_name", "company_name", 
@@ -76,6 +78,7 @@ def change_tenant_info(app, mongo):
         return serverResponse(None, 201, "Tenant Added")
     
     @app.route("/tenant/<tenantID>" , methods = ["GET"])
+    @login_required
     def get_tenant(tenantID):
         tenant_found, tenant_info = find_tenant_by_id(tenantID)
         
@@ -89,6 +92,7 @@ def change_tenant_info(app, mongo):
             return serverResponse(None, 404, "Error connecting to server")
         
     @app.route("/tenant/<tenantID>" , methods = ["DELETE"])
+    @login_required
     def delete_tenant(tenantID):
         tenant_found, tenant_info = find_tenant_by_id(tenantID)
     
