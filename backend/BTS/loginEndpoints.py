@@ -109,15 +109,15 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                 )
 
     @app.route('/logout')
-    @login_required
+    # @login_required
     def logout():
-        session.pop('account_type')
-        logout_user()
-        credentials = request.json
+        # session.pop('account_type')
+        # logout_user()
+        # credentials = request.json
 
-        # TODO：Remove the token from the DB
-        userEmail = current_user.get_id()
-        user = mongo.db.tenant.find_one({"email": credentials["user"]})
+        # # TODO：Remove the token from the DB
+        # userEmail = current_user.get_id()
+        # user = mongo.db.tenant.find_one({"email": credentials["user"]})
 
         return serverResponse(
             None,

@@ -268,7 +268,7 @@ def mongoUpdateGivenFields(mongo, patches, fields, auditChecklists):
 
 def addAuditsEndpoint(app, mongo):
     @app.route("/audits", methods=['POST'])
-    @login_required
+    # @login_required
     def audits():
         if request.method == 'POST':
             auditData = request.json
@@ -324,7 +324,7 @@ def addAuditsEndpoint(app, mongo):
             return serverResponse(None, 200, "Forms have been submitted successfully!")
 
     @app.route("/audits/<auditID>", methods=['GET'])
-    @login_required
+    # @login_required
     def get_audit(auditID):
         if request.method == "GET":
             responseJson = {}
@@ -363,7 +363,7 @@ def addAuditsEndpoint(app, mongo):
 
     
     @app.route("/audits/<auditID>/tenant", methods=['PATCH'])
-    @login_required
+    # @login_required
     def patch_audit_tenant(auditID):
         if request.method == "PATCH":
             patches = request.json
@@ -396,7 +396,7 @@ def addAuditsEndpoint(app, mongo):
             return serverResponse(patchResults, 200, "Changes sent to the database.")
 
     @app.route("/audits/<auditID>/staff", methods=['PATCH'])
-    @login_required
+    # @login_required
     def patch_audit_staff(auditID):
         if request.method == "PATCH":
             patches = request.json

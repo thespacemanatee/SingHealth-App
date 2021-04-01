@@ -6,7 +6,7 @@ from .utils import serverResponse
 
 def addRecentAuditsEndpoints(app, mongo):
     @app.route("/audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>", methods=['GET'])
-    @login_required
+    # @login_required
     def unrectified_audits_tenant(tenantID, daysBefore=0):
         if request.method == 'GET':
             # if session["account_type"] == "tenant":
@@ -32,7 +32,7 @@ def addRecentAuditsEndpoints(app, mongo):
             #     return serverResponse(None, 403, "You do not have access to this as you are not a tenant")
 
     @app.route("/audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>", methods=['GET'])
-    @login_required
+    # @login_required
     def unrectified_audits_staff(institutionID, daysBefore):
         if request.method == 'GET':
             # if session["account_type"] == "staff":

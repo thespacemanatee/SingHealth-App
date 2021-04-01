@@ -12,7 +12,7 @@ def addWenXinEndpoints(app, mongo):
     # Able to retrieve tenant and audit form information and return as json string
 
     @app.route("/tenants/<institutionID>", methods=["GET"])
-    @login_required
+    # @login_required
     def get_tenants_from_institution(institutionID):
         try:
             tenants = mongo.db.tenant.find({"institutionID": institutionID})
@@ -35,7 +35,7 @@ def addWenXinEndpoints(app, mongo):
         return output
 
     @app.route("/auditForms/<form_type>", methods=["GET"])
-    @login_required
+    # @login_required
     def get_audit_form(form_type):
         try:
             form = mongo.db.auditFormTemplate.find_one(
