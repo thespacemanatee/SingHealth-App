@@ -162,7 +162,7 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
         #                 401,
         #                 "Your username does not exist"
         #                 )
-        session.pop('account_type')
+        # session.pop('account_type')
         logout_user()
         return serverResponse(
             None,
@@ -172,13 +172,13 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
 
     @login_manager.user_loader
     def load_user(user_email):
-        if session["account_type"] == "tenant":
-            exists = mongo.db.tenant.find_one({"email": user_email})
-        elif session["account_type"] == "staff":
-            exists = mongo.db.staff.find_one({"email": user_email})
-        if not exists:
-            return None
-        return User(userEmail=exists["email"])
+        # if session["account_type"] == "tenant":
+        #     exists = mongo.db.tenant.find_one({"email": user_email})
+        # elif session["account_type"] == "staff":
+        #     exists = mongo.db.staff.find_one({"email": user_email})
+        # if not exists:
+        #     return None
+        return User(userEmail=user_email)
 
     @app.route('/test_login/staff')
     def test_login_staff():
