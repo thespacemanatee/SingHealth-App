@@ -32,6 +32,7 @@ python-dotenv = "*"
 pylint = "*"
 python-bsonjs = "*"
 gevent = "*"
+exponent-server-sdk = "*"
 
 [dev-packages]
 

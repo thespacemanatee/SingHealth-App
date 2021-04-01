@@ -31,11 +31,15 @@ import CenteredLoading from "../../components/ui/CenteredLoading";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({ route, navigation }) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(false);
   const theme = useTheme();
+
+  const { expoToken } = route.params;
+
+  console.log("EXPO TOKEN:", expoToken);
 
   const dispatch = useDispatch();
 
@@ -54,6 +58,7 @@ const LoginScreen = ({ navigation }) => {
         authActions.signIn(
           values.email,
           values.password,
+          expoToken,
           checked ? "staff" : "tenant"
         )
       );

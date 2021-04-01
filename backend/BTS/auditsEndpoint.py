@@ -1,4 +1,4 @@
-from .utils import serverResponse
+from .utils import serverResponse, send_push_message
 from .constants import MAX_NUM_IMAGES_PER_NC
 from flask import request, make_response, jsonify
 from flask_login import login_required
@@ -322,6 +322,10 @@ def addAuditsEndpoint(app, mongo):
             except DuplicateKeyError:
                 return serverResponse(None, 400, "Form has already been uploaded")
 
+            tenant = mongo.db.tenant.find_one({"_id": auditMetaData["tenantID"]})
+            if tenant:
+                for token in tenant["expoToken"]:
+                    send_push_message(token, "Audit results ready for viewing")
             return serverResponse(None, 200, "Forms have been submitted successfully!")
 
     @app.route("/audits/<auditID>", methods=['GET'])

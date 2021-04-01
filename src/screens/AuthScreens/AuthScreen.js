@@ -14,9 +14,9 @@ import Logo from "../../components/ui/Logo";
 import alert from "../../components/CustomAlert";
 
 const AuthScreen = ({ navigation }) => {
-  const [expoPushToken, setExpoPushToken] = useState("");
+  const [expoToken, setExpoToken] = useState("");
 
-  console.log(expoPushToken);
+  console.log(expoToken);
 
   const registerForPushNotificationsAsync = async () => {
     let token;
@@ -49,18 +49,16 @@ const AuthScreen = ({ navigation }) => {
     return token;
   };
   const handleLogin = () => {
-    navigation.navigate("Login", { expoPushToken });
+    navigation.navigate("Login", { expoToken });
   };
 
   const handleRegister = () => {
-    navigation.navigate("Register", { expoPushToken });
+    navigation.navigate("Register", { expoToken });
   };
 
   useEffect(() => {
     if (Platform.OS !== "web") {
-      registerForPushNotificationsAsync().then((token) =>
-        setExpoPushToken(token)
-      );
+      registerForPushNotificationsAsync().then((token) => setExpoToken(token));
     }
   }, []);
 
