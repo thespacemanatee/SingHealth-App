@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Dimensions, Platform, FlatList } from "react-native";
+import { View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -11,52 +11,63 @@ import {
   Input,
   Text,
   useTheme,
+  Button,
 } from "@ui-kitten/components";
+import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import moment from "moment";
 
-import * as checklistActions from "../../../store/actions/checklistActions";
-import CustomDatepicker from "../../../components/CustomDatePicker";
-import * as authActions from "../../../store/actions/authActions";
-import ImagePage from "../../../components/ui/ImagePage";
-import alert from "../../../components/CustomAlert";
+import * as checklistActions from "../../store/actions/checklistActions";
+import CustomDatepicker from "../../components/CustomDatePicker";
+import * as authActions from "../../store/actions/authActions";
+import ImagePage from "../../components/ui/ImagePage";
+import alert from "../../components/CustomAlert";
+import ImageViewPager from "../../components/ImageViewPager";
+import { SCREEN_HEIGHT } from "../../helpers/config";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const RectificationDetailsScreen = ({ route, navigation }) => {
+  const authStore = useSelector((state) => state.auth);
   const checklistStore = useSelector((state) => state.checklist);
   const { index } = route.params;
+  const { checklistType } = route.params;
   const { question } = route.params;
   const { section } = route.params;
+  const { rectified } = route.params;
   const [value, setValue] = useState("");
   const [imageArray, setImageArray] = useState([]);
   const [deadline, setDeadline] = useState();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const { width, height } = Dimensions.get("window");
-  const IMAGE_HEIGHT = height * 0.5;
-  const IMAGE_WIDTH = (IMAGE_HEIGHT / 4) * 3;
-
   const theme = useTheme();
 
   const dispatch = useDispatch();
 
-  const handleDateChange = (date) => {
-    console.log(date);
-    dispatch(checklistActions.changeDeadline(section, index, date));
+  const handleGoToTenantRectifications = () => {
+    if (authStore.userType === "staff") {
+      navigation.navigate("StaffRectification", {
+        index,
+        checklistType,
+        question,
+        section,
+      });
+    } else {
+      navigation.navigate("TenantRectification", {
+        index,
+        checklistType,
+        question,
+        section,
+        rectified,
+      });
+    }
   };
 
-  const changeTextHandler = (val) => {
-    setValue(val);
-    console.log(val);
-    dispatch(checklistActions.addRemarks(section, index, val));
-  };
-
-  const getImages = async () => {
-    try {
-      setLoading(true);
-
+  // TODO: Cleanup memory leak when user leaves screen before image is loaded
+  useEffect(() => {
+    console.log("USEEFFECT");
+    const source = axios.CancelToken.source();
+    const getImages = async () => {
       if (checklistStore.chosen_checklist.questions[section][index].image) {
         setLoading(true);
         try {
@@ -65,10 +76,11 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
               async (fileName) => {
                 if (!fileName.name) {
                   const res = await dispatch(
-                    checklistActions.getImage(fileName)
+                    checklistActions.getImage(fileName, source)
                   );
                   dispatch(
                     checklistActions.addImage(
+                      checklistType,
                       section,
                       index,
                       fileName,
@@ -81,23 +93,22 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
           );
           setLoading(false);
         } catch (err) {
-          setError(err);
-          setLoading(false);
-          handleErrorResponse(err);
+          if (axios.isCancel(err)) {
+            // do nothing
+          } else {
+            setError(err);
+            setLoading(false);
+            handleErrorResponse(err);
+          }
         }
       }
-      // setImageArray(temp);
-      setLoading(false);
-    } catch (err) {
-      handleErrorResponse(err);
-      setLoading(false);
-    }
-    setLoading(false);
-  };
+    };
 
-  useEffect(() => {
-    console.log("USEEFFECT");
     getImages();
+
+    return () => {
+      source.cancel();
+    };
   }, []);
 
   useEffect(() => {
@@ -124,24 +135,13 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
 
     if (storeImages) {
       const images = storeImages.map((e) => e.uri);
-      console.log("AFTER GET IMAGES:", storeImages);
       setImageArray(images);
     }
     if (storeRemarks) {
       setValue(storeRemarks);
     }
     if (storeDeadline) {
-      setDeadline(storeDeadline);
-    } else {
-      const newDate = moment(
-        new Date(
-          new Date().getFullYear(),
-          new Date().getMonth(),
-          new Date().getDate() + 7
-        )
-      );
-      dispatch(checklistActions.changeDeadline(section, index, newDate));
-      setDeadline(newDate);
+      setDeadline(storeDeadline.$date);
     }
   }, [checklistStore, dispatch, index, section]);
 
@@ -173,11 +173,46 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
           selectedIndex={itemData.index}
           onPress={() => handleExpandImage(itemData.index)}
           rectify
+          loading={loading}
         />
       );
     },
-    [handleExpandImage, index, section]
+    [handleExpandImage, index, loading, section]
   );
+
+  const handleErrorResponse = (err) => {
+    if (err.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      const { data } = err.response;
+      console.error(err.response.data);
+      console.error(err.response.status);
+      console.error(err.response.headers);
+      if (err.response.status === 403) {
+        dispatch(authActions.signOut());
+      } else {
+        switch (Math.floor(err.response.status / 100)) {
+          case 4: {
+            alert("Error", err.response.message);
+            break;
+          }
+          case 5: {
+            alert("Server Error", "Please contact your administrator.");
+            break;
+          }
+          default: {
+            alert("Request timeout", "Check your internet connection.");
+            break;
+          }
+        }
+      }
+    } else if (err.request) {
+      console.error(err.request);
+    } else {
+      console.error("Error", err.message);
+    }
+    console.error(err.config);
+  };
 
   return (
     <View style={styles.screen}>
@@ -195,84 +230,34 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
       >
         <Text style={styles.text}>{question}</Text>
       </View>
+      <Button onPress={handleGoToTenantRectifications}>
+        {authStore.userType === "staff" ? "CHECK STATUS" : "RECTIFY NOW"}
+      </Button>
       <Layout style={styles.layout}>
         <KeyboardAwareScrollView extraHeight={200}>
-          {imageArray.length > 0 ? (
-            <View style={{ width }}>
-              <FlatList
-                horizontal
-                snapToInterval={IMAGE_WIDTH + 20}
-                contentContainerStyle={[
-                  styles.contentContainer,
-                  { paddingRight: width - IMAGE_WIDTH - 20 * 3 },
-                ]}
-                decelerationRate="fast"
-                keyExtractor={(item) => item}
-                data={imageArray}
-                renderItem={renderListItems}
-                showsHorizontalScrollIndicator={Platform.OS === "web"}
-              />
-            </View>
-          ) : (
-            <ImagePage loading />
-          )}
+          <ImageViewPager
+            imageArray={imageArray}
+            renderListItems={renderListItems}
+          />
           <View style={styles.datePickerContainer}>
             <Text category="h6">Deadline: </Text>
-            <CustomDatepicker onSelect={handleDateChange} deadline={deadline} />
+            <CustomDatepicker deadline={deadline} disabled />
           </View>
           <View style={styles.inputContainer}>
             <Text category="h6">Remarks: </Text>
             <Input
-              height={height * 0.1}
+              height={SCREEN_HEIGHT * 0.1}
               multiline
               textStyle={styles.input}
               placeholder="Enter your remarks here"
               value={value}
-              onChangeText={changeTextHandler}
+              disabled
             />
           </View>
         </KeyboardAwareScrollView>
       </Layout>
     </View>
   );
-};
-
-const handleErrorResponse = (err) => {
-  if (err.response) {
-    // The request was made and the server responded with a status code
-    // that falls out of the range of 2xx
-    const { data } = err.response;
-    console.error(err.response.data);
-    console.error(err.response.status);
-    console.error(err.response.headers);
-    if (err.response.status === 403) {
-      authActions.signOut();
-    } else {
-      switch (Math.floor(err.response.status / 100)) {
-        case 4: {
-          alert("Error", "Input error.");
-          break;
-        }
-        case 5: {
-          alert("Server Error", "Please contact your administrator.");
-          break;
-        }
-        default: {
-          alert("Request timeout", "Check your internet connection.");
-          break;
-        }
-      }
-    }
-  } else if (err.request) {
-    // The request was made but no response was received
-    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-    // http.ClientRequest in node.js
-    console.error(err.request);
-  } else {
-    // Something happened in setting up the request that triggered an Error
-    console.error("Error", err.message);
-  }
-  console.error(err.config);
 };
 
 export default RectificationDetailsScreen;

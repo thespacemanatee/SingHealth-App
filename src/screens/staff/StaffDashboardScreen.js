@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View, Platform } from "react-native";
+import { View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -19,7 +19,7 @@ import * as checklistActions from "../../store/actions/checklistActions";
 import ActiveAuditCard from "../../components/ActiveAuditCard";
 import * as authActions from "../../store/actions/authActions";
 import CenteredLoading from "../../components/ui/CenteredLoading";
-import SkeletonLoading from "../../components/ui/SkeletonLoading";
+// import SkeletonLoading from "../../components/ui/SkeletonLoading";
 import alert from "../../components/CustomAlert";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
@@ -30,6 +30,7 @@ const StaffDashboardScreen = ({ navigation }) => {
   const databaseStore = useSelector((state) => state.database);
   const [state, setState] = useState({ open: false });
   const [loading, setLoading] = useState(true);
+  const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
 
@@ -53,30 +54,38 @@ const StaffDashboardScreen = ({ navigation }) => {
   );
 
   const handleRefreshList = () => {
-    setLoading(true);
     getListData();
   };
 
   const handleOpenAudit = useCallback(
     async (auditID, tenantID) => {
       try {
+        // setLoading(true);
+        // console.log(auditID);
+        // console.log(tenantObj);
+        // await dispatch(
+        //   checklistActions.getAuditData(auditID, tenantObj.stallName)
+        // );
         setLoading(true);
-        console.log(auditID);
         const tenantObj = databaseStore.relevantTenants.find((e) => {
           return e.tenantID === tenantID;
         });
-        console.log(tenantObj);
+
+        console.log("AuditID:", auditID);
+
         await dispatch(
           checklistActions.getAuditData(auditID, tenantObj.stallName)
         );
-        navigation.navigate("Rectification", { auditID });
+
+        setLoading(false);
+        navigation.navigate("Rectification");
       } catch (err) {
         handleErrorResponse(err);
         setError(err.message);
         setLoading(false);
       }
     },
-    [databaseStore.relevantTenants, dispatch, navigation]
+    [databaseStore.relevantTenants, dispatch, handleErrorResponse, navigation]
   );
 
   const renderActiveAudits = useCallback(
@@ -96,6 +105,7 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   const getListData = useCallback(async () => {
     try {
+      setListLoading(true);
       const res = await dispatch(
         databaseActions.getStaffActiveAudits(authStore.institutionID)
       );
@@ -104,20 +114,21 @@ const StaffDashboardScreen = ({ navigation }) => {
       );
       console.log(res.data);
       setListData(res.data);
+      setListLoading(false);
       setLoading(false);
     } catch (err) {
       handleErrorResponse(err);
-      setError(err.message);
+      setListLoading(false);
       setLoading(false);
     }
-  }, [authStore.institutionID, dispatch]);
+  }, [authStore.institutionID, dispatch, handleErrorResponse]);
 
   useEffect(() => {
     // Subscribe for the focus Listener
     getListData();
 
     const unsubscribe = navigation.addListener("focus", () => {
-      setLoading(true);
+      setListLoading(true);
       getListData();
     });
 
@@ -128,9 +139,46 @@ const StaffDashboardScreen = ({ navigation }) => {
     };
   }, [getListData, navigation]);
 
-  const LoadingComponent = () => {
-    return Platform.OS === "web" ? <CenteredLoading /> : <SkeletonLoading />;
-  };
+  const handleErrorResponse = useCallback(
+    (err) => {
+      if (err.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        const { data } = err.response;
+        console.error(err.response.data);
+        console.error(err.response.status);
+        console.error(err.response.headers);
+        if (err.response.status === 403) {
+          dispatch(authActions.signOut());
+        } else {
+          switch (Math.floor(err.response.status / 100)) {
+            case 4: {
+              alert("Error", err.response.message);
+              break;
+            }
+            case 5: {
+              alert("Server Error", "Please contact your administrator.");
+              break;
+            }
+            default: {
+              alert("Request timeout", "Check your internet connection.");
+              break;
+            }
+          }
+        }
+      } else if (err.request) {
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+        // http.ClientRequest in node.js
+        console.error(err.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error", err.message);
+      }
+      console.error(err.config);
+    },
+    [dispatch]
+  );
 
   return (
     <View style={styles.screen}>
@@ -147,17 +195,14 @@ const StaffDashboardScreen = ({ navigation }) => {
         <View style={styles.textContainer}>
           <Text style={styles.text}>Rectification Progress</Text>
         </View>
-        {!loading ? (
-          <List
-            contentContainerStyle={styles.contentContainer}
-            data={listData}
-            renderItem={renderActiveAudits}
-            onRefresh={handleRefreshList}
-            refreshing={loading}
-          />
-        ) : (
-          <LoadingComponent />
-        )}
+        <CenteredLoading loading={loading} />
+        <List
+          contentContainerStyle={styles.contentContainer}
+          data={listData}
+          renderItem={renderActiveAudits}
+          onRefresh={handleRefreshList}
+          refreshing={listLoading}
+        />
 
         <FAB.Group
           open={open}
@@ -187,44 +232,6 @@ const StaffDashboardScreen = ({ navigation }) => {
       </Layout>
     </View>
   );
-};
-
-const handleErrorResponse = (err) => {
-  if (err.response) {
-    // The request was made and the server responded with a status code
-    // that falls out of the range of 2xx
-    const { data } = err.response;
-    console.error(err.response.data);
-    console.error(err.response.status);
-    console.error(err.response.headers);
-    if (err.response.status === 403) {
-      authActions.signOut();
-    } else {
-      switch (Math.floor(err.response.status / 100)) {
-        case 4: {
-          alert("Error", err.response.message);
-          break;
-        }
-        case 5: {
-          alert("Server Error", "Please contact your administrator.");
-          break;
-        }
-        default: {
-          alert("Request timeout", "Check your internet connection.");
-          break;
-        }
-      }
-    }
-  } else if (err.request) {
-    // The request was made but no response was received
-    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-    // http.ClientRequest in node.js
-    console.error(err.request);
-  } else {
-    // Something happened in setting up the request that triggered an Error
-    console.error("Error", err.message);
-  }
-  console.error(err.config);
 };
 
 export default StaffDashboardScreen;

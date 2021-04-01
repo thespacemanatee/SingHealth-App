@@ -3,7 +3,6 @@ import { View } from "react-native";
 import { Text, Card, useTheme, StyleService } from "@ui-kitten/components";
 import moment from "moment";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
-import { Easing } from "react-native-reanimated";
 
 const ActiveAuditCard = ({ userType, item, onPress }) => {
   const animation = useRef(null);
@@ -15,16 +14,13 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
   };
 
   useEffect(() => {
-    setProgress(
-      Number.parseFloat(
-        (Number.parseFloat(item.rectificationProgress) * 100).toFixed(1)
-      )
+    const temp = Number.parseFloat(
+      (Number.parseFloat(item.rectificationProgress) * 100).toFixed(1)
     );
+    if (temp > 0) {
+      setProgress(temp);
+    }
   }, [item.rectificationProgress]);
-
-  useEffect(() => {
-    animation.current.animate(progress, 5000, Easing.ease);
-  }, [progress]);
 
   return (
     <Card
@@ -36,7 +32,7 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
       <View style={styles.cardContainer}>
         <View style={{}}>
           <Text style={styles.timeStamp}>
-            {moment(item.date)
+            {moment(item.date.$date)
               .toLocaleString()
               .split(" ")
               .slice(0, 5)
@@ -53,7 +49,7 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
             width={15}
             rotation={0}
             fill={progress}
-            duration={2000}
+            duration={1000}
             tintColor={theme["color-info-500"]}
             backgroundColor={theme["color-danger-600"]}
           >

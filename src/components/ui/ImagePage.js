@@ -1,39 +1,30 @@
-import React, { useCallback } from "react";
-import { useDispatch } from "react-redux";
-import { Text, View, Image, Dimensions, Pressable } from "react-native";
-import { Button, StyleService } from "@ui-kitten/components";
-
-import alert from "../CustomAlert";
-import * as checklistActions from "../../store/actions/checklistActions";
-import CenteredLoading from "./CenteredLoading";
+import React from "react";
+import {
+  Text,
+  View,
+  Image,
+  Dimensions,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
+import { Button, StyleService, useTheme } from "@ui-kitten/components";
 
 const ImagePage = (props) => {
   const { height } = Dimensions.get("window");
   const IMAGE_HEIGHT = height * 0.5;
   const IMAGE_WIDTH = (IMAGE_HEIGHT / 4) * 3;
 
+  const theme = useTheme();
+
   const { imageUri } = props;
-  const { index } = props;
-  const { section } = props;
   const { selectedIndex } = props;
   const { loading } = props;
-  const { rectify } = props;
   const { onPress } = props;
+  const { onDelete } = props;
 
-  const dispatch = useDispatch();
-
-  const handleAlert = useCallback(() => {
-    alert("Delete Image", "Are you sure?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: () => {
-          dispatch(checklistActions.deleteImage(section, index, selectedIndex));
-        },
-      },
-    ]);
-  }, [dispatch, index, section, selectedIndex]);
+  const handleDeleteImage = () => {
+    onDelete(selectedIndex);
+  };
 
   return (
     <Pressable style={styles.screen} onPress={onPress}>
@@ -50,13 +41,13 @@ const ImagePage = (props) => {
                 uri: imageUri,
               }}
             />
-            {!rectify ? (
+            {onDelete ? (
               <Button
                 style={styles.button}
                 appearance="ghost"
                 status="control"
                 size="giant"
-                onPress={handleAlert}
+                onPress={handleDeleteImage}
               >
                 Delete
               </Button>
@@ -73,7 +64,10 @@ const ImagePage = (props) => {
             {!loading ? (
               <Text style={styles.text}>No Images. Start adding some!</Text>
             ) : (
-              <CenteredLoading />
+              <ActivityIndicator
+                size="large"
+                color={theme["color-primary-default"]}
+              />
             )}
           </View>
         )}
@@ -105,6 +99,12 @@ const styles = StyleService.create({
     justifyContent: "center",
     alignContent: "center",
   },
-  button: { position: "absolute", right: 0, bottom: 0 },
-  text: { textAlign: "center" },
+  button: {
+    position: "absolute",
+    right: 0,
+    bottom: 0,
+  },
+  text: {
+    textAlign: "center",
+  },
 });

@@ -40,17 +40,21 @@ export const signIn = (user, pswd, userType) => {
         pswd,
       },
     };
+
     const res = await httpClient(loginOptions);
 
     const userToken = "dummy-auth-token";
-    const { _id, email, institutionID, name } = res.data;
+    const { _id, email, institutionID, name, stall } = res.data;
+
+    const id = _id.$oid || _id;
     const userData = {
       userType,
       userToken,
-      _id,
+      _id: id,
       email,
       institutionID,
       name,
+      stall,
     };
 
     dispatch({ type: SIGN_IN, userData });
@@ -68,14 +72,6 @@ export const signOut = () => {
       // withCredentials: true,
     };
     await httpClient(signOutOptions);
-    // .then((res) => {
-    // console.log(res);
-    // })
-    // .catch((err) => {
-    // handleErrorResponse(err);
-    // });
-
-    // const token = "dummy-auth-token";
 
     dispatch({ type: SIGN_OUT });
     removeTokenFromStorage();

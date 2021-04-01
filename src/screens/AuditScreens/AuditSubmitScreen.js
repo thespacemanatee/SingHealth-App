@@ -13,13 +13,13 @@ import {
 } from "@ui-kitten/components";
 import _ from "lodash";
 import moment from "moment";
-
 import { StackActions } from "@react-navigation/routers";
-import SuccessAnimation from "../../../components/ui/SuccessAnimation";
-import CrossAnimation from "../../../components/ui/CrossAnimation";
-import * as databaseActions from "../../../store/actions/databaseActions";
-import * as authActions from "../../../store/actions/authActions";
-import alert from "../../../components/CustomAlert";
+
+import SuccessAnimation from "../../components/ui/SuccessAnimation";
+import CrossAnimation from "../../components/ui/CrossAnimation";
+import * as databaseActions from "../../store/actions/databaseActions";
+import * as authActions from "../../store/actions/authActions";
+import alert from "../../components/CustomAlert";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -35,7 +35,6 @@ const AuditSubmitScreen = ({ navigation }) => {
     setSubmitting(true);
     const tempChosenChecklist = _.cloneDeep(checklistStore.chosen_checklist);
     const tempCovid19Checklist = _.cloneDeep(checklistStore.covid19);
-    const chosenTenant = checklistStore.chosen_tenant.tenantID;
     const chosenChecklistType = checklistStore.chosen_checklist_type;
     let chosenChecklistImages = [];
     let covid19ChecklistImages = [];
@@ -54,7 +53,10 @@ const AuditSubmitScreen = ({ navigation }) => {
           imageAdded = true;
           element.image.forEach((image) => {
             if (Platform.OS === "web") {
-              base64images.images.push(image);
+              base64images.images.push({
+                fileName: image.name,
+                uri: image.uri,
+              });
             } else {
               formData.append("images", {
                 ...image,
@@ -83,7 +85,10 @@ const AuditSubmitScreen = ({ navigation }) => {
           imageAdded = true;
           element.image.forEach((image) => {
             if (Platform.OS === "web") {
-              base64images.images.push(image);
+              base64images.images.push({
+                fileName: image.name,
+                uri: image.uri,
+              });
             } else {
               formData.append("images", {
                 ...image,
@@ -100,17 +105,8 @@ const AuditSubmitScreen = ({ navigation }) => {
       });
     });
 
-    // console.log(formData);
-
-    // TODO: Move metadata creation to start of audit creation
-
     const auditData = {
-      auditMetadata: {
-        staffID: "CGH_Staff1",
-        tenantID: chosenTenant,
-        institutionID: "CGH",
-        date: moment(new Date()).toISOString(),
-      },
+      auditMetadata: checklistStore.auditMetadata,
       auditForms: {
         [chosenChecklistType]: tempChosenChecklist,
         covid19: tempCovid19Checklist,
@@ -119,9 +115,9 @@ const AuditSubmitScreen = ({ navigation }) => {
 
     uploadAuditData(imageAdded, auditData, base64images, formData);
   }, [
+    checklistStore.auditMetadata,
     checklistStore.chosen_checklist,
     checklistStore.chosen_checklist_type,
-    checklistStore.chosen_tenant.tenantID,
     checklistStore.covid19,
     uploadAuditData,
   ]);
@@ -129,24 +125,26 @@ const AuditSubmitScreen = ({ navigation }) => {
   const uploadAuditData = useCallback(
     async (imageAdded, auditData, base64images, formData) => {
       try {
-        let res;
+        let imageRes;
         if (imageAdded) {
-          // await dispatch(databaseActions.postAuditForm(auditData));
           if (Platform.OS === "web") {
-            res = await Promise.all([
-              dispatch(databaseActions.postAuditForm(auditData)),
-              dispatch(databaseActions.postAuditImagesWeb(base64images)),
-            ]);
+            imageRes = dispatch(
+              databaseActions.postAuditImagesWeb(base64images)
+            );
           } else {
-            res = await Promise.all([
-              dispatch(databaseActions.postAuditForm(auditData)),
-              dispatch(databaseActions.postAuditImages(formData)),
-            ]);
+            imageRes = await dispatch(
+              databaseActions.postAuditImages(formData)
+            );
           }
-        } else {
-          res = await dispatch(databaseActions.postAuditForm(auditData));
         }
-        console.log(res);
+
+        console.log(imageRes);
+
+        const formRes = await dispatch(
+          databaseActions.postAuditForm(auditData)
+        );
+
+        console.log(formRes);
         setSubmitting(false);
       } catch (err) {
         setError(true);
@@ -154,7 +152,7 @@ const AuditSubmitScreen = ({ navigation }) => {
         setSubmitting(false);
       }
     },
-    [dispatch, handleGoBack]
+    [dispatch, handleErrorResponse, handleGoBack]
   );
 
   useEffect(() => {
@@ -178,6 +176,55 @@ const AuditSubmitScreen = ({ navigation }) => {
       <TopNavigationAction icon={BackIcon} onPress={handleGoBack} />
     ) : null;
   };
+
+  const handleErrorResponse = useCallback(
+    (err) => {
+      if (err.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        const { data } = err.response;
+        console.error(err.response.data);
+        console.error(err.response.status);
+        console.error(err.response.headers);
+        if (err.response.status === 403) {
+          dispatch(authActions.signOut());
+        } else {
+          switch (Math.floor(err.response.status / 100)) {
+            case 4: {
+              alert(
+                "Error",
+                `${data.description} in question ${data.index + 1}, under the ${
+                  data.category
+                } section.`,
+                [
+                  { text: "Cancel", style: "cancel" },
+                  {
+                    text: "Go back",
+                    onPress: handleGoBack,
+                  },
+                ]
+              );
+              break;
+            }
+            case 5: {
+              alert("Server Error", "Please contact your administrator.");
+              break;
+            }
+            default: {
+              alert("Request timeout", "Check your internet connection.");
+              break;
+            }
+          }
+        }
+      } else if (err.request) {
+        console.error(err.request);
+      } else {
+        console.error("Error", err.message);
+      }
+      console.error(err.config);
+    },
+    [dispatch, handleGoBack]
+  );
 
   return (
     <View style={styles.screen}>
@@ -220,56 +267,6 @@ const AuditSubmitScreen = ({ navigation }) => {
       </Layout>
     </View>
   );
-};
-
-const handleErrorResponse = (err, handleGoBack) => {
-  if (err.response) {
-    // The request was made and the server responded with a status code
-    // that falls out of the range of 2xx
-    const { data } = err.response;
-    console.error(err.response.data);
-    console.error(err.response.status);
-    console.error(err.response.headers);
-    if (err.response.status === 403) {
-      authActions.signOut();
-    } else {
-      switch (Math.floor(err.response.status / 100)) {
-        case 4: {
-          alert(
-            "Error",
-            `${data.description} in question ${data.index + 1}, under the ${
-              data.category
-            } section.`,
-            [
-              { text: "Cancel", style: "cancel" },
-              {
-                text: "Go back",
-                onPress: handleGoBack,
-              },
-            ]
-          );
-          break;
-        }
-        case 5: {
-          alert("Server Error", "Please contact your administrator.");
-          break;
-        }
-        default: {
-          alert("Request timeout", "Check your internet connection.");
-          break;
-        }
-      }
-    }
-  } else if (err.request) {
-    // The request was made but no response was received
-    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-    // http.ClientRequest in node.js
-    console.error(err.request);
-  } else {
-    // Something happened in setting up the request that triggered an Error
-    console.error("Error", err.message);
-  }
-  console.error(err.config);
 };
 
 const styles = StyleService.create({

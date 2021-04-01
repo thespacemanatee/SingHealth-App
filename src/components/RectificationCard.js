@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Dimensions, Platform, View } from "react-native";
+import CustomCard from "./ui/CustomCard";
 
-import { Text, Card, StyleService, CheckBox } from "@ui-kitten/components";
-
-const QuestionCard = (props) => {
+const RectificationCard = (props) => {
   const [checked, setChecked] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const { index } = props;
+  const { checklistType } = props;
   const { question } = props;
   const { answer } = props;
+  const { rectified } = props;
   const { section } = props;
-  const { navigation } = props;
-
-  const SCREEN_WIDTH = Dimensions.get("window").width;
+  const { onPress } = props;
 
   useEffect(() => {
     if (answer === null) {
@@ -24,54 +22,34 @@ const QuestionCard = (props) => {
     }
   }, [answer]);
 
-  const Header = (headerProps) => (
-    <View {...headerProps}>
-      <Text>{index + 1}</Text>
-    </View>
-  );
-
   const onClickDetailHandler = () => {
-    navigation.navigate("RectificationDetails", {
+    onPress(checked, deleted, {
       index,
+      checklistType,
       question,
       section,
+      rectified,
     });
   };
 
   return (
-    <Card onPress={onClickDetailHandler} header={Header}>
-      <View style={styles.questionContainer}>
-        <CheckBox checked={checked} disabled />
-        <View style={styles.questionTextContainer}>
-          <Text
-            // eslint-disable-next-line react-native/no-inline-styles
-            style={{
-              width: Platform.OS === "web" ? SCREEN_WIDTH - 100 : null,
-              textDecorationLine: deleted ? "line-through" : null,
-            }}
-          >
-            {question}
-          </Text>
-        </View>
-      </View>
-    </Card>
+    <CustomCard
+      index={index}
+      onClick={onClickDetailHandler}
+      checked={checked}
+      deleted={deleted}
+      checkboxDisabled
+      question={question}
+      rectified={rectified}
+    />
   );
 };
 
-const areEqual = (prevProps, nextProps) => {
-  /* if the props are equal, it won't update */
-  const isSelectedEqual = nextProps.question === prevProps.question;
+// const areEqual = (prevProps, nextProps) => {
+//   /* if the props are equal, it won't update */
+//   const isSelectedEqual = nextProps.question === prevProps.question;
 
-  return isSelectedEqual;
-};
+//   return isSelectedEqual;
+// };
 
-export default React.memo(QuestionCard, areEqual);
-
-const styles = StyleService.create({
-  questionContainer: {
-    flexDirection: "row",
-  },
-  questionTextContainer: {
-    paddingLeft: 10,
-  },
-});
+export default React.memo(RectificationCard);

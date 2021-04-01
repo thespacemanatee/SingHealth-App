@@ -30,6 +30,8 @@ pytz = "*"
 gunicorn = "*"
 python-dotenv = "*"
 pylint = "*"
+python-bsonjs = "*"
+gevent = "*"
 
 [dev-packages]
 

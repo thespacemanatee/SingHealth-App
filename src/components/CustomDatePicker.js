@@ -6,7 +6,7 @@ import { MomentDateService } from "@ui-kitten/moment";
 
 const dateService = new MomentDateService();
 
-const CustomDatepicker = ({ deadline, onSelect }) => {
+const CustomDatepicker = ({ deadline, onSelect, disabled }) => {
   const [date, setDate] = useState(
     moment(
       new Date(
@@ -34,6 +34,7 @@ const CustomDatepicker = ({ deadline, onSelect }) => {
       }}
       min={moment(now)}
       max={moment(max)}
+      disabled={disabled}
     />
   );
 };

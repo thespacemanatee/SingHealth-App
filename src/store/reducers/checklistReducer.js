@@ -3,6 +3,7 @@ import _ from "lodash";
 import {
   ADD_AUDIT_TENANT_SELECTION,
   ADD_CHOSEN_CHECKLIST,
+  CREATE_AUDIT_METADATA,
   ADD_SAVED_CHECKLIST,
   ADD_IMAGE,
   DELETE_IMAGE,
@@ -23,10 +24,6 @@ const initialState = {
 };
 
 const checklistReducer = (state = initialState, action) => {
-  let covidKeys;
-  if (state.covid19) {
-    covidKeys = Object.keys(state.covid19.questions);
-  }
   switch (action.type) {
     case ADD_AUDIT_TENANT_SELECTION:
       return {
@@ -48,6 +45,13 @@ const checklistReducer = (state = initialState, action) => {
       };
     }
 
+    case CREATE_AUDIT_METADATA: {
+      return {
+        ...state,
+        auditMetadata: action.auditMetadata,
+      };
+    }
+
     case ADD_SAVED_CHECKLIST: {
       return {
         ...action.data,
@@ -56,30 +60,39 @@ const checklistReducer = (state = initialState, action) => {
 
     case ADD_IMAGE: {
       let newChecklist;
-      if (covidKeys.includes(action.section)) {
+      if (action.checklistType === "covid19") {
         newChecklist = _.cloneDeep(state.covid19);
       } else {
         newChecklist = _.cloneDeep(state.chosen_checklist);
       }
-      if (newChecklist.questions[action.section][action.index].image == null) {
-        newChecklist.questions[action.section][action.index].image = [];
+      let image = "image";
+
+      if (action.rectify) {
+        image = "rectificationImages";
       }
 
-      const imageObject = {
-        name: action.fileName,
-        uri: action.imageUri,
-      };
-      const temp = newChecklist.questions[action.section][action.index].image;
+      if (newChecklist.questions[action.section][action.index][image] == null) {
+        newChecklist.questions[action.section][action.index][image] = [];
+      }
 
-      temp.push(imageObject);
+      const temp = newChecklist.questions[action.section][action.index][image];
 
-      newChecklist.questions[action.section][action.index].image = temp.filter(
+      if (!temp.some((e) => e.name === action.fileName)) {
+        const imageObject = {
+          name: action.fileName,
+          uri: action.imageUri,
+        };
+
+        temp.push(imageObject);
+      }
+
+      newChecklist.questions[action.section][action.index][image] = temp.filter(
         (e) => e !== action.fileName
       );
 
       // console.log(newChecklist.questions);
 
-      if (covidKeys.includes(action.section)) {
+      if (action.checklistType === "covid19") {
         return {
           ...state,
           covid19: newChecklist,
@@ -92,18 +105,25 @@ const checklistReducer = (state = initialState, action) => {
     }
     case DELETE_IMAGE: {
       let newChecklist;
-      if (covidKeys.includes(action.section)) {
+      if (action.checklistType === "covid19") {
         newChecklist = _.cloneDeep(state.covid19);
       } else {
         newChecklist = _.cloneDeep(state.chosen_checklist);
       }
-      newChecklist.questions[action.section][action.index].image.splice(
+
+      let image = "image";
+
+      if (action.rectify) {
+        image = "rectificationImages";
+      }
+
+      newChecklist.questions[action.section][action.index][image].splice(
         action.selectedIndex,
         1
       );
 
       // console.log(newChecklist.questions[action.index].image.uri);
-      if (covidKeys.includes(action.section)) {
+      if (action.checklistType === "covid19") {
         return {
           ...state,
           covid19: newChecklist,
@@ -117,25 +137,27 @@ const checklistReducer = (state = initialState, action) => {
     }
     case ADD_REMARKS: {
       let newChecklist;
-      if (covidKeys.includes(action.section)) {
+      if (action.checklistType === "covid19") {
         newChecklist = _.cloneDeep(state.covid19);
       } else {
         newChecklist = _.cloneDeep(state.chosen_checklist);
       }
-      if (
-        newChecklist.questions[action.section][action.index].remarks == null
-      ) {
-        newChecklist.questions[action.section][action.index].remarks = "";
+
+      let remarks = "remarks";
+
+      if (action.rectify) {
+        remarks = "rectificationRemarks";
       }
-      newChecklist.questions[action.section][action.index].remarks =
-        action.remarks;
 
       if (
-        Object.prototype.hasOwnProperty.call(
-          state.covid19.questions,
-          action.section
-        )
+        newChecklist.questions[action.section][action.index][remarks] == null
       ) {
+        newChecklist.questions[action.section][action.index][remarks] = "";
+      }
+      newChecklist.questions[action.section][action.index][remarks] =
+        action.remarks;
+
+      if (action.checklistType === "covid19") {
         return {
           ...state,
           covid19: newChecklist,
@@ -149,7 +171,7 @@ const checklistReducer = (state = initialState, action) => {
     }
     case CHANGE_ANSWER: {
       let newChecklist;
-      if (covidKeys.includes(action.section)) {
+      if (action.checklistType === "covid19") {
         newChecklist = _.cloneDeep(state.covid19);
       } else {
         newChecklist = _.cloneDeep(state.chosen_checklist);
@@ -162,9 +184,7 @@ const checklistReducer = (state = initialState, action) => {
         newChecklist.questions[action.section][action.index].answer = false;
       }
 
-      console.log(newChecklist);
-
-      if (covidKeys.includes(action.section)) {
+      if (action.checklistType === "covid19") {
         return {
           ...state,
           covid19: newChecklist,
@@ -178,7 +198,7 @@ const checklistReducer = (state = initialState, action) => {
     }
     case CHANGE_DEADLINE: {
       let newChecklist;
-      if (covidKeys.includes(action.section)) {
+      if (action.checklistType === "covid19") {
         newChecklist = _.cloneDeep(state.covid19);
       } else {
         newChecklist = _.cloneDeep(state.chosen_checklist);
@@ -187,9 +207,7 @@ const checklistReducer = (state = initialState, action) => {
       newChecklist.questions[action.section][action.index].deadline =
         action.date;
 
-      console.log(newChecklist);
-
-      if (covidKeys.includes(action.section)) {
+      if (action.checklistType === "covid19") {
         return {
           ...state,
           covid19: newChecklist,
@@ -219,44 +237,6 @@ const checklistReducer = (state = initialState, action) => {
         auditMetadata: action.auditMetadata,
       };
     }
-
-    // case GET_IMAGE: {
-    //   let newChecklist;
-    //   if (covidKeys.includes(action.section)) {
-    //     newChecklist = _.cloneDeep(state.covid19);
-    //   } else {
-    //     newChecklist = _.cloneDeep(state.chosen_checklist);
-    //   }
-    //   if (newChecklist.questions[action.section][action.index].image == null) {
-    //     newChecklist.questions[action.section][action.index].image = [];
-    //   }
-
-    //   const imageObject = {
-    //     name: action.fileName,
-    //     uri: action.imageUri,
-    //   };
-
-    //   const temp = newChecklist.questions[action.section][action.index].image;
-
-    //   temp.push(imageObject);
-
-    //   newChecklist.questions[action.section][action.index].image = temp.filter(
-    //     (e) => e !== action.fileName
-    //   );
-
-    //   // console.log(newChecklist.questions);
-
-    //   if (covidKeys.includes(action.section)) {
-    //     return {
-    //       ...state,
-    //       covid19: newChecklist,
-    //     };
-    //   }
-    //   return {
-    //     ...state,
-    //     chosen_checklist: newChecklist,
-    //   };
-    // }
 
     default:
       return state;

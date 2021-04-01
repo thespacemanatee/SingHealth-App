@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { SectionList, View, Platform } from "react-native";
+import { SectionList, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -13,14 +13,14 @@ import {
 } from "@ui-kitten/components";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import * as checklistActions from "../../../store/actions/checklistActions";
-import * as databaseActions from "../../../store/actions/databaseActions";
-import SavedChecklistCard from "../../../components/SavedChecklistCard";
-import NewChecklistCard from "../../../components/NewChecklistCard";
-import alert from "../../../components/CustomAlert";
-import * as authActions from "../../../store/actions/authActions";
-import SkeletonLoading from "../../../components/ui/SkeletonLoading";
-import CenteredLoading from "../../../components/ui/CenteredLoading";
+import * as checklistActions from "../../store/actions/checklistActions";
+import * as databaseActions from "../../store/actions/databaseActions";
+import SavedChecklistCard from "../../components/SavedChecklistCard";
+import NewChecklistCard from "../../components/NewChecklistCard";
+import alert from "../../components/CustomAlert";
+import * as authActions from "../../store/actions/authActions";
+// import SkeletonLoading from "../../../components/ui/SkeletonLoading";
+import CenteredLoading from "../../components/ui/CenteredLoading";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -78,10 +78,18 @@ const ChooseTenantScreen = ({ navigation }) => {
           navigation={navigation}
           onError={handleErrorResponse}
           onLoading={setLoading}
+          staffID={authStore._id}
+          institutionID={authStore.institutionID}
         />
       );
     },
-    [handleDeleteSavedChecklist, navigation]
+    [
+      authStore._id,
+      authStore.institutionID,
+      handleDeleteSavedChecklist,
+      handleErrorResponse,
+      navigation,
+    ]
   );
 
   const getSectionData = useCallback(async () => {
@@ -115,13 +123,13 @@ const ChooseTenantScreen = ({ navigation }) => {
       handleErrorResponse(err);
       setLoading(false);
     }
-  }, [authStore.institutionID, dispatch]);
+  }, [authStore.institutionID, dispatch, handleErrorResponse]);
 
   useEffect(() => {
     // Subscribe for the focus Listener
     getSectionData();
     const unsubscribe = navigation.addListener("focus", () => {
-      setLoading(true);
+      // setLoading(true);
       getSectionData();
       setTimeout(() => {
         dispatch(checklistActions.resetChecklistStore());
@@ -135,9 +143,42 @@ const ChooseTenantScreen = ({ navigation }) => {
     };
   }, [dispatch, getSectionData, navigation]);
 
-  const LoadingComponent = () => {
-    return Platform.OS === "web" ? <CenteredLoading /> : <SkeletonLoading />;
-  };
+  const handleErrorResponse = useCallback(
+    (err) => {
+      if (err.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        const { data } = err.response;
+        console.error(err.response.data);
+        console.error(err.response.status);
+        console.error(err.response.headers);
+        if (err.response.status === 403) {
+          dispatch(authActions.signOut());
+        } else {
+          switch (Math.floor(err.response.status / 100)) {
+            case 4: {
+              alert("Error", "No tenants found.");
+              break;
+            }
+            case 5: {
+              alert("Server Error", "Please contact your administrator.");
+              break;
+            }
+            default: {
+              alert("Request timeout", "Check your internet connection.");
+              break;
+            }
+          }
+        }
+      } else if (err.request) {
+        console.error(err.request);
+      } else {
+        console.error("Error", err.message);
+      }
+      console.error(err.config);
+    },
+    [dispatch]
+  );
 
   return (
     <View style={styles.screen}>
@@ -151,59 +192,18 @@ const ChooseTenantScreen = ({ navigation }) => {
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Choose a Tenant to Audit</Text>
         </View>
-        {!loading ? (
-          <SectionList
-            sections={sectionData}
-            keyExtractor={(item, index) => item + index}
-            renderItem={renderSectionList}
-            // contentContainerStyle={styles.contentContainer}
-            renderSectionHeader={renderSectionHeader}
-            SectionSeparatorComponent={() => <Divider />}
-          />
-        ) : (
-          <LoadingComponent />
-        )}
+        <CenteredLoading loading={loading} />
+        <SectionList
+          sections={sectionData}
+          keyExtractor={(item, index) => item + index}
+          renderItem={renderSectionList}
+          // contentContainerStyle={styles.contentContainer}
+          renderSectionHeader={renderSectionHeader}
+          SectionSeparatorComponent={() => <Divider />}
+        />
       </Layout>
     </View>
   );
-};
-
-const handleErrorResponse = (err) => {
-  if (err.response) {
-    // The request was made and the server responded with a status code
-    // that falls out of the range of 2xx
-    const { data } = err.response;
-    console.error(err.response.data);
-    console.error(err.response.status);
-    console.error(err.response.headers);
-    if (err.response.status === 403) {
-      authActions.signOut();
-    } else {
-      switch (Math.floor(err.response.status / 100)) {
-        case 4: {
-          alert("Error", "Input error.");
-          break;
-        }
-        case 5: {
-          alert("Server Error", "Please contact your administrator.");
-          break;
-        }
-        default: {
-          alert("Request timeout", "Check your internet connection.");
-          break;
-        }
-      }
-    }
-  } else if (err.request) {
-    // The request was made but no response was received
-    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-    // http.ClientRequest in node.js
-    console.error(err.request);
-  } else {
-    // Something happened in setting up the request that triggered an Error
-    console.error("Error", err.message);
-  }
-  console.error(err.config);
 };
 
 const styles = StyleService.create({

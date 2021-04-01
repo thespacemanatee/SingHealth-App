@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Alert, Platform, Dimensions, FlatList } from "react-native";
+import { View, Alert, Platform } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -18,10 +18,12 @@ import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import moment from "moment";
 
-import alert from "../../../components/CustomAlert";
-import * as checklistActions from "../../../store/actions/checklistActions";
-import CustomDatepicker from "../../../components/CustomDatePicker";
-import ImagePage from "../../../components/ui/ImagePage";
+import alert from "../../components/CustomAlert";
+import * as checklistActions from "../../store/actions/checklistActions";
+import CustomDatepicker from "../../components/CustomDatePicker";
+import ImagePage from "../../components/ui/ImagePage";
+import ImageViewPager from "../../components/ImageViewPager";
+import { SCREEN_HEIGHT } from "../../helpers/config";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
@@ -30,15 +32,12 @@ const ImageIcon = (props) => <Icon {...props} name="image-outline" />;
 const QuestionDetailsScreen = ({ route, navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
   const { index } = route.params;
+  const { checklistType } = route.params;
   const { question } = route.params;
   const { section } = route.params;
   const [value, setValue] = useState("");
   const [imageArray, setImageArray] = useState([]);
   const [deadline, setDeadline] = useState();
-
-  const { width, height } = Dimensions.get("window");
-  const IMAGE_HEIGHT = height * 0.5;
-  const IMAGE_WIDTH = (IMAGE_HEIGHT / 4) * 3;
 
   const theme = useTheme();
 
@@ -46,13 +45,15 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
 
   const handleDateChange = (date) => {
     console.log(date);
-    dispatch(checklistActions.changeDeadline(section, index, date));
+    dispatch(
+      checklistActions.changeDeadline(checklistType, section, index, date)
+    );
   };
 
   const changeTextHandler = (val) => {
     setValue(val);
     console.log(val);
-    dispatch(checklistActions.addRemarks(section, index, val));
+    dispatch(checklistActions.addRemarks(checklistType, section, index, val));
   };
 
   useEffect(() => {
@@ -85,10 +86,11 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
       setValue(storeRemarks);
     }
     if (storeDeadline) {
-      setDeadline(storeDeadline);
+      setDeadline(storeDeadline.$date);
     } else {
       dispatch(
         checklistActions.changeDeadline(
+          checklistType,
           section,
           index,
           moment(
@@ -101,7 +103,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
         )
       );
     }
-  }, [checklistStore, dispatch, index, section]);
+  }, [checklistStore, checklistType, dispatch, index, section]);
 
   const onSave = async (imageData) => {
     if (imageArray.length > 2) {
@@ -123,7 +125,13 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
         });
       }
       dispatch(
-        checklistActions.addImage(section, index, fileName, destination)
+        checklistActions.addImage(
+          checklistType,
+          section,
+          index,
+          fileName,
+          destination
+        )
       );
     }
   };
@@ -139,10 +147,10 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
 
   const imagePickerHandler = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [3, 4],
-      quality: 1,
+      quality: 0.5,
     });
 
     if (!result.cancelled) {
@@ -204,6 +212,29 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     [imageArray, navigation]
   );
 
+  const handleDeleteImage = useCallback(
+    (selectedIndex) => {
+      alert("Delete Image", "Are you sure?", [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            dispatch(
+              checklistActions.deleteImage(
+                checklistType,
+                section,
+                index,
+                selectedIndex
+              )
+            );
+          },
+        },
+      ]);
+    },
+    [checklistType, dispatch, index, section]
+  );
+
   const renderListItems = useCallback(
     (itemData) => {
       return (
@@ -213,10 +244,11 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           section={section}
           selectedIndex={itemData.index}
           onPress={() => handleExpandImage(itemData.index)}
+          onDelete={handleDeleteImage}
         />
       );
     },
-    [handleExpandImage, index, section]
+    [handleDeleteImage, handleExpandImage, index, section]
   );
 
   return (
@@ -238,25 +270,10 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
       </View>
       <Layout style={styles.layout}>
         <KeyboardAwareScrollView extraHeight={200}>
-          {imageArray.length > 0 ? (
-            <View style={{ width }}>
-              <FlatList
-                horizontal
-                snapToInterval={IMAGE_WIDTH + 20}
-                contentContainerStyle={[
-                  styles.contentContainer,
-                  { paddingRight: width - IMAGE_WIDTH - 20 * 3 },
-                ]}
-                decelerationRate="fast"
-                keyExtractor={(item) => item}
-                data={imageArray}
-                renderItem={renderListItems}
-                showsHorizontalScrollIndicator={Platform.OS === "web"}
-              />
-            </View>
-          ) : (
-            <ImagePage />
-          )}
+          <ImageViewPager
+            imageArray={imageArray}
+            renderListItems={renderListItems}
+          />
           <View style={styles.datePickerContainer}>
             <Text category="h6">Deadline: </Text>
             <CustomDatepicker onSelect={handleDateChange} deadline={deadline} />
@@ -264,7 +281,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           <View style={styles.inputContainer}>
             <Text category="h6">Remarks: </Text>
             <Input
-              height={height * 0.1}
+              height={SCREEN_HEIGHT * 0.1}
               multiline
               textStyle={styles.input}
               placeholder="Enter your remarks here"

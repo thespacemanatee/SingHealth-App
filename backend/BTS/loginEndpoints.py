@@ -115,6 +115,9 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
         logout_user()
 
         #TODO：Remove the token from the DB
+        userEmail = current_user.get_id()
+        user = mongo.db.tenant.find_one({"email": credentials["user"]})
+
         return serverResponse(
             None,
             200,
@@ -124,12 +127,12 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
     @login_manager.user_loader
     def load_user(user_email):
         if session["account_type"] == "tenant":
-            exists = mongo.db.tenant.find_one({"email": user_email.upper()})
+            exists = mongo.db.tenant.find_one({"email": user_email})
         elif session["account_type"] == "staff":
-            exists = mongo.db.staff.find_one({"email": user_email.upper()})
+            exists = mongo.db.staff.find_one({"email": user_email})
         if not exists:
             return None
-        return User(userEmail=exists["email"].upper())
+        return User(userEmail=exists["email"])
 
     @app.route('/test_login/staff')
     def test_login_staff():
