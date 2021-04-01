@@ -15,6 +15,9 @@
 - [ ] [`GET /audits/saved`](#`GET-/audits/saved`)
 - [x] [`GET /audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`)
 - [x] [`GET /audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`)
+- [x] [`POST /tenant`](#POST-/tenant`)
+- [x] [`DELETE /tenant/<tenantID>`](#POST-/tenant\{tenantID}`)
+- [x] [`GET /tenant/<tenantID>`](#GET-/tenant\{tenantID}`)
 ---
 
 
@@ -812,5 +815,203 @@ localhost:5000/audits/unrectified/recent/tenant/grwrbgbgbewvw/0
     "status": 404,
     "description": "No matching Forms",
     "data": []
+}
+```
+
+## `POST /tenant`
+### Description of use case
+The staff to add new tenant.
+### Compulsory JSON Query string parameters
+JSON param | Description
+-|-
+`name` | Tenant's full name in upper case.
+`email` | The user email of a tenant.
+`pswd` | The password credentials for a tenant.
+`institutionID` | The institution where a tenant operates under.
+`stall_name` | Name of the stall.
+`company_name` | Name of the company the stall is representing.
+`company_POC_name` | Name of the company POC.
+`company_POC_email` | Email of the company POC.
+`unit_no` | The unit number. I.e. 02-212 (without hashes).
+`fnb` | Whether the stall is an F&B stall.
+`staffID` | ID of staff who created this account.
+`tenantDateStart` | Date when tenantship started, without including exact date. I.e. MM/YYYY
+`tenantDateEnd` | The unique identifier for the tenant account. I.e. MM/YYYY
+
+### Optional JSON Query string parameters
+JSON param | Description
+-|-
+`blk` | blk number. I.e. 243A.
+`street` | Street name.
+`bldg` | Name of the building.
+`zipcode` | The zipcode of the stall. I.e. 123456 (only numbers).
+
+
+### Sample request
+#### With only compulsory data
+```js
+{
+    "name": "myname",
+    "email": "myemail.gg.com",
+    "pswd": "mypassword",
+    "institutionID": "myinstitution",
+    "stall_name": "mystall",
+    "company_name": "mycompany",
+    "company_POC_name": "my_poc_name",
+    "company_POC_email": "my_poc_email",
+    "unit_no": "01-001",
+    "fnb": true,
+    "staffID": "000111",
+    "stall_number": "stall 7",
+  	"tenantDateStart": "03/2021",
+  	"tenantDateEnd": "05/2025"
+}
+```
+#### With complete data
+```js
+{
+    "name": "myname",
+    "email": "myemail.gg.com",
+    "pswd": "mypassword",
+    "institutionID": "myinstitution",
+    "stall_name": "mystall",
+    "company_name": "mycompany",
+    "company_POC_name": "my_poc_name",
+    "company_POC_email": "my_poc_email",
+    "blk" : "myblk",
+    "street": "mystreet",
+    "bldg": "bldg",
+    "unit_no": "01-001",
+    "zipcode": 123456,
+    "fnb": true,
+    "staffID": "000111",
+    "stall_number": "stall 7",
+  	"tenantDateStart": "03/2021",
+  	"tenantDateEnd": "05/2025"
+}
+```
+### Sample response
+#### Success
+```js
+{
+    "status": 201,
+    "description": "Tenant Added"
+    ]
+}
+```
+
+#### Partial Success
+##### Missing keys, null or empty value received for compulsory data fields
+```js
+{
+    "status": 200,
+    "description": "Insufficient/Error in data to add new tenant",
+    "data": [{
+      "missing_keys": ["key1", "key2", ...]
+      "key_value_error": ["key3", "key4", ...]
+    }]
+    
+}
+```
+
+#### Failure
+##### No response received
+```js
+{
+    "status": 404,
+    "description": "No response received"
+}
+```
+
+##### Unable to upload data
+```js
+{
+    "status": 404,
+    "description": "Cannot upload data to server"
+}
+```
+
+## `DELETE /tenant/<tenantID>`
+### Description of use case
+The staff to delete existing tenant.
+### URL Query Parameters
+URL Param | Description
+-|-
+`tenantID` | The unique identifier for tenant
+
+### Sample request
+```
+localhost:5000/tenant/0ta2b2kjq
+```
+
+### Sample responses
+#### Success
+```js
+{
+  "status": 200,
+  "description": "Tenant with ID 0ta2b2kjq deleted"
+}
+```
+
+#### Failure
+##### TenantID not found
+```js
+{
+  "status": 404,
+  "description": "No matching tenant ID found"
+}
+```
+
+##### Server Error
+```js
+{
+  "status": 404,
+  "description": "Error connecting to server"
+}
+```
+
+## `GET /tenant/<tenantID>`
+### Description of use case
+The staff to view existing tenant.
+### URL Query Parameters
+URL Param | Description
+-|-
+`tenantID` | The unique identifier for tenant
+
+### Sample request
+```
+localhost:5000/tenant/0ta2b2kjq
+```
+
+### Sample responses
+#### Success
+```js
+{
+  "status": 200,
+  "description": "Success",
+  "data": [{
+    "name": "myname",
+    "email": "myemail@gg.com",
+    ...
+  }]
+
+  ]
+}
+```
+
+#### Failure
+##### TenantID not found
+```js
+{
+  "status": 404,
+  "description": "No matching tenant ID found"
+}
+```
+
+##### Server Error
+```js
+{
+  "status": 404,
+  "description": "Error connecting to server"
 }
 ```
