@@ -27,7 +27,6 @@ const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 
 const StaffDashboardScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
-  const databaseStore = useSelector((state) => state.database);
   const [state, setState] = useState({ open: false });
   const [loading, setLoading] = useState(true);
   const [listLoading, setListLoading] = useState(true);
@@ -58,24 +57,13 @@ const StaffDashboardScreen = ({ navigation }) => {
   };
 
   const handleOpenAudit = useCallback(
-    async (auditID, tenantID) => {
+    async (auditID) => {
       try {
-        // setLoading(true);
-        // console.log(auditID);
-        // console.log(tenantObj);
-        // await dispatch(
-        //   checklistActions.getAuditData(auditID, tenantObj.stallName)
-        // );
         setLoading(true);
-        const tenantObj = databaseStore.relevantTenants.find((e) => {
-          return e.tenantID === tenantID;
-        });
 
         console.log("AuditID:", auditID);
 
-        await dispatch(
-          checklistActions.getAuditData(auditID, tenantObj.stallName)
-        );
+        await dispatch(checklistActions.getAuditData(auditID));
 
         setLoading(false);
         navigation.navigate("Rectification");
@@ -85,7 +73,7 @@ const StaffDashboardScreen = ({ navigation }) => {
         setLoading(false);
       }
     },
-    [databaseStore.relevantTenants, dispatch, handleErrorResponse, navigation]
+    [dispatch, handleErrorResponse, navigation]
   );
 
   const renderActiveAudits = useCallback(
