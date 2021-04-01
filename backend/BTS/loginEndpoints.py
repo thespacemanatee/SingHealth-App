@@ -68,27 +68,16 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
         if request.method == "POST":
             credentials = request.json
             expoToken = credentials.get("expoToken", None)
-<<<<<<< HEAD
             user = mongo.db.tenant.find_one({"email": credentials["user"]})
-=======
-            user = mongo.db.tenant.find_one(
-                {"email": credentials["user"].upper()})
->>>>>>> fd8f9315d156e06bad0b1d425e0ebc99a3506904
             if user:
                 # check_password_hash(user["pswd"], credentials["pswd"]):
                 if user["pswd"] == credentials["pswd"]:
                     user_obj = User(userEmail=user['email'])
                     login_user(user_obj, remember=True)
                     session['account_type'] = "tenant"
-<<<<<<< HEAD
                     
                     
                     #TODO: Append the token to the DB
-=======
-                    currentTokens = user["expoToken"]
-
-                    # TODO: Append the token to the DB
->>>>>>> fd8f9315d156e06bad0b1d425e0ebc99a3506904
                     if expoToken is not None:
                         currentTokens = user["expoToken"]
                         mongo.db.tenant.update_one(
@@ -177,15 +166,6 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
         #                 )
         session.pop('account_type')
         logout_user()
-<<<<<<< HEAD
-=======
-        credentials = request.json
-
-        # TODO：Remove the token from the DB
-        userEmail = current_user.get_id()
-        user = mongo.db.tenant.find_one({"email": credentials["user"]})
-
->>>>>>> fd8f9315d156e06bad0b1d425e0ebc99a3506904
         return serverResponse(
             None,
             200,
