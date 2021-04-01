@@ -26,10 +26,10 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                     user_obj = User(userEmail=user['email'])
                     login_user(user_obj, remember=True)
                     session['account_type'] = "staff"
-                    currentTokens = user["expoToken"]
 
                     # TODO: Append the token to the DB
                     if expoToken is not None:
+                        currentTokens = user.get("expoToken", [])
                         mongo.db.staff.update_one(
                             {"email": credentials["user"]},
                             {
@@ -67,18 +67,17 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
         if request.method == "POST":
             credentials = request.json
             expoToken = credentials.get("expoToken", None)
-            user = mongo.db.tenant.find_one(
-                {"email": credentials["user"].upper()})
+            user = mongo.db.tenant.find_one({"email": credentials["user"]})
             if user:
                 # check_password_hash(user["pswd"], credentials["pswd"]):
                 if user["pswd"] == credentials["pswd"]:
                     user_obj = User(userEmail=user['email'])
                     login_user(user_obj, remember=True)
                     session['account_type'] = "tenant"
-                    currentTokens = user["expoToken"]
 
                     # TODO: Append the token to the DB
                     if expoToken is not None:
+                        currentTokens = user["expoToken"]
                         mongo.db.tenant.update_one(
                             {"email": credentials["user"]},
                             {
@@ -108,17 +107,63 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                     f"{credentials['user']} account does not exist"
                 )
 
-    @app.route('/logout')
+    @app.route('/logout', methods=["POST"])
     # @login_required
     def logout():
-        # session.pop('account_type')
-        # logout_user()
-        # credentials = request.json
+        # if request.method == "POST":
+        #     data = request.json
+        #     if data == None:
+        #         logout_user()
+        #         return serverResponse(
+        #             None,
+        #             200,
+        #             "You are now logged out"
+        #             )
 
-        # # TODO：Remove the token from the DB
-        # userEmail = current_user.get_id()
-        # user = mongo.db.tenant.find_one({"email": credentials["user"]})
+        #     #TODO：Remove the token from the DB
+        #     userEmail = current_user.get_id()
+        #     if session["account_type"] == "tenant":
+        #         user = mongo.db.tenant.find_one({"email": userEmail})
+        #         if user:
+        #             currentTokens = user["expoToken"]
+        #             currentTokens.remove(data["expoToken"])
+        #             result = mongo.db.tenant.update_one(
+        #                         {"email": userEmail},
+        #                         {
+        #                             "$set": {
+        #                                 "expoToken": currentTokens
+        #                             }
 
+        #                         }
+        #                     )
+        #         else:
+        #             return serverResponse(
+        #                 None,
+        #                 401,
+        #                 "Your username does not exist"
+        #                 )
+        #     elif session["account_type"] == "staff":
+        #         user = mongo.db.staff.find_one({"email": userEmail})
+        #         if user:
+        #             currentTokens = user["expoToken"]
+        #             currentTokens.remove(data["expoToken"])
+        #             result = mongo.db.staff.update_one(
+        #                         {"email": userEmail},
+        #                         {
+        #                             "$set": {
+        #                                 "expoToken": currentTokens
+        #                             }
+
+        #                         }
+        #                     )
+        #         else:
+        #             return serverResponse(
+        #                 None,
+        #                 401,
+        #                 "Your username does not exist"
+        #                 )
+        session.pop('account_type')
+        logout_user()
         return serverResponse(
             None,
             200,

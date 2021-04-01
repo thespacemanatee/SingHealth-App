@@ -3,6 +3,7 @@ from .constants import MAX_NUM_IMAGES_PER_NC
 from flask import request, make_response, jsonify
 from flask_login import login_required
 from pymongo.errors import DuplicateKeyError
+from datetime import datetime
 import iso8601
 
 requiredPatchKeys = ["category", "index"]
@@ -352,6 +353,9 @@ def addAuditsEndpoint(app, mongo):
                     filledAuditForm["questions"] = questions
                     auditForms[formType] = filledAuditForm
 
+                date = audit["date"]
+                if isinstance(date, datetime):
+                    audit["date"] = date.isoformat()
                 responseJson["auditMetadata"] = audit
                 responseJson["auditForms"] = auditForms
 
