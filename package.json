@@ -32,6 +32,7 @@
     "expo": "^40.0.1",
     "expo-app-loading": "^1.0.1",
     "expo-camera": "~10.0.0",
+    "expo-constants": "~9.3.3",
     "expo-document-picker": "~9.0.1",
     "expo-file-system": "~10.0.0",
     "expo-font": "~8.4.0",
@@ -73,8 +74,8 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.13.14",
     "@babel/core": "^7.13.14",
+    "@babel/eslint-parser": "^7.13.14",
     "@types/react": "^17.0.3",
     "@types/react-native": "^0.64.2",
     "@types/react-redux": "^7.1.16",

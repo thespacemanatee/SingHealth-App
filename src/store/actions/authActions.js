@@ -40,6 +40,7 @@ export const signIn = (user, pswd, userType) => {
         pswd,
       },
     };
+
     const res = await httpClient(loginOptions);
 
     const userToken = "dummy-auth-token";

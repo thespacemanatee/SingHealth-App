@@ -14,6 +14,7 @@ import {
   Button,
   Toggle,
 } from "@ui-kitten/components";
+import axios from "axios";
 import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -133,45 +134,48 @@ const TenantRectificationScreen = ({ route, navigation }) => {
     );
   };
 
-  const getImages = async () => {
-    if (
-      checklistStore.chosen_checklist.questions[section][index]
-        .rectificationImages
-    ) {
-      setLoading(true);
-      try {
-        await Promise.all(
-          checklistStore.chosen_checklist.questions[section][
-            index
-          ].rectificationImages.map(async (fileName) => {
-            if (!fileName.name) {
-              const res = await dispatch(checklistActions.getImage(fileName));
-              dispatch(
-                checklistActions.addImage(
-                  checklistType,
-                  section,
-                  index,
-                  fileName,
-                  `data:image/jpg;base64,${res.data}`,
-                  true
-                )
-              );
-            }
-          })
-        );
-        setLoading(false);
-      } catch (err) {
-        setError(err);
-        setLoading(false);
-        handleErrorResponse(err);
-      }
-    }
-  };
-
   // TODO: Cleanup memory leak when user leaves screen before image is loaded
   useEffect(() => {
-    console.log("USEEFFECT");
+    const source = axios.CancelToken.source();
+    const getImages = async () => {
+      if (
+        checklistStore.chosen_checklist.questions[section][index]
+          .rectificationImages
+      ) {
+        setLoading(true);
+        try {
+          await Promise.all(
+            checklistStore.chosen_checklist.questions[section][
+              index
+            ].rectificationImages.map(async (fileName) => {
+              if (!fileName.name) {
+                const res = await dispatch(
+                  checklistActions.getImage(fileName, source)
+                );
+                dispatch(
+                  checklistActions.addImage(
+                    checklistType,
+                    section,
+                    index,
+                    fileName,
+                    `data:image/jpg;base64,${res.data}`,
+                    true
+                  )
+                );
+              }
+            })
+          );
+          setLoading(false);
+        } catch (err) {
+          setError(err);
+          setLoading(false);
+          handleErrorResponse(err);
+        }
+      }
+    };
+
     getImages();
+    console.log("USEEFFECT");
     if (checklistType === "covid") {
       // eslint-disable-next-line no-unused-expressions
       checklistStore.covid19.questions[section][index].requestForExt
@@ -183,6 +187,10 @@ const TenantRectificationScreen = ({ route, navigation }) => {
         ? (setToggle(true), setDisableToggle(true))
         : (setToggle(false), setDisableToggle(false));
     }
+
+    return () => {
+      source.cancel();
+    };
   }, []);
 
   useEffect(() => {

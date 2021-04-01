@@ -45,11 +45,11 @@ const RectificationCard = (props) => {
   );
 };
 
-const areEqual = (prevProps, nextProps) => {
-  /* if the props are equal, it won't update */
-  const isSelectedEqual = nextProps.question === prevProps.question;
+// const areEqual = (prevProps, nextProps) => {
+//   /* if the props are equal, it won't update */
+//   const isSelectedEqual = nextProps.question === prevProps.question;
 
-  return isSelectedEqual;
-};
+//   return isSelectedEqual;
+// };
 
-export default React.memo(RectificationCard, areEqual);
+export default React.memo(RectificationCard);

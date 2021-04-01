@@ -13,6 +13,7 @@ import {
   useTheme,
   Button,
 } from "@ui-kitten/components";
+import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import * as checklistActions from "../../store/actions/checklistActions";
@@ -62,41 +63,52 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
     }
   };
 
-  const getImages = async () => {
-    if (checklistStore.chosen_checklist.questions[section][index].image) {
-      setLoading(true);
-      try {
-        await Promise.all(
-          checklistStore.chosen_checklist.questions[section][index].image.map(
-            async (fileName) => {
-              if (!fileName.name) {
-                const res = await dispatch(checklistActions.getImage(fileName));
-                dispatch(
-                  checklistActions.addImage(
-                    checklistType,
-                    section,
-                    index,
-                    fileName,
-                    `data:image/jpg;base64,${res.data}`
-                  )
-                );
-              }
-            }
-          )
-        );
-        setLoading(false);
-      } catch (err) {
-        setError(err);
-        setLoading(false);
-        handleErrorResponse(err);
-      }
-    }
-  };
-
   // TODO: Cleanup memory leak when user leaves screen before image is loaded
   useEffect(() => {
     console.log("USEEFFECT");
+    const source = axios.CancelToken.source();
+    const getImages = async () => {
+      if (checklistStore.chosen_checklist.questions[section][index].image) {
+        setLoading(true);
+        try {
+          await Promise.all(
+            checklistStore.chosen_checklist.questions[section][index].image.map(
+              async (fileName) => {
+                if (!fileName.name) {
+                  const res = await dispatch(
+                    checklistActions.getImage(fileName, source)
+                  );
+                  dispatch(
+                    checklistActions.addImage(
+                      checklistType,
+                      section,
+                      index,
+                      fileName,
+                      `data:image/jpg;base64,${res.data}`
+                    )
+                  );
+                }
+              }
+            )
+          );
+          setLoading(false);
+        } catch (err) {
+          if (axios.isCancel(err)) {
+            // do nothing
+          } else {
+            setError(err);
+            setLoading(false);
+            handleErrorResponse(err);
+          }
+        }
+      }
+    };
+
     getImages();
+
+    return () => {
+      source.cancel();
+    };
   }, []);
 
   useEffect(() => {

@@ -188,7 +188,7 @@ export const getAuditData = (auditID, stallName) => {
   };
 };
 
-export const getImage = (fileName) => {
+export const getImage = (fileName, source) => {
   return async () => {
     console.log(fileName);
     const options = {
@@ -198,6 +198,7 @@ export const getImage = (fileName) => {
         fileName,
       },
       timeout: 30000,
+      cancelToken: source.token,
     };
 
     const res = await httpClient(options);
