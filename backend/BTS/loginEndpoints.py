@@ -2,7 +2,7 @@ from flask import Flask, request, session, jsonify, make_response
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from .login import User
-from .utils import serverResponse
+from .utils import serverResponse, printJ
 
 
 def addLoginEndpointsForTenantAndStaff(app, mongo):
@@ -29,15 +29,21 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
 
                     # TODO: Append the token to the DB
                     if expoToken is not None:
-                        currentTokens = user.get("expoToken", [])
                         mongo.db.staff.update_one(
                             {"email": credentials["user"]},
-                            {
-                                "$set": {
-                                    "expoToken": currentTokens.append(expoToken)
+                            [
+                                {
+                                    "$set": {
+                                        "expoToken": {
+                                            "$concatArrays": [
+                                                "$expoToken",
+                                                [expoToken]
+                                            ]
+                                        }
+                                    }
                                 }
-
-                            }
+                            ]
+                            
                         )
                     return serverResponse(
                         user,
@@ -77,15 +83,21 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
 
                     # TODO: Append the token to the DB
                     if expoToken is not None:
-                        currentTokens = user["expoToken"]
                         mongo.db.tenant.update_one(
                             {"email": credentials["user"]},
-                            {
-                                "$set": {
-                                    "expoToken": currentTokens.append(expoToken)
+                            [
+                                {
+                                    "$set": {
+                                        "expoToken": {
+                                            "$concatArrays": [
+                                                "$expoToken",
+                                                [expoToken]
+                                            ]
+                                        }
+                                    }
                                 }
-
-                            }
+                            ]
+                            
                         )
 
                     return serverResponse(
