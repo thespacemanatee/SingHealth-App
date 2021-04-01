@@ -26,7 +26,6 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                     user_obj = User(userEmail=user['email'])
                     login_user(user_obj, remember=True)
                     session['account_type'] = "staff"
-                    
 
                     # TODO: Append the token to the DB
                     if expoToken is not None:
@@ -75,9 +74,8 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                     user_obj = User(userEmail=user['email'])
                     login_user(user_obj, remember=True)
                     session['account_type'] = "tenant"
-                    
-                    
-                    #TODO: Append the token to the DB
+
+                    # TODO: Append the token to the DB
                     if expoToken is not None:
                         currentTokens = user["expoToken"]
                         mongo.db.tenant.update_one(
@@ -132,10 +130,10 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
         #             result = mongo.db.tenant.update_one(
         #                         {"email": userEmail},
         #                         {
-        #                             "$set": {                               
+        #                             "$set": {
         #                                 "expoToken": currentTokens
         #                             }
-                                    
+
         #                         }
         #                     )
         #         else:
@@ -152,10 +150,10 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
         #             result = mongo.db.staff.update_one(
         #                         {"email": userEmail},
         #                         {
-        #                             "$set": {                               
+        #                             "$set": {
         #                                 "expoToken": currentTokens
         #                             }
-                                    
+
         #                         }
         #                     )
         #         else:

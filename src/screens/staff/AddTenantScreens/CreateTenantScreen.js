@@ -45,6 +45,7 @@ const AddTenantCredScreen = ({ navigation }) => {
   );
 
   const RegisterSchema = Yup.object().shape({
+    name: Yup.string().required("Please enter your name!"),
     email: Yup.string()
       .email("Invalid email!")
       .required("Please enter your email!"),
@@ -87,13 +88,33 @@ const AddTenantCredScreen = ({ navigation }) => {
         <Divider />
         <Layout style={styles.layout}>
           <Formik
-            initialValues={{ email: "", password: "" }}
+            initialValues={{ name: "", email: "", password: "" }}
             onSubmit={handleSubmitForm}
             validationSchema={RegisterSchema}
           >
             {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
               <View style={styles.keyboardContainer}>
                 <Logo />
+                <CustomTextInput
+                  label="Stall Name"
+                  returnKeyType="next"
+                  value={values.name}
+                  onChangeText={handleChange("name")}
+                  onBlur={handleBlur("name")}
+                  error={!!errors.name}
+                  errorText={errors.name}
+                  accessoryRight={(props) => {
+                    return (
+                      !!errors.name && (
+                        <Icon
+                          {...props}
+                          name="alert-circle-outline"
+                          fill={theme["color-danger-700"]}
+                        />
+                      )
+                    );
+                  }}
+                />
                 <CustomTextInput
                   label="Email"
                   returnKeyType="next"
@@ -131,7 +152,7 @@ const AddTenantCredScreen = ({ navigation }) => {
                 />
                 <View style={styles.buttonContainer}>
                   <Button onPress={handleSubmit} style={styles.button}>
-                    Add Account Details
+                    Next
                   </Button>
                 </View>
               </View>
