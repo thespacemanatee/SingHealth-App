@@ -9,6 +9,7 @@ import {
   Icon,
   Text,
 } from "@ui-kitten/components";
+import moment from "moment";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -98,7 +99,13 @@ const SavedChecklistCard = ({
       >
         <View>
           <Text>{item.data.chosen_tenant.stallName}</Text>
-          <Text>{item.time}</Text>
+          <Text>
+            {moment(item.time)
+              .toLocaleString()
+              .split(" ")
+              .slice(0, 5)
+              .join(" ")}
+          </Text>
         </View>
       </Card>
     </Swipeable>

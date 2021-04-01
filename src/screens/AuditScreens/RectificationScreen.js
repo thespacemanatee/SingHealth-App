@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { View, SectionList } from "react-native";
 import { useSelector } from "react-redux";
 import {
-  Button,
   Divider,
   Layout,
   TopNavigation,
@@ -58,18 +57,6 @@ const RectificationScreen = ({ navigation }) => {
   const BackAction = () => (
     <TopNavigationAction icon={BackIcon} onPress={handleGoBack} />
   );
-
-  const onSubmitHandler = () => {
-    alert("Confirm Submission", "Are you sure you want to submit?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Submit",
-        // onPress: () => {
-        //   navigation.navigate("AuditSubmit");
-        // },
-      },
-    ]);
-  };
 
   const handleOpenRectificationCard = useCallback(
     (checked, deleted, params) => {
@@ -186,11 +173,6 @@ const RectificationScreen = ({ navigation }) => {
           renderSectionHeader={renderSectionHeader}
           SectionSeparatorComponent={() => <Divider />}
         />
-        <View style={styles.bottomContainer}>
-          <Button status="primary" onPress={onSubmitHandler}>
-            SUBMIT
-          </Button>
-        </View>
       </Layout>
     </View>
   );
@@ -215,14 +197,6 @@ const styles = StyleService.create({
     paddingLeft: 20,
     flexDirection: "row",
     flexWrap: "wrap",
-  },
-  bottomContainer: {
-    flexDirection: "row-reverse",
-    padding: 20,
-    borderColor: "grey",
-    borderTopWidth: 1,
-    justifyContent: "space-between",
-    alignItems: "center",
   },
   errorContainer: {
     alignItems: "center",

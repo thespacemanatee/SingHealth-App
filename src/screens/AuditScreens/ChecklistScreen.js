@@ -210,7 +210,7 @@ const ChecklistScreen = ({ route, navigation }) => {
             Audit: {checklistStore.chosen_tenant.stallName}
           </Text>
           <Text>
-            {moment(new Date())
+            {moment(checklistStore.auditMetadata.date)
               .toLocaleString()
               .split(" ")
               .slice(0, 5)
