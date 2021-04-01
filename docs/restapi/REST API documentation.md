@@ -820,12 +820,14 @@ localhost:5000/audits/unrectified/recent/tenant/grwrbgbgbewvw/0
 
 ## `POST /tenant`
 ### Description of use case
-The staff to add new tenant.
+The staff to add new tenant. 
+
+Note: the email parameter should be unique for every tenant.
 ### Compulsory JSON Query string parameters
 JSON param | Description
 -|-
 `name` | Tenant's full name in upper case.
-`email` | The user email of a tenant.
+`email` | The user email of a tenant. Unique for each tenant.
 `pswd` | The password credentials for a tenant.
 `institutionID` | The institution where a tenant operates under.
 `stall_name` | Name of the stall.
@@ -914,6 +916,22 @@ JSON param | Description
 }
 ```
 
+##### Duplicate tenant email
+```js
+{
+    "status": 404,
+    "description": "Duplicate email found"
+}
+```
+
+##### Both missing keys, null or empty value received for compulsory data fields and duplicate tenant email found
+```js
+{
+    "status": 404,
+    "description": "Duplicate email and insufficient/error in data to add new tenant"
+}
+```
+
 #### Failure
 ##### No response received
 ```js
@@ -959,6 +977,14 @@ localhost:5000/tenant/0ta2b2kjq
 {
   "status": 404,
   "description": "No matching tenant ID found"
+}
+```
+
+##### Internal Error
+```js
+{
+  "status": 404,
+  "description": "Error deleting the tenant"
 }
 ```
 
