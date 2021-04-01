@@ -37,9 +37,9 @@ const LoginScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(false);
   const theme = useTheme();
 
-  const { expoPushToken } = route.params;
+  const { expoToken } = route.params;
 
-  console.log("EXPO TOKEN:", expoPushToken);
+  console.log("EXPO TOKEN:", expoToken);
 
   const dispatch = useDispatch();
 
@@ -58,7 +58,7 @@ const LoginScreen = ({ route, navigation }) => {
         authActions.signIn(
           values.email,
           values.password,
-          expoPushToken,
+          expoToken,
           checked ? "staff" : "tenant"
         )
       );
