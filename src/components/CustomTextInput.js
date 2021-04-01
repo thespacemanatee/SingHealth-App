@@ -7,7 +7,7 @@ const CustomTextInput = ({ errorText, description, ...props }) => {
 
   return (
     <View style={styles.container}>
-      <Input size="large" {...props} />
+      <Input size="large" {...props} status={errorText ? "danger" : "basic"} />
       {description && !errorText ? (
         <Text
           style={[
@@ -30,7 +30,7 @@ const CustomTextInput = ({ errorText, description, ...props }) => {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    marginVertical: 12,
+    // marginVertical: 12,
   },
   description: {
     fontSize: 12,

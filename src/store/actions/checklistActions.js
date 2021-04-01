@@ -159,7 +159,7 @@ export const resetChecklistStore = () => {
   return { type: RESET_CHECKLIST_STORE };
 };
 
-export const getAuditData = (auditID, stallName) => {
+export const getAuditData = (auditID) => {
   return async (dispatch) => {
     const options = {
       url: `${endpoint}audits/${auditID}`,
@@ -167,18 +167,20 @@ export const getAuditData = (auditID, stallName) => {
       // withCredentials: true,
     };
     const res = await httpClient(options);
-    const { data } = res;
+    const { data } = res.data;
     const { auditMetadata } = data;
     const { auditForms } = data;
     const formKeys = Object.keys(auditForms);
     const type = formKeys.find((e) => {
       return e !== "covid19";
     });
-    console.log(stallName);
 
     dispatch({
       type: GET_AUDIT_DATA,
-      chosen_tenant: { stallName, tenantID: auditMetadata.tenantID },
+      chosen_tenant: {
+        stallName: auditMetadata.stallName,
+        tenantID: auditMetadata.tenantID,
+      },
       chosen_checklist_type: type,
       chosen_checklist: auditForms[type],
       covid19: auditForms.covid19,
