@@ -13,14 +13,6 @@ import {
 import Logo from "../../components/ui/Logo";
 import alert from "../../components/CustomAlert";
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
-
 const AuthScreen = ({ navigation }) => {
   const [expoPushToken, setExpoPushToken] = useState("");
 
@@ -42,8 +34,6 @@ const AuthScreen = ({ navigation }) => {
         return;
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
-    } else {
-      alert("Must use physical device for Push Notifications");
     }
 
     if (Platform.OS === "android") {
@@ -67,9 +57,11 @@ const AuthScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken(token)
-    );
+    if (Platform.OS !== "web") {
+      registerForPushNotificationsAsync().then((token) =>
+        setExpoPushToken(token)
+      );
+    }
   }, []);
 
   return (
