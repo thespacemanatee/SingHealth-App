@@ -22,10 +22,11 @@ def addRecentAuditsEndpoints(app, mongo):
             auditsList = []
             for audit in audits:
                 auditObject = {"auditMetadata": audit}
+                audit["date"] = audit["date"].isoformat()
                 tenant = mongo.db.tenant.find_one({"_id": audit["tenantID"]})
                 if tenant:
                     auditObject["stallName"] = tenant["stall"]["name"]
-                    
+
                 auditsList.append(auditObject)
 
             if len(auditsList) == 0:
