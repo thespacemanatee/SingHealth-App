@@ -65,7 +65,6 @@ const RectificationScreen = ({ route, navigation }) => {
   const handleOpenRectificationCard = useCallback(
     (checked, deleted, params) => {
       if (!checked && !deleted) {
-        console.log("PARAMS:", params.rectified);
         navigation.navigate("RectificationDetails", params);
       }
     },

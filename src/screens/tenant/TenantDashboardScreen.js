@@ -55,9 +55,9 @@ const TenantDashboardScreen = ({ navigation }) => {
 
         console.log("AuditID:", auditID);
 
-        await dispatch(checklistActions.getAuditData(auditID, stallName));
+        await dispatch(checklistActions.getAuditData(auditID));
 
-        navigation.navigate("Rectification");
+        navigation.navigate("Rectification", { stallName });
       } catch (err) {
         handleErrorResponse(err);
         setError(err.message);
@@ -91,10 +91,9 @@ const TenantDashboardScreen = ({ navigation }) => {
       );
       console.log(res.data.data);
       setListData(res.data.data);
-      setListLoading(false);
-      setLoading(false);
     } catch (err) {
       handleErrorResponse(err);
+    } finally {
       setListLoading(false);
       setLoading(false);
     }
@@ -105,7 +104,6 @@ const TenantDashboardScreen = ({ navigation }) => {
     getListData();
 
     const unsubscribe = navigation.addListener("focus", () => {
-      setListLoading(true);
       getListData();
     });
 
