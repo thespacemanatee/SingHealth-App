@@ -2,22 +2,35 @@
 ---
 
 ## Endpoints
+### Authentication
+- [x] [`POST /login/tenant`](#`GET-/login/tenant`)
+- [x] [`POST /login/staff`](#`GET-/login/staff`)
+- [x] [`POST /logout`](#`POST-/logout`)
+
+### Tenant Management
+- [x] [`POST /tenant`](#POST-/tenant`)
+- [x] [`DELETE /tenant/<tenantID>`](#POST-/tenant\{tenantID}`)
+- [x] [`GET /tenant/<tenantID>`](#GET-/tenant\{tenantID}`)
+
+### Recent unrectified audits for tenant and staff
+- [x] [`GET /audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`)
+- [x] [`GET /audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`)
+
+### Audit process
 - [x] [`GET /tenants/{institutionId}`](#`GET-/tenants/{institutionId}`)
 - [x] [`GET /auditForms/<form_type>`](#`GET-/auditForms/<form_type>`)
 - [x] [`POST /audits`](#`POST-/audits`)
 - [x] [`POST /images`](#`POST-/images`)
+
+### Audit Reviewing process
 - [x] [`GET /images`](#`GET-/images`)
-- [x] [`POST /login/tenant`](#`GET-/login/tenant`)
-- [x] [`POST /login/staff`](#`GET-/login/staff`)
 - [x] [`GET /audits/<auditID>`](#`GET-/audits/auditID`)
 - [x] [`PATCH /audits/<auditID>/tenant`](#`PATCH-/audits/auditID/tenant`)
 - [x] [`PATCH /audits/<auditID>/staff`](#`PATCH-/audits/auditID/staff`)
+
+#### Others
 - [ ] [`GET /audits/saved`](#`GET-/audits/saved`)
-- [x] [`GET /audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`)
-- [x] [`GET /audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`)
-- [x] [`POST /tenant`](#POST-/tenant`)
-- [x] [`DELETE /tenant/<tenantID>`](#POST-/tenant\{tenantID}`)
-- [x] [`GET /tenant/<tenantID>`](#GET-/tenant\{tenantID}`)
+
 ---
 
 
@@ -238,7 +251,6 @@ JSON param | Description
 ## `POST /login/staff`
 Uses exactly the same request and response format as `/login/tenant`
 
-
 ### JSON body parameters  
 JSON param | Description
 -|-
@@ -268,6 +280,27 @@ JSON param | Description
 "status": "400",
 "data": {
     "description": "Email or pswd is incorrect"
+}
+```
+
+## `POST /logout`
+### JSON Query Parameters
+JSON param | Description
+-|-
+`expoToken` | The device token that is used to send notifications to the client
+
+### Sample request
+```js
+{
+    "expoToken": "efvet4bgr"
+}
+```
+### Sample response
+#### Success
+```js
+"status": 200,
+{
+    "description": "You are now logged out"
 }
 ```
 
