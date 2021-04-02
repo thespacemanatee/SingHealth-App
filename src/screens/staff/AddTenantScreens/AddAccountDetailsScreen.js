@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
@@ -15,7 +14,6 @@ import {
   Icon,
   StyleService,
   useTheme,
-  Text,
 } from "@ui-kitten/components";
 import { Formik } from "formik";
 import * as Yup from "yup";

@@ -17,7 +17,6 @@ const NewChecklistCard = ({
 
   const handleCreateNewChecklist = async () => {
     onLoading(true);
-    console.log("ITEM:", item);
     try {
       await dispatch(checklistActions.getChecklist(item.fnb, item));
 
@@ -35,7 +34,10 @@ const NewChecklistCard = ({
       dispatch(checklistActions.createAuditMetadata(auditMetadata));
 
       onLoading(false);
-      navigation.navigate("Checklist", { auditID: now });
+      navigation.navigate("Checklist", {
+        auditID: now,
+        stallName: item.stallName,
+      });
     } catch (err) {
       console.error(err);
       onLoading(false);

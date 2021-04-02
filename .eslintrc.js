@@ -48,7 +48,7 @@ module.exports = {
     "react-native/no-inline-styles": 2,
     // "react-native/no-color-literals": 1,
     "react-native/no-single-element-style-arrays": 2,
-    "react/jsx-props-no-spreading": 1,
+    "react/jsx-props-no-spreading": 0,
     "import/extensions": "off",
     "no-underscore-dangle": "off",
   },

@@ -48,7 +48,7 @@ def change_tenant_info(app, mongo):
                 data = {
                         "_id": str(ObjectId()),
                         "name":tenant_info["name"],
-                        "email":tenant_info["email"].upper(),
+                        "email":tenant_info["email"].lower(),
                         "pswd":tenant_info["pswd"],
                         "institutionID":tenant_info["institutionID"],
                         "stall":{
@@ -56,7 +56,7 @@ def change_tenant_info(app, mongo):
                             "companyName":tenant_info["companyName"],
                             "companyPOC":{
                                 "name":tenant_info["companyPOCName"],
-                                "email":tenant_info["companyPOCWmail"]},
+                                "email":tenant_info["companyPOCEmail"].lower()},
                             "address":{
                                 "blk":tenant_info.get("blk", None),
                                 "street":tenant_info.get("street", None),
@@ -118,8 +118,6 @@ def change_tenant_info(app, mongo):
                 if not tenant_found:
                     return serverResponse(None, 200, "Tenant with ID " + tenantID + " deleted")
                 else:
-                    return serverResponse(None, 404, "Error deleting the tenant")
+                    return serverResponse(None, 404, "No matching tenant ID found")
             else:
-                return serverResponse(None, 404, "No matching tenant ID found")
-        else:
-            return serverResponse(None, 404, "Error connecting to server")
+                return serverResponse(None, 404, "Error connecting to server")

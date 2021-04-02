@@ -1,6 +1,7 @@
 import { Alert, Platform } from "react-native";
 
 const alertPolyfill = (title, description, options) => {
+  // eslint-disable-next-line no-alert
   const result = window.confirm(
     [title, description].filter(Boolean).join("\n")
   );

@@ -19,18 +19,22 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
         if request.method == "POST":
             credentials = request.json
             expoToken = credentials.get("expoToken", None)
-            user = mongo.db.staff.find_one({"email": credentials["user"]})
+            userEmail = credentials["user"].lower()
+            userPswd = credentials["pswd"]
+
+            user = mongo.db.staff.find_one({"email": userEmail})
             if user:
+                dbUserEmail = user['email'].lower()
                 # check_password_hash(user["pswd"], credentials["pswd"]):
                 if user["pswd"] == credentials["pswd"]:
-                    user_obj = User(userEmail=user['email'])
+                    user_obj = User(userEmail=dbUserEmail)
                     login_user(user_obj, remember=True)
                     session['account_type'] = "staff"
 
-                    # TODO: Append the token to the DB
+                    # Append the token to the DB
                     if expoToken is not None:
                         mongo.db.staff.update_one(
-                            {"email": credentials["user"]},
+                            {"email": userEmail},
                             [
                                 {
                                     "$set": {
@@ -43,12 +47,11 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                                     }
                                 }
                             ]
-                            
                         )
                     return serverResponse(
                         user,
                         200,
-                        f"You are now logged in as a staff under: {user['email']}"
+                        f"You are now logged in as a staff under: {dbUserEmail}"
                     )
                 else:
                     return serverResponse(
@@ -61,7 +64,7 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                 return serverResponse(
                     None,
                     404,
-                    f"{credentials['user']} account does not exist"
+                    f"{userEmail} account does not exist"
                 )
 
     @app.route('/login/tenant',  methods=["POST"])
@@ -73,18 +76,22 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
         if request.method == "POST":
             credentials = request.json
             expoToken = credentials.get("expoToken", None)
-            user = mongo.db.tenant.find_one({"email": credentials["user"]})
+            userEmail = credentials["user"].lower()
+            userPswd = credentials["pswd"]
+
+            user = mongo.db.tenant.find_one({"email": userEmail})
             if user:
+                dbUserEmail = user['email'].lower()
                 # check_password_hash(user["pswd"], credentials["pswd"]):
                 if user["pswd"] == credentials["pswd"]:
-                    user_obj = User(userEmail=user['email'])
+                    user_obj = User(userEmail=dbUserEmail)
                     login_user(user_obj, remember=True)
                     session['account_type'] = "tenant"
 
                     # TODO: Append the token to the DB
                     if expoToken is not None:
                         mongo.db.tenant.update_one(
-                            {"email": credentials["user"]},
+                            {"email": userEmail},
                             [
                                 {
                                     "$set": {
@@ -103,7 +110,7 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                     return serverResponse(
                         user,
                         200,
-                        f"You are now logged in as a tenant under: {user['email']}"
+                        f"You are now logged in as a tenant under: {dbUserEmail}"
                     )
                 else:
                     return serverResponse(
@@ -116,7 +123,7 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                 return serverResponse(
                     None,
                     404,
-                    f"{credentials['user']} account does not exist"
+                    f"{userEmail} account does not exist"
                 )
 
     @app.route('/logout', methods=["POST"])

@@ -285,12 +285,11 @@ def addAuditsEndpoint(app, mongo):
 
             if not allFormsAreValid[0]:
                 errorDescription = allFormsAreValid[1]
-                jsonMsg = {
-                    "category": errorDescription[0], 
-                    "index": errorDescription[1],
-                    "description": errorDescription[2]
-                    }
-                return serverResponse(jsonMsg, 400, errorDescription[2])
+                return serverResponse(
+                    None,
+                    400,
+                    f"Item no. {errorDescription[1]} in '{errorDescription[0]}':\n{errorDescription[2]}"
+                    )
 
             auditMetaData_ID, filledAuditForms_ID = generateIDs(
                 auditMetaData, 
@@ -325,7 +324,7 @@ def addAuditsEndpoint(app, mongo):
             tenant = mongo.db.tenant.find_one({"_id": auditMetaData["tenantID"]})
             if tenant:
                 for token in tenant["expoToken"]:
-                    send_push_message(token, "Audit results ready for viewing")
+                    send_push_message(token, "SingHealth Audits", "Recent audit results ready for viewing")
             return serverResponse(None, 200, "Forms have been submitted successfully!")
 
     @app.route("/audits/<auditID>", methods=['GET'])
@@ -385,6 +384,15 @@ def addAuditsEndpoint(app, mongo):
                 return serverResponse(None, 400, description)
             
             selectedAudit = mongo.db.audits.find_one({"_id": auditID})
+            staff = mongo.db.staff.find_one(
+                {"_id": selectedAudit["staffID"]}
+                )
+            tenant = mongo.db.tenant.find_one(
+                {"_id": selectedAudit["tenantID"]}
+                )
+            tenantStallName = tenant["stall"]["name"]
+            staffExpoTokens = staff["expoToken"]
+
             auditChecklists = selectedAudit["auditChecklists"]
 
             changesAccepted, errorResponse = databaseAcceptsChanges(
@@ -400,7 +408,9 @@ def addAuditsEndpoint(app, mongo):
                 patches, 
                 allowedTenantPatchKeys, 
                 auditChecklists
-                )            
+                )
+            for device in staffExpoTokens:
+                send_push_message(device, tenantStallName, "has rectified a noncompliance")
             return serverResponse(patchResults, 200, "Changes sent to the database.")
 
     @app.route("/audits/<auditID>/staff", methods=['PATCH'])
@@ -418,6 +428,9 @@ def addAuditsEndpoint(app, mongo):
 
             selectedAudit = mongo.db.audits.find_one({"_id": auditID})
             auditChecklists = selectedAudit["auditChecklists"]
+            institution = selectedAudit["institutionID"]
+            tenantID = selectedAudit["tenantID"]
+
             changesAccepted, errorResponse = databaseAcceptsChanges(
                 patches,
                 mongo, 
@@ -441,7 +454,9 @@ def addAuditsEndpoint(app, mongo):
                 for answerList in form["answers"].values():
                     allQuestions.extend(answerList)
             
-            numNCs = len(list(filter(lambda x : x["answer"] == False, allQuestions)))
+            numNCs = len(list(filter(
+                lambda x : x["answer"] == False, 
+                allQuestions)))
             numRectifiedNCs = len(list(filter(
                 lambda x : x["answer"] == False and x["rectified"] == True, 
                 allQuestions)))
@@ -460,6 +475,11 @@ def addAuditsEndpoint(app, mongo):
             ack = percentRectDict.copy()
             ack["patchResults"] = patchResults
             ack["updatedRectProgress"] = result.acknowledged
+
+            tenant = mongo.db.tenant.find_one({"_id": tenantID})
+            if tenant:
+                for device in tenant["expoToken"]:
+                    send_push_message(device, institution, "has reviewed your rectifications")
             return serverResponse(
                 ack, 
                 200, 

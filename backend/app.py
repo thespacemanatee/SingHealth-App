@@ -3,6 +3,7 @@ from BTS.auditsEndpoint import addAuditsEndpoint
 from BTS.loginEndpoints import addLoginEndpointsForTenantAndStaff
 from BTS.imagesEndpoint import addImagesEndpoint
 from BTS.auditsEndpoint_wx import addWenXinEndpoints
+from BTS.staff_tenantEndpoint_wx import change_tenant_info
 from BTS.recentAuditsEndpoints import addRecentAuditsEndpoints
 from BTS.utils import serverResponse
 from flask import Flask
@@ -28,23 +29,22 @@ CORS(app, supports_credentials=True, resources={r"/*": {"origins": [
 
 @ app.route('/', methods=["GET", "POST"])
 def hello_world0():
-    return serverResponse(None, 200, """Yes this endpoint is working
-        Remember to disable any @login_required decorators before testing that endpoint""")
+    return serverResponse(None, 200, """Yes this endpoint is working""")
 
 
-@ app.route('/<num>', methods=["GET", "POST"])
-def hello_world1(num):
-    return serverResponse(None, 200, f"Yes. Num endpoint received: {num}")
+# @ app.route('/<num>', methods=["GET", "POST"])
+# def hello_world1(num):
+#     return serverResponse(None, 200, f"Yes. Num endpoint received: {num}")
 
 
-@ app.route('/<num>/suffix', methods=["GET", "POST"])
-def hello_world2(num):
-    return serverResponse(None, 200, f"Yes. Num suffix endpoint received: {num}")
+# @ app.route('/<num>/suffix', methods=["GET", "POST"])
+# def hello_world2(num):
+#     return serverResponse(None, 200, f"Yes. Num suffix endpoint received: {num}")
 
 
-@app.route('/<int:year>/<int:month>/<title>')
-def article(year, month, title):
-    return serverResponse(None, 200, f"Yes. Num endpoint received: {year}, {month}, {title}")
+# @app.route('/<int:year>/<int:month>/<title>')
+# def article(year, month, title):
+#     return serverResponse(None, 200, f"Yes. Num endpoint received: {year}, {month}, {title}")
 
 
 addWenXinEndpoints(app, mongo)
@@ -52,6 +52,7 @@ addAuditsEndpoint(app, mongo)
 addImagesEndpoint(app)
 addLoginEndpointsForTenantAndStaff(app, mongo)
 addRecentAuditsEndpoints(app, mongo)
+change_tenant_info(app, mongo)
 
 port = int(os.getenv('PORT', 5000))
 if __name__ == '__main__':

@@ -30,14 +30,11 @@ const SavedChecklistCard = ({
 
   const theme = useTheme();
 
-  // const tenantID = Object.keys(itemData.item.data.chosen_tenant)[0];
-  // console.log(itemData.item.time);
-
   const handleOpenSavedChecklist = () => {
     dispatch(checklistActions.addSavedChecklist(item.data));
     navigation.navigate("Checklist", {
       auditID: item.time,
-      type: item.data.chosen_checklist_type,
+      stallName: item.stallName,
     });
   };
 
