@@ -16,8 +16,7 @@ import {
 
 import directoryStyles from "./StyleGuide";
 import * as databaseActions from "../../../store/actions/databaseActions";
-import * as authActions from "../../../store/actions/authActions";
-import alert from "../../../components/CustomAlert";
+import { handleErrorResponse } from "../../../helpers/utils";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -71,46 +70,11 @@ const TenantsDirectoryScreen = ({ navigation }) => {
     } catch (err) {
       handleErrorResponse(err);
     }
-  }, [authStore.institutionID, dispatch, handleErrorResponse]);
+  }, [authStore.institutionID, dispatch]);
 
   useEffect(() => {
     getTenants();
   }, [getTenants]);
-
-  const handleErrorResponse = useCallback(
-    (err) => {
-      if (err.response) {
-        const { data } = err.response;
-        console.error(err.response.data);
-        console.error(err.response.status);
-        console.error(err.response.headers);
-        if (err.response.status === 403) {
-          dispatch(authActions.signOut());
-        } else {
-          switch (Math.floor(err.response.status / 100)) {
-            case 4: {
-              alert("Error", data.description);
-              break;
-            }
-            case 5: {
-              alert("Server Error", "Please contact your administrator.");
-              break;
-            }
-            default: {
-              alert("Request timeout", "Check your internet connection.");
-              break;
-            }
-          }
-        }
-      } else if (err.request) {
-        console.error(err.request);
-      } else {
-        console.error("Error", err.message);
-      }
-      console.error(err.config);
-    },
-    [dispatch]
-  );
 
   return (
     <SafeAreaView style={styles.screen}>

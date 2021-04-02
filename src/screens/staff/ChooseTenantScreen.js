@@ -17,10 +17,9 @@ import * as checklistActions from "../../store/actions/checklistActions";
 import * as databaseActions from "../../store/actions/databaseActions";
 import SavedChecklistCard from "../../components/SavedChecklistCard";
 import NewChecklistCard from "../../components/NewChecklistCard";
-import alert from "../../components/CustomAlert";
-import * as authActions from "../../store/actions/authActions";
 // import SkeletonLoading from "../../../components/ui/SkeletonLoading";
 import CenteredLoading from "../../components/ui/CenteredLoading";
+import { handleErrorResponse } from "../../helpers/utils";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -87,7 +86,6 @@ const ChooseTenantScreen = ({ navigation }) => {
       authStore._id,
       authStore.institutionID,
       handleDeleteSavedChecklist,
-      handleErrorResponse,
       navigation,
     ]
   );
@@ -123,7 +121,7 @@ const ChooseTenantScreen = ({ navigation }) => {
       handleErrorResponse(err);
       setLoading(false);
     }
-  }, [authStore.institutionID, dispatch, handleErrorResponse]);
+  }, [authStore.institutionID, dispatch]);
 
   useEffect(() => {
     // Subscribe for the focus Listener
@@ -142,43 +140,6 @@ const ChooseTenantScreen = ({ navigation }) => {
       unsubscribe;
     };
   }, [dispatch, getSectionData, navigation]);
-
-  const handleErrorResponse = useCallback(
-    (err) => {
-      if (err.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        const { data } = err.response;
-        console.error(err.response.data);
-        console.error(err.response.status);
-        console.error(err.response.headers);
-        if (err.response.status === 403) {
-          dispatch(authActions.signOut());
-        } else {
-          switch (Math.floor(err.response.status / 100)) {
-            case 4: {
-              alert("Error", data.description);
-              break;
-            }
-            case 5: {
-              alert("Server Error", "Please contact your administrator.");
-              break;
-            }
-            default: {
-              alert("Request timeout", "Check your internet connection.");
-              break;
-            }
-          }
-        }
-      } else if (err.request) {
-        console.error(err.request);
-      } else {
-        console.error("Error", err.message);
-      }
-      console.error(err.config);
-    },
-    [dispatch]
-  );
 
   return (
     <View style={styles.screen}>

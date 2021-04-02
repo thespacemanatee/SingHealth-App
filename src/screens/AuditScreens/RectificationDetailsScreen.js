@@ -18,27 +18,23 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 import * as checklistActions from "../../store/actions/checklistActions";
 import CustomDatepicker from "../../components/CustomDatePicker";
-import * as authActions from "../../store/actions/authActions";
 import ImagePage from "../../components/ui/ImagePage";
-import alert from "../../components/CustomAlert";
 import ImageViewPager from "../../components/ImageViewPager";
 import { SCREEN_HEIGHT } from "../../helpers/config";
+import { handleErrorResponse } from "../../helpers/utils";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const RectificationDetailsScreen = ({ route, navigation }) => {
   const authStore = useSelector((state) => state.auth);
   const checklistStore = useSelector((state) => state.checklist);
-  const { index } = route.params;
-  const { checklistType } = route.params;
-  const { question } = route.params;
-  const { section } = route.params;
-  const { rectified } = route.params;
   const [value, setValue] = useState("");
   const [imageArray, setImageArray] = useState([]);
   const [deadline, setDeadline] = useState();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  const { index, checklistType, question, section, rectified } = route.params;
 
   const theme = useTheme();
 
@@ -97,9 +93,10 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
             // do nothing
           } else {
             setError(err);
-            setLoading(false);
             handleErrorResponse(err);
           }
+        } finally {
+          setLoading(false);
         }
       }
     };
@@ -179,40 +176,6 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
     },
     [handleExpandImage, index, loading, section]
   );
-
-  const handleErrorResponse = (err) => {
-    if (err.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      const { data } = err.response;
-      console.error(err.response.data);
-      console.error(err.response.status);
-      console.error(err.response.headers);
-      if (err.response.status === 403) {
-        dispatch(authActions.signOut());
-      } else {
-        switch (Math.floor(err.response.status / 100)) {
-          case 4: {
-            alert("Error", data.description);
-            break;
-          }
-          case 5: {
-            alert("Server Error", "Please contact your administrator.");
-            break;
-          }
-          default: {
-            alert("Request timeout", "Check your internet connection.");
-            break;
-          }
-        }
-      }
-    } else if (err.request) {
-      console.error(err.request);
-    } else {
-      console.error("Error", err.message);
-    }
-    console.error(err.config);
-  };
 
   return (
     <View style={styles.screen}>

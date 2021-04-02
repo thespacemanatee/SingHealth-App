@@ -31,13 +31,11 @@ const ImageIcon = (props) => <Icon {...props} name="image-outline" />;
 
 const QuestionDetailsScreen = ({ route, navigation }) => {
   const checklistStore = useSelector((state) => state.checklist);
-  const { index } = route.params;
-  const { checklistType } = route.params;
-  const { question } = route.params;
-  const { section } = route.params;
   const [value, setValue] = useState("");
   const [imageArray, setImageArray] = useState([]);
   const [deadline, setDeadline] = useState();
+
+  const { index, checklistType, question, section } = route.params;
 
   const theme = useTheme();
 

@@ -26,8 +26,8 @@ import * as Yup from "yup";
 import CustomTextInput from "../../components/CustomTextInput";
 import * as authActions from "../../store/actions/authActions";
 import Logo from "../../components/ui/Logo";
-import alert from "../../components/CustomAlert";
 import CenteredLoading from "../../components/ui/CenteredLoading";
+import { handleErrorResponse } from "../../helpers/utils";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -37,9 +37,9 @@ const LoginScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(false);
   const theme = useTheme();
 
-  const { expoPushToken } = route.params;
+  const { expoToken } = route.params;
 
-  console.log("EXPO TOKEN:", expoPushToken);
+  console.log("EXPO TOKEN:", expoToken);
 
   const dispatch = useDispatch();
 
@@ -58,13 +58,14 @@ const LoginScreen = ({ route, navigation }) => {
         authActions.signIn(
           values.email,
           values.password,
-          expoPushToken,
+          expoToken,
           checked ? "staff" : "tenant"
         )
       );
     } catch (err) {
-      setLoading(false);
       handleErrorResponse(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -89,40 +90,6 @@ const LoginScreen = ({ route, navigation }) => {
 
   const handleUserToggle = (isChecked) => {
     setChecked(isChecked);
-  };
-
-  const handleErrorResponse = (err) => {
-    if (err.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      const { data } = err.response;
-      console.error(err.response.data);
-      console.error(err.response.status);
-      console.error(err.response.headers);
-      if (err.response.status === 403) {
-        dispatch(authActions.signOut());
-      } else {
-        switch (Math.floor(err.response.status / 100)) {
-          case 4: {
-            alert("Invalid Login", data.description);
-            break;
-          }
-          case 5: {
-            alert("Server Error", "Please contact your administrator.");
-            break;
-          }
-          default: {
-            alert("Request timeout", "Check your internet connection.");
-            break;
-          }
-        }
-      }
-    } else if (err.request) {
-      console.error(err.request);
-    } else {
-      console.error("Error", err.message);
-    }
-    console.error(err.config);
   };
 
   return (

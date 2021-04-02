@@ -13,12 +13,7 @@ const UndoIcon = (props) => <Icon {...props} name="undo" />;
 const QuestionCard = (props) => {
   const [checked, setChecked] = useState(false);
   const [deleted, setDeleted] = useState(false);
-  const { index } = props;
-  const { checklistType } = props;
-  const { question } = props;
-  const { answer } = props;
-  const { section } = props;
-  const { onPress } = props;
+  const { index, checklistType, question, answer, section, onPress } = props;
 
   const leftSwipeable = useRef(null);
 
