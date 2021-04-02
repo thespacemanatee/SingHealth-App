@@ -54,7 +54,7 @@ def change_tenant_info(app, mongo):
                             "companyName":tenant_info["companyName"],
                             "companyPOC":{
                                 "name":tenant_info["companyPOCName"],
-                                "email":tenant_info["companyPOCWmail"]},
+                                "email":tenant_info["companyPOCWmail"].upper()},
                             "address":{
                                 "blk":tenant_info.get("blk", None),
                                 "street":tenant_info.get("street", None),
@@ -84,40 +84,39 @@ def change_tenant_info(app, mongo):
         
         return serverResponse(None, 201, "Tenant Added")
     
-    @app.route("/tenant/<tenantID>" , methods = ["GET"])
+    @app.route("/tenant/<tenantID>" , methods = ["GET", "DELETE"])
     @login_required
     def get_tenant(tenantID):
-        tenant_found, tenant_info = find_tenant_by_id(tenantID)
-        
-        if tenant_found is not None:
-            if tenant_found:
-                tenant_info["_id"] = tenantID
-                return serverResponse(tenant_info, 200, "Success")
-            else:
-                return serverResponse(None, 404, "No matching tenant ID found")
-        else:
-            return serverResponse(None, 404, "Error connecting to server")
-        
-    @app.route("/tenant/<tenantID>" , methods = ["DELETE"])
-    @login_required
-    def delete_tenant(tenantID):
-        tenant_found, tenant_info = find_tenant_by_id(tenantID)
-    
-        if tenant_found is not None:
-            if tenant_found:
-                try:
-                    mongo.db.tenant.delete_one( {"_id": tenantID});
-                except:
-                    return serverResponse(None, 404, "Error connecting to server")
-                
-                #check if tenant is still there after deleting
-                tenant_found, tenant_info = find_tenant_by_id(tenantID)
-                
-                if not tenant_found:
-                    return serverResponse(None, 200, "Tenant with ID " + tenantID + " deleted")
+        if request.method == "GET":
+            tenant_found, tenant_info = find_tenant_by_id(tenantID)
+            
+            if tenant_found is not None:
+                if tenant_found:
+                    tenant_info["_id"] = tenantID
+                    return serverResponse(tenant_info, 200, "Success")
                 else:
-                    return serverResponse(None, 404, "Error deleting the tenant")
+                    return serverResponse(None, 404, "No matching tenant ID found")
             else:
-                return serverResponse(None, 404, "No matching tenant ID found")
-        else:
-            return serverResponse(None, 404, "Error connecting to server")
+                return serverResponse(None, 404, "Error connecting to server")
+
+        elif request.method == "DELETE":
+            tenant_found, tenant_info = find_tenant_by_id(tenantID)
+        
+            if tenant_found is not None:
+                if tenant_found:
+                    try:
+                        mongo.db.tenant.delete_one( {"_id": tenantID})
+                    except:
+                        return serverResponse(None, 404, "Error connecting to server")
+                    
+                    #check if tenant is still there after deleting
+                    tenant_found, tenant_info = find_tenant_by_id(tenantID)
+                    
+                    if not tenant_found:
+                        return serverResponse(None, 200, "Tenant with ID " + tenantID + " deleted")
+                    else:
+                        return serverResponse(None, 404, "Error deleting the tenant")
+                else:
+                    return serverResponse(None, 404, "No matching tenant ID found")
+            else:
+                return serverResponse(None, 404, "Error connecting to server")
