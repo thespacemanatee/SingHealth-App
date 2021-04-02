@@ -49,25 +49,23 @@ const TenantDashboardScreen = ({ navigation }) => {
   };
 
   const handleOpenAudit = useCallback(
-    async (auditID) => {
+    async (auditID, stallName) => {
       try {
         setLoading(true);
 
         console.log("AuditID:", auditID);
 
-        await dispatch(
-          checklistActions.getAuditData(auditID, authStore.stall.name)
-        );
+        await dispatch(checklistActions.getAuditData(auditID));
 
-        setLoading(false);
-        navigation.navigate("Rectification");
+        navigation.navigate("Rectification", { stallName });
       } catch (err) {
         handleErrorResponse(err);
         setError(err.message);
+      } finally {
         setLoading(false);
       }
     },
-    [authStore.stall.name, dispatch, navigation]
+    [dispatch, navigation]
   );
 
   const renderActiveAudits = useCallback(
@@ -93,10 +91,9 @@ const TenantDashboardScreen = ({ navigation }) => {
       );
       console.log(res.data.data);
       setListData(res.data.data);
-      setListLoading(false);
-      setLoading(false);
     } catch (err) {
       handleErrorResponse(err);
+    } finally {
       setListLoading(false);
       setLoading(false);
     }
@@ -107,7 +104,6 @@ const TenantDashboardScreen = ({ navigation }) => {
     getListData();
 
     const unsubscribe = navigation.addListener("focus", () => {
-      setListLoading(true);
       getListData();
     });
 

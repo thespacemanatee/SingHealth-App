@@ -65,7 +65,6 @@ const TenantsDirectoryScreen = ({ navigation }) => {
       const res = await dispatch(
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
-      console.log("RESPONSE:", res.data.data);
       setTenants(res.data.data);
     } catch (err) {
       handleErrorResponse(err);

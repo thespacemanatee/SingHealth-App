@@ -174,7 +174,6 @@ export const getAuditData = (auditID) => {
     dispatch({
       type: GET_AUDIT_DATA,
       chosen_tenant: {
-        stallName: auditMetadata.stallName,
         tenantID: auditMetadata.tenantID,
       },
       chosen_checklist_type: type,

@@ -44,7 +44,6 @@ const CameraScreen = ({ route, navigation }) => {
       base64: true,
       quality: 0.5,
     });
-    console.log(photo);
     setPreviewVisible(true);
     setCapturedImage(photo);
   };

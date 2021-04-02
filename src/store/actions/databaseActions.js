@@ -46,7 +46,6 @@ export const getStaffActiveAudits = (institutionID, daysBefore = 0) => {
 
 export const postAuditForm = (auditData) => {
   return async () => {
-    console.log(auditData);
     const postAudit = {
       url: `${endpoint}audits`,
       method: "post",

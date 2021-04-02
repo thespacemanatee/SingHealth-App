@@ -33,7 +33,7 @@ const ChecklistScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);
   const [covid19Keys, setCovid19Keys] = useState([]);
 
-  const { auditID } = route.params;
+  const { auditID, stallName } = route.params;
 
   const theme = useTheme();
 
@@ -206,9 +206,7 @@ const ChecklistScreen = ({ route, navigation }) => {
             { backgroundColor: theme["color-primary-400"] },
           ]}
         >
-          <Text style={styles.title}>
-            Audit: {checklistStore.chosen_tenant.stallName}
-          </Text>
+          <Text style={styles.title}>Audit: {stallName}</Text>
           <Text>
             {moment(checklistStore.auditMetadata.date)
               .toLocaleString()

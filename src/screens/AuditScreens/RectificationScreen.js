@@ -24,12 +24,14 @@ export const COVID_SECTION = "COVID-19 Checklist";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
-const RectificationScreen = ({ navigation }) => {
+const RectificationScreen = ({ route, navigation }) => {
   const authStore = useSelector((state) => state.auth);
   const checklistStore = useSelector((state) => state.checklist);
   const [completeChecklist, setCompleteChecklist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [covid19Keys, setCovid19Keys] = useState(true);
+
+  const { stallName } = route.params;
 
   const theme = useTheme();
 
@@ -63,7 +65,6 @@ const RectificationScreen = ({ navigation }) => {
   const handleOpenRectificationCard = useCallback(
     (checked, deleted, params) => {
       if (!checked && !deleted) {
-        console.log("PARAMS:", params.rectified);
         navigation.navigate("RectificationDetails", params);
       }
     },
@@ -155,9 +156,7 @@ const RectificationScreen = ({ navigation }) => {
             { backgroundColor: theme["color-primary-400"] },
           ]}
         >
-          <Text style={styles.title}>
-            Audit: {checklistStore.chosen_tenant.stallName}
-          </Text>
+          <Text style={styles.title}>Audit: {stallName}</Text>
           <Text>
             {moment(checklistStore.auditMetadata.date.$date)
               .toLocaleString()
