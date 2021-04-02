@@ -76,7 +76,7 @@ const TenantsDirectoryScreen = ({ navigation }) => {
   }, [getTenants]);
 
   return (
-    <SafeAreaView style={styles.screen}>
+    <View style={styles.screen}>
       <TopNavigation
         title="Directory"
         alignment="center"
@@ -90,7 +90,7 @@ const TenantsDirectoryScreen = ({ navigation }) => {
           contentContainerStyle={directoryStyles.contentContainer}
         />
       </Layout>
-    </SafeAreaView>
+    </View>
   );
 };
 
