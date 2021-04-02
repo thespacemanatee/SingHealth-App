@@ -4,15 +4,11 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import * as eva from "@eva-design/eva";
 import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
-import { createStore, combineReducers, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
-import ReduxThunk from "redux-thunk";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import * as Notifications from "expo-notifications";
 
-import databaseReducer from "./src/store/reducers/databaseReducer";
-import checklistReducer from "./src/store/reducers/checklistReducer";
-import authReducer from "./src/store/reducers/authReducer";
+import store from "./src/store/store";
 import AppNavigator from "./src/navigation/AppNavigator";
 import { default as theme } from "./src/theme/theme.json";
 
@@ -23,14 +19,6 @@ Notifications.setNotificationHandler({
     shouldSetBadge: false,
   }),
 });
-
-const rootReducer = combineReducers({
-  auth: authReducer,
-  database: databaseReducer,
-  checklist: checklistReducer,
-});
-
-const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 const paperTheme = {
   ...DefaultTheme,
