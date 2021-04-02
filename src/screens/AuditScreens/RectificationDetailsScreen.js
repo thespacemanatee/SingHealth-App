@@ -28,16 +28,13 @@ const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const RectificationDetailsScreen = ({ route, navigation }) => {
   const authStore = useSelector((state) => state.auth);
   const checklistStore = useSelector((state) => state.checklist);
-  const { index } = route.params;
-  const { checklistType } = route.params;
-  const { question } = route.params;
-  const { section } = route.params;
-  const { rectified } = route.params;
   const [value, setValue] = useState("");
   const [imageArray, setImageArray] = useState([]);
   const [deadline, setDeadline] = useState();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  const { index, checklistType, question, section, rectified } = route.params;
 
   const theme = useTheme();
 

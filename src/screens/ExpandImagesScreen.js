@@ -27,12 +27,10 @@ const BackIcon = (props) => (
 );
 
 const ExpandImagesScreen = ({ route, navigation }) => {
-  const { imageArray } = route.params;
-  const { selectedIndex } = route.params;
-
+  const { imageArray, selectedIndex } = route.params;
+  const [activeIndex, setActiveIndex] = useState(selectedIndex);
   const topRef = useRef(null);
   const thumbRef = useRef(null);
-  const [activeIndex, setActiveIndex] = useState(selectedIndex);
 
   const { width, height } = Dimensions.get("window");
 

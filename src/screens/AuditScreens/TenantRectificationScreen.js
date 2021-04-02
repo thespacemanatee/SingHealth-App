@@ -20,7 +20,6 @@ import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import alert from "../../components/CustomAlert";
-import * as authActions from "../../store/actions/authActions";
 import * as checklistActions from "../../store/actions/checklistActions";
 import * as databaseActions from "../../store/actions/databaseActions";
 import ImagePage from "../../components/ui/ImagePage";
@@ -36,11 +35,6 @@ const ImageIcon = (props) => <Icon {...props} name="image-outline" />;
 const TenantRectificationScreen = ({ route, navigation }) => {
   const authStore = useSelector((state) => state.auth);
   const checklistStore = useSelector((state) => state.checklist);
-  const { index } = route.params;
-  const { checklistType } = route.params;
-  const { question } = route.params;
-  const { section } = route.params;
-  const { rectified } = route.params;
   const [value, setValue] = useState("");
   const [imageArray, setImageArray] = useState([]);
   const [uploadImageArray, setUploadImageArray] = useState([]);
@@ -49,6 +43,8 @@ const TenantRectificationScreen = ({ route, navigation }) => {
   const [error, setError] = useState(false);
   const [toggle, setToggle] = useState(false);
   const [disableToggle, setDisableToggle] = useState(false);
+
+  const { index, checklistType, question, section, rectified } = route.params;
 
   console.log("RECTIFIED:", rectified);
 

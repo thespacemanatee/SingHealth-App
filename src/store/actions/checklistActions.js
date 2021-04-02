@@ -16,9 +16,6 @@ export const CHANGE_DEADLINE = "CHANGE_DEADLINE";
 export const RESET_CHECKLIST_STORE = "RESET_CHECKLIST_STORE";
 export const GET_AUDIT_DATA = "GET_AUDIT_DATA";
 export const GET_IMAGE = "GET_IMAGE";
-// export const RECTIFY_CHOSEN_CHECKLIST = "RECTIFY_CHOSEN_CHECKLIST";
-// export const RECTIFY_COVID_CHECKLIST = "RECTIFY_COVID_CHECKLIST";
-
 export const TYPE_FNB = "fnb";
 export const TYPE_NON_FNB = "non_fnb";
 export const TYPE_COVID = "covid19";
@@ -167,9 +164,8 @@ export const getAuditData = (auditID) => {
       // withCredentials: true,
     };
     const res = await httpClient(options);
-    const { data } = res.data;
-    const { auditMetadata } = data;
-    const { auditForms } = data;
+    const { auditMetadata, auditForms } = res.data.data;
+
     const formKeys = Object.keys(auditForms);
     const type = formKeys.find((e) => {
       return e !== "covid19";

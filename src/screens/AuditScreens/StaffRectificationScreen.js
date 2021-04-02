@@ -18,7 +18,6 @@ import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import alert from "../../components/CustomAlert";
-import * as authActions from "../../store/actions/authActions";
 import * as checklistActions from "../../store/actions/checklistActions";
 import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
@@ -31,16 +30,14 @@ const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const StaffRectificationScreen = ({ route, navigation }) => {
   const authStore = useSelector((state) => state.auth);
   const checklistStore = useSelector((state) => state.checklist);
-  const { index } = route.params;
-  const { checklistType } = route.params;
-  const { question } = route.params;
-  const { section } = route.params;
   const [value, setValue] = useState("");
   const [imageArray, setImageArray] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadDialog, setLoadDialog] = useState(false);
   const [error, setError] = useState(false);
   const [toggle, setToggle] = useState(false);
+
+  const { index, checklistType, question, section } = route.params;
 
   const theme = useTheme();
 

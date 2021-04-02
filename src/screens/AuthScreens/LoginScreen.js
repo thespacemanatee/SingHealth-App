@@ -26,7 +26,6 @@ import * as Yup from "yup";
 import CustomTextInput from "../../components/CustomTextInput";
 import * as authActions from "../../store/actions/authActions";
 import Logo from "../../components/ui/Logo";
-import alert from "../../components/CustomAlert";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
 

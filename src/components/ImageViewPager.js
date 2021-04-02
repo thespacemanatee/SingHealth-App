@@ -9,8 +9,7 @@ const ImageViewPager = (props) => {
   const IMAGE_HEIGHT = SCREEN_HEIGHT * 0.5;
   const IMAGE_WIDTH = (IMAGE_HEIGHT / 4) * 3;
 
-  const { imageArray } = props;
-  const { renderListItems } = props;
+  const { imageArray, renderListItems } = props;
 
   return imageArray.length > 0 ? (
     <View style={SCREEN_WIDTH}>

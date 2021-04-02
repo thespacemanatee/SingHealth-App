@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, Platform } from "react-native";
+import React from "react";
+import { View } from "react-native";
 import {
   Button,
   Divider,
@@ -11,7 +11,6 @@ import {
 } from "@ui-kitten/components";
 
 import Logo from "../../../components/ui/Logo";
-import alert from "../../../components/CustomAlert";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 
