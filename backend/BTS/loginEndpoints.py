@@ -129,65 +129,50 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
     @app.route('/logout', methods=["POST"])
     @login_required
     def logout():
-        # if request.method == "POST":
-        #     data = request.json
-        #     if data == None:
-        #         logout_user()
-        #         return serverResponse(
-        #             None,
-        #             200,
-        #             "You are now logged out"
-        #             )
+        if request.method == "POST":
+            data = request.json
+            if data == None:
+                logout_user()
+                return serverResponse(
+                    None,
+                    200,
+                    "You are now logged out"
+                    )
 
-        #     #TODO：Remove the token from the DB
-        #     userEmail = current_user.get_id()
-        #     if session["account_type"] == "tenant":
-        #         user = mongo.db.tenant.find_one({"email": userEmail})
-        #         if user:
-        #             currentTokens = user["expoToken"]
-        #             currentTokens.remove(data["expoToken"])
-        #             result = mongo.db.tenant.update_one(
-        #                         {"email": userEmail},
-        #                         {
-        #                             "$set": {
-        #                                 "expoToken": currentTokens
-        #                             }
+            #TODO：Remove the token from the DB
+            userEmail = current_user.get_id()
+            userExpoToken = data["expoToken"]
+            if session["account_type"] == "tenant":
+                mongo.db.tenant.update_one(
+                    {"email": userEmail},
+                    {
+                        "$pull": {
+                            "expoToken": {
+                                "$in": [userExpoToken]
+                            }
+                        }
 
-        #                         }
-        #                     )
-        #         else:
-        #             return serverResponse(
-        #                 None,
-        #                 401,
-        #                 "Your username does not exist"
-        #                 )
-        #     elif session["account_type"] == "staff":
-        #         user = mongo.db.staff.find_one({"email": userEmail})
-        #         if user:
-        #             currentTokens = user["expoToken"]
-        #             currentTokens.remove(data["expoToken"])
-        #             result = mongo.db.staff.update_one(
-        #                         {"email": userEmail},
-        #                         {
-        #                             "$set": {
-        #                                 "expoToken": currentTokens
-        #                             }
+                    }
+                )
+            elif session["account_type"] == "staff":
+                mongo.db.staff.update_one(
+                    {"email": userEmail},
+                    {
+                        "$pull": {
+                            "expoToken": {
+                                "$in": [userExpoToken]
+                            }
+                        }
 
-        #                         }
-        #                     )
-        #         else:
-        #             return serverResponse(
-        #                 None,
-        #                 401,
-        #                 "Your username does not exist"
-        #                 )
-        session.pop('account_type')
-        logout_user()
-        return serverResponse(
-            None,
-            200,
-            "You are now logged out"
-        )
+                    }
+                )
+            session.pop('account_type')
+            logout_user()
+            return serverResponse(
+                None,
+                200,
+                "You are now logged out"
+            )
 
     @login_manager.user_loader
     def load_user(user_email):
