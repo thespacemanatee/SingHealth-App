@@ -38,3 +38,5 @@ s3transfer==0.3.6
 six==1.15.0
 urllib3==1.26.4
 werkzeug==1.0.1
+exponent-server-sdk==2.0.0
+rollbar==0.15.2
