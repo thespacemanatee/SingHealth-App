@@ -10,8 +10,6 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
   const [progress, setProgress] = useState(1);
   const { auditMetadata, stallName } = item;
 
-  console.log("ITEM", item);
-
   const handleOnPress = () => {
     onPress(auditMetadata._id, stallName);
   };

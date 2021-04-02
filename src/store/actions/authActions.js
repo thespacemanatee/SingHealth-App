@@ -62,19 +62,25 @@ export const signIn = (user, pswd, expoToken, userType) => {
       stall,
     };
 
-    dispatch({ type: SIGN_IN, userData });
+    dispatch({ type: SIGN_IN, userData, expoToken });
     saveUserDataToStorage(userData);
   };
 };
 
-export const signOut = () => {
+export const signOut = (expoToken) => {
   return async (dispatch) => {
     // dispatch({ action: SIGN_OUT, token: token ? token : null });
     console.log("Signing out!");
     const signOutOptions = {
       url: `${endpoint}logout`,
-      method: "get",
-      // withCredentials: true,
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      data: {
+        expoToken,
+      },
     };
     await httpClient(signOutOptions);
 

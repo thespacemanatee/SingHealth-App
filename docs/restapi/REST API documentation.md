@@ -815,9 +815,6 @@ localhost:5000/audits/unrectified/recent/tenant/grwrbgbgbewvw/0
             "auditMetadata": {
                 ...                
             },
-            "filledAuditForms": {
-                ...
-            },
             "stallName": "Mr Bean"
         },
         <Audit object w stallName/>,

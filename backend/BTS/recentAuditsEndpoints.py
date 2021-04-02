@@ -21,7 +21,12 @@ def addRecentAuditsEndpoints(app, mongo):
 
             auditsList = []
             for audit in audits:
-                auditsList.append(audit)
+                auditObject = {"auditMetadata": audit}
+                tenant = mongo.db.tenant.find_one({"_id": audit["tenantID"]})
+                if tenant:
+                    auditObject["stallName"] = tenant["stall"]["name"]
+                    
+                auditsList.append(auditObject)
 
             if len(auditsList) == 0:
                 return serverResponse(None, 404, "No matching forms")

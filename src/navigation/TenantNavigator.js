@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -47,6 +47,7 @@ export const BottomNavigationAccessoriesShowcase = ({ navigation, state }) => {
 };
 
 const Footer = () => {
+  const authStore = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   return (
@@ -54,7 +55,7 @@ const Footer = () => {
       <DrawerItem
         title="Logout"
         onPress={() => {
-          dispatch(authActions.signOut());
+          dispatch(authActions.signOut(authStore.expoToken));
         }}
       />
       <Divider />

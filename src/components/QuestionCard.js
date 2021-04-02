@@ -57,7 +57,6 @@ const QuestionCard = (props) => {
   }, [theme, deleted]);
 
   const rightSwipe = useCallback(() => {
-    console.log(checklistType, section, index, deleted, checked);
     setDeleted(!deleted);
     // dispatch(checklistActions.changeMaximumScore(!deleted, checked));
     dispatch(
@@ -74,7 +73,6 @@ const QuestionCard = (props) => {
 
   const onChangeHandler = useCallback(
     (nextChecked) => {
-      console.log(checklistType, section, index, deleted, checked);
       setChecked(nextChecked);
       // dispatch(checklistActions.changeCurrentScore(nextChecked));
       dispatch(
