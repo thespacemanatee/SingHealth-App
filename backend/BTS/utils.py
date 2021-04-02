@@ -127,3 +127,14 @@ def check_duplicate(mongo, collection, key, value):
         return True
     else:
         return False
+    
+def find_and_return_one(mongo, collection, key, value):
+    try:
+        result = mongo.db[collection].find_one({key : value})
+        
+        if result is not None:
+            return True, result
+        else:
+            return False, None
+    except:
+        return None, None
