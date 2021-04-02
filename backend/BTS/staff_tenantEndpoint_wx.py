@@ -54,7 +54,7 @@ def change_tenant_info(app, mongo):
                             "companyName":tenant_info["companyName"],
                             "companyPOC":{
                                 "name":tenant_info["companyPOCName"],
-                                "email":tenant_info["companyPOCWmail"].upper()},
+                                "email":tenant_info["companyPOCEmail"].upper()},
                             "address":{
                                 "blk":tenant_info.get("blk", None),
                                 "street":tenant_info.get("street", None),

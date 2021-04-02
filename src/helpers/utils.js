@@ -25,7 +25,7 @@ export const handleErrorResponse = (err, action) => {
                   { text: "Cancel", style: "cancel" },
                   { text: "Confirm", onPress: action },
                 ]
-              : []
+              : [{ text: "Okay" }]
           );
           break;
         }

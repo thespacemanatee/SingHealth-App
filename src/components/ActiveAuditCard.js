@@ -8,19 +8,22 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
   const animation = useRef(null);
   const theme = useTheme();
   const [progress, setProgress] = useState(1);
+  const { auditMetadata, stallName } = item;
+
+  console.log("ITEM", item);
 
   const handleOnPress = () => {
-    onPress(item._id);
+    onPress(auditMetadata._id);
   };
 
   useEffect(() => {
     const temp = Number.parseFloat(
-      (Number.parseFloat(item.rectificationProgress) * 100).toFixed(1)
+      (Number.parseFloat(auditMetadata.rectificationProgress) * 100).toFixed(1)
     );
     if (temp > 0) {
       setProgress(temp);
     }
-  }, [item.rectificationProgress]);
+  }, [auditMetadata.rectificationProgress]);
 
   return (
     <Card
@@ -31,16 +34,16 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
     >
       <View style={styles.cardContainer}>
         <View style={{}}>
-          <Text style={styles.timeStamp}>{item.stallName}</Text>
+          <Text style={styles.timeStamp}>{stallName}</Text>
           <Text style={styles.timeStamp}>
-            {moment(item.date.$date)
+            {moment(auditMetadata.date)
               .toLocaleString()
               .split(" ")
               .slice(0, 5)
               .join(" ")}
           </Text>
           <Text>{`${userType === "staff" ? "Tenant" : "You"} scored: ${(
-            Number.parseFloat(item.score) * 100
+            Number.parseFloat(auditMetadata.score) * 100
           ).toFixed(1)}`}</Text>
         </View>
         <View>
@@ -58,7 +61,7 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
               <View style={styles.progressContainer}>
                 <Text style={styles.progressText}>
                   {`${(
-                    Number.parseFloat(item.rectificationProgress) * 100
+                    Number.parseFloat(auditMetadata.rectificationProgress) * 100
                   ).toFixed(1)}%`}
                 </Text>
                 <Text style={styles.progressText}>Progress</Text>
