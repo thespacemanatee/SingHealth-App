@@ -7,8 +7,8 @@
 - [x] [`POST /audits`](#`POST-/audits`)
 - [x] [`POST /images`](#`POST-/images`)
 - [x] [`GET /images`](#`GET-/images`)
-- [x] [`GET /login/tenant`](#`GET-/login/tenant`)
-- [x] [`GET /login/staff`](#`GET-/login/staff`)
+- [x] [`POST /login/tenant`](#`GET-/login/tenant`)
+- [x] [`POST /login/staff`](#`GET-/login/staff`)
 - [x] [`GET /audits/<auditID>`](#`GET-/audits/auditID`)
 - [x] [`PATCH /audits/<auditID>/tenant`](#`PATCH-/audits/auditID/tenant`)
 - [x] [`PATCH /audits/<auditID>/staff`](#`PATCH-/audits/auditID/staff`)
@@ -27,6 +27,8 @@ Param | Description
 -|-
 `institutionId` | Unique identifier for institution
 
+<br>
+
 ### Sample request
 ```
 localhost:5000/tenants/{institutionId}
@@ -34,27 +36,26 @@ localhost:5000/tenants/{institutionId}
 
 ### Sample success response
 ```
-{
-  "status": 200,
-  "description": "success",
-  "data": [
-      {
-        "tenantID": "rtweafcwred",
-        "stallName": "Mr Bean"
-      },
-      {
-        "tenantID": "vefvefas",
-        "stallName": "Jollibean"
-      }
-  ]
-  
+"status": 200,
+"data": {
+    "description": "success",
+    "data": [
+        {
+          "tenantID": "rtweafcwred",
+          "stallName": "Mr Bean"
+        },
+        {
+          "tenantID": "vefvefas",
+          "stallName": "Jollibean"
+        }
+    ]
 }
 ```
 ### Response definitions
-`tenantID`
-~ Unique identifier for tenant
-`stallName`
-~ Name of the stall the tenant is from
+Attribute | Description
+-|-
+`tenantID` | Unique identifier for tenant
+`stallName` | Name of the stall the tenant is from
 
 <br>
 
@@ -70,35 +71,35 @@ localhost:5000/auditForms/fnb
 ```
 ### Sample Response
 ```js
-{
-  "description": "Success",
-  "status": 200,
-  "data": {
-    "_id": "fnb2021",
-    "type": "fnb",
-    "questions": {
-      "category1": [
-        {
-          "question": "...",
-          "answer": false
-        },
-        {
-          "question": "...",
-          "answer": false
+"status": 200,
+"data": {
+    "description": "Success",
+    "data": {
+        "_id": "fnb2021",
+        "type": "fnb",
+        "questions": {
+            "category1": [
+                {
+                    "question": "...",
+                    "answer": false
+                },
+                {
+                    "question": "...",
+                    "answer": false
+                }
+            ],
+            "category2": [
+                {
+                    "question": "...",
+                    "answer": false
+                },
+                {
+                    "question": "...",
+                    "answer": false
+                }
+            ]
         }
-      ],
-      "category2": [
-        {
-          "question": "...",
-          "answer": false
-        },
-        {
-          "question": "...",
-          "answer": false
-        }
-      ]
     }
-  }
 }
 ```
 
@@ -107,7 +108,7 @@ localhost:5000/auditForms/fnb
 
 ## `POST /images`
 ---
-There are 2 ways to send in images to this endpoint:
+There are 2 ways to send in images to this endpoint, choose only 1 per request:
 - by json in base64 encoded format
 - by Multipart/formdata
 
@@ -142,22 +143,22 @@ Category | Name
 Mimetype | `image/jpg` / `image/png`
 Key | `images`
 
+<br>
 
-!!!note
-Out of base64(JSON) or formdata, **only use 1** of them per request~
-!!!
+<br>
+
 ### Sample response
 #### Success
 ```js
-{
-  "status": 200,
+"status": 200,
+"data": {
   "description": "Images have successfully been uploaded"
 }
 ```
 #### Failure
 ```js
-{
-  "status": 400,
+"status": 400,
+"data": {
   "description": "Image filenames not unique"
 }
 ```
@@ -169,6 +170,7 @@ Arg | Description
 -|-
 `fileName` | The name and file extension of the image. Must be globally unique.
 
+<br>
 
 ### Sample request
 ```js
@@ -178,23 +180,23 @@ Arg | Description
 ### Sample response
 #### Success
 ```js
-{
-  "status": 200,
+"status": 200,
+"data": {
   "description": "Images have successfully been uploaded",
   "data": "image1 in base64"
 }
 ```
 #### Failure
 ```js
-{
-  "status": 500,
-  "description": "Unpexted Error, pls try again."
+"status": 500,
+"data": {
+  "description": "Unexpected Error, pls try again."
 }
 ```
 
 ```js
-{
-  "status": 404,
+"status": 404,
+"data": {
   "description": "Image3 does not exist"
 }
 ```
@@ -205,63 +207,67 @@ JSON param | Description
 -|-
 `user` | The user email tagged to the account
 `pswd` | The password(may be hashed) security
+`expoToken`| The unique identifier for the user's device based on Expo
 
 ### Sample request
 ```js
 {
     "user": "something_else@gg.com",
-    "pswd": "mujnyhbt4gyh7uj5n6yhb5t4g56yh7u6"
+    "pswd": "mujnyhbt4gyh7uj5n6yhb5t4g56yh7u6",
+    "expoToken":"therhrhyrhyh5y6yh56yvt5yer"
 }
 ```
 ### Sample response
 #### Success
 ```js
-{
-    "status": "200",
+"status": "200",
+"data": {
     "description": "You are now logged in",
-    "data": <User credentials>
+    "data": <User object/>
 }
 ```
 #### Failure
 ```js
-{
-    "status": "400",
+"status": "400",
+"data": {
     "description": "User or pswd is incorrect"
 }
 ```
 
 
 ## `POST /login/staff`
-!!!note
 Uses exactly the same request and response format as `/login/tenant`
-!!!
-### JSON body parameters
+
+
+### JSON body parameters  
 JSON param | Description
 -|-
 `user` | The user email tagged to the account
 `pswd` | The password(may be hashed) security
+`expoToken`| The unique identifier for the user's device based on Expo. This is optional.
 
 ### Sample request
 ```js
 {
     "user": "something_else@gg.com",
-    "pswd": "mujnyhbt4gyh7uj5n6yhb5t4g56yh7u6"
+    "pswd": "mujnyhbt4gyh7uj5n6yhb5t4g56yh7u6",
+    "expoToken":"therhrhyrhyh5y6yh56yvt5yer"
 }
 ```
 ### Sample response
 #### Success
 ```js
-{
-    "status": "200",
+"status": "200",
+"data": {
     "description": "You are now logged in",
     "data": <User credentials>
 }
 ```
 #### Failure
 ```js
-{
-    "status": "400",
-    "description": "User or pswd is incorrect"
+"status": "400",
+"data": {
+    "description": "Email or pswd is incorrect"
 }
 ```
 
@@ -279,9 +285,9 @@ localhost:5000/auditForms/tegtethg4355g4gbtr
 ### Sample responses
 #### Success
 ```js
+"status": 200,
 {
-  "status": 200,
-  "data":{
+  "data": {
       "auditMetadata": {
         ...
       },
@@ -292,8 +298,8 @@ localhost:5000/auditForms/tegtethg4355g4gbtr
                       "question": "How are you?",
                       "answer": true
                   },
-                  <Question Object>,
-                  <Question Object>
+                  <Question Object/>,
+                  <Question Object/>
               ],
               "professionalism": [
                 ...
@@ -314,9 +320,9 @@ localhost:5000/auditForms/tegtethg4355g4gbtr
 
 #### Failure
 ```js
-{
-  "status": 404,
-  "description": "No matching audits found"
+"status": 404,
+"data": {
+    "description": "No matching audits found"
 }
 ```
 
@@ -337,11 +343,8 @@ JSON param | Description
 `rectificationRemarks` | [Optional] Supplement images with remarks.
 `requestForExt` | [Optional] If tenant needs more time to fix non-compliance, this option raises a request to the staff for approval. Staff chooses deadline.
 
-!!!caution
-Also, server will reject requests if it contains any PATCHes to *compliant* line items! Users are only allowed to edit non-compliant line items!
-
-Tenants will only be allowed to create these 3 fields through this endpoint: `rectificationImages`, `rectificationRemarks` & `requestForExt`. Adding any other fields will be rejected with a error code `400` and will not be processed!
-!!!
+>### Caution
+>Also, server will reject requests if it contains any PATCHes to *compliant* line items! Users are only allowed to edit non-compliant line items! Tenants will only be allowed to create these 3 fields through this endpoint: `rectificationImages`, `rectificationRemarks` & `requestForExt`. Adding any other fields will be rejected with a error code `400` and will not be processed!
 
 #### Example
 ```js
@@ -354,8 +357,8 @@ Tenants will only be allowed to create these 3 fields through this endpoint: `re
                 "rectificationRemarks": "Remarks",
                 "requestForExt": bool
             },
-            <Patch Object>,
-            <Patch Object>       
+            <Patch Object/>,
+            <Patch Object/>       
     ],
     <formType>: [
         ...
@@ -375,8 +378,8 @@ Tenants will only be allowed to create these 3 fields through this endpoint: `re
                 "rectificationRemarks": "hello, this is me",
                 "requestForExt": True
             },
-            <Patch Object>,
-            <Patch Object>       
+            <Patch Object/>,
+            <Patch Object/>       
     ],
     "covid19": [
         ...
@@ -387,7 +390,9 @@ Tenants will only be allowed to create these 3 fields through this endpoint: `re
 ### Sample response
 #### Success
 ```js
-{
+"status": 200,
+"data": {
+    "description": "Changes sent to the database.",
     "data": [
         {
             "patch": {
@@ -412,25 +417,23 @@ Tenants will only be allowed to create these 3 fields through this endpoint: `re
         <PatchResult/>,
         <PatchResult/>,
         ...
-    ],
-    "status": "Changes sent to the database.",
-    "status_code": 200
+    ]     
 }
 ```
 #### Failure
 ##### Invalid Patch Keys
 When tenant tries to send anything other than the stated alllowed keys above.
 ```js
-{
-    "status": 400,
+"status": 400,
+"data": {    
     "description": "Invalid keys provided. You are trying to modify fields that are locked for modifying."    
 }
 ```
 ##### Insufficient Required Keys
 The following keys are required: `category` & `index`, in every Patch Object.
 ```js
-{
-    "status": 400,
+"status": 400,
+"data": {
     "description": "Unable to narrow down the line item in the audit that you want to edit."    
 }
 ```
@@ -438,8 +441,8 @@ The following keys are required: `category` & `index`, in every Patch Object.
 ##### Modifying a line item marked as "Compliant"
 Tenants are not allowed to modify line items that are already compliant/rectified.
 ```js
-{
-    "status": 400,
+"status": 400,
+"data": {
     "description": "You are editing a line item that was previously marked as compliant"
 }
 ```
@@ -447,8 +450,8 @@ Tenants are not allowed to modify line items that are already compliant/rectifie
 ##### Modifying a line item marked as "Rectified"
 Tenants are not allowed to modify line items that are already compliant/rectified.
 ```js
-{
-    "status": 400,
+"status": 400,
+"data": {    
     "description": "You are editing a line item that was previously marked as rectified"
 }
 ```
@@ -456,17 +459,18 @@ Tenants are not allowed to modify line items that are already compliant/rectifie
 ##### Form type doesn't exist
 When the tenant is from fnb but the request was trying to modify non_fnb
 ```js
-{
-    "status": 400,
+"status": 400,
+"data": {
     "description": "The form(fnb) you were trying to edit does not exist."
 }
 ```
 
 ## `PATCH /audits/<auditID>/staff`
 ### Request Arguments
-Request args | Description
+URL Request parameter | Description
 -|-
 `auditID`|The unique identifier for the audit
+
 ### JSON Body parameters
 Check out the example below on how all these parameters are arranged in the actual request.
 JSON param | Description
@@ -478,14 +482,12 @@ JSON param | Description
 `acceptedRequest` | A record of whether the request for time extension has been granted.
 `deadline` | The new deadline if time extension has been granted
 
-!!!caution
-Staff will only be allowed to create these 3 fields through this endpoint: `rectified`, `acceptedRequest` & `deadline`. Adding any other fields will be rejected with a error code `400` and will not be processed!
+<br>
 
-Also, server will reject requests if it contains any PATCHes to *compliant* line items! Users are only allowed to edit non-compliant line items!
-!!!
-!!!note
-This PATCH request can be repeated many times. The `deadline`, `acceptedRequest` fields in the database will keep changing until `rectified` has been set to true
-!!!
+>### *Caution*
+>Staff will only be allowed to create these 3 fields through this endpoint: `rectified`, `acceptedRequest` & `deadline`. Adding any other fields will be rejected with a error code `400` and will not be processed! 
+>Also, server will reject requests if it contains any PATCHes to *compliant* line items! Users are only allowed to edit non-compliant line items!
+>This PATCH request can be repeated many times. The `deadline`, `acceptedRequest` fields in the database will keep changing until `rectified` has been set to true.
 
 #### Example
 ```js
@@ -498,8 +500,8 @@ This PATCH request can be repeated many times. The `deadline`, `acceptedRequest`
                 "rectified": bool,
                 "acceptedRequest": bool
             },
-            <Patch Object>,
-            <Patch Object>,
+            <Patch Object/>,
+            <Patch Object/>,
             ...
     ],
     <formType>: [
@@ -527,7 +529,7 @@ This PATCH request can be repeated many times. The `deadline`, `acceptedRequest`
                 "rectified": false,
                 "acceptedRequest": true
             },
-            <Patch Object>,
+            <Patch Object/>,
             ...
     ],
     "covid19": [
@@ -539,39 +541,44 @@ This PATCH request can be repeated many times. The `deadline`, `acceptedRequest`
 ### Sample response
 #### Success
 ```js
-{
-    "patchResults": [
-        {
-            "patch": {
-                "acceptedRequest": false,
-                "category": "Workplace Safety and Health",
-                "deadline": "2021-03-29T11:08:15+0000",
-                "index": 1,
-                "rectified": false
+"status": 200,
+"data": {
+    "description": "Changes sent to the database"
+    "data": {
+        "patchResults": [
+            {
+                "patch": {
+                    "acceptedRequest": false,
+                    "category": "Workplace Safety and Health",
+                    "deadline": "2021-03-29T11:08:15+0000",
+                    "index": 1,
+                    "rectified": false
+                },
+                "status": true
             },
-            "status": true
-        },
-        {
-            "patch": {
-                "acceptedRequest": false,
-                "category": "Workplace Safety and Health",
-                "deadline": "2021-03-29T11:08:15+0000",
-                "index": 2,
-                "rectified": false
+            {
+                "patch": {
+                    "acceptedRequest": false,
+                    "category": "Workplace Safety and Health",
+                    "deadline": "2021-03-29T11:08:15+0000",
+                    "index": 2,
+                    "rectified": false
+                },
+                "status": true
             },
-            "status": true
-        },
-        <PatchResult/>,
-        <PatchResult/>,
-        ...
-    ],
-    "rectificationProgress": 0.0,
-    "updatedRectProgress": true
+            <PatchResult/>,
+            <PatchResult/>,
+            ...
+        ],
+        "rectificationProgress": 0.0,
+        "updatedRectProgress": true
+    }
 }
 ```
 #### Failure
 The failure messages are similar to those of `PATCH /audits/<auditID>/tenant`
 <br>
+
 ## `POST /audits`
 ---
 ### Side effects
@@ -586,52 +593,47 @@ JSON param | Description
 ### Sample request
 ```python
 {
-  "auditMetadata": {
-    ...
-  },
-  "auditForms": {
-    "fnb": {
-      "hygiene": [
+    "auditMetadata": {
         ...
-      ],
-      "professionalism": [
-        ...
-      ]
     },
-    "covid19": {
-      "cleanliness": [
-        ...
-      ],
-      "safety": [
-        ...
-      ]
-    }
-  } 
+    "auditForms": {
+        "fnb": {
+            "hygiene": [
+                ...
+            ],
+            "professionalism": [
+              ...
+            ]
+        },
+        "covid19": {
+            "cleanliness": [
+                ...
+            ],
+            "safety": [
+                ...
+            ]
+        }
+    } 
 }
 ```
 
 ### Sample response
 #### Success response
 ```js
-{
-  "status": 200,
+"status": 200,
+"data": {  
   "description": "Forms have successfully been uploaded"
 }
 ```
 #### Failure response
 ```js
-{
-  "status": 400,
-  "description": "Duplicate image filenames found",
-  "category": "Professionalism",
-  "index": 0
+"status": 400,
+"data": {
+  "description": "Duplicate image filenames found for item 3 under 'Professionalism'"
 }
 ```
-
 <br>
 <br>
-
-
 
 ## `POST /audits/saved`
 ### Description of use case
@@ -650,34 +652,34 @@ JSON param | Description
 ### Sample request
 ```python
 {
-  "auditMetadata": {
-    ...
-  },
-  "auditForm": {
-    "fnb": {
-      "hygiene": [
+    "auditMetadata": {
         ...
-      ],
-      "professionalism": [
-        ...
-      ]
     },
-    "covid19": {
-      "cleanliness": [
-        ...
-      ],
-      "safety": [
-        ...
-      ]
-    }
-  } 
+    "auditForm": {
+        "fnb": {
+            "hygiene": [
+                ...
+            ],
+            "professionalism": [
+                ...
+            ]
+        },
+        "covid19": {
+            "cleanliness": [
+                ...
+            ],
+            "safety": [
+                ...
+            ]
+        }
+    } 
 }
 ```
 ### Sample response
 #### Success response
 ```js
-{
-  "status": 200,
+"status": 200,
+"data": {  
   "description": "Forms have successfully been saved",
   "data": {
       "_id": "tbry56j68%^&^&%%^YH^Y%6y5"
@@ -686,9 +688,9 @@ JSON param | Description
 ```
 #### Failure response
 ```js
-{
-  "status": 502,
-  "description": "Perhaps the connection to the database is lost"
+"status": 502,
+"data": {
+    "description": "Perhaps the connection to the database is lost"
 }
 ```
 ## `GET /audits/saved`
@@ -703,37 +705,37 @@ JSON param | Description
 ```
 ### Sample response
 ```js
-{
-  "status": 200,
-  "description": "Forms have successfully been retrieved",
-  "data": {
-      "auditMetadata": {
-          ...
-      },
-      "auditForm": {
-          "fnb": {
-              "hygiene": [
-                  {
-                    "question":"Are you okay?",
-                    "answer": true
-                  },
-                  { ... },
-                  ...
-              ],
-              "professionalism": [
-                ...
-              ]
+"status": 200,
+"data": {
+    "description": "Forms have successfully been retrieved",
+    "data": {
+          "auditMetadata": {
+              ...
           },
-          "covid19": {
-              "cleanliness": [
-                ...
-              ],
-              "safety": [
-                ...
-              ]
-          }
-      } 
-  }
+          "auditForm": {
+              "fnb": {
+                  "hygiene": [
+                      {
+                        "question":"Are you okay?",
+                        "answer": true
+                      },
+                      { ... },
+                      ...
+                  ],
+                  "professionalism": [
+                      ...
+                  ]
+              },
+              "covid19": {
+                  "cleanliness": [
+                      ...
+                  ],
+                  "safety": [
+                      ...
+                  ]
+              }
+          } 
+    }
 }
 ```
 #### Success
@@ -754,25 +756,31 @@ localhost:5000/audits/unrectified/recent/staff/grwrbgbgbewvw/4
 ```
 #### Without date range
 ```js
-localhost:5000/audits/unrectified/recent/staff/grwrbgbgbewvw/4
+localhost:5000/audits/unrectified/recent/staff/grwrbgbgbewvw/0
 ```
 ### Sample response
 #### Success
 ```js
-{
-    "status": 200,
+"status": 200,
+"data": {    
     "description": "Forms found",
     "data": [
-        <Audit object>,
-        <Audit object>
+        {
+            "auditMetadata": {
+                ...                
+            },
+            "stallName": "Mr Bean"
+        },
+        <AuditMetadata object w stallName>,
+        <AuditMetadata object w stallName>
     ]
 }
 ```
 
 #### Failure
 ```js
-{
-    "status": 404,
+"status": 404,
+"data": {
     "description": "No matching Forms",
     "data": []
 }
@@ -799,20 +807,29 @@ localhost:5000/audits/unrectified/recent/tenant/grwrbgbgbewvw/0
 ### Sample response
 #### Success
 ```js
-{
-    "status": 200,
+"status": 200
+"data": {
     "description": "Forms found",
     "data": [
-        <Audit object>,
-        <Audit object>
+        {
+            "auditMetadata": {
+                ...                
+            },
+            "filledAuditForms": {
+                ...
+            },
+            "stallName": "Mr Bean"
+        },
+        <Audit object w stallName/>,
+        <Audit object w stallName/>
     ]
 }
 ```
 
 #### Failure
 ```js
-{
-    "status": 404,
+"status": 404,
+"data": {
     "description": "No matching Forms",
     "data": []
 }
@@ -820,21 +837,19 @@ localhost:5000/audits/unrectified/recent/tenant/grwrbgbgbewvw/0
 
 ## `POST /tenant`
 ### Description of use case
-The staff to add new tenant. 
-
-Note: the email parameter should be unique for every tenant.
+The staff to add new tenant.
 ### Compulsory JSON Query string parameters
 JSON param | Description
 -|-
 `name` | Tenant's full name in upper case.
-`email` | The user email of a tenant. Unique for each tenant.
+`email` | The user email of a tenant.
 `pswd` | The password credentials for a tenant.
 `institutionID` | The institution where a tenant operates under.
-`stallName` | Name of the stall.
-`companyName` | Name of the company the stall is representing.
-`companyPOCName` | Name of the company POC.
-`companyPOCEmail` | Email of the company POC.
-`unitNo` | The unit number. I.e. 02-212 (without hashes).
+`stall_name` | Name of the stall.
+`company_name` | Name of the company the stall is representing.
+`company_POC_name` | Name of the company POC.
+`company_POC_email` | Email of the company POC.
+`unit_no` | The unit number. I.e. 02-212 (without hashes).
 `fnb` | Whether the stall is an F&B stall.
 `staffID` | ID of staff who created this account.
 `tenantDateStart` | Date when tenantship started, without including exact date. I.e. MM/YYYY
@@ -846,7 +861,7 @@ JSON param | Description
 `blk` | blk number. I.e. 243A.
 `street` | Street name.
 `bldg` | Name of the building.
-`zipCode` | The zipcode of the stall. I.e. 123456 (only numbers).
+`zipcode` | The zipcode of the stall. I.e. 123456 (only numbers).
 
 
 ### Sample request
@@ -857,14 +872,14 @@ JSON param | Description
     "email": "myemail.gg.com",
     "pswd": "mypassword",
     "institutionID": "myinstitution",
-    "stallName": "mystall",
-    "companyName": "mycompany",
-    "companyPOCName": "my_poc_name",
-    "companyPOCEmail": "my_poc_email",
-    "unitNo": "01-001",
+    "stall_name": "mystall",
+    "company_name": "mycompany",
+    "company_POC_name": "my_poc_name",
+    "company_POC_email": "my_poc_email",
+    "unit_no": "01-001",
     "fnb": true,
     "staffID": "000111",
-    "stallNumber": "stall 7",
+    "stall_number": "stall 7",
   	"tenantDateStart": "03/2021",
   	"tenantDateEnd": "05/2025"
 }
@@ -876,18 +891,18 @@ JSON param | Description
     "email": "myemail.gg.com",
     "pswd": "mypassword",
     "institutionID": "myinstitution",
-    "stallName": "mystall",
-    "companyName": "mycompany",
-    "companyPOCName": "my_poc_name",
-    "companyPOCEmail": "my_poc_email",
+    "stall_name": "mystall",
+    "company_name": "mycompany",
+    "company_POC_name": "my_poc_name",
+    "company_POC_email": "my_poc_email",
     "blk" : "myblk",
     "street": "mystreet",
     "bldg": "bldg",
-    "unitNo": "01-001",
-    "zipCode": 123456,
+    "unit_no": "01-001",
+    "zipcode": 123456,
     "fnb": true,
     "staffID": "000111",
-    "stallNumber": "stall 7",
+    "stall_number": "stall 7",
   	"tenantDateStart": "03/2021",
   	"tenantDateEnd": "05/2025"
 }
@@ -895,56 +910,40 @@ JSON param | Description
 ### Sample response
 #### Success
 ```js
-{
-    "status": 201,
+"status": 201,
+"data": {    
     "description": "Tenant Added"
-    ]
 }
 ```
 
 #### Partial Success
 ##### Missing keys, null or empty value received for compulsory data fields
 ```js
-{
-    "status": 200,
+"status": 200,
+"data": {    
     "description": "Insufficient/Error in data to add new tenant",
-    "data": [{
+    "data": [
+      {
       "missing_keys": ["key1", "key2", ...]
       "key_value_error": ["key3", "key4", ...]
-    }]
-    
-}
-```
-
-##### Duplicate tenant email
-```js
-{
-    "status": 404,
-    "description": "Duplicate email found"
-}
-```
-
-##### Both missing keys, null or empty value received for compulsory data fields and duplicate tenant email found
-```js
-{
-    "status": 404,
-    "description": "Duplicate email and insufficient/error in data to add new tenant"
+      }
+    ]
 }
 ```
 
 #### Failure
 ##### No response received
 ```js
-{
-    "status": 404,
+"status": 404,
+"data": {
     "description": "No response received"
 }
 ```
 
 ##### Unable to upload data
 ```js
-{
-    "status": 404,
+"status": 404,
+"data": {
     "description": "Cannot upload data to server"
 }
 ```
@@ -965,8 +964,8 @@ localhost:5000/tenant/0ta2b2kjq
 ### Sample responses
 #### Success
 ```js
-{
-  "status": 200,
+"status": 200,
+"data": {  
   "description": "Tenant with ID 0ta2b2kjq deleted"
 }
 ```
@@ -974,24 +973,16 @@ localhost:5000/tenant/0ta2b2kjq
 #### Failure
 ##### TenantID not found
 ```js
-{
-  "status": 404,
+"status": 404,
+"data": {
   "description": "No matching tenant ID found"
-}
-```
-
-##### Internal Error
-```js
-{
-  "status": 404,
-  "description": "Error deleting the tenant"
 }
 ```
 
 ##### Server Error
 ```js
-{
-  "status": 404,
+"status": 404,
+"data": {
   "description": "Error connecting to server"
 }
 ```
@@ -1012,32 +1003,34 @@ localhost:5000/tenant/0ta2b2kjq
 ### Sample responses
 #### Success
 ```js
-{
-  "status": 200,
-  "description": "Success",
-  "data": [{
-    "name": "myname",
-    "email": "myemail@gg.com",
-    ...
-  }]
+"status": 200,
+"data": {
+    "description": "Success",
+    "data": [
+        {
+            "name": "myname",
+            "email": "myemail@gg.com",
+            ...
+        }
+    ]
 
-  ]
+  
 }
 ```
 
 #### Failure
 ##### TenantID not found
 ```js
-{
-  "status": 404,
-  "description": "No matching tenant ID found"
+"status": 404,
+"data":{
+    "description": "No matching tenant ID found"
 }
 ```
 
 ##### Server Error
 ```js
-{
-  "status": 404,
-  "description": "Error connecting to server"
+"status": 404,
+"data": {
+    "description": "Error connecting to server"
 }
 ```
