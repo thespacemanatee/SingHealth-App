@@ -56,7 +56,7 @@ const StaffDashboardScreen = ({ navigation }) => {
   };
 
   const handleOpenAudit = useCallback(
-    async (auditID) => {
+    async (auditID, stallName) => {
       try {
         setLoading(true);
 
@@ -65,7 +65,7 @@ const StaffDashboardScreen = ({ navigation }) => {
         await dispatch(checklistActions.getAuditData(auditID));
 
         setLoading(false);
-        navigation.navigate("Rectification");
+        navigation.navigate("Rectification", { stallName });
       } catch (err) {
         handleErrorResponse(err);
         setError(err.message);

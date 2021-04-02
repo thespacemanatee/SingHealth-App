@@ -49,25 +49,23 @@ const TenantDashboardScreen = ({ navigation }) => {
   };
 
   const handleOpenAudit = useCallback(
-    async (auditID) => {
+    async (auditID, stallName) => {
       try {
         setLoading(true);
 
         console.log("AuditID:", auditID);
 
-        await dispatch(
-          checklistActions.getAuditData(auditID, authStore.stall.name)
-        );
+        await dispatch(checklistActions.getAuditData(auditID, stallName));
 
-        setLoading(false);
         navigation.navigate("Rectification");
       } catch (err) {
         handleErrorResponse(err);
         setError(err.message);
+      } finally {
         setLoading(false);
       }
     },
-    [authStore.stall.name, dispatch, navigation]
+    [dispatch, navigation]
   );
 
   const renderActiveAudits = useCallback(

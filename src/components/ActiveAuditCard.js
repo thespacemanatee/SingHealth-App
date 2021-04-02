@@ -13,7 +13,7 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
   console.log("ITEM", item);
 
   const handleOnPress = () => {
-    onPress(auditMetadata._id);
+    onPress(auditMetadata._id, stallName);
   };
 
   useEffect(() => {
