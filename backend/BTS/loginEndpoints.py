@@ -19,12 +19,12 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
         if request.method == "POST":
             credentials = request.json
             expoToken = credentials.get("expoToken", None)
-            userEmail = credentials["user"].upper()
+            userEmail = credentials["user"].lower()
             userPswd = credentials["pswd"]
 
             user = mongo.db.staff.find_one({"email": userEmail})
             if user:
-                dbUserEmail = user['email'].upper()
+                dbUserEmail = user['email'].lower()
                 # check_password_hash(user["pswd"], credentials["pswd"]):
                 if user["pswd"] == credentials["pswd"]:
                     user_obj = User(userEmail=dbUserEmail)
@@ -76,12 +76,12 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
         if request.method == "POST":
             credentials = request.json
             expoToken = credentials.get("expoToken", None)
-            userEmail = credentials["user"].upper()
+            userEmail = credentials["user"].lower()
             userPswd = credentials["pswd"]
 
             user = mongo.db.tenant.find_one({"email": userEmail})
             if user:
-                dbUserEmail = user['email'].upper()
+                dbUserEmail = user['email'].lower()
                 # check_password_hash(user["pswd"], credentials["pswd"]):
                 if user["pswd"] == credentials["pswd"]:
                     user_obj = User(userEmail=dbUserEmail)
@@ -191,14 +191,14 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
 
     @login_manager.user_loader
     def load_user(user_email):
-        caps_userEmail = user_email.upper()
+        caps_userEmail = user_email.lower()
         if session["account_type"] == "tenant":
             exists = mongo.db.tenant.find_one({"email": caps_userEmail})
         elif session["account_type"] == "staff":
             exists = mongo.db.staff.find_one({"email": caps_userEmail})
         if not exists:
             return None
-        return User(userEmail=exists["email"].upper())
+        return User(userEmail=exists["email"].lower())
 
     @app.route('/test_login/staff')
     def test_login_staff():

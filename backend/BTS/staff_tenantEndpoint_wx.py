@@ -46,7 +46,7 @@ def change_tenant_info(app, mongo):
                 data = {
                         "_id": str(ObjectId()),
                         "name":tenant_info["name"],
-                        "email":tenant_info["email"].upper(),
+                        "email":tenant_info["email"].lower(),
                         "pswd":tenant_info["pswd"],
                         "institutionID":tenant_info["institutionID"],
                         "stall":{
@@ -54,7 +54,7 @@ def change_tenant_info(app, mongo):
                             "companyName":tenant_info["companyName"],
                             "companyPOC":{
                                 "name":tenant_info["companyPOCName"],
-                                "email":tenant_info["companyPOCEmail"].upper()},
+                                "email":tenant_info["companyPOCEmail"].lower()},
                             "address":{
                                 "blk":tenant_info.get("blk", None),
                                 "street":tenant_info.get("street", None),
