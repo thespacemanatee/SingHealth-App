@@ -12,6 +12,9 @@
 - [x] [`DELETE /tenant/<tenantID>`](#POST-/tenant\{tenantID}`)
 - [x] [`GET /tenant/<tenantID>`](#GET-/tenant\{tenantID}`)
 
+### Institution Management
+- [x] [`GET /institutions`](#GET-/institutions`)
+
 ### Recent unrectified audits for tenant and staff
 - [x] [`GET /audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/staff/<institutionID>/<int:daysBefore>`)
 - [x] [`GET /audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`](#GET-/audits/unrectified/recent/tenant/<tenantID>/<int:daysBefore>`)
@@ -1178,3 +1181,50 @@ localhost:5000/email/0ta2b2kjq
     "description": "Error in sending email"
 }
 ```
+
+## `GET /institutions`
+### Sample request
+```
+localhost:5000/institutions
+```
+
+### Sample responses
+#### Success
+```
+"status": 200,
+"data": {
+    "description": "Success",
+    "data": [
+        {"institutionID": "CGH",
+        "institutionName": "Changi General Hospital"}, 
+        {"institutionID": "SKH",
+        "institutionName": "Sengkang General Hospital"},
+        ...
+    ]
+}
+```
+
+### Response definitions
+Attribute | Description
+-|-
+`institutionID` | Unique identifier for institutions
+`institutionName` | Name of the institutions
+
+
+#### Failures
+##### No institution found
+```
+"status": 404,
+"data": {
+    "description": "No institution found"
+}
+```
+
+##### Server Connection Error
+```
+"status": 404,
+"data": {
+    "description": "Error in connection"
+}
+```
+
