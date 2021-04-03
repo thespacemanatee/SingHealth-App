@@ -28,6 +28,9 @@
 - [x] [`PATCH /audits/<auditID>/tenant`](#`PATCH-/audits/auditID/tenant`)
 - [x] [`PATCH /audits/<auditID>/staff`](#`PATCH-/audits/auditID/staff`)
 
+### Audit Email
+- [x] [`POST /email/<auditID>`](#`POST-/email/<auditID>`)
+
 #### Others
 - [ ] [`GET /audits/saved`](#`GET-/audits/saved`)
 
@@ -1017,17 +1020,130 @@ localhost:5000/tenant/0ta2b2kjq
 }
 ```
 
-## `GET /tenant/<tenantID>`
+## `POST /tenant`
 ### Description of use case
-The staff to view existing tenant.
+The staff to add new tenant.
+### Compulsory JSON Query string parameters
+JSON param | Description
+-|-
+`name` | Tenant's full name in upper case.
+`email` | The user email of a tenant.
+`pswd` | The password credentials for a tenant.
+`institutionID` | The institution where a tenant operates under.
+`stall_name` | Name of the stall.
+`company_name` | Name of the company the stall is representing.
+`company_POC_name` | Name of the company POC.
+`company_POC_email` | Email of the company POC.
+`unit_no` | The unit number. I.e. 02-212 (without hashes).
+`fnb` | Whether the stall is an F&B stall.
+`staffID` | ID of staff who created this account.
+`tenantDateStart` | Date when tenantship started, without including exact date. I.e. MM/YYYY
+`tenantDateEnd` | The unique identifier for the tenant account. I.e. MM/YYYY
+
+### Optional JSON Query string parameters
+JSON param | Description
+-|-
+`blk` | blk number. I.e. 243A.
+`street` | Street name.
+`bldg` | Name of the building.
+`zipcode` | The zipcode of the stall. I.e. 123456 (only numbers).
+
+
+### Sample request
+#### With only compulsory data
+```js
+{
+    "name": "myname",
+    "email": "myemail.gg.com",
+    "pswd": "mypassword",
+    "institutionID": "myinstitution",
+    "stall_name": "mystall",
+    "company_name": "mycompany",
+    "company_POC_name": "my_poc_name",
+    "company_POC_email": "my_poc_email",
+    "unit_no": "01-001",
+    "fnb": true,
+    "staffID": "000111",
+    "stall_number": "stall 7",
+  	"tenantDateStart": "03/2021",
+  	"tenantDateEnd": "05/2025"
+}
+```
+#### With complete data
+```js
+{
+    "name": "myname",
+    "email": "myemail.gg.com",
+    "pswd": "mypassword",
+    "institutionID": "myinstitution",
+    "stall_name": "mystall",
+    "company_name": "mycompany",
+    "company_POC_name": "my_poc_name",
+    "company_POC_email": "my_poc_email",
+    "blk" : "myblk",
+    "street": "mystreet",
+    "bldg": "bldg",
+    "unit_no": "01-001",
+    "zipcode": 123456,
+    "fnb": true,
+    "staffID": "000111",
+    "stall_number": "stall 7",
+  	"tenantDateStart": "03/2021",
+  	"tenantDateEnd": "05/2025"
+}
+```
+### Sample response
+#### Success
+```js
+"status": 201,
+"data": {    
+    "description": "Tenant Added"
+}
+```
+
+#### Partial Success
+##### Missing keys, null or empty value received for compulsory data fields
+```js
+"status": 200,
+"data": {    
+    "description": "Insufficient/Error in data to add new tenant",
+    "data": [
+      {
+      "missing_keys": ["key1", "key2", ...]
+      "key_value_error": ["key3", "key4", ...]
+      }
+    ]
+}
+```
+
+#### Failure
+##### No response received
+```js
+"status": 404,
+"data": {
+    "description": "No response received"
+}
+```
+
+##### Unable to upload data
+```js
+"status": 404,
+"data": {
+    "description": "Cannot upload data to server"
+}
+```
+
+## `POST /email/<auditID>`
+### Description of use case
+The staff to send audit data to his/her email.
 ### URL Query Parameters
 URL Param | Description
 -|-
-`tenantID` | The unique identifier for tenant
+`auditID` | The unique identifier for audit
 
 ### Sample request
 ```
-localhost:5000/tenant/0ta2b2kjq
+localhost:5000/email/0ta2b2kjq
 ```
 
 ### Sample responses
@@ -1035,32 +1151,30 @@ localhost:5000/tenant/0ta2b2kjq
 ```js
 "status": 200,
 "data": {
-    "description": "Success",
-    "data": [
-        {
-            "name": "myname",
-            "email": "myemail@gg.com",
-            ...
-        }
-    ]
-
-  
+    "description": "Audit email sent"
 }
 ```
 
 #### Failure
-##### TenantID not found
+##### Missing or Error in server when retrieving content
+###### "Missing": field is not found in database
+###### "Error": error in connection to database when collecting field 
+###### field type: "audit", "staff", "tenant", "institution"
 ```js
 "status": 404,
 "data":{
-    "description": "No matching tenant ID found"
+    "description": "Missing/Error in information"
+    "data" : {
+        "error" : ["field1", "field2", ...],
+        "missing" :  ["field3", "field4", ...]
+    }
 }
 ```
 
-##### Server Error
+##### Email Sending Error
 ```js
 "status": 404,
 "data": {
-    "description": "Error connecting to server"
+    "description": "Error in sending email"
 }
 ```
