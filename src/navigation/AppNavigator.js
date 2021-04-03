@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Text } from "react-native";
+import { View, Text, Platform } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -20,6 +20,11 @@ const AppNavigator = () => {
   const authStore = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
+
+  const linking = {
+    prefixes: ["http://localhost:19006"],
+    enabled: true,
+  };
 
   const renderNavigator = () => {
     if (authStore.userType === "staff") {
@@ -52,7 +57,7 @@ const AppNavigator = () => {
   console.log(authStore);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={Platform.select({ web: linking })}>
       {authStore.userToken === null ? (
         <SafeAreaView style={styles.screen}>
           <Navigator headerMode="none">
