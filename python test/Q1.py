@@ -1,13 +1,15 @@
 from selenium import webdriver
-from random import choice
+from random import choice, randint
+import time
 
 if __name__ == "__main__":
     driver = webdriver.Chrome()
-    driver.get('https://istd.sutd.edu.sg/')
-    links = driver.find_elements_by_xpath("//a[@href]")
-    while (links):
-        random_link = choice(links)
-        print(random_link.get_attribute("href"))
-        driver.get(random_link.get_attribute("href"))
-        links = driver.find_elements_by_xpath("//a[@href]")
-    driver.close()
+    driver.get('http://localhost:19006/')
+    while True:
+        links = driver.find_element_by_xpath('//div[text()="Login"]')
+        links.click()
+        print(links)
+        #for i in range(0,len(links)-1):
+        #    links[i].click()
+        
+

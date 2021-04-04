@@ -30,7 +30,7 @@ const LoginScreen = ({ navigation }) => {
       >
         <Logo />
         <View style={styles.buttonsContainer}>
-          <Button style={{ marginBottom: 10 }} onPress={handleLogin}>
+          <Button style={{ marginBottom: 10 }} id="login_button" tag="button" onPress={handleLogin}>
             Login
           </Button>
           <Button appearance="outline" onPress={handleRegister}>

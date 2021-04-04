@@ -22,7 +22,7 @@ export const AppNavigator = () => {
 
   const dispatch = useDispatch();
 
-  export const renderNavigator = () => {
+  const renderNavigator = () => {
     if (authStore.userType === "staff") {
       return (
         <Navigator headerMode="none">
