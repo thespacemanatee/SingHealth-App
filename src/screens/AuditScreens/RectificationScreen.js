@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { View, SectionList } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
   Layout,
@@ -17,12 +17,17 @@ import alert from "../../components/CustomAlert";
 import SectionHeader from "../../components/ui/SectionHeader";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import RectificationCard from "../../components/RectificationCard";
+import * as databaseActions from "../../store/actions/databaseActions";
+import { handleErrorResponse } from "../../helpers/utils";
 
 export const FNB_SECTION = "F&B Checklist";
 export const NON_FNB_SECTION = "Non-F&B Checklist";
 export const COVID_SECTION = "COVID-19 Checklist";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
+const DownloadIcon = (props) => (
+  <Icon {...props} name="cloud-download-outline" />
+);
 
 const RectificationScreen = ({ route, navigation }) => {
   const authStore = useSelector((state) => state.auth);
@@ -34,6 +39,8 @@ const RectificationScreen = ({ route, navigation }) => {
   const { stallName } = route.params;
 
   const theme = useTheme();
+
+  const dispatch = useDispatch();
 
   console.log(checklistStore.auditMetadata);
 
@@ -61,6 +68,32 @@ const RectificationScreen = ({ route, navigation }) => {
   const BackAction = () => (
     <TopNavigationAction icon={BackIcon} onPress={handleGoBack} />
   );
+
+  const DownloadAction = () => (
+    <TopNavigationAction icon={DownloadIcon} onPress={handleDownloadToEmail} />
+  );
+
+  const handleDownloadToEmail = () => {
+    alert(
+      "Confirmation",
+      "Are you sure you want to download? The checklist will be sent to your email",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Confirm", onPress: downloadToEmail },
+      ]
+    );
+  };
+
+  const downloadToEmail = async () => {
+    try {
+      await dispatch(
+        databaseActions.exportAndEmail(checklistStore.auditMetadata._id)
+      );
+      alert("Success", "Please check your email.");
+    } catch (err) {
+      handleErrorResponse(err);
+    }
+  };
 
   const handleOpenRectificationCard = useCallback(
     (checked, deleted, params) => {
@@ -147,6 +180,7 @@ const RectificationScreen = ({ route, navigation }) => {
         title="Rectification"
         alignment="center"
         accessoryLeft={BackAction}
+        accessoryRight={DownloadAction}
       />
       <Divider />
       <Layout style={styles.screen}>
@@ -158,7 +192,7 @@ const RectificationScreen = ({ route, navigation }) => {
         >
           <Text style={styles.title}>Audit: {stallName}</Text>
           <Text>
-            {moment(checklistStore.auditMetadata.date.$date)
+            {moment(checklistStore.auditMetadata.date)
               .toLocaleString()
               .split(" ")
               .slice(0, 5)
