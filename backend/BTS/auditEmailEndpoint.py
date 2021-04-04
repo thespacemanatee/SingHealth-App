@@ -67,7 +67,7 @@ def addAuditEmailEndpoints(app, mongo):
         return False, data
     
     @app.route("/email/<auditID>", methods=["POST"])
-    @login_required
+    # @login_required
     def export_excel_to_email(auditID):  
         validate, data = validate_audit_info_email(auditID)
         

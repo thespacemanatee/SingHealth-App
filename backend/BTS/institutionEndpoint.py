@@ -6,7 +6,7 @@ from .utils import serverResponse
 
 def institution_info(app, mongo):
     @app.route("/institutions", methods=["GET"])
-    @login_required
+    # @login_required
     def get_institution_data(): 
         try:
             insts = mongo.db.institution.find()
