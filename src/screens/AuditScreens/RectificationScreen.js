@@ -11,6 +11,7 @@ import {
   StyleService,
   useTheme,
 } from "@ui-kitten/components";
+import { Chip } from "react-native-paper";
 import moment from "moment";
 
 import alert from "../../components/CustomAlert";
@@ -23,6 +24,8 @@ import { handleErrorResponse } from "../../helpers/utils";
 export const FNB_SECTION = "F&B Checklist";
 export const NON_FNB_SECTION = "Non-F&B Checklist";
 export const COVID_SECTION = "COVID-19 Checklist";
+export const COMPLIANT = "COMPLIANT";
+export const NON_COMPLIANT = "NON_COMPLIANT";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const DownloadIcon = (props) => (
@@ -35,6 +38,8 @@ const RectificationScreen = ({ route, navigation }) => {
   const [completeChecklist, setCompleteChecklist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [covid19Keys, setCovid19Keys] = useState(true);
+  const [compliantFilter, setCompliantFilter] = useState(false);
+  const [nonCompliantFilter, setNonCompliantFilter] = useState(false);
 
   const { stallName } = route.params;
 
@@ -42,7 +47,17 @@ const RectificationScreen = ({ route, navigation }) => {
 
   const dispatch = useDispatch();
 
-  console.log(checklistStore.auditMetadata);
+  const handleCompliantFilter = () => {
+    createNewSections(COMPLIANT);
+    setCompliantFilter(true);
+    setNonCompliantFilter(false);
+  };
+
+  const handleNonCompliantFilter = () => {
+    createNewSections(NON_COMPLIANT);
+    setNonCompliantFilter(true);
+    setCompliantFilter(false);
+  };
 
   const handleGoBack = () => {
     if (authStore.userType === "tenant") {
@@ -111,7 +126,7 @@ const RectificationScreen = ({ route, navigation }) => {
         : checklistStore.chosen_checklist_type;
       return (
         <RectificationCard
-          index={itemData.index}
+          index={itemData.item.index - 1}
           checklistType={checklistType}
           question={itemData.item.question}
           answer={itemData.item.answer}
@@ -132,41 +147,98 @@ const RectificationScreen = ({ route, navigation }) => {
     return <SectionHeader title={title} />;
   }, []);
 
-  const createNewSections = useCallback(() => {
-    const checklist = [
-      {
-        title:
-          checklistStore.chosen_checklist_type === "fnb"
-            ? FNB_SECTION
-            : NON_FNB_SECTION,
-        data: [],
-      },
-    ];
+  const createNewSections = useCallback(
+    (filter) => {
+      // const checklist = [
+      //   {
+      //     title:
+      //       checklistStore.chosen_checklist_type === "fnb"
+      //         ? FNB_SECTION
+      //         : NON_FNB_SECTION,
+      //     data: [],
+      //   },
+      // ];
 
-    let temp;
-    temp = Object.keys(checklistStore.chosen_checklist.questions);
-    temp.forEach((title) => {
-      checklist.push({
-        title,
-        data: checklistStore.chosen_checklist.questions[title],
-      });
-    });
+      const checklist = [];
 
-    checklist.push({ title: COVID_SECTION, data: [] });
-    temp = Object.keys(checklistStore.covid19.questions);
-    temp.forEach((title) => {
-      checklist.push({
-        title,
-        data: checklistStore.covid19.questions[title],
-      });
-    });
+      const chosenKeys = Object.keys(checklistStore.chosen_checklist.questions);
+      const covidKeys = Object.keys(checklistStore.covid19.questions);
+      // let temp;
 
-    setCompleteChecklist(checklist);
-  }, [
-    checklistStore.chosen_checklist.questions,
-    checklistStore.chosen_checklist_type,
-    checklistStore.covid19.questions,
-  ]);
+      if (filter === NON_COMPLIANT) {
+        chosenKeys.forEach((title) => {
+          const temp = checklistStore.chosen_checklist.questions[title].filter(
+            (e) => e.rectified !== undefined
+          );
+          if (temp.length > 0) {
+            checklist.push({
+              title,
+              data: temp,
+            });
+          }
+        });
+
+        covidKeys.forEach((title) => {
+          const temp = checklistStore.covid19.questions[title].filter(
+            (e) => e.rectified !== undefined
+          );
+          if (temp.length > 0) {
+            checklist.push({
+              title,
+              data: temp,
+            });
+          }
+        });
+      } else if (filter === COMPLIANT) {
+        chosenKeys.forEach((title) => {
+          const temp = checklistStore.chosen_checklist.questions[title].filter(
+            (e) => e.rectified === undefined
+          );
+          if (temp.length > 0) {
+            checklist.push({
+              title,
+              data: temp,
+            });
+          }
+        });
+
+        covidKeys.forEach((title) => {
+          const temp = checklistStore.covid19.questions[title].filter(
+            (e) => e.rectified === undefined
+          );
+          if (temp.length > 0) {
+            checklist.push({
+              title,
+              data: temp,
+            });
+          }
+        });
+      } else {
+        setCompliantFilter(false);
+        setNonCompliantFilter(false);
+        chosenKeys.forEach((title) => {
+          checklist.push({
+            title,
+            data: checklistStore.chosen_checklist.questions[title],
+          });
+        });
+
+        // checklist.push({ title: COVID_SECTION, data: [] });
+        covidKeys.forEach((title) => {
+          checklist.push({
+            title,
+            data: checklistStore.covid19.questions[title],
+          });
+        });
+      }
+
+      setCompleteChecklist(checklist);
+    },
+    [
+      checklistStore.chosen_checklist.questions,
+      checklistStore.covid19.questions,
+    ]
+  );
 
   useEffect(() => {
     createNewSections();
@@ -218,6 +290,26 @@ const RectificationScreen = ({ route, navigation }) => {
           renderSectionHeader={renderSectionHeader}
           SectionSeparatorComponent={() => <Divider />}
         />
+        <View style={styles.bottomContainer}>
+          <Chip
+            style={styles.chipContainer}
+            icon="filter-outline"
+            selected={compliantFilter}
+            onPress={handleCompliantFilter}
+            onClose={createNewSections}
+          >
+            Compliant
+          </Chip>
+          <Chip
+            style={styles.chipContainer}
+            icon="filter-outline"
+            selected={nonCompliantFilter}
+            onPress={handleNonCompliantFilter}
+            onClose={createNewSections}
+          >
+            Non-Compliant
+          </Chip>
+        </View>
       </Layout>
     </View>
   );
@@ -252,6 +344,17 @@ const styles = StyleService.create({
     fontWeight: "bold",
     fontSize: 26,
     marginBottom: 20,
+  },
+  bottomContainer: {
+    flexDirection: "row",
+    padding: 10,
+    borderColor: "grey",
+    borderTopWidth: 1,
+    // justifyContent: "space-between",
+    alignItems: "center",
+  },
+  chipContainer: {
+    margin: 5,
   },
 });
 

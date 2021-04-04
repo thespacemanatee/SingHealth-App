@@ -107,5 +107,7 @@ const styles = StyleService.create({
     padding: 10,
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
+    height: ICON_SIZE * 1.5,
   },
 });

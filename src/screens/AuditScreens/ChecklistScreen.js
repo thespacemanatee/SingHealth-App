@@ -164,7 +164,7 @@ const ChecklistScreen = ({ route, navigation }) => {
         : checklistStore.chosen_checklist_type;
       return (
         <QuestionCard
-          index={itemData.index}
+          index={itemData.item.index - 1}
           checklistType={checklistType}
           question={itemData.item.question}
           answer={itemData.item.answer}

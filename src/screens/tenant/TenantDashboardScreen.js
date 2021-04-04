@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View } from "react-native";
+import { FlatList, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -129,7 +129,7 @@ const TenantDashboardScreen = ({ navigation }) => {
           <Text style={styles.text}>Outstanding Audits</Text>
         </View>
         <CenteredLoading loading={loading} />
-        <List
+        <FlatList
           contentContainerStyle={styles.contentContainer}
           data={listData}
           renderItem={renderActiveAudits}
@@ -155,6 +155,7 @@ const styles = StyleService.create({
   },
   text: {
     fontSize: 26,
+    fontFamily: "SFProDisplay-Bold",
   },
   contentContainer: {
     paddingHorizontal: 8,

@@ -189,6 +189,7 @@ const styles = StyleService.create({
   },
   text: {
     fontSize: 26,
+    fontFamily: "SFProDisplay-Bold",
   },
   contentContainer: {
     paddingHorizontal: 8,

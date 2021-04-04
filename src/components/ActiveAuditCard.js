@@ -15,6 +15,8 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
     onPress(auditMetadata._id, stallName);
   };
 
+  console.log(moment(auditMetadata.date).toLocaleString());
+
   useEffect(() => {
     const temp = Number.parseFloat(
       (Number.parseFloat(auditMetadata.rectificationProgress) * 100).toFixed(1)
