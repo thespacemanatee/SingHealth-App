@@ -37,8 +37,8 @@ const CustomCard = (props) => {
         />
         <View style={styles.questionTextContainer}>
           <Text
-            // eslint-disable-next-line react-native/no-inline-styles
             numberOfLines={3}
+            // eslint-disable-next-line react-native/no-inline-styles
             style={{
               width: Platform.OS === "web" ? SCREEN_WIDTH - 100 : null,
               textDecorationLine: deleted ? "line-through" : null,

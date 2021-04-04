@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View } from "react-native";
+import { FlatList, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -137,7 +137,7 @@ const StaffDashboardScreen = ({ navigation }) => {
           <Text style={styles.text}>Rectification Progress</Text>
         </View>
         <CenteredLoading loading={loading} />
-        <List
+        <FlatList
           contentContainerStyle={styles.contentContainer}
           data={listData}
           renderItem={renderActiveAudits}

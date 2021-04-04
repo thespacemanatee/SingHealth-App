@@ -36,8 +36,9 @@ const StaffRectificationScreen = ({ route, navigation }) => {
   const [loadDialog, setLoadDialog] = useState(false);
   const [error, setError] = useState(false);
   const [toggle, setToggle] = useState(false);
+  const [isRectified, setIsRectified] = useState(false);
 
-  const { index, checklistType, question, section } = route.params;
+  const { index, checklistType, question, section, rectified } = route.params;
 
   const theme = useTheme();
 
@@ -51,7 +52,7 @@ const StaffRectificationScreen = ({ route, navigation }) => {
           {
             category: section,
             index,
-            rectified: true,
+            rectified: !isRectified,
           },
         ],
       };
@@ -60,7 +61,11 @@ const StaffRectificationScreen = ({ route, navigation }) => {
         checklistActions.submitRectification(
           checklistStore.auditMetadata._id,
           data,
-          authStore.userType
+          authStore.userType,
+          checklistType,
+          section,
+          index,
+          !isRectified
         )
       );
 
@@ -84,6 +89,7 @@ const StaffRectificationScreen = ({ route, navigation }) => {
 
   // TODO: Cleanup memory leak when user leaves screen before image is loaded
   useEffect(() => {
+    setIsRectified(rectified);
     console.log("USEEFFECT");
     const source = axios.CancelToken.source();
     const getImages = async () => {
@@ -216,7 +222,9 @@ const StaffRectificationScreen = ({ route, navigation }) => {
       >
         <Text style={styles.text}>{question}</Text>
       </View>
-      <Button onPress={handleSubmitApproval}>APPROVE</Button>
+      <Button onPress={handleSubmitApproval}>
+        {isRectified ? "REVOKE APPROVAL" : "APPROVE"}
+      </Button>
       <CenteredLoading loading={loadDialog} />
       <Layout style={styles.layout}>
         <KeyboardAwareScrollView extraHeight={200}>

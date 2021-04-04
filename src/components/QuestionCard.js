@@ -1,14 +1,13 @@
 import React, { useCallback, useState, useEffect, useRef } from "react";
 import { View } from "react-native";
 import { useDispatch } from "react-redux";
-import { Button, StyleService, Icon, useTheme } from "@ui-kitten/components";
+import { StyleService, Icon, useTheme } from "@ui-kitten/components";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 
 import * as checklistActions from "../store/actions/checklistActions";
 import CustomCard from "./ui/CustomCard";
 
-const TrashIcon = (props) => <Icon {...props} name="trash" />;
-const UndoIcon = (props) => <Icon {...props} name="undo" />;
+const ICON_SIZE = 30;
 
 const QuestionCard = (props) => {
   const [checked, setChecked] = useState(false);
@@ -20,6 +19,35 @@ const QuestionCard = (props) => {
   const theme = useTheme();
 
   const dispatch = useDispatch();
+
+  const TrashIcon = useCallback(
+    (iconProps) => (
+      <Icon
+        {...iconProps}
+        name="trash"
+        fill={theme["color-primary-500"]}
+        style={{
+          width: ICON_SIZE,
+          height: ICON_SIZE,
+        }}
+      />
+    ),
+    [theme]
+  );
+  const UndoIcon = useCallback(
+    (iconProps) => (
+      <Icon
+        {...iconProps}
+        name="undo"
+        fill={theme["color-primary-500"]}
+        style={{
+          width: ICON_SIZE,
+          height: ICON_SIZE,
+        }}
+      />
+    ),
+    [theme]
+  );
 
   useEffect(() => {
     if (answer === null) {
@@ -48,13 +76,10 @@ const QuestionCard = (props) => {
           { backgroundColor: theme["color-primary-100"] },
         ]}
       >
-        <Button
-          appearance="ghost"
-          accessoryLeft={deleted ? UndoIcon : TrashIcon}
-        />
+        {deleted ? <UndoIcon /> : <TrashIcon />}
       </View>
     );
-  }, [theme, deleted]);
+  }, [TrashIcon, UndoIcon, deleted, theme]);
 
   const rightSwipe = useCallback(() => {
     setDeleted(!deleted);
@@ -126,7 +151,7 @@ const styles = StyleService.create({
   deleteBox: {
     // flex: 1,
     justifyContent: "center",
-    alignItems: "flex-start",
-    // width: 100,
+    alignItems: "center",
+    width: ICON_SIZE * 3,
   },
 });

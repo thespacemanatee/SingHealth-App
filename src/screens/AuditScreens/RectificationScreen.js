@@ -172,7 +172,17 @@ const RectificationScreen = ({ route, navigation }) => {
     createNewSections();
     setCovid19Keys(Object.keys(checklistStore.covid19.questions));
     setLoading(false);
-  }, [checklistStore.covid19.questions, createNewSections]);
+    const unsubscribe = navigation.addListener("focus", () => {
+      console.log("UNSUBSCRIBING!!");
+      createNewSections();
+    });
+
+    return () => {
+      // Unsubscribe for the focus Listener
+      // eslint-disable-next-line no-unused-expressions
+      unsubscribe;
+    };
+  }, [checklistStore.covid19.questions, createNewSections, navigation]);
 
   return (
     <View style={styles.screen}>

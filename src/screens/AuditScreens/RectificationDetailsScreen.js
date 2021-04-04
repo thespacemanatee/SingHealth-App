@@ -47,6 +47,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
         checklistType,
         question,
         section,
+        rectified,
       });
     } else {
       navigation.navigate("TenantRectification", {
