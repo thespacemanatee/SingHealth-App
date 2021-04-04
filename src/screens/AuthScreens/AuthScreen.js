@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, Platform } from "react-native";
-import Constants from "expo-constants";
-import * as Notifications from "expo-notifications";
+import React from "react";
+import { View } from "react-native";
 import {
   Button,
   Divider,
@@ -11,56 +9,15 @@ import {
 } from "@ui-kitten/components";
 
 import Logo from "../../components/ui/Logo";
-import alert from "../../components/CustomAlert";
 
 const AuthScreen = ({ navigation }) => {
-  const [expoToken, setExpoToken] = useState("");
-
-  console.log(expoToken);
-
-  const registerForPushNotificationsAsync = async () => {
-    let token;
-    if (Constants.isDevice) {
-      const {
-        status: existingStatus,
-      } = await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-      if (existingStatus !== "granted") {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      if (finalStatus !== "granted") {
-        alert("Failed to get push token for push notification!");
-        return;
-      }
-      token = (await Notifications.getExpoPushTokenAsync()).data;
-    }
-
-    if (Platform.OS === "android") {
-      Notifications.setNotificationChannelAsync("default", {
-        name: "default",
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: "#FF231F7C",
-      });
-    }
-
-    // eslint-disable-next-line consistent-return
-    return token;
-  };
   const handleLogin = () => {
-    navigation.navigate("Login", { expoToken });
+    navigation.navigate("Login");
   };
 
   const handleRegister = () => {
-    navigation.navigate("Register", { expoToken });
+    navigation.navigate("Register");
   };
-
-  useEffect(() => {
-    if (Platform.OS !== "web") {
-      registerForPushNotificationsAsync().then((token) => setExpoToken(token));
-    }
-  }, []);
 
   return (
     <View style={styles.screen}>

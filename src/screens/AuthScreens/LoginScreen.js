@@ -7,7 +7,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
   Divider,
@@ -31,15 +31,12 @@ import { handleErrorResponse } from "../../helpers/utils";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
-const LoginScreen = ({ route, navigation }) => {
+const LoginScreen = ({ navigation }) => {
+  const authStore = useSelector((state) => state.auth);
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(false);
   const theme = useTheme();
-
-  const { expoToken } = route.params;
-
-  console.log("EXPO TOKEN:", expoToken);
 
   const dispatch = useDispatch();
 
@@ -58,8 +55,8 @@ const LoginScreen = ({ route, navigation }) => {
         authActions.signIn(
           values.email,
           values.password,
-          expoToken,
-          checked ? "staff" : "tenant"
+          checked ? "staff" : "tenant",
+          authStore.expoToken
         )
       );
     } catch (err) {
