@@ -67,11 +67,11 @@ const authReducer = (state = initialState, action) => {
     }
     case SIGN_OUT: {
       return {
+        ...state,
         isLoading: false,
         isSignOut: true,
         userToken: null,
         userType: null,
-        expoToken: null,
         _id: null,
         email: null,
         institutionID: null,
