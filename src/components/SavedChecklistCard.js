@@ -34,7 +34,7 @@ const SavedChecklistCard = ({
     dispatch(checklistActions.addSavedChecklist(item.data));
     navigation.navigate("Checklist", {
       auditID: item.time,
-      stallName: item.stallName,
+      stallName: item.chosen_tenant.stallName,
     });
   };
 

@@ -70,6 +70,8 @@ export const signIn = (user, pswd, expoToken, userType) => {
 export const signOut = (expoToken) => {
   return async (dispatch) => {
     // dispatch({ action: SIGN_OUT, token: token ? token : null });
+    removeTokenFromStorage();
+    dispatch({ type: SIGN_OUT });
     console.log("Signing out!");
     const signOutOptions = {
       url: `${endpoint}logout`,
@@ -84,8 +86,6 @@ export const signOut = (expoToken) => {
     };
     await httpClient(signOutOptions);
 
-    dispatch({ type: SIGN_OUT });
-    removeTokenFromStorage();
   };
 };
 

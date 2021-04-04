@@ -96,7 +96,7 @@ const ChooseTenantScreen = ({ navigation }) => {
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
 
-      console.log(res.data.data);
+      // console.log(res.data.data);
       const tempChecklists = [
         {
           title: "Available Tenants",
@@ -108,11 +108,19 @@ const ChooseTenantScreen = ({ navigation }) => {
 
       if (data !== null) {
         data = JSON.parse(data);
-        if (Object.keys(data).length > 0) {
-          tempChecklists.push({
-            title: "Saved Checklists",
-            data: Object.values(data),
-          });
+        const savedChecklists = Object.values(data);
+
+        if (savedChecklists.length > 0) {
+          const final = savedChecklists.filter(
+            (e) =>
+              e.data.auditMetadata.institutionID === authStore.institutionID
+          );
+          if (final.length > 0) {
+            tempChecklists.push({
+              title: "Saved Checklists",
+              data: final,
+            });
+          }
         }
       }
       setSectionData(tempChecklists);
