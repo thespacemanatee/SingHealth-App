@@ -94,7 +94,7 @@ const App = () => {
     if (Platform.OS !== "web") {
       registerForPushNotificationsAsync().then((token) => setExpoToken(token));
     }
-    loadFonts();
+    loadFonts().then();
     store.dispatch(authActions.restoreToken());
   };
 

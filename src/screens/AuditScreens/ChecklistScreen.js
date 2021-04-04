@@ -257,6 +257,7 @@ const ChecklistScreen = ({ route, navigation }) => {
         <CenteredLoading loading={loading} />
         <SectionList
           sections={completeChecklist}
+          stickySectionHeadersEnabled
           keyExtractor={(item, index) => item + index}
           renderItem={renderChosenChecklist}
           initialNumToRender={40}

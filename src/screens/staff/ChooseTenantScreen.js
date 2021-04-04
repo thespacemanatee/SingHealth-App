@@ -164,6 +164,7 @@ const ChooseTenantScreen = ({ navigation }) => {
         <CenteredLoading loading={loading} />
         <SectionList
           sections={sectionData}
+          stickySectionHeadersEnabled
           keyExtractor={(item, index) => item + index}
           renderItem={renderSectionList}
           // contentContainerStyle={styles.contentContainer}
