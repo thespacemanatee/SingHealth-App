@@ -1,15 +1,13 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View } from "react-native";
+import { FlatList, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
   Icon,
   Layout,
   StyleService,
-  Text,
   TopNavigation,
   TopNavigationAction,
-  List,
 } from "@ui-kitten/components";
 
 import * as databaseActions from "../../store/actions/databaseActions";
@@ -18,9 +16,11 @@ import ActiveAuditCard from "../../components/ActiveAuditCard";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 // import SkeletonLoading from "../../components/ui/SkeletonLoading";
 import { handleErrorResponse } from "../../helpers/utils";
+import CustomText from "../../components/ui/CustomText";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
+const AddIcon = (props) => <Icon {...props} name="file-add-outline" />;
 
 const TenantDashboardScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
@@ -83,6 +83,18 @@ const TenantDashboardScreen = ({ navigation }) => {
     [authStore.userType, handleOpenAudit]
   );
 
+  const renderEmptyComponent = () => (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <AddIcon style={{ width: 200, height: 300 }} fill="gray" />
+    </View>
+  );
+
   const getListData = useCallback(async () => {
     try {
       setListLoading(true);
@@ -126,15 +138,17 @@ const TenantDashboardScreen = ({ navigation }) => {
       <Layout style={styles.layout}>
         <Divider />
         <View style={styles.textContainer}>
-          <Text style={styles.text}>Outstanding Audits</Text>
+          <CustomText style={styles.text}>Outstanding Audits</CustomText>
         </View>
         <CenteredLoading loading={loading} />
-        <List
+        <FlatList
           contentContainerStyle={styles.contentContainer}
+          keyExtractor={(item, index) => String(index)}
           data={listData}
           renderItem={renderActiveAudits}
           onRefresh={handleRefreshList}
           refreshing={listLoading}
+          ListEmptyComponent={renderEmptyComponent}
         />
       </Layout>
     </View>
@@ -155,6 +169,7 @@ const styles = StyleService.create({
   },
   text: {
     fontSize: 26,
+    fontFamily: "SFProDisplay-Bold",
   },
   contentContainer: {
     paddingHorizontal: 8,

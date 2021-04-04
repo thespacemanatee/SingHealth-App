@@ -1,15 +1,13 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View } from "react-native";
+import { FlatList, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
   Icon,
   Layout,
   StyleService,
-  Text,
   TopNavigation,
   TopNavigationAction,
-  List,
 } from "@ui-kitten/components";
 import { FAB } from "react-native-paper";
 
@@ -20,9 +18,11 @@ import ActiveAuditCard from "../../components/ActiveAuditCard";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 // import SkeletonLoading from "../../components/ui/SkeletonLoading";
 import { handleErrorResponse } from "../../helpers/utils";
+import CustomText from "../../components/ui/CustomText";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
+const AddIcon = (props) => <Icon {...props} name="file-add-outline" />;
 
 const StaffDashboardScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
@@ -87,6 +87,18 @@ const StaffDashboardScreen = ({ navigation }) => {
     [authStore.userType, handleOpenAudit]
   );
 
+  const renderEmptyComponent = () => (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <AddIcon style={{ width: 200, height: 300 }} fill="gray" />
+    </View>
+  );
+
   const getListData = useCallback(async () => {
     try {
       setListLoading(true);
@@ -134,15 +146,17 @@ const StaffDashboardScreen = ({ navigation }) => {
         <Graph />
         <Divider />
         <View style={styles.textContainer}>
-          <Text style={styles.text}>Rectification Progress</Text>
+          <CustomText style={styles.text}>Rectification Progress</CustomText>
         </View>
         <CenteredLoading loading={loading} />
-        <List
+        <FlatList
           contentContainerStyle={styles.contentContainer}
+          keyExtractor={(item, index) => String(index)}
           data={listData}
           renderItem={renderActiveAudits}
           onRefresh={getListData}
           refreshing={listLoading}
+          ListEmptyComponent={renderEmptyComponent}
         />
 
         <FAB.Group
@@ -189,8 +203,10 @@ const styles = StyleService.create({
   },
   text: {
     fontSize: 26,
+    fontFamily: "SFProDisplay-Bold",
   },
   contentContainer: {
+    // flexGrow: 1,
     paddingHorizontal: 8,
     paddingVertical: 4,
   },

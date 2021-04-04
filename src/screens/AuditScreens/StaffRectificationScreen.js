@@ -9,7 +9,6 @@ import {
   Icon,
   StyleService,
   Input,
-  Text,
   useTheme,
   Button,
   Toggle,
@@ -24,6 +23,7 @@ import ImageViewPager from "../../components/ImageViewPager";
 import { SCREEN_HEIGHT } from "../../helpers/config";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
+import CustomText from "../../components/ui/CustomText";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -36,8 +36,9 @@ const StaffRectificationScreen = ({ route, navigation }) => {
   const [loadDialog, setLoadDialog] = useState(false);
   const [error, setError] = useState(false);
   const [toggle, setToggle] = useState(false);
+  const [isRectified, setIsRectified] = useState(false);
 
-  const { index, checklistType, question, section } = route.params;
+  const { index, checklistType, question, section, rectified } = route.params;
 
   const theme = useTheme();
 
@@ -51,7 +52,7 @@ const StaffRectificationScreen = ({ route, navigation }) => {
           {
             category: section,
             index,
-            rectified: true,
+            rectified: !isRectified,
           },
         ],
       };
@@ -60,7 +61,11 @@ const StaffRectificationScreen = ({ route, navigation }) => {
         checklistActions.submitRectification(
           checklistStore.auditMetadata._id,
           data,
-          authStore.userType
+          authStore.userType,
+          checklistType,
+          section,
+          index,
+          !isRectified
         )
       );
 
@@ -84,6 +89,7 @@ const StaffRectificationScreen = ({ route, navigation }) => {
 
   // TODO: Cleanup memory leak when user leaves screen before image is loaded
   useEffect(() => {
+    setIsRectified(rectified);
     console.log("USEEFFECT");
     const source = axios.CancelToken.source();
     const getImages = async () => {
@@ -214,9 +220,11 @@ const StaffRectificationScreen = ({ route, navigation }) => {
           { backgroundColor: theme["color-primary-400"] },
         ]}
       >
-        <Text style={styles.text}>{question}</Text>
+        <CustomText style={styles.text}>{question}</CustomText>
       </View>
-      <Button onPress={handleSubmitApproval}>APPROVE</Button>
+      <Button onPress={handleSubmitApproval}>
+        {isRectified ? "REVOKE APPROVAL" : "APPROVE"}
+      </Button>
       <CenteredLoading loading={loadDialog} />
       <Layout style={styles.layout}>
         <KeyboardAwareScrollView extraHeight={200}>
@@ -230,7 +238,7 @@ const StaffRectificationScreen = ({ route, navigation }) => {
             </Toggle>
           </View>
           <View style={styles.inputContainer}>
-            <Text category="h6">Tenant&apos;s Remarks: </Text>
+            <CustomText category="h6">Tenant&apos;s Remarks: </CustomText>
             <Input
               height={SCREEN_HEIGHT * 0.1}
               multiline

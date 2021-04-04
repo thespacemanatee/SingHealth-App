@@ -1,6 +1,7 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { StyleService, Card, useTheme } from "@ui-kitten/components";
+import CustomText from "./ui/CustomText";
 
 const EntityCard = ({ onPress, displayName, _id }) => {
   const theme = useTheme();
@@ -17,7 +18,7 @@ const EntityCard = ({ onPress, displayName, _id }) => {
       onPress={handleOnPress}
     >
       <View>
-        <Text style={styles.listContentText}>{displayName}</Text>
+        <CustomText style={styles.listContentText}>{displayName}</CustomText>
       </View>
     </Card>
   );

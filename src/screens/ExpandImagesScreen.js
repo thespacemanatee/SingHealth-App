@@ -105,7 +105,7 @@ const ExpandImagesScreen = ({ route, navigation }) => {
         <FlatList
           ref={topRef}
           data={imageArray}
-          keyExtractor={(item) => item}
+          keyExtractor={(item, index) => String(index)}
           renderItem={renderImages}
           onMomentumScrollEnd={(event) => {
             scrollToActiveIndex(
@@ -119,7 +119,7 @@ const ExpandImagesScreen = ({ route, navigation }) => {
         <FlatList
           ref={thumbRef}
           data={imageArray}
-          keyExtractor={(item) => item}
+          keyExtractor={(item, index) => String(index)}
           renderItem={renderThumbnail}
           horizontal
           showsHorizontalScrollIndicator={Platform.OS === "web"}

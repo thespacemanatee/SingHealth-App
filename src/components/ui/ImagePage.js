@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Text,
   View,
   Image,
   Dimensions,
@@ -8,6 +7,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Button, StyleService, useTheme } from "@ui-kitten/components";
+import CustomText from "./CustomText";
 
 const ImagePage = (props) => {
   const { height } = Dimensions.get("window");
@@ -62,7 +62,9 @@ const ImagePage = (props) => {
             }}
           >
             {!loading ? (
-              <Text style={styles.text}>No Images. Start adding some!</Text>
+              <CustomText style={styles.text}>
+                No Images. Start adding some!
+              </CustomText>
             ) : (
               <ActivityIndicator
                 size="large"

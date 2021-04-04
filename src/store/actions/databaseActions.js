@@ -111,3 +111,16 @@ export const postAuditImagesWeb = (base64images) => {
     return res;
   };
 };
+
+export const exportAndEmail = (auditID) => {
+  return async () => {
+    const options = {
+      url: `${endpoint}email/${auditID}`,
+      method: "post",
+    };
+
+    const res = await httpClient(options);
+
+    return res;
+  };
+};

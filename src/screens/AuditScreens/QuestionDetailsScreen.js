@@ -9,7 +9,6 @@ import {
   Icon,
   StyleService,
   Input,
-  Text,
   useTheme,
 } from "@ui-kitten/components";
 import { Camera } from "expo-camera";
@@ -24,6 +23,7 @@ import CustomDatepicker from "../../components/CustomDatePicker";
 import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
 import { SCREEN_HEIGHT } from "../../helpers/config";
+import CustomText from "../../components/ui/CustomText";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
@@ -264,7 +264,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           { backgroundColor: theme["color-primary-400"] },
         ]}
       >
-        <Text style={styles.text}>{question}</Text>
+        <CustomText style={styles.text}>{question}</CustomText>
       </View>
       <Layout style={styles.layout}>
         <KeyboardAwareScrollView extraHeight={200}>
@@ -273,11 +273,11 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
             renderListItems={renderListItems}
           />
           <View style={styles.datePickerContainer}>
-            <Text category="h6">Deadline: </Text>
+            <CustomText category="h6">Deadline: </CustomText>
             <CustomDatepicker onSelect={handleDateChange} deadline={deadline} />
           </View>
           <View style={styles.inputContainer}>
-            <Text category="h6">Remarks: </Text>
+            <CustomText category="h6">Remarks: </CustomText>
             <Input
               height={SCREEN_HEIGHT * 0.1}
               multiline

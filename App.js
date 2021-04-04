@@ -13,6 +13,7 @@ import { Provider } from "react-redux";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import * as Notifications from "expo-notifications";
 import AppLoading from "expo-app-loading";
+import * as Font from "expo-font";
 
 import store from "./src/store/store";
 import AppNavigator from "./src/navigation/AppNavigator";
@@ -79,10 +80,21 @@ const App = () => {
     return token;
   };
 
+  const loadFonts = async () => {
+    await Font.loadAsync({
+      // eslint-disable-next-line global-require
+      "SFProDisplay-Regular": require("./assets/fonts/SFProDisplay-Regular.ttf"),
+
+      // eslint-disable-next-line global-require
+      "SFProDisplay-Bold": require("./assets/fonts/SFProDisplay-Bold.ttf"),
+    });
+  };
+
   const loadAppAssets = () => {
     if (Platform.OS !== "web") {
       registerForPushNotificationsAsync().then((token) => setExpoToken(token));
     }
+    loadFonts().then();
     store.dispatch(authActions.restoreToken());
   };
 

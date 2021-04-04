@@ -16,6 +16,7 @@ export const CHANGE_DEADLINE = "CHANGE_DEADLINE";
 export const RESET_CHECKLIST_STORE = "RESET_CHECKLIST_STORE";
 export const GET_AUDIT_DATA = "GET_AUDIT_DATA";
 export const GET_IMAGE = "GET_IMAGE";
+export const CHANGE_RECTIFY = "CHANGE_RECTIFY";
 export const TYPE_FNB = "fnb";
 export const TYPE_NON_FNB = "non_fnb";
 export const TYPE_COVID = "covid19";
@@ -204,8 +205,16 @@ export const getImage = (fileName, source) => {
   };
 };
 
-export const submitRectification = (auditID, data, userType) => {
-  return async () => {
+export const submitRectification = (
+  auditID,
+  data,
+  userType,
+  checklistType,
+  section,
+  index,
+  rectified
+) => {
+  return async (dispatch) => {
     const options = {
       url: `${endpoint}audits/${auditID}/${userType}`,
       method: "patch",
@@ -217,6 +226,14 @@ export const submitRectification = (auditID, data, userType) => {
     };
 
     const res = await httpClient(options);
+
+    dispatch({
+      type: CHANGE_RECTIFY,
+      checklistType,
+      section,
+      index,
+      rectified,
+    });
 
     return res;
   };
