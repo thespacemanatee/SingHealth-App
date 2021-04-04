@@ -324,7 +324,10 @@ def addAuditsEndpoint(app, mongo):
             tenant = mongo.db.tenant.find_one({"_id": auditMetaData["tenantID"]})
             if tenant:
                 for token in tenant["expoToken"]:
-                    send_push_message(token, "SingHealth Audits", "Recent audit results ready for viewing")
+                    try:
+                        send_push_message(token, "SingHealth Audits", "Recent audit results ready for viewing")
+                    except:
+                        continue
             return serverResponse(None, 200, "Forms have been submitted successfully!")
 
     @app.route("/audits/<auditID>", methods=['GET'])
@@ -410,7 +413,11 @@ def addAuditsEndpoint(app, mongo):
                 auditChecklists
                 )
             for device in staffExpoTokens:
-                send_push_message(device, tenantStallName, "has rectified a noncompliance")
+                try:
+                    send_push_message(device, tenantStallName, "has rectified a noncompliance")
+                except:
+                    print("Some error detected")
+                    continue
             return serverResponse(patchResults, 200, "Changes sent to the database.")
 
     @app.route("/audits/<auditID>/staff", methods=['PATCH'])
@@ -479,7 +486,11 @@ def addAuditsEndpoint(app, mongo):
             tenant = mongo.db.tenant.find_one({"_id": tenantID})
             if tenant:
                 for device in tenant["expoToken"]:
-                    send_push_message(device, institution, "has reviewed your rectifications")
+                    try:
+                        send_push_message(device, institution, "has reviewed your rectifications")
+                    except:
+                        print("Some error detected")
+                        continue
             return serverResponse(
                 ack, 
                 200, 
