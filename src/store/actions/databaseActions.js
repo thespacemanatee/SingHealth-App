@@ -1,8 +1,22 @@
 import { endpoint, httpClient } from "../../helpers/CustomHTTPClient";
 
 export const GET_RELEVANT_TENANTS = "GET_RELEVANT_TENANTS";
+export const GET_INSTITUTIONS = "GET_INSTITUTIONS";
 export const GET_TENANT_ACTIVE_AUDITS = "GET_TENANT_ACTIVE_AUDITS";
 export const GET_STAFF_ACTIVE_AUDITS = "GET_STAFF_ACTIVE_AUDITS";
+
+export const getInstitutions = () => {
+  return async (dispatch) => {
+    const options = {
+      url: `${endpoint}institutions`,
+      method: "get",
+      // withCredentials: true,
+    };
+    const res = await httpClient(options);
+    dispatch({ type: GET_RELEVANT_TENANTS, institutions: res.data.data });
+    return res;
+  };
+};
 
 export const getRelevantTenants = (institutionID) => {
   return async (dispatch) => {

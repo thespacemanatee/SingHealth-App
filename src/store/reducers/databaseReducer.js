@@ -2,9 +2,11 @@ import {
   GET_RELEVANT_TENANTS,
   GET_TENANT_ACTIVE_AUDITS,
   GET_STAFF_ACTIVE_AUDITS,
+  GET_INSTITUTIONS,
 } from "../actions/databaseActions";
 
 const initialState = {
+  institutions: [],
   relevantTenants: [],
   activeAudits: [],
 };
@@ -24,6 +26,15 @@ const equals = (a, b) => {
 const databaseReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_RELEVANT_TENANTS: {
+      if (equals(state.institutions, action.institutions)) {
+        return state;
+      }
+      return {
+        ...state,
+        institutions: action.institutions,
+      };
+    }
+    case GET_INSTITUTIONS: {
       if (equals(state.relevantTenants, action.relevantTenants)) {
         return state;
       }

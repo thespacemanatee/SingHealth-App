@@ -8,24 +8,17 @@ Created on Fri Mar 26 01:47:13 2021
 from flask import request
 from flask_login import login_required
 from flask_pymongo import ObjectId
-from .utils import serverResponse, validate_required_info, check_duplicate
+from .utils import serverResponse, validate_required_info, check_duplicate, find_and_return_one
 import datetime
 
 
 # For the staff to edit tenant info
 def change_tenant_info(app, mongo):
+    
     def find_tenant_by_id(tenantID):
-        try:
-            tenant = mongo.db.tenant.find_one({"_id": tenantID})
-
-            if tenant is not None:
-                return True, tenant
-            else:
-                return False, None
-        except:
-            return None, None
-
-    @app.route("/tenant", methods=["POST"])
+        return find_and_return_one(mongo, "tenant", "_id", tenantID)
+    
+    @app.route("/tenant", methods = ["POST"])
     # @login_required
     def add_tenant():
         required_info = [ "name", "email", "pswd", "institutionID", 
