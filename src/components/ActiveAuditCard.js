@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { TouchableOpacity, View } from "react-native";
-import { Text, Card, useTheme, StyleService } from "@ui-kitten/components";
+import { View } from "react-native";
+import { Text, useTheme, StyleService } from "@ui-kitten/components";
 import moment from "moment";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import ShadowCard from "./ui/ShadowCard";
@@ -25,13 +25,7 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
   }, [auditMetadata.rectificationProgress]);
 
   return (
-    // <Card
-    //   style={{ backgroundColor: theme["color-info-100"] }}
-    //   status="info"
-    //   activeOpacity={0.5}
-    //   onPress={handleOnPress}
-    // >
-    <ShadowCard style={styles.cardContainer}>
+    <ShadowCard style={styles.cardContainer} onPress={handleOnPress}>
       <View>
         <Text style={styles.timeStamp}>{stallName}</Text>
         <Text style={styles.timeStamp}>

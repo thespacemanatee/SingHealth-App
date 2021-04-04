@@ -1,8 +1,17 @@
 import React from "react";
 import { Platform, View } from "react-native";
-import { Text, Card, StyleService, CheckBox } from "@ui-kitten/components";
+import {
+  Text,
+  Card,
+  StyleService,
+  CheckBox,
+  Icon,
+  useTheme,
+} from "@ui-kitten/components";
 
 import { SCREEN_WIDTH } from "../../helpers/config";
+
+const ICON_SIZE = 30;
 
 const CustomCard = (props) => {
   const { index } = props;
@@ -14,9 +23,36 @@ const CustomCard = (props) => {
   const { rectified } = props;
   const { checkboxDisabled } = props;
 
+  const theme = useTheme();
+
+  const AlertIcon = (iconProps) => (
+    <Icon
+      {...iconProps}
+      name="alert-triangle-outline"
+      fill={theme["color-danger-600"]}
+      style={{
+        width: ICON_SIZE,
+        height: ICON_SIZE,
+      }}
+    />
+  );
+  const CheckIcon = (iconProps) => (
+    <Icon
+      {...iconProps}
+      name="checkmark-circle-2-outline"
+      fill={theme["color-success-600"]}
+      style={{
+        width: ICON_SIZE,
+        height: ICON_SIZE,
+      }}
+    />
+  );
+
   const Header = (headerProps) => (
-    <View {...headerProps}>
+    <View {...headerProps} style={styles.header}>
       <Text>{index + 1}</Text>
+      {!checked && !rectified && <AlertIcon />}
+      {!checked && rectified && <CheckIcon />}
     </View>
   );
 
@@ -66,5 +102,10 @@ const styles = StyleService.create({
     justifyContent: "center",
     alignItems: "flex-start",
     // width: 100,
+  },
+  header: {
+    padding: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });

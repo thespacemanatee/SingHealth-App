@@ -18,6 +18,7 @@ import axios from "axios";
 import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { StackActions } from "@react-navigation/native";
 
 import alert from "../../components/CustomAlert";
 import * as checklistActions from "../../store/actions/checklistActions";
@@ -121,6 +122,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
       handleErrorResponse(err);
     } finally {
       setLoadDialog(false);
+      navigation.dispatch(StackActions.pop(2));
     }
   };
 

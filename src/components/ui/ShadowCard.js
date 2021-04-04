@@ -2,9 +2,13 @@ import { StyleService } from "@ui-kitten/components";
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
 
-const ShadowCard = ({ style, children }) => {
+const ShadowCard = ({ style, children, onPress }) => {
   return (
-    <TouchableOpacity style={styles.shadowContainer}>
+    <TouchableOpacity
+      style={styles.shadowContainer}
+      activeOpacity={0.5}
+      onPress={onPress}
+    >
       <View style={{ ...style, ...styles.shadow }}>{children}</View>
     </TouchableOpacity>
   );
