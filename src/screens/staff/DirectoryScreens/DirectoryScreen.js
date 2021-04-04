@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { SafeAreaView, View } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
+import { View } from "react-native";
 import {
   Divider,
   Icon,
@@ -14,6 +15,8 @@ import {
 } from "@ui-kitten/components";
 
 import directoryStyles from "./StyleGuide";
+import * as databaseActions from "../../../store/actions/databaseActions";
+import { handleErrorResponse } from "../../../helpers/utils";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
@@ -22,6 +25,8 @@ const DirectoryScreen = ({ navigation }) => {
   const [institutions, setInstitutions] = useState([]);
 
   const theme = useTheme();
+
+  const dispatch = useDispatch();
 
   const DrawerAction = () => (
     <TopNavigationAction
@@ -46,34 +51,34 @@ const DirectoryScreen = ({ navigation }) => {
           ]}
           status="info"
           activeOpacity={0.5}
-          onPress={() => {
-            navigation.navigate("TenantsDirectory", {
-              chosenInstitution: itemData.item[0],
-            });
-          }}
+          onPress={() => {}}
         >
           <View>
             <Text style={directoryStyles.listContentText}>
-              {itemData.item[1].name}
+              {itemData.item.institutionName}
             </Text>
           </View>
         </Card>
       );
     },
-    [navigation, theme]
+    [theme]
   );
 
+  const getInstitutions = useCallback(async () => {
+    try {
+      const res = await dispatch(databaseActions.getInstitutions());
+      setInstitutions(res.data.data);
+    } catch (err) {
+      handleErrorResponse(err);
+    }
+  }, [dispatch]);
+
   useEffect(() => {
-    // TODO: replace with mongoDB data
-    const tempArray = Object.entries();
-    const newTempArray = tempArray.filter((e) => {
-      return e[0] !== "default";
-    });
-    setInstitutions(newTempArray);
-  }, []);
+    getInstitutions();
+  }, [getInstitutions]);
 
   return (
-    <SafeAreaView style={styles.screen}>
+    <View style={styles.screen}>
       <TopNavigation
         title="Directory"
         alignment="center"
@@ -88,7 +93,7 @@ const DirectoryScreen = ({ navigation }) => {
           contentContainerStyle={directoryStyles.contentContainer}
         />
       </Layout>
-    </SafeAreaView>
+    </View>
   );
 };
 

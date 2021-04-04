@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { SafeAreaView, View } from "react-native";
+import { View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -37,7 +37,7 @@ const TenantsDirectoryScreen = ({ navigation }) => {
     />
   );
 
-  const renderInstitutions = useCallback(
+  const renderTenants = useCallback(
     (itemData) => {
       return (
         <Card
@@ -86,7 +86,7 @@ const TenantsDirectoryScreen = ({ navigation }) => {
       <Layout style={styles.layout}>
         <List
           data={tenants}
-          renderItem={renderInstitutions}
+          renderItem={renderTenants}
           contentContainerStyle={directoryStyles.contentContainer}
         />
       </Layout>
