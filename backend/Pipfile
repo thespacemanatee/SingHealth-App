@@ -37,6 +37,11 @@ rollbar = "*"
 pandas = "*"
 xlsxwriter = "*"
 flask-mail = "*"
+pynguin = "*"
+flask-testing = "*"
+faker = "*"
+coverage = "*"
+mongomock = "*"
 
 [dev-packages]
 
