@@ -32,7 +32,7 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                     session['account_type'] = "staff"
 
                     # Append the token to the DB
-                    if expoToken is not None:
+                    if expoToken is not None and expoToken != "":
                         mongo.db.staff.update_one(
                             {"email": userEmail},
                             [
@@ -89,7 +89,7 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                     session['account_type'] = "tenant"
 
                     # TODO: Append the token to the DB
-                    if expoToken is not None:
+                    if expoToken is not None and expoToken != "":
                         mongo.db.tenant.update_one(
                             {"email": userEmail},
                             [
