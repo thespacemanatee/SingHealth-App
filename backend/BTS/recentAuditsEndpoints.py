@@ -66,7 +66,7 @@ def addRecentAuditsEndpoints(app, mongo):
                 if len(auditsList) == 0:
                     return serverResponse(None, 404, "No matching forms")
 
-            return serverResponse(auditsList, 200, "Forms found")
+                return serverResponse(auditsList, 200, "Forms found")
 
             # else:
             #     return serverResponse(None, 403, "You do not have access to this page as you are not a staff")
