@@ -1,30 +1,26 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { View } from "react-native";
 import {
   Divider,
   Icon,
   Layout,
-  Text,
   TopNavigation,
   TopNavigationAction,
   List,
-  Card,
   StyleService,
-  useTheme,
 } from "@ui-kitten/components";
 
-import directoryStyles from "./StyleGuide";
 import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
+import EntityCard from "../../../components/EntityCard";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 
 const DirectoryScreen = ({ navigation }) => {
   const [institutions, setInstitutions] = useState([]);
-
-  const theme = useTheme();
+  const [listLoading, setListLoading] = useState(true);
 
   const dispatch = useDispatch();
 
@@ -41,41 +37,50 @@ const DirectoryScreen = ({ navigation }) => {
     <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
   );
 
+  const handleNavigateTenants = useCallback(
+    (institutionID) => {
+      navigation.navigate("TenantsDirectory", { institutionID });
+    },
+    [navigation]
+  );
+
   const renderInstitutions = useCallback(
     (itemData) => {
       return (
-        <Card
-          style={[
-            directoryStyles.item,
-            { backgroundColor: theme["color-info-100"] },
-          ]}
-          status="info"
-          activeOpacity={0.5}
-          onPress={() => {}}
-        >
-          <View>
-            <Text style={directoryStyles.listContentText}>
-              {itemData.item.institutionName}
-            </Text>
-          </View>
-        </Card>
+        <EntityCard
+          onPress={handleNavigateTenants}
+          displayName={itemData.item.institutionName}
+          _id={itemData.item.institutionID}
+        />
       );
     },
-    [theme]
+    [handleNavigateTenants]
   );
 
   const getInstitutions = useCallback(async () => {
     try {
+      setListLoading(true);
       const res = await dispatch(databaseActions.getInstitutions());
       setInstitutions(res.data.data);
     } catch (err) {
       handleErrorResponse(err);
+    } finally {
+      setListLoading(false);
     }
   }, [dispatch]);
 
   useEffect(() => {
     getInstitutions();
-  }, [getInstitutions]);
+    const unsubscribe = navigation.addListener("focus", () => {
+      getInstitutions();
+    });
+
+    return () => {
+      // Unsubscribe for the focus Listener
+      // eslint-disable-next-line no-unused-expressions
+      unsubscribe;
+    };
+  }, [getInstitutions, navigation]);
 
   return (
     <View style={styles.screen}>
@@ -90,7 +95,8 @@ const DirectoryScreen = ({ navigation }) => {
         <List
           data={institutions}
           renderItem={renderInstitutions}
-          contentContainerStyle={directoryStyles.contentContainer}
+          onRefresh={getInstitutions}
+          refreshing={listLoading}
         />
       </Layout>
     </View>

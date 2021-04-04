@@ -1,30 +1,25 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { View } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   Divider,
   Icon,
   Layout,
-  Text,
   TopNavigation,
   TopNavigationAction,
   List,
-  Card,
   StyleService,
-  useTheme,
 } from "@ui-kitten/components";
 
-import directoryStyles from "./StyleGuide";
 import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
+import EntityCard from "../../../components/EntityCard";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
-const TenantsDirectoryScreen = ({ navigation }) => {
-  const authStore = useSelector((state) => state.auth);
+const TenantsDirectoryScreen = ({ route, navigation }) => {
   const [tenants, setTenants] = useState([]);
-
-  const theme = useTheme();
+  const { institutionID } = route.params;
 
   const dispatch = useDispatch();
 
@@ -37,39 +32,26 @@ const TenantsDirectoryScreen = ({ navigation }) => {
     />
   );
 
-  const renderTenants = useCallback(
-    (itemData) => {
-      return (
-        <Card
-          style={[
-            directoryStyles.item,
-            { backgroundColor: theme["color-info-100"] },
-          ]}
-          status="info"
-          activeOpacity={0.5}
-          onPress={() => {}}
-        >
-          <View>
-            <Text style={directoryStyles.listContentText}>
-              {itemData.item.stallName}
-            </Text>
-          </View>
-        </Card>
-      );
-    },
-    [theme]
-  );
+  const renderTenants = useCallback((itemData) => {
+    return (
+      <EntityCard
+        onPress={{}}
+        displayName={itemData.item.stallName}
+        _id={itemData.item.tenantID}
+      />
+    );
+  }, []);
 
   const getTenants = useCallback(async () => {
     try {
       const res = await dispatch(
-        databaseActions.getRelevantTenants(authStore.institutionID)
+        databaseActions.getRelevantTenants(institutionID)
       );
       setTenants(res.data.data);
     } catch (err) {
       handleErrorResponse(err);
     }
-  }, [authStore.institutionID, dispatch]);
+  }, [dispatch, institutionID]);
 
   useEffect(() => {
     getTenants();
@@ -84,11 +66,7 @@ const TenantsDirectoryScreen = ({ navigation }) => {
       />
       <Divider />
       <Layout style={styles.layout}>
-        <List
-          data={tenants}
-          renderItem={renderTenants}
-          contentContainerStyle={directoryStyles.contentContainer}
-        />
+        <List data={tenants} renderItem={renderTenants} />
       </Layout>
     </View>
   );
