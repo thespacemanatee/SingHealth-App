@@ -16,7 +16,7 @@ import ForgotPasswordScreen from "../screens/AuthScreens/ForgotPasswordScreen";
 
 const { Navigator, Screen } = createStackNavigator();
 
-const AppNavigator = () => {
+const AppNavigator = ({ expoToken }) => {
   const authStore = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
@@ -50,9 +50,9 @@ const AppNavigator = () => {
     );
   };
 
-  useEffect(() => {
-    dispatch(authActions.restoreToken());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(authActions.restoreToken());
+  // }, [dispatch]);
 
   console.log(authStore);
 

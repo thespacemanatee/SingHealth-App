@@ -5,6 +5,7 @@ import { endpoint, httpClient } from "../../helpers/CustomHTTPClient";
 export const RESTORE_TOKEN = "RESTORE_TOKEN";
 export const SIGN_IN = "SIGN_IN";
 export const SIGN_OUT = "SIGN_OUT";
+export const SAVE_EXPO_TOKEN = "SAVE_EXPO_TOKEN";
 
 export const restoreToken = () => {
   return async (dispatch) => {
@@ -25,7 +26,7 @@ export const restoreToken = () => {
   };
 };
 
-export const signIn = (user, pswd, expoToken, userType) => {
+export const signIn = (user, pswd, userType, expoToken = "") => {
   return async (dispatch) => {
     console.log({
       user,
@@ -70,6 +71,8 @@ export const signIn = (user, pswd, expoToken, userType) => {
 export const signOut = (expoToken) => {
   return async (dispatch) => {
     // dispatch({ action: SIGN_OUT, token: token ? token : null });
+    removeTokenFromStorage();
+    dispatch({ type: SIGN_OUT });
     console.log("Signing out!");
     const signOutOptions = {
       url: `${endpoint}logout`,
@@ -83,10 +86,11 @@ export const signOut = (expoToken) => {
       },
     };
     await httpClient(signOutOptions);
-
-    dispatch({ type: SIGN_OUT });
-    removeTokenFromStorage();
   };
+};
+
+export const saveExpoToken = (expoToken) => {
+  return { type: SAVE_EXPO_TOKEN, expoToken };
 };
 
 const saveUserDataToStorage = async (userData) => {
