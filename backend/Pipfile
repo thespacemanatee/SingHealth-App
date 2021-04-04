@@ -33,6 +33,10 @@ pylint = "*"
 python-bsonjs = "*"
 gevent = "*"
 exponent-server-sdk = "*"
+rollbar = "*"
+pandas = "*"
+xlsxwriter = "*"
+flask-mail = "*"
 
 [dev-packages]
 

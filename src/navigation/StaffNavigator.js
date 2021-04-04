@@ -16,7 +16,7 @@ import {
 } from "@ui-kitten/components";
 
 import StaffDashboardScreen from "../screens/staff/StaffDashboardScreen";
-// import DirectoryScreen from "../screens/staff/DirectoryScreens/DirectoryScreen";
+import DirectoryScreen from "../screens/staff/DirectoryScreens/DirectoryScreen";
 import ChooseTenantScreen from "../screens/staff/ChooseTenantScreen";
 import ChecklistScreen from "../screens/AuditScreens/ChecklistScreen";
 import RectificationScreen from "../screens/AuditScreens/RectificationScreen";
@@ -167,7 +167,7 @@ const StaffDirectoryStackNavigator = () => {
   const { Navigator, Screen } = createStackNavigator();
   return (
     <Navigator headerMode="none">
-      {/* <Screen name="Directory" component={DirectoryScreen} /> */}
+      <Screen name="Directory" component={DirectoryScreen} />
       <Screen name="TenantsDirectory" component={TenantsDirectoryScreen} />
     </Navigator>
   );

@@ -51,10 +51,6 @@ const StaffDashboardScreen = ({ navigation }) => {
     <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
   );
 
-  const handleRefreshList = () => {
-    getListData();
-  };
-
   const handleOpenAudit = useCallback(
     async (auditID, stallName) => {
       try {
@@ -145,7 +141,7 @@ const StaffDashboardScreen = ({ navigation }) => {
           contentContainerStyle={styles.contentContainer}
           data={listData}
           renderItem={renderActiveAudits}
-          onRefresh={handleRefreshList}
+          onRefresh={getListData}
           refreshing={listLoading}
         />
 

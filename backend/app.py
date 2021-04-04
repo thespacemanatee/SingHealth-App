@@ -5,6 +5,8 @@ from BTS.imagesEndpoint import addImagesEndpoint
 from BTS.auditsEndpoint_wx import addWenXinEndpoints
 from BTS.staff_tenantEndpoint_wx import change_tenant_info
 from BTS.recentAuditsEndpoints import addRecentAuditsEndpoints
+from BTS.auditEmailEndpoint import addAuditEmailEndpoints
+from BTS.institutionEndpoint import institution_info
 from BTS.utils import serverResponse
 from flask import Flask
 from flask_pymongo import PyMongo
@@ -52,6 +54,8 @@ addAuditsEndpoint(app, mongo)
 addImagesEndpoint(app)
 addLoginEndpointsForTenantAndStaff(app, mongo)
 addRecentAuditsEndpoints(app, mongo)
+addAuditEmailEndpoints(app, mongo)
+institution_info(app, mongo)
 change_tenant_info(app, mongo)
 
 port = int(os.getenv('PORT', 5000))
