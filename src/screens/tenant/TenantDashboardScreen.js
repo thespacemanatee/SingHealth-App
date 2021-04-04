@@ -20,6 +20,7 @@ import CustomText from "../../components/ui/CustomText";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
+const AddIcon = (props) => <Icon {...props} name="file-add-outline" />;
 
 const TenantDashboardScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
@@ -82,6 +83,18 @@ const TenantDashboardScreen = ({ navigation }) => {
     [authStore.userType, handleOpenAudit]
   );
 
+  const renderEmptyComponent = () => (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <AddIcon style={{ width: 200, height: 300 }} fill="gray" />
+    </View>
+  );
+
   const getListData = useCallback(async () => {
     try {
       setListLoading(true);
@@ -135,6 +148,7 @@ const TenantDashboardScreen = ({ navigation }) => {
           renderItem={renderActiveAudits}
           onRefresh={handleRefreshList}
           refreshing={listLoading}
+          ListEmptyComponent={renderEmptyComponent}
         />
       </Layout>
     </View>
