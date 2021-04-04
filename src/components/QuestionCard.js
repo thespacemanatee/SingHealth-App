@@ -85,7 +85,7 @@ const QuestionCard = (props) => {
         )
       );
     },
-    [checklistType, section, index, deleted, checked, dispatch]
+    [checklistType, section, index, deleted, dispatch]
   );
 
   return (
