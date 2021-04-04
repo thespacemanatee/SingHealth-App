@@ -6,7 +6,6 @@ import {
   Icon,
   Layout,
   StyleService,
-  Text,
   TopNavigation,
   TopNavigationAction,
 } from "@ui-kitten/components";
@@ -19,6 +18,7 @@ import ActiveAuditCard from "../../components/ActiveAuditCard";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 // import SkeletonLoading from "../../components/ui/SkeletonLoading";
 import { handleErrorResponse } from "../../helpers/utils";
+import CustomText from "../../components/ui/CustomText";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
@@ -146,7 +146,7 @@ const StaffDashboardScreen = ({ navigation }) => {
         <Graph />
         <Divider />
         <View style={styles.textContainer}>
-          <Text style={styles.text}>Rectification Progress</Text>
+          <CustomText style={styles.text}>Rectification Progress</CustomText>
         </View>
         <CenteredLoading loading={loading} />
         <FlatList

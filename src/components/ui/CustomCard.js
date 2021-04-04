@@ -1,7 +1,6 @@
 import React from "react";
 import { Platform, View } from "react-native";
 import {
-  Text,
   Card,
   StyleService,
   CheckBox,
@@ -10,6 +9,7 @@ import {
 } from "@ui-kitten/components";
 
 import { SCREEN_WIDTH } from "../../helpers/config";
+import CustomText from "./CustomText";
 
 const ICON_SIZE = 30;
 
@@ -51,7 +51,7 @@ const CustomCard = (props) => {
 
   const Header = (headerProps) => (
     <View {...headerProps} style={styles.header}>
-      <Text>{index + 1}</Text>
+      <CustomText style={styles.font}>{index + 1}</CustomText>
       {!checked && !rectified && !deleted && (
         <AlertIcon fill={theme["color-danger-600"]} />
       )}
@@ -75,16 +75,17 @@ const CustomCard = (props) => {
           disabled={checkboxDisabled || deleted}
         />
         <View style={styles.questionTextContainer}>
-          <Text
+          <CustomText
             numberOfLines={3}
             // eslint-disable-next-line react-native/no-inline-styles
             style={{
               width: Platform.OS === "web" ? SCREEN_WIDTH - 100 : null,
               textDecorationLine: deleted ? "line-through" : null,
+              fontFamily: "SFProDisplay-Regular",
             }}
           >
             {question}
-          </Text>
+          </CustomText>
         </View>
       </View>
     </Card>
@@ -94,6 +95,9 @@ const CustomCard = (props) => {
 export default CustomCard;
 
 const styles = StyleService.create({
+  font: {
+    fontFamily: "SFProDisplay-Regular",
+  },
   questionContainer: {
     flexDirection: "row",
   },

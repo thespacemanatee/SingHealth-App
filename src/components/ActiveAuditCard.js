@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
-import { Text, useTheme, StyleService } from "@ui-kitten/components";
+import { useTheme, StyleService } from "@ui-kitten/components";
 import moment from "moment";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import ShadowCard from "./ui/ShadowCard";
+import CustomText from "./ui/CustomText";
 
 const ActiveAuditCard = ({ userType, item, onPress }) => {
   const animation = useRef(null);
@@ -27,17 +28,17 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
   return (
     <ShadowCard style={styles.cardContainer} onPress={handleOnPress}>
       <View>
-        <Text style={styles.timeStamp}>{stallName}</Text>
-        <Text style={styles.timeStamp}>
+        <CustomText bold>{stallName}</CustomText>
+        <CustomText>
           {moment(auditMetadata.date.$date)
             .toLocaleString()
             .split(" ")
             .slice(0, 5)
             .join(" ")}
-        </Text>
-        <Text>{`${userType === "staff" ? "Tenant" : "You"} scored: ${(
+        </CustomText>
+        <CustomText>{`${userType === "staff" ? "Tenant" : "You"} scored: ${(
           Number.parseFloat(auditMetadata.score) * 100
-        ).toFixed(1)}`}</Text>
+        ).toFixed(1)}`}</CustomText>
       </View>
       <View>
         <AnimatedCircularProgress
@@ -53,12 +54,12 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
         >
           {() => (
             <View style={styles.progressContainer}>
-              <Text style={styles.progressText}>
+              <CustomText bold>
                 {`${(
                   Number.parseFloat(auditMetadata.rectificationProgress) * 100
                 ).toFixed(1)}%`}
-              </Text>
-              <Text style={styles.progressText}>Progress</Text>
+              </CustomText>
+              <CustomText>Progress</CustomText>
             </View>
           )}
         </AnimatedCircularProgress>
@@ -76,14 +77,8 @@ const styles = StyleService.create({
     // alignItems: "flex-start",
     padding: 20,
   },
-  timeStamp: {
-    fontFamily: "SFProDisplay-Bold",
-  },
   progressContainer: {
     justifyContent: "center",
     alignItems: "center",
-  },
-  progressText: {
-    fontFamily: "SFProDisplay-Bold",
   },
 });

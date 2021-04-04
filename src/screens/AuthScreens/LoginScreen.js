@@ -14,7 +14,6 @@ import {
   Layout,
   TopNavigation,
   TopNavigationAction,
-  Text,
   Icon,
   StyleService,
   useTheme,
@@ -28,6 +27,7 @@ import * as authActions from "../../store/actions/authActions";
 import Logo from "../../components/ui/Logo";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
+import CustomText from "../../components/ui/CustomText";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -162,7 +162,7 @@ const LoginScreen = ({ navigation }) => {
                     <TouchableOpacity
                       onPress={() => navigation.navigate("ForgotPassword")}
                     >
-                      <Text style={styles.forgot}>Forgot your password?</Text>
+                      <CustomText style={styles.forgot}>Forgot your password?</CustomText>
                     </TouchableOpacity>
                   </View>
                   <View style={styles.buttonContainer}>
@@ -174,9 +174,9 @@ const LoginScreen = ({ navigation }) => {
               )}
             </Formik>
             <View style={styles.row}>
-              <Text>Don’t have an account? </Text>
+              <CustomText>Don’t have an account? </CustomText>
               <TouchableOpacity onPress={() => navigation.replace("Register")}>
-                <Text style={styles.link}>Sign up</Text>
+                <CustomText style={styles.link}>Sign up</CustomText>
               </TouchableOpacity>
             </View>
           </>

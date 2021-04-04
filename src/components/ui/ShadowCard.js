@@ -23,6 +23,7 @@ const styles = StyleService.create({
     shadowColor: "grey",
     shadowOpacity: 0.7,
     borderRadius: 20,
+    marginBottom: 10,
   },
   shadow: {
     backgroundColor: "white",

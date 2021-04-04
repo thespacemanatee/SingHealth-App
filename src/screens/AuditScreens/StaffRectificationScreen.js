@@ -9,7 +9,6 @@ import {
   Icon,
   StyleService,
   Input,
-  Text,
   useTheme,
   Button,
   Toggle,
@@ -24,6 +23,7 @@ import ImageViewPager from "../../components/ImageViewPager";
 import { SCREEN_HEIGHT } from "../../helpers/config";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
+import CustomText from "../../components/ui/CustomText";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -220,7 +220,7 @@ const StaffRectificationScreen = ({ route, navigation }) => {
           { backgroundColor: theme["color-primary-400"] },
         ]}
       >
-        <Text style={styles.text}>{question}</Text>
+        <CustomText style={styles.text}>{question}</CustomText>
       </View>
       <Button onPress={handleSubmitApproval}>
         {isRectified ? "REVOKE APPROVAL" : "APPROVE"}
@@ -238,7 +238,7 @@ const StaffRectificationScreen = ({ route, navigation }) => {
             </Toggle>
           </View>
           <View style={styles.inputContainer}>
-            <Text category="h6">Tenant&apos;s Remarks: </Text>
+            <CustomText category="h6">Tenant&apos;s Remarks: </CustomText>
             <Input
               height={SCREEN_HEIGHT * 0.1}
               multiline

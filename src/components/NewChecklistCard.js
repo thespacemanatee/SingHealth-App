@@ -1,9 +1,10 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { Card, StyleService, Text } from "@ui-kitten/components";
+import { Card, StyleService } from "@ui-kitten/components";
 import moment from "moment";
 
 import * as checklistActions from "../store/actions/checklistActions";
+import CustomText from "./ui/CustomText";
 
 const NewChecklistCard = ({
   item,
@@ -47,7 +48,7 @@ const NewChecklistCard = ({
 
   return (
     <Card style={styles.item} status="basic" onPress={handleCreateNewChecklist}>
-      <Text>{item.stallName}</Text>
+      <CustomText style={styles.stallNameText}>{item.stallName}</CustomText>
     </Card>
   );
 };
@@ -57,5 +58,8 @@ export default NewChecklistCard;
 const styles = StyleService.create({
   item: {
     // marginVertical: 4,
+  },
+  stallNameText: {
+    fontFamily: "SFProDisplay-Regular",
   },
 });

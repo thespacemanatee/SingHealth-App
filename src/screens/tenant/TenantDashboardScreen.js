@@ -6,10 +6,8 @@ import {
   Icon,
   Layout,
   StyleService,
-  Text,
   TopNavigation,
   TopNavigationAction,
-  List,
 } from "@ui-kitten/components";
 
 import * as databaseActions from "../../store/actions/databaseActions";
@@ -18,6 +16,7 @@ import ActiveAuditCard from "../../components/ActiveAuditCard";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 // import SkeletonLoading from "../../components/ui/SkeletonLoading";
 import { handleErrorResponse } from "../../helpers/utils";
+import CustomText from "../../components/ui/CustomText";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
@@ -126,7 +125,7 @@ const TenantDashboardScreen = ({ navigation }) => {
       <Layout style={styles.layout}>
         <Divider />
         <View style={styles.textContainer}>
-          <Text style={styles.text}>Outstanding Audits</Text>
+          <CustomText style={styles.text}>Outstanding Audits</CustomText>
         </View>
         <CenteredLoading loading={loading} />
         <FlatList

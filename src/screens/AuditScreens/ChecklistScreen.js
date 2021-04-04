@@ -8,7 +8,6 @@ import {
   TopNavigation,
   TopNavigationAction,
   Icon,
-  Text,
   StyleService,
   useTheme,
   CheckBox,
@@ -20,6 +19,7 @@ import QuestionCard from "../../components/QuestionCard";
 import alert from "../../components/CustomAlert";
 import SectionHeader from "../../components/ui/SectionHeader";
 import CenteredLoading from "../../components/ui/CenteredLoading";
+import CustomText from "../../components/ui/CustomText";
 
 export const FNB_SECTION = "F&B Checklist";
 export const NON_FNB_SECTION = "Non-F&B Checklist";
@@ -244,14 +244,14 @@ const ChecklistScreen = ({ route, navigation }) => {
             { backgroundColor: theme["color-primary-400"] },
           ]}
         >
-          <Text style={styles.title}>Audit: {stallName}</Text>
-          <Text>
+          <CustomText style={styles.title}>Audit: {stallName}</CustomText>
+          <CustomText>
             {moment(checklistStore.auditMetadata.date.$date)
               .toLocaleString()
               .split(" ")
               .slice(0, 5)
               .join(" ")}
-          </Text>
+          </CustomText>
         </View>
 
         <CenteredLoading loading={loading} />

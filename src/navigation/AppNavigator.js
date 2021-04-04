@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Text, Platform } from "react-native";
+import { View, Platform } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -13,6 +13,7 @@ import AuthScreen from "../screens/AuthScreens/AuthScreen";
 import LoginScreen from "../screens/AuthScreens/LoginScreen";
 import RegisterScreen from "../screens/AuthScreens/RegisterScreen";
 import ForgotPasswordScreen from "../screens/AuthScreens/ForgotPasswordScreen";
+import CustomText from "../components/ui/CustomText";
 
 const { Navigator, Screen } = createStackNavigator();
 
@@ -43,9 +44,9 @@ const AppNavigator = ({ expoToken }) => {
     }
     return (
       <View style={styles.textContainer}>
-        <Text style={styles.text}>
+        <CustomText style={styles.text}>
           A serious error has occurred. You should never see this page.
-        </Text>
+        </CustomText>
       </View>
     );
   };
