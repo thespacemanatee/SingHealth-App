@@ -32,7 +32,8 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                     session['account_type'] = "staff"
 
                     # Append the token to the DB
-                    if expoToken is not None and expoToken != "":
+                    if expoToken is not None and expoToken != "" and \
+                        expoToken not in user["expoToken"]:
                         mongo.db.staff.update_one(
                             {"email": userEmail},
                             [
@@ -88,24 +89,26 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                     login_user(user_obj, remember=True)
                     session['account_type'] = "tenant"
 
+                    
+
                     # TODO: Append the token to the DB
-                    if expoToken is not None and expoToken != "":
-                        mongo.db.tenant.update_one(
-                            {"email": userEmail},
-                            [
-                                {
-                                    "$set": {
-                                        "expoToken": {
-                                            "$concatArrays": [
-                                                "$expoToken",
-                                                [expoToken]
-                                            ]
+                    if expoToken is not None and expoToken != "" and  \
+                        expoToken not in user["expoToken"]:
+                            mongo.db.tenant.update_one(
+                                {"email": userEmail},
+                                [
+                                    {
+                                        "$set": {
+                                            "expoToken": {
+                                                "$concatArrays": [
+                                                    "$expoToken",
+                                                    [expoToken]
+                                                ]
+                                            }
                                         }
                                     }
-                                }
-                            ]
-                            
-                        )
+                                ]
+                            )
 
                     return serverResponse(
                         user,
