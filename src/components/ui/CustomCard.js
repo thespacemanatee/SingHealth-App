@@ -13,46 +13,49 @@ import { SCREEN_WIDTH } from "../../helpers/config";
 
 const ICON_SIZE = 30;
 
+const AlertIcon = (props) => (
+  <Icon
+    {...props}
+    name="alert-triangle-outline"
+    style={{
+      width: ICON_SIZE,
+      height: ICON_SIZE,
+    }}
+  />
+);
+
+const CheckIcon = (props) => (
+  <Icon
+    {...props}
+    name="checkmark-circle-2-outline"
+    style={{
+      width: ICON_SIZE,
+      height: ICON_SIZE,
+    }}
+  />
+);
+
 const CustomCard = (props) => {
-  const { index } = props;
-  const { onChange } = props;
-  const { onClick } = props;
-  const { checked } = props;
-  const { deleted } = props;
-  const { question } = props;
-  const { rectified } = props;
-  const { checkboxDisabled } = props;
+  const {
+    index,
+    onChange,
+    onClick,
+    checked,
+    deleted,
+    question,
+    rectified,
+    checkboxDisabled,
+  } = props;
 
   const theme = useTheme();
-
-  const AlertIcon = (iconProps) => (
-    <Icon
-      {...iconProps}
-      name="alert-triangle-outline"
-      fill={theme["color-danger-600"]}
-      style={{
-        width: ICON_SIZE,
-        height: ICON_SIZE,
-      }}
-    />
-  );
-  const CheckIcon = (iconProps) => (
-    <Icon
-      {...iconProps}
-      name="checkmark-circle-2-outline"
-      fill={theme["color-success-600"]}
-      style={{
-        width: ICON_SIZE,
-        height: ICON_SIZE,
-      }}
-    />
-  );
 
   const Header = (headerProps) => (
     <View {...headerProps} style={styles.header}>
       <Text>{index + 1}</Text>
-      {!checked && !rectified && <AlertIcon />}
-      {!checked && rectified && <CheckIcon />}
+      {!checked && !rectified && !deleted && (
+        <AlertIcon fill={theme["color-danger-600"]} />
+      )}
+      {!checked && rectified && <CheckIcon fill={theme["color-success-600"]} />}
     </View>
   );
 

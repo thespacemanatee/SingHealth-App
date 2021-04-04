@@ -9,6 +9,28 @@ import CustomCard from "./ui/CustomCard";
 
 const ICON_SIZE = 30;
 
+const TrashIcon = (props) => (
+  <Icon
+    {...props}
+    name="trash"
+    style={{
+      width: ICON_SIZE,
+      height: ICON_SIZE,
+    }}
+  />
+);
+
+const UndoIcon = (props) => (
+  <Icon
+    {...props}
+    name="undo"
+    style={{
+      width: ICON_SIZE,
+      height: ICON_SIZE,
+    }}
+  />
+);
+
 const QuestionCard = (props) => {
   const [checked, setChecked] = useState(false);
   const [deleted, setDeleted] = useState(false);
@@ -19,35 +41,6 @@ const QuestionCard = (props) => {
   const theme = useTheme();
 
   const dispatch = useDispatch();
-
-  const TrashIcon = useCallback(
-    (iconProps) => (
-      <Icon
-        {...iconProps}
-        name="trash"
-        fill={theme["color-primary-500"]}
-        style={{
-          width: ICON_SIZE,
-          height: ICON_SIZE,
-        }}
-      />
-    ),
-    [theme]
-  );
-  const UndoIcon = useCallback(
-    (iconProps) => (
-      <Icon
-        {...iconProps}
-        name="undo"
-        fill={theme["color-primary-500"]}
-        style={{
-          width: ICON_SIZE,
-          height: ICON_SIZE,
-        }}
-      />
-    ),
-    [theme]
-  );
 
   useEffect(() => {
     if (answer === null) {
@@ -76,10 +69,14 @@ const QuestionCard = (props) => {
           { backgroundColor: theme["color-primary-100"] },
         ]}
       >
-        {deleted ? <UndoIcon /> : <TrashIcon />}
+        {deleted ? (
+          <UndoIcon fill={theme["color-primary-500"]} />
+        ) : (
+          <TrashIcon fill={theme["color-primary-500"]} />
+        )}
       </View>
     );
-  }, [TrashIcon, UndoIcon, deleted, theme]);
+  }, [deleted, theme]);
 
   const rightSwipe = useCallback(() => {
     setDeleted(!deleted);

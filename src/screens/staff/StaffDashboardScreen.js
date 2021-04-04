@@ -9,7 +9,6 @@ import {
   Text,
   TopNavigation,
   TopNavigationAction,
-  List,
 } from "@ui-kitten/components";
 import { FAB } from "react-native-paper";
 
@@ -23,6 +22,7 @@ import { handleErrorResponse } from "../../helpers/utils";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
+const AddIcon = (props) => <Icon {...props} name="file-add-outline" />;
 
 const StaffDashboardScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
@@ -87,6 +87,18 @@ const StaffDashboardScreen = ({ navigation }) => {
     [authStore.userType, handleOpenAudit]
   );
 
+  const renderEmptyComponent = () => (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <AddIcon style={{ width: 200, height: 300 }} fill="gray" />
+    </View>
+  );
+
   const getListData = useCallback(async () => {
     try {
       setListLoading(true);
@@ -139,10 +151,12 @@ const StaffDashboardScreen = ({ navigation }) => {
         <CenteredLoading loading={loading} />
         <FlatList
           contentContainerStyle={styles.contentContainer}
+          keyExtractor={(item, index) => String(index)}
           data={listData}
           renderItem={renderActiveAudits}
           onRefresh={getListData}
           refreshing={listLoading}
+          ListEmptyComponent={renderEmptyComponent}
         />
 
         <FAB.Group
@@ -192,6 +206,7 @@ const styles = StyleService.create({
     fontFamily: "SFProDisplay-Bold",
   },
   contentContainer: {
+    // flexGrow: 1,
     paddingHorizontal: 8,
     paddingVertical: 4,
   },

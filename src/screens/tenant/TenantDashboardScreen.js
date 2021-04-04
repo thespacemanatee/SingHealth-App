@@ -131,6 +131,7 @@ const TenantDashboardScreen = ({ navigation }) => {
         <CenteredLoading loading={loading} />
         <FlatList
           contentContainerStyle={styles.contentContainer}
+          keyExtractor={(item, index) => String(index)}
           data={listData}
           renderItem={renderActiveAudits}
           onRefresh={handleRefreshList}

@@ -165,7 +165,7 @@ const ChooseTenantScreen = ({ navigation }) => {
         <SectionList
           sections={sectionData}
           stickySectionHeadersEnabled
-          keyExtractor={(item, index) => item + index}
+          keyExtractor={(item, index) => String(index)}
           renderItem={renderSectionList}
           // contentContainerStyle={styles.contentContainer}
           renderSectionHeader={renderSectionHeader}

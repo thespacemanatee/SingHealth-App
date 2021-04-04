@@ -246,7 +246,7 @@ const ChecklistScreen = ({ route, navigation }) => {
         >
           <Text style={styles.title}>Audit: {stallName}</Text>
           <Text>
-            {moment(checklistStore.auditMetadata.date)
+            {moment(checklistStore.auditMetadata.date.$date)
               .toLocaleString()
               .split(" ")
               .slice(0, 5)
@@ -258,7 +258,7 @@ const ChecklistScreen = ({ route, navigation }) => {
         <SectionList
           sections={completeChecklist}
           stickySectionHeadersEnabled
-          keyExtractor={(item, index) => item + index}
+          keyExtractor={(item, index) => String(index)}
           renderItem={renderChosenChecklist}
           initialNumToRender={40}
           renderSectionHeader={renderSectionHeader}
