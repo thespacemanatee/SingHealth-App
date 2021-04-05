@@ -41,6 +41,9 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
 
   const dispatch = useDispatch();
 
+  const min = new Date();
+  const max = new Date(min.getFullYear(), min.getMonth(), min.getDate() + 31);
+
   const handleDateChange = (date) => {
     console.log(date);
     dispatch(
@@ -84,24 +87,11 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
       setValue(storeRemarks);
     }
     if (storeDeadline) {
-      setDeadline(storeDeadline.$date);
+      setDeadline(storeDeadline);
     } else {
-      dispatch(
-        checklistActions.changeDeadline(
-          checklistType,
-          section,
-          index,
-          moment(
-            new Date(
-              new Date().getFullYear(),
-              new Date().getMonth(),
-              new Date().getDate() + 7
-            )
-          )
-        )
-      );
+      dispatch(checklistActions.changeDeadline(max));
     }
-  }, [checklistStore, checklistType, dispatch, index, section]);
+  }, [checklistStore, checklistType, dispatch, index, max, section]);
 
   const onSave = async (imageData) => {
     if (imageArray.length > 2) {
@@ -264,7 +254,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           { backgroundColor: theme["color-primary-400"] },
         ]}
       >
-        <CustomText style={styles.text}>{question}</CustomText>
+        <CustomText bold>{question}</CustomText>
       </View>
       <Layout style={styles.layout}>
         <KeyboardAwareScrollView extraHeight={200}>
@@ -273,11 +263,16 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
             renderListItems={renderListItems}
           />
           <View style={styles.datePickerContainer}>
-            <CustomText category="h6">Deadline: </CustomText>
-            <CustomDatepicker onSelect={handleDateChange} deadline={deadline} />
+            <CustomText bold>Deadline: </CustomText>
+            <CustomDatepicker
+              onSelect={handleDateChange}
+              deadline={deadline}
+              min={min}
+              max={max}
+            />
           </View>
           <View style={styles.inputContainer}>
-            <CustomText category="h6">Remarks: </CustomText>
+            <CustomText bold>Remarks: </CustomText>
             <Input
               height={SCREEN_HEIGHT * 0.1}
               multiline
@@ -308,9 +303,6 @@ const styles = StyleService.create({
   },
   contentContainer: {
     paddingBottom: 25,
-  },
-  text: {
-    fontWeight: "bold",
   },
   datePickerContainer: {
     marginTop: 20,
