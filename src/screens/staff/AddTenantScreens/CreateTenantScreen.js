@@ -24,9 +24,9 @@ const AddTenantCredScreen = ({ navigation }) => {
 
   const theme = useTheme();
 
-  const handleSubmitForm = async (values) => {
-    console.log(values);
-    navigation.navigate("AddAccountDetails", { values });
+  const handleSubmitForm = (credentials) => {
+    console.log(credentials);
+    navigation.navigate("AddAccountDetails", { credentials });
   };
 
   const BackAction = () => (
@@ -39,15 +39,15 @@ const AddTenantCredScreen = ({ navigation }) => {
   );
 
   const RegisterSchema = Yup.object().shape({
-    tenantName: Yup.string().required("Please enter tenant name!"),
+    name: Yup.string().required("Please enter tenant name!"),
     email: Yup.string()
       .email("Invalid email!")
       .required("Please enter tenant's email!"),
-    password: Yup.string()
+    pswd: Yup.string()
       .required("Please enter your password!")
       .min(8, "Password is too short - should be 8 chars minimum."),
     passwordConfirmation: Yup.string().oneOf(
-      [Yup.ref("password"), null],
+      [Yup.ref("pswd"), null],
       "Passwords must match"
     ),
   });
@@ -73,7 +73,7 @@ const AddTenantCredScreen = ({ navigation }) => {
       <KeyboardAwareScrollView>
         <Layout style={styles.layout}>
           <Formik
-            initialValues={{ tenantName: "", email: "", password: "" }}
+            initialValues={{ name: "", email: "", pswd: "" }}
             onSubmit={handleSubmitForm}
             validationSchema={RegisterSchema}
           >
@@ -83,14 +83,14 @@ const AddTenantCredScreen = ({ navigation }) => {
                 <CustomTextInput
                   label="Tenant Name"
                   returnKeyType="next"
-                  value={values.tenantName}
-                  onChangeText={handleChange("tenantName")}
-                  onBlur={handleBlur("tenantName")}
-                  error={!!errors.tenantName}
-                  errorText={errors.tenantName}
+                  value={values.name}
+                  onChangeText={handleChange("name")}
+                  onBlur={handleBlur("name")}
+                  error={!!errors.name}
+                  errorText={errors.name}
                   accessoryRight={(props) => {
                     return (
-                      !!errors.tenantName && (
+                      !!errors.name && (
                         <Icon
                           {...props}
                           name="alert-circle-outline"
@@ -127,17 +127,17 @@ const AddTenantCredScreen = ({ navigation }) => {
                 <CustomTextInput
                   label="Password"
                   returnKeyType="done"
-                  value={values.password}
-                  onChangeText={handleChange("password")}
-                  onBlur={handleBlur("password")}
-                  error={!!errors.password}
-                  errorText={errors.password}
+                  value={values.pswd}
+                  onChangeText={handleChange("pswd")}
+                  onBlur={handleBlur("pswd")}
+                  error={!!errors.pswd}
+                  errorText={errors.pswd}
                   secureTextEntry={secureTextEntry}
                   accessoryRight={renderSecureIcon}
                 />
                 <View style={styles.buttonContainer}>
                   <Button onPress={handleSubmit} style={styles.button}>
-                    Next
+                    NEXT
                   </Button>
                 </View>
               </View>
@@ -180,9 +180,6 @@ const styles = StyleService.create({
   },
   button: {
     marginTop: 24,
-  },
-  link: {
-    fontWeight: "bold",
   },
 });
 

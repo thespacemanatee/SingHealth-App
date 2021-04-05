@@ -153,7 +153,7 @@ const RegisterScreen = ({ navigation }) => {
                 />
                 <View style={styles.buttonContainer}>
                   <Button onPress={handleSubmit} style={styles.button}>
-                    Sign Up
+                    SIGN UP
                   </Button>
                 </View>
               </View>

@@ -169,7 +169,7 @@ const LoginScreen = ({ navigation }) => {
                   </View>
                   <View style={styles.buttonContainer}>
                     <Button mode="contained" onPress={handleSubmit}>
-                      Login
+                      LOGIN
                     </Button>
                   </View>
                 </View>
