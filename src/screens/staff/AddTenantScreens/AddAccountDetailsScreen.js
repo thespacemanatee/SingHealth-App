@@ -63,20 +63,14 @@ const AddAccountDetails = ({ navigation }) => {
   });
 
   return (
-    <TouchableWithoutFeedback
-      onPress={() => {
-        if (Platform.OS !== "web") {
-          Keyboard.dismiss();
-        }
-      }}
-    >
-      <KeyboardAwareScrollView style={styles.screen}>
-        <TopNavigation
-          title="Account Details"
-          alignment="center"
-          accessoryLeft={BackAction}
-        />
-        <Divider />
+    <View style={styles.screen}>
+      <TopNavigation
+        title="Account Details"
+        alignment="center"
+        accessoryLeft={BackAction}
+      />
+      <Divider />
+      <KeyboardAwareScrollView>
         <Layout style={styles.layout}>
           <Formik
             initialValues={{ stallName: "", email: "", password: "" }}
@@ -202,7 +196,7 @@ const AddAccountDetails = ({ navigation }) => {
           </Formik>
         </Layout>
       </KeyboardAwareScrollView>
-    </TouchableWithoutFeedback>
+    </View>
   );
 };
 

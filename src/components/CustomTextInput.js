@@ -12,17 +12,15 @@ const CustomTextInput = ({ errorText, description, ...props }) => {
       <Input size="large" {...props} status={errorText ? "danger" : "basic"} />
       {description && !errorText ? (
         <CustomText
-          style={[
-            styles.description,
-            {
-              color: theme["color-basic-600"],
-            },
-          ]}
+          style={{
+            ...styles.description,
+            color: theme["color-basic-600"],
+          }}
         >
           {description || " "}
         </CustomText>
       ) : null}
-      <CustomText style={[styles.error, { color: theme["color-danger-700"] }]}>
+      <CustomText style={{ ...styles.error, color: theme["color-danger-700"] }}>
         {errorText || " "}
       </CustomText>
     </View>

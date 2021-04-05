@@ -5,11 +5,11 @@ const CustomText = ({ children, style, bold, ...props }) => {
   return (
     <Text
       {...props}
-      style={[
-        { ...style },
-        // eslint-disable-next-line react-native/no-inline-styles
-        { fontFamily: bold ? "SFProDisplay-Bold" : "SFProDisplay-Regular" },
-      ]}
+      // eslint-disable-next-line react-native/no-inline-styles
+      style={{
+        ...style,
+        fontFamily: bold ? "SFProDisplay-Bold" : "SFProDisplay-Regular",
+      }}
     >
       {children}
     </Text>
