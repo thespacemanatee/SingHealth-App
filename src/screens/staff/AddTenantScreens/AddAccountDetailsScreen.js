@@ -70,10 +70,7 @@ const AddAccountDetails = ({ navigation }) => {
         }
       }}
     >
-      <KeyboardAwareScrollView
-        style={styles.screen}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
+      <KeyboardAwareScrollView style={styles.screen}>
         <TopNavigation
           title="Account Details"
           alignment="center"
