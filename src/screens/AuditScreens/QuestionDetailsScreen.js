@@ -15,7 +15,6 @@ import { Camera } from "expo-camera";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import moment from "moment";
 
 import alert from "../../components/CustomAlert";
 import * as checklistActions from "../../store/actions/checklistActions";
@@ -89,7 +88,9 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     if (storeDeadline) {
       setDeadline(storeDeadline);
     } else {
-      dispatch(checklistActions.changeDeadline(max));
+      dispatch(
+        checklistActions.changeDeadline(checklistType, section, index, max)
+      );
     }
   }, [checklistStore, checklistType, dispatch, index, max, section]);
 

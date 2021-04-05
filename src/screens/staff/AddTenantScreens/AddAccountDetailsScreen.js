@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  View,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Platform,
-} from "react-native";
+import { View } from "react-native";
 import {
   Button,
   Divider,
