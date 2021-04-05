@@ -33,15 +33,16 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   const [value, setValue] = useState("");
   const [imageArray, setImageArray] = useState([]);
   const [deadline, setDeadline] = useState();
+  const [min] = useState(new Date());
+  const [max] = useState(
+    new Date(min.getFullYear(), min.getMonth(), min.getDate() + 31)
+  );
 
   const { index, checklistType, question, section } = route.params;
 
   const theme = useTheme();
 
   const dispatch = useDispatch();
-
-  const min = new Date();
-  const max = new Date(min.getFullYear(), min.getMonth(), min.getDate() + 31);
 
   const handleDateChange = (date) => {
     console.log(date);
