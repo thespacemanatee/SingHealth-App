@@ -15,7 +15,6 @@ import { Camera } from "expo-camera";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import moment from "moment";
 
 import alert from "../../components/CustomAlert";
 import * as checklistActions from "../../store/actions/checklistActions";
@@ -34,6 +33,10 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   const [value, setValue] = useState("");
   const [imageArray, setImageArray] = useState([]);
   const [deadline, setDeadline] = useState();
+  const [min] = useState(new Date());
+  const [max] = useState(
+    new Date(min.getFullYear(), min.getMonth(), min.getDate() + 31)
+  );
 
   const { index, checklistType, question, section } = route.params;
 
@@ -84,24 +87,13 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
       setValue(storeRemarks);
     }
     if (storeDeadline) {
-      setDeadline(storeDeadline.$date);
+      setDeadline(storeDeadline);
     } else {
       dispatch(
-        checklistActions.changeDeadline(
-          checklistType,
-          section,
-          index,
-          moment(
-            new Date(
-              new Date().getFullYear(),
-              new Date().getMonth(),
-              new Date().getDate() + 7
-            )
-          )
-        )
+        checklistActions.changeDeadline(checklistType, section, index, max)
       );
     }
-  }, [checklistStore, checklistType, dispatch, index, section]);
+  }, [checklistStore, checklistType, dispatch, index, max, section]);
 
   const onSave = async (imageData) => {
     if (imageArray.length > 2) {
@@ -264,7 +256,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           { backgroundColor: theme["color-primary-400"] },
         ]}
       >
-        <CustomText style={styles.text}>{question}</CustomText>
+        <CustomText bold>{question}</CustomText>
       </View>
       <Layout style={styles.layout}>
         <KeyboardAwareScrollView extraHeight={200}>
@@ -273,11 +265,16 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
             renderListItems={renderListItems}
           />
           <View style={styles.datePickerContainer}>
-            <CustomText category="h6">Deadline: </CustomText>
-            <CustomDatepicker onSelect={handleDateChange} deadline={deadline} />
+            <CustomText bold>Deadline: </CustomText>
+            <CustomDatepicker
+              onSelect={handleDateChange}
+              deadline={deadline}
+              min={min}
+              max={max}
+            />
           </View>
           <View style={styles.inputContainer}>
-            <CustomText category="h6">Remarks: </CustomText>
+            <CustomText bold>Remarks: </CustomText>
             <Input
               height={SCREEN_HEIGHT * 0.1}
               multiline
@@ -308,9 +305,6 @@ const styles = StyleService.create({
   },
   contentContainer: {
     paddingBottom: 25,
-  },
-  text: {
-    fontWeight: "bold",
   },
   datePickerContainer: {
     marginTop: 20,

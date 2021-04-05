@@ -1,14 +1,15 @@
 import React from "react";
-import { Text } from "react-native";
+import { Text } from "@ui-kitten/components";
 
-const CustomText = ({ children, style, bold }) => {
+const CustomText = ({ children, style, bold, ...props }) => {
   return (
     <Text
-      style={[
-        style,
-        // eslint-disable-next-line react-native/no-inline-styles
-        { fontFamily: bold ? "SFProDisplay-Bold" : "SFProDisplay-Regular" },
-      ]}
+      {...props}
+      // eslint-disable-next-line react-native/no-inline-styles
+      style={{
+        ...style,
+        fontFamily: bold ? "SFProDisplay-Bold" : "SFProDisplay-Regular",
+      }}
     >
       {children}
     </Text>

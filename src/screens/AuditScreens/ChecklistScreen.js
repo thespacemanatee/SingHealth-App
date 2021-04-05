@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, SectionList, Platform } from "react-native";
+import { View, SectionList } from "react-native";
 import { useSelector } from "react-redux";
 import {
   Button,
@@ -39,6 +39,8 @@ const ChecklistScreen = ({ route, navigation }) => {
   const { auditID, stallName } = route.params;
 
   const theme = useTheme();
+
+  console.log(checklistStore);
 
   const onGroupCheckedChange = (checked) => {
     // console.log(completeChecklist);

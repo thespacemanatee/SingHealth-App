@@ -1,12 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { View, Platform } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleService } from "@ui-kitten/components";
 
-import * as authActions from "../store/actions/authActions";
 import StaffNavigator from "./StaffNavigator";
 import TenantNavigator from "./TenantNavigator";
 import AuthScreen from "../screens/AuthScreens/AuthScreen";
@@ -17,10 +16,8 @@ import CustomText from "../components/ui/CustomText";
 
 const { Navigator, Screen } = createStackNavigator();
 
-const AppNavigator = ({ expoToken }) => {
+const AppNavigator = () => {
   const authStore = useSelector((state) => state.auth);
-
-  const dispatch = useDispatch();
 
   const linking = {
     prefixes: ["http://localhost:19006"],
@@ -50,11 +47,6 @@ const AppNavigator = ({ expoToken }) => {
       </View>
     );
   };
-
-  // useEffect(() => {
-  //   dispatch(authActions.restoreToken());
-  // }, [dispatch]);
-
   console.log(authStore);
 
   return (
