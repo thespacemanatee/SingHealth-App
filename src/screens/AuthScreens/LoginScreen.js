@@ -7,14 +7,13 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
   Divider,
   Layout,
   TopNavigation,
   TopNavigationAction,
-  Text,
   Icon,
   StyleService,
   useTheme,
@@ -28,18 +27,16 @@ import * as authActions from "../../store/actions/authActions";
 import Logo from "../../components/ui/Logo";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
+import CustomText from "../../components/ui/CustomText";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
-const LoginScreen = ({ route, navigation }) => {
+const LoginScreen = ({ navigation }) => {
+  const authStore = useSelector((state) => state.auth);
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(false);
   const theme = useTheme();
-
-  const { expoToken } = route.params;
-
-  console.log("EXPO TOKEN:", expoToken);
 
   const dispatch = useDispatch();
 
@@ -58,8 +55,8 @@ const LoginScreen = ({ route, navigation }) => {
         authActions.signIn(
           values.email,
           values.password,
-          expoToken,
-          checked ? "staff" : "tenant"
+          checked ? "staff" : "tenant",
+          authStore.expoToken
         )
       );
     } catch (err) {
@@ -165,21 +162,23 @@ const LoginScreen = ({ route, navigation }) => {
                     <TouchableOpacity
                       onPress={() => navigation.navigate("ForgotPassword")}
                     >
-                      <Text style={styles.forgot}>Forgot your password?</Text>
+                      <CustomText style={styles.forgot}>
+                        Forgot your password?
+                      </CustomText>
                     </TouchableOpacity>
                   </View>
                   <View style={styles.buttonContainer}>
                     <Button mode="contained" onPress={handleSubmit}>
-                      Login
+                      LOGIN
                     </Button>
                   </View>
                 </View>
               )}
             </Formik>
             <View style={styles.row}>
-              <Text>Don’t have an account? </Text>
+              <CustomText>Don’t have an account? </CustomText>
               <TouchableOpacity onPress={() => navigation.replace("Register")}>
-                <Text style={styles.link}>Sign up</Text>
+                <CustomText style={styles.link}>Sign up</CustomText>
               </TouchableOpacity>
             </View>
           </>

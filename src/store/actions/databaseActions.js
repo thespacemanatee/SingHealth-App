@@ -1,8 +1,22 @@
 import { endpoint, httpClient } from "../../helpers/CustomHTTPClient";
 
 export const GET_RELEVANT_TENANTS = "GET_RELEVANT_TENANTS";
+export const GET_INSTITUTIONS = "GET_INSTITUTIONS";
 export const GET_TENANT_ACTIVE_AUDITS = "GET_TENANT_ACTIVE_AUDITS";
 export const GET_STAFF_ACTIVE_AUDITS = "GET_STAFF_ACTIVE_AUDITS";
+
+export const getInstitutions = () => {
+  return async (dispatch) => {
+    const options = {
+      url: `${endpoint}institutions`,
+      method: "get",
+      // withCredentials: true,
+    };
+    const res = await httpClient(options);
+    dispatch({ type: GET_RELEVANT_TENANTS, institutions: res.data.data });
+    return res;
+  };
+};
 
 export const getRelevantTenants = (institutionID) => {
   return async (dispatch) => {
@@ -62,7 +76,7 @@ export const postAuditForm = (auditData) => {
   };
 };
 
-export const postAuditImages = (formData) => {
+export const postAuditImages = (data) => {
   return async () => {
     const postImages = {
       url: `${endpoint}images`,
@@ -71,7 +85,7 @@ export const postAuditImages = (formData) => {
         Accept: "application/json",
         "Content-Type": "multipart/form-data",
       },
-      data: formData,
+      data,
       timeout: 50000,
     };
     const res = await httpClient(postImages);
@@ -80,7 +94,7 @@ export const postAuditImages = (formData) => {
   };
 };
 
-export const postAuditImagesWeb = (base64images) => {
+export const postAuditImagesWeb = (data) => {
   return async () => {
     const postImagesWeb = {
       url: `${endpoint}images`,
@@ -89,10 +103,41 @@ export const postAuditImagesWeb = (base64images) => {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      data: base64images,
+      data,
       timeout: 50000,
     };
     const res = await httpClient(postImagesWeb);
+
+    return res;
+  };
+};
+
+export const exportAndEmail = (auditID) => {
+  return async () => {
+    const options = {
+      url: `${endpoint}email/${auditID}`,
+      method: "post",
+    };
+
+    const res = await httpClient(options);
+
+    return res;
+  };
+};
+
+export const createNewTenant = (data) => {
+  return async () => {
+    const options = {
+      url: `${endpoint}tenant`,
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      data,
+    };
+
+    const res = await httpClient(options);
 
     return res;
   };

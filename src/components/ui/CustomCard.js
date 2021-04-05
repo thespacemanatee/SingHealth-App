@@ -1,22 +1,61 @@
 import React from "react";
 import { Platform, View } from "react-native";
-import { Text, Card, StyleService, CheckBox } from "@ui-kitten/components";
+import {
+  Card,
+  StyleService,
+  CheckBox,
+  Icon,
+  useTheme,
+} from "@ui-kitten/components";
 
 import { SCREEN_WIDTH } from "../../helpers/config";
+import CustomText from "./CustomText";
+
+const ICON_SIZE = 30;
+
+const AlertIcon = (props) => (
+  <Icon
+    {...props}
+    name="alert-triangle-outline"
+    style={{
+      width: ICON_SIZE,
+      height: ICON_SIZE,
+    }}
+  />
+);
+
+const CheckIcon = (props) => (
+  <Icon
+    {...props}
+    name="checkmark-circle-2-outline"
+    style={{
+      width: ICON_SIZE,
+      height: ICON_SIZE,
+    }}
+  />
+);
 
 const CustomCard = (props) => {
-  const { index } = props;
-  const { onChange } = props;
-  const { onClick } = props;
-  const { checked } = props;
-  const { deleted } = props;
-  const { question } = props;
-  const { rectified } = props;
-  const { checkboxDisabled } = props;
+  const {
+    index,
+    onChange,
+    onClick,
+    checked,
+    deleted,
+    question,
+    rectified,
+    checkboxDisabled,
+  } = props;
+
+  const theme = useTheme();
 
   const Header = (headerProps) => (
-    <View {...headerProps}>
-      <Text>{index + 1}</Text>
+    <View {...headerProps} style={styles.header}>
+      <CustomText style={styles.font}>{index + 1}</CustomText>
+      {!checked && !rectified && !deleted && (
+        <AlertIcon fill={theme["color-danger-600"]} />
+      )}
+      {!checked && rectified && <CheckIcon fill={theme["color-success-600"]} />}
     </View>
   );
 
@@ -36,15 +75,17 @@ const CustomCard = (props) => {
           disabled={checkboxDisabled || deleted}
         />
         <View style={styles.questionTextContainer}>
-          <Text
+          <CustomText
+            numberOfLines={3}
             // eslint-disable-next-line react-native/no-inline-styles
             style={{
               width: Platform.OS === "web" ? SCREEN_WIDTH - 100 : null,
               textDecorationLine: deleted ? "line-through" : null,
+              fontFamily: "SFProDisplay-Regular",
             }}
           >
             {question}
-          </Text>
+          </CustomText>
         </View>
       </View>
     </Card>
@@ -54,6 +95,9 @@ const CustomCard = (props) => {
 export default CustomCard;
 
 const styles = StyleService.create({
+  font: {
+    fontFamily: "SFProDisplay-Regular",
+  },
   questionContainer: {
     flexDirection: "row",
   },
@@ -65,5 +109,12 @@ const styles = StyleService.create({
     justifyContent: "center",
     alignItems: "flex-start",
     // width: 100,
+  },
+  header: {
+    padding: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: ICON_SIZE * 1.5,
   },
 });

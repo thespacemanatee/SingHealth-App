@@ -7,7 +7,6 @@ import {
   TopNavigation,
   TopNavigationAction,
   Icon,
-  Text,
   StyleService,
   useTheme,
 } from "@ui-kitten/components";
@@ -20,6 +19,7 @@ import NewChecklistCard from "../../components/NewChecklistCard";
 // import SkeletonLoading from "../../../components/ui/SkeletonLoading";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
+import CustomText from "../../components/ui/CustomText";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -49,7 +49,7 @@ const ChooseTenantScreen = ({ navigation }) => {
     ({ section: { title } }) => {
       return (
         <View style={{ backgroundColor: theme["color-primary-300"] }}>
-          <Text style={styles.header}>{title}</Text>
+          <CustomText style={styles.header}>{title}</CustomText>
           <Divider />
         </View>
       );
@@ -96,7 +96,7 @@ const ChooseTenantScreen = ({ navigation }) => {
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
 
-      console.log(res.data.data);
+      // console.log(res.data.data);
       const tempChecklists = [
         {
           title: "Available Tenants",
@@ -108,11 +108,19 @@ const ChooseTenantScreen = ({ navigation }) => {
 
       if (data !== null) {
         data = JSON.parse(data);
-        if (Object.keys(data).length > 0) {
-          tempChecklists.push({
-            title: "Saved Checklists",
-            data: Object.values(data),
-          });
+        const savedChecklists = Object.values(data);
+
+        if (savedChecklists.length > 0) {
+          const final = savedChecklists.filter(
+            (e) =>
+              e.data.auditMetadata.institutionID === authStore.institutionID
+          );
+          if (final.length > 0) {
+            tempChecklists.push({
+              title: "Saved Checklists",
+              data: final,
+            });
+          }
         }
       }
       setSectionData(tempChecklists);
@@ -151,12 +159,13 @@ const ChooseTenantScreen = ({ navigation }) => {
       <Divider />
       <Layout style={styles.screen}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>Choose a Tenant to Audit</Text>
+          <CustomText style={styles.title}>Choose a Tenant to Audit</CustomText>
         </View>
         <CenteredLoading loading={loading} />
         <SectionList
           sections={sectionData}
-          keyExtractor={(item, index) => item + index}
+          stickySectionHeadersEnabled
+          keyExtractor={(item, index) => String(index)}
           renderItem={renderSectionList}
           // contentContainerStyle={styles.contentContainer}
           renderSectionHeader={renderSectionHeader}

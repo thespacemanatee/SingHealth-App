@@ -7,7 +7,6 @@ import {
   Button,
   useTheme,
   Icon,
-  Text,
 } from "@ui-kitten/components";
 import moment from "moment";
 import Swipeable from "react-native-gesture-handler/Swipeable";
@@ -15,6 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import * as checklistActions from "../store/actions/checklistActions";
 import alert from "./CustomAlert";
+import CustomText from "./ui/CustomText";
 
 const TrashIcon = (props) => <Icon {...props} name="trash" />;
 
@@ -34,7 +34,7 @@ const SavedChecklistCard = ({
     dispatch(checklistActions.addSavedChecklist(item.data));
     navigation.navigate("Checklist", {
       auditID: item.time,
-      stallName: item.stallName,
+      stallName: item.chosen_tenant.stallName,
     });
   };
 
@@ -95,14 +95,16 @@ const SavedChecklistCard = ({
         onPress={handleOpenSavedChecklist}
       >
         <View>
-          <Text>{item.data.chosen_tenant.stallName}</Text>
-          <Text>
+          <CustomText style={styles.stallNameText}>
+            {item.data.chosen_tenant.stallName}
+          </CustomText>
+          <CustomText style={styles.stallNameText}>
             {moment(item.time)
               .toLocaleString()
               .split(" ")
               .slice(0, 5)
               .join(" ")}
-          </Text>
+          </CustomText>
         </View>
       </Card>
     </Swipeable>
@@ -120,5 +122,8 @@ const styles = StyleService.create({
     justifyContent: "center",
     alignItems: "flex-start",
     // width: 100,
+  },
+  stallNameText: {
+    fontFamily: "SFProDisplay-Regular",
   },
 });

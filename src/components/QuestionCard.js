@@ -1,14 +1,35 @@
 import React, { useCallback, useState, useEffect, useRef } from "react";
 import { View } from "react-native";
 import { useDispatch } from "react-redux";
-import { Button, StyleService, Icon, useTheme } from "@ui-kitten/components";
+import { StyleService, Icon, useTheme } from "@ui-kitten/components";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 
 import * as checklistActions from "../store/actions/checklistActions";
 import CustomCard from "./ui/CustomCard";
 
-const TrashIcon = (props) => <Icon {...props} name="trash" />;
-const UndoIcon = (props) => <Icon {...props} name="undo" />;
+const ICON_SIZE = 30;
+
+const TrashIcon = (props) => (
+  <Icon
+    {...props}
+    name="trash"
+    style={{
+      width: ICON_SIZE,
+      height: ICON_SIZE,
+    }}
+  />
+);
+
+const UndoIcon = (props) => (
+  <Icon
+    {...props}
+    name="undo"
+    style={{
+      width: ICON_SIZE,
+      height: ICON_SIZE,
+    }}
+  />
+);
 
 const QuestionCard = (props) => {
   const [checked, setChecked] = useState(false);
@@ -48,13 +69,14 @@ const QuestionCard = (props) => {
           { backgroundColor: theme["color-primary-100"] },
         ]}
       >
-        <Button
-          appearance="ghost"
-          accessoryLeft={deleted ? UndoIcon : TrashIcon}
-        />
+        {deleted ? (
+          <UndoIcon fill={theme["color-primary-500"]} />
+        ) : (
+          <TrashIcon fill={theme["color-primary-500"]} />
+        )}
       </View>
     );
-  }, [theme, deleted]);
+  }, [deleted, theme]);
 
   const rightSwipe = useCallback(() => {
     setDeleted(!deleted);
@@ -85,7 +107,7 @@ const QuestionCard = (props) => {
         )
       );
     },
-    [checklistType, section, index, deleted, checked, dispatch]
+    [checklistType, section, index, deleted, dispatch]
   );
 
   return (
@@ -126,7 +148,7 @@ const styles = StyleService.create({
   deleteBox: {
     // flex: 1,
     justifyContent: "center",
-    alignItems: "flex-start",
-    // width: 100,
+    alignItems: "center",
+    width: ICON_SIZE * 3,
   },
 });

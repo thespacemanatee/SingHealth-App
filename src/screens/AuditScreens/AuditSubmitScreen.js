@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Platform, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  Text,
   Button,
   Divider,
   Layout,
@@ -19,6 +18,7 @@ import SuccessAnimation from "../../components/ui/SuccessAnimation";
 import CrossAnimation from "../../components/ui/CrossAnimation";
 import * as databaseActions from "../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../helpers/utils";
+import CustomText from "../../components/ui/CustomText";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -203,14 +203,14 @@ const AuditSubmitScreen = ({ navigation }) => {
             </Button>
 
             {!error ? (
-              <Text style={styles.text}>
+              <CustomText style={styles.text}>
                 Audit submitted on:{" "}
                 {moment(new Date())
                   .toLocaleString()
                   .split(" ")
                   .slice(0, 5)
                   .join(" ")}
-              </Text>
+              </CustomText>
             ) : null}
           </View>
         )}

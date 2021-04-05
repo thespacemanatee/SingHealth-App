@@ -7,9 +7,11 @@ from datetime import datetime
 import iso8601
 
 requiredPatchKeys = ["category", "index"]
-allowedTenantPatchKeys = ["rectificationImages", "rectificationRemarks", "requestForExt"]
+allowedTenantPatchKeys = ["rectificationImages",
+                          "rectificationRemarks", "requestForExt"]
 
 allowedStaffPatchKeys = ["rectified", "acceptedRequest", "deadline"]
+
 
 def compliant(answer):
     return answer["answer"]
@@ -100,7 +102,7 @@ def validateFilledAuditForms(filledAuditForms):
                             return False, category, index, "Please provide an ISO format for the deadline"
 
         return True, "Form is valid and ready for uploading"
-    
+
     formTypes = filledAuditForms.keys()
     if set(formTypes).issubset({"non_fnb", "fnb", "covid19"}):
         if "non_fnb" in formTypes and "fnb" in formTypes:
@@ -180,8 +182,10 @@ def post_process_AuditMetadata(auditMetadata):
 def validatePatchRequest(patches, allowedPatchKeys, requiredPatchKeys):
     for formType, patchList in patches.items():
         for patch in patchList:
-            noInvalidKey = all(map(lambda x : x in allowedPatchKeys, patch.keys()))
-            sufficientKeys = all(map(lambda x : x in patch.keys(), requiredPatchKeys))
+            noInvalidKey = all(
+                map(lambda x: x in allowedPatchKeys, patch.keys()))
+            sufficientKeys = all(
+                map(lambda x: x in patch.keys(), requiredPatchKeys))
             if not noInvalidKey:
                 return False, "Invalid keys provided. You are trying to modify fields that are locked for modifying."
 
@@ -189,50 +193,54 @@ def validatePatchRequest(patches, allowedPatchKeys, requiredPatchKeys):
                 return False, "Unable to narrow down the line item in the audit that you want to edit."
     return True, "All patches verified"
 
-def databaseAcceptsChanges(patches, mongo, auditChecklists, allowUpdateOfRectifiedItems = False):
-     # Find the audit metadata in the DB
-    
+
+def databaseAcceptsChanges(patches, mongo, auditChecklists, allowUpdateOfRectifiedItems=False):
+    # Find the audit metadata in the DB
+
     for formType, patchList in patches.items():
         try:
             formID = auditChecklists[formType]
         except KeyError:
             return serverResponse(None, 400, f"The form you were trying({formType}) to edit does not exist.")
-        
+
         selectedAuditForm = mongo.db.filledAuditForms.find_one({"_id": formID})
 
         for patch in patchList:
-            compliant = selectedAuditForm["answers"][patch["category"]][patch["index"]]["answer"]
+            compliant = selectedAuditForm["answers"][patch["category"]
+                                                     ][patch["index"]]["answer"]
             if compliant:
                 msg = {
-                    "formType":formType,
+                    "formType": formType,
                     "patch": patch,
-                    "description": "You can't edit a line item that is already marked as compliant" 
-                    }
+                    "description": "You can't edit a line item that is already marked as compliant"
+                }
                 return False, serverResponse(
-                    msg, 
-                    400, 
+                    msg,
+                    400,
                     "You are editing a line item that was previously marked as compliant"
-                    )
+                )
 
             elif not allowUpdateOfRectifiedItems:
                 # Check if the particular line item has already been rectified
                 category = patch["category"]
                 index = patch["index"]
                 answers = selectedAuditForm["answers"]
-                alreadyRectified = answers[category][index].get("rectified", False)
+                alreadyRectified = answers[category][index].get(
+                    "rectified", False)
                 if alreadyRectified:
                     msg = {
                         "formType": formType,
                         "patch": patch,
-                        "description": "You can't edit a line item that has already been rectified." 
-                        }
+                        "description": "You can't edit a line item that has already been rectified."
+                    }
                     return False, serverResponse(
-                        msg, 
-                        400, 
+                        msg,
+                        400,
                         "You are editing a line item that has already been rectified."
-                        )
-    
+                    )
+
     return True, None
+
 
 def mongoUpdateGivenFields(mongo, patches, fields, auditChecklists):
     def mongoUpdateOne(mongo, formID, lineItem, patch, field):
@@ -240,10 +248,10 @@ def mongoUpdateGivenFields(mongo, patches, fields, auditChecklists):
             result = mongo.db.filledAuditForms.update_one(
                 {"_id": formID},
                 {
-                    "$set": {                               
+                    "$set": {
                         lineItem + field: patch[field]
                     }
-                    
+
                 }
             )
             return result
@@ -253,19 +261,21 @@ def mongoUpdateGivenFields(mongo, patches, fields, auditChecklists):
     for formType, patchList in patches.items():
         for patch in patchList:
             formID = auditChecklists[formType]
-            lineItem = "answers." + patch["category"] + "." + str(patch["index"]) + "."
+            lineItem = "answers." + \
+                patch["category"] + "." + str(patch["index"]) + "."
             patchStatuses = []
             for field in fields:
                 result = mongoUpdateOne(mongo, formID, lineItem, patch, field)
-                
+
                 try:
                     patchStatuses.append(result.acknowledged)
                 except AttributeError:
                     pass
-            
+
             patchResult = {"patch": patch, "status": all(patchStatuses)}
             patchResults.append(patchResult)
     return patchResults
+
 
 def addAuditsEndpoint(app, mongo):
     @app.route("/audits", methods=['POST'])
@@ -289,12 +299,12 @@ def addAuditsEndpoint(app, mongo):
                     None,
                     400,
                     f"Item no. {errorDescription[1]} in '{errorDescription[0]}':\n{errorDescription[2]}"
-                    )
+                )
 
             auditMetaData_ID, filledAuditForms_ID = generateIDs(
-                auditMetaData, 
+                auditMetaData,
                 filledAuditForms
-                )
+            )
             filledAuditForms_ID_processed = post_process_filledAuditForms(
                 filledAuditForms_ID)
             auditMetaData_ID_processed = post_process_AuditMetadata(
@@ -321,10 +331,18 @@ def addAuditsEndpoint(app, mongo):
             except DuplicateKeyError:
                 return serverResponse(None, 400, "Form has already been uploaded")
 
-            tenant = mongo.db.tenant.find_one({"_id": auditMetaData["tenantID"]})
+            tenant = mongo.db.tenant.find_one(
+                {"_id": auditMetaData["tenantID"]})
             if tenant:
-                for token in tenant["expoToken"]:
-                    send_push_message(token, "SingHealth Audits", "Recent audit results ready for viewing")
+                try:
+                    for token in tenant["expoToken"]:
+                        try:
+                            send_push_message(
+                                token, "SingHealth Audits", "Recent audit results ready for viewing")
+                        except:
+                            continue
+                except:
+                    print("No expoToken found")
             return serverResponse(None, 200, "Forms have been submitted successfully!")
 
     @app.route("/audits/<auditID>", methods=['GET'])
@@ -368,49 +386,53 @@ def addAuditsEndpoint(app, mongo):
 
                 return serverResponse(None, 404, "Form not found in our database")
 
-    
     @app.route("/audits/<auditID>/tenant", methods=['PATCH'])
     @login_required
     def patch_audit_tenant(auditID):
         if request.method == "PATCH":
             patches = request.json
             valid, description = validatePatchRequest(
-                patches, 
+                patches,
                 allowedTenantPatchKeys + requiredPatchKeys,
                 requiredPatchKeys
-                )
+            )
 
             if not valid:
                 return serverResponse(None, 400, description)
-            
+
             selectedAudit = mongo.db.audits.find_one({"_id": auditID})
             staff = mongo.db.staff.find_one(
                 {"_id": selectedAudit["staffID"]}
-                )
+            )
             tenant = mongo.db.tenant.find_one(
                 {"_id": selectedAudit["tenantID"]}
-                )
+            )
             tenantStallName = tenant["stall"]["name"]
             staffExpoTokens = staff["expoToken"]
 
             auditChecklists = selectedAudit["auditChecklists"]
 
             changesAccepted, errorResponse = databaseAcceptsChanges(
-                patches, 
-                mongo, 
+                patches,
+                mongo,
                 auditChecklists
-                )
+            )
             if not changesAccepted:
                 return errorResponse
 
             patchResults = mongoUpdateGivenFields(
-                mongo, 
-                patches, 
-                allowedTenantPatchKeys, 
+                mongo,
+                patches,
+                allowedTenantPatchKeys,
                 auditChecklists
-                )
+            )
             for device in staffExpoTokens:
-                send_push_message(device, tenantStallName, "has rectified a noncompliance")
+                try:
+                    send_push_message(device, tenantStallName,
+                                      "has rectified a noncompliance")
+                except:
+                    print("Some error detected")
+                    continue
             return serverResponse(patchResults, 200, "Changes sent to the database.")
 
     @app.route("/audits/<auditID>/staff", methods=['PATCH'])
@@ -419,10 +441,10 @@ def addAuditsEndpoint(app, mongo):
         if request.method == "PATCH":
             patches = request.json
             valid, description = validatePatchRequest(
-                patches, 
+                patches,
                 allowedStaffPatchKeys + requiredPatchKeys,
                 requiredPatchKeys
-                )
+            )
             if not valid:
                 return serverResponse(None, 400, description)
 
@@ -433,10 +455,10 @@ def addAuditsEndpoint(app, mongo):
 
             changesAccepted, errorResponse = databaseAcceptsChanges(
                 patches,
-                mongo, 
-                auditChecklists, 
+                mongo,
+                auditChecklists,
                 True
-                )
+            )
             if not changesAccepted:
                 return errorResponse
 
@@ -445,23 +467,22 @@ def addAuditsEndpoint(app, mongo):
                 patches,
                 allowedStaffPatchKeys,
                 auditChecklists
-                )
-            
+            )
+
             # retrieve the amended audit forms again starting from auditmetadata
             allQuestions = []
             for formType, formID in auditChecklists.items():
                 form = mongo.db.filledAuditForms.find_one({"_id": formID})
                 for answerList in form["answers"].values():
                     allQuestions.extend(answerList)
-            
+
             numNCs = len(list(filter(
-                lambda x : x["answer"] == False, 
+                lambda x: x["answer"] == False,
                 allQuestions)))
             numRectifiedNCs = len(list(filter(
-                lambda x : x["answer"] == False and x["rectified"] == True, 
+                lambda x: x["answer"] == False and x["rectified"] == True,
                 allQuestions)))
             percentRectification = numRectifiedNCs / numNCs
-
 
             # Update audit metadata
             percentRectDict = {"rectificationProgress": percentRectification}
@@ -478,12 +499,18 @@ def addAuditsEndpoint(app, mongo):
 
             tenant = mongo.db.tenant.find_one({"_id": tenantID})
             if tenant:
-                for device in tenant["expoToken"]:
-                    send_push_message(device, institution, "has reviewed your rectifications")
+                try:
+                    for device in tenant["expoToken"]:
+                        try:
+                            send_push_message(device, institution,
+                                              "has reviewed your rectifications")
+                        except:
+                            print("Some error detected")
+                            continue
+                except:
+                    print("No token found")
             return serverResponse(
-                ack, 
-                200, 
+                ack,
+                200,
                 "Updates submitted successfully. "
-                )
-
-            
+            )

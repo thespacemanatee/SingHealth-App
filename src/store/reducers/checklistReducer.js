@@ -13,6 +13,7 @@ import {
   CHANGE_DEADLINE,
   RESET_CHECKLIST_STORE,
   GET_AUDIT_DATA,
+  CHANGE_RECTIFY,
 } from "../actions/checklistActions";
 
 const initialState = {
@@ -235,6 +236,30 @@ const checklistReducer = (state = initialState, action) => {
         chosen_checklist: action.chosen_checklist,
         covid19: action.covid19,
         auditMetadata: action.auditMetadata,
+      };
+    }
+
+    case CHANGE_RECTIFY: {
+      let newChecklist;
+      if (action.checklistType === "covid19") {
+        newChecklist = _.cloneDeep(state.covid19);
+      } else {
+        newChecklist = _.cloneDeep(state.chosen_checklist);
+      }
+
+      newChecklist.questions[action.section][action.index].rectified =
+        action.rectified;
+
+      if (action.checklistType === "covid19") {
+        return {
+          ...state,
+          covid19: newChecklist,
+        };
+      }
+
+      return {
+        ...state,
+        chosen_checklist: newChecklist,
       };
     }
 

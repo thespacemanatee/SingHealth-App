@@ -1,27 +1,28 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { SafeAreaView, View } from "react-native";
+import { useDispatch } from "react-redux";
+import { View } from "react-native";
 import {
   Divider,
   Icon,
   Layout,
-  Text,
   TopNavigation,
   TopNavigationAction,
   List,
-  Card,
   StyleService,
-  useTheme,
 } from "@ui-kitten/components";
 
-import directoryStyles from "./StyleGuide";
+import * as databaseActions from "../../../store/actions/databaseActions";
+import { handleErrorResponse } from "../../../helpers/utils";
+import EntityCard from "../../../components/EntityCard";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 
 const DirectoryScreen = ({ navigation }) => {
   const [institutions, setInstitutions] = useState([]);
+  const [listLoading, setListLoading] = useState(true);
 
-  const theme = useTheme();
+  const dispatch = useDispatch();
 
   const DrawerAction = () => (
     <TopNavigationAction
@@ -36,44 +37,53 @@ const DirectoryScreen = ({ navigation }) => {
     <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
   );
 
+  const handleNavigateTenants = useCallback(
+    (institutionID) => {
+      navigation.navigate("TenantsDirectory", { institutionID });
+    },
+    [navigation]
+  );
+
   const renderInstitutions = useCallback(
     (itemData) => {
       return (
-        <Card
-          style={[
-            directoryStyles.item,
-            { backgroundColor: theme["color-info-100"] },
-          ]}
-          status="info"
-          activeOpacity={0.5}
-          onPress={() => {
-            navigation.navigate("TenantsDirectory", {
-              chosenInstitution: itemData.item[0],
-            });
-          }}
-        >
-          <View>
-            <Text style={directoryStyles.listContentText}>
-              {itemData.item[1].name}
-            </Text>
-          </View>
-        </Card>
+        <EntityCard
+          onPress={handleNavigateTenants}
+          displayName={itemData.item.institutionName}
+          _id={itemData.item.institutionID}
+        />
       );
     },
-    [navigation, theme]
+    [handleNavigateTenants]
   );
 
+  const getInstitutions = useCallback(async () => {
+    try {
+      setListLoading(true);
+      const res = await dispatch(databaseActions.getInstitutions());
+      setInstitutions(res.data.data);
+    } catch (err) {
+      handleErrorResponse(err);
+    } finally {
+      setListLoading(false);
+    }
+  }, [dispatch]);
+
   useEffect(() => {
-    // TODO: replace with mongoDB data
-    const tempArray = Object.entries();
-    const newTempArray = tempArray.filter((e) => {
-      return e[0] !== "default";
+    getInstitutions();
+    const unsubscribe = navigation.addListener("focus", () => {
+      getInstitutions();
     });
-    setInstitutions(newTempArray);
-  }, []);
+
+    return () => {
+      // Unsubscribe for the focus Listener
+      // eslint-disable-next-line no-unused-expressions
+      unsubscribe;
+    };
+  }, [getInstitutions, navigation]);
 
   return (
-    <SafeAreaView style={styles.screen}>
+    <View style={styles.screen}>
       <TopNavigation
         title="Directory"
         alignment="center"
@@ -85,10 +95,11 @@ const DirectoryScreen = ({ navigation }) => {
         <List
           data={institutions}
           renderItem={renderInstitutions}
-          contentContainerStyle={directoryStyles.contentContainer}
+          onRefresh={getInstitutions}
+          refreshing={listLoading}
         />
       </Layout>
-    </SafeAreaView>
+    </View>
   );
 };
 

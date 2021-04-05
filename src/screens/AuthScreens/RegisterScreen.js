@@ -13,7 +13,6 @@ import {
   Layout,
   TopNavigation,
   TopNavigationAction,
-  Text,
   Icon,
   StyleService,
   useTheme,
@@ -22,6 +21,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import CustomTextInput from "../../components/CustomTextInput";
 import Logo from "../../components/ui/Logo";
+import CustomText from "../../components/ui/CustomText";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -153,16 +153,16 @@ const RegisterScreen = ({ navigation }) => {
                 />
                 <View style={styles.buttonContainer}>
                   <Button onPress={handleSubmit} style={styles.button}>
-                    Sign Up
+                    SIGN UP
                   </Button>
                 </View>
               </View>
             )}
           </Formik>
           <View style={styles.row}>
-            <Text>Already have an account? </Text>
+            <CustomText>Already have an account? </CustomText>
             <TouchableOpacity onPress={() => navigation.replace("Login")}>
-              <Text style={styles.link}>Login</Text>
+              <CustomText style={styles.link}>Login</CustomText>
             </TouchableOpacity>
           </View>
         </Layout>
