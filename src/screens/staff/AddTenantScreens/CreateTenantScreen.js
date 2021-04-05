@@ -63,10 +63,7 @@ const AddTenantCredScreen = ({ navigation }) => {
   );
 
   return (
-    <KeyboardAwareScrollView
-      style={styles.screen}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
+    <KeyboardAwareScrollView contentContainerStyle={styles.screen}>
       <TopNavigation
         title="Add Tenant"
         alignment="center"
