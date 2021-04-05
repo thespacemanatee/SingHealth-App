@@ -14,7 +14,7 @@ if __name__ == "__main__":
     time.sleep(1)
     driver.find_element_by_xpath('//div[text()="Login as Tenant"]').click()
     time.sleep(1)
-    links = driver.find_elements_by_xpath('//div[text()="Login"]')
+    links = driver.find_elements_by_xpath('//div[text()="LOGIN"]')
     links[-1].click()
     time.sleep(10)
     #class="css-cursor-18t94o4 css-view-1dbjc4n r-borderRadius-a1yn9n r-cursor-1loqt21 r-overflow-1udh08x r-position-bnwqim"
