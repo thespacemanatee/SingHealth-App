@@ -26,7 +26,6 @@ const styles = StyleService.create({
     marginBottom: 10,
   },
   shadow: {
-    backgroundColor: "white",
     borderRadius: 10,
     overflow: "hidden",
   },

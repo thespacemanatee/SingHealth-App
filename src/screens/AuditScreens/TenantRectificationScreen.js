@@ -102,7 +102,11 @@ const TenantRectificationScreen = ({ route, navigation }) => {
           dispatch(
             checklistActions.submitRectification(
               checklistStore.auditMetadata._id,
-              data
+              data,
+              authStore.userType,
+              checklistType,
+              section,
+              index
             )
           ),
           dispatch(databaseActions.postAuditImagesWeb(base64images)),
@@ -112,7 +116,10 @@ const TenantRectificationScreen = ({ route, navigation }) => {
           checklistActions.submitRectification(
             checklistStore.auditMetadata._id,
             data,
-            authStore.userType
+            authStore.userType,
+            checklistType,
+            section,
+            index
           )
         );
       }

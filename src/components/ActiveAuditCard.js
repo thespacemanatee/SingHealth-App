@@ -26,7 +26,13 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
   }, [auditMetadata.rectificationProgress]);
 
   return (
-    <ShadowCard style={styles.cardContainer} onPress={handleOnPress}>
+    <ShadowCard
+      style={{
+        ...styles.cardContainer,
+        backgroundColor: theme["color-primary-100"],
+      }}
+      onPress={handleOnPress}
+    >
       <View>
         <CustomText bold>{stallName}</CustomText>
         <CustomText>
@@ -74,7 +80,6 @@ const styles = StyleService.create({
   cardContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    // alignItems: "flex-start",
     padding: 20,
   },
   progressContainer: {
