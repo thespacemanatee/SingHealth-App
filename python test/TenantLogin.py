@@ -4,12 +4,12 @@ import time
 
 if __name__ == "__main__":
     driver = webdriver.Chrome()
-    driver.get('http://localhost:19006/')
+    driver.get('http://localhost:19006/Auth')
     driver.find_element_by_xpath('//div[text()="Login"]').click()
     time.sleep(1)
-    driver.find_element_by_xpath("//input[@type='email']").send_keys("12345678@gmail.com")
+    driver.find_element_by_xpath("//input[@type='email']").send_keys("zm@fatbook.com")
     time.sleep(1)
-    driver.find_element_by_xpath("//input[@type='password']").send_keys("12345678")
+    driver.find_element_by_xpath("//input[@type='password']").send_keys("lalala")
     time.sleep(1)
     links = driver.find_elements_by_xpath('//div[text()="Login"]')
     links[-1].click()
