@@ -65,15 +65,15 @@ def change_tenant_info(app, mongo):
                 try:
                     mongo.db.tenant.insert_one(data)
                 except:
-                    return serverResponse(None, 404, "Cannot upload data to server")
+                    return serverResponse(None, 400, "Cannot upload data to server")
             else:
                 # send appropriate error messages
                 if not validated and not duplicate:
-                    return serverResponse(message, 200, "Insufficient/Error in data to add new tenant")
+                    return serverResponse(message, 400, "Insufficient/Error in data to add new tenant")
                 elif validated and duplicate:
-                    return serverResponse(None, 404, "Duplicate email found")
+                    return serverResponse(None, 400, "Duplicate email found")
                 else:
-                    return serverResponse(message, 404, "Duplicate email and insufficient/error in data to add new tenant")
+                    return serverResponse(message, 400, "Duplicate email and insufficient/error in data to add new tenant")
         except:
             return serverResponse(None, 404, "No response received")
 

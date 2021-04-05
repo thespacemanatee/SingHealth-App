@@ -44,23 +44,21 @@ const CustomDatepicker = ({
           onSelect(nextDate);
           setDate(nextDate);
         }}
-        min={moment(min)}
-        max={moment(max)}
+        min={min ? moment(min) : null}
+        max={max ? moment(max) : null}
         disabled={disabled}
       />
       {description && !errorText ? (
         <CustomText
-          style={[
-            styles.description,
-            {
-              color: theme["color-basic-600"],
-            },
-          ]}
+          style={{
+            ...styles.description,
+            color: theme["color-basic-600"],
+          }}
         >
           {description || " "}
         </CustomText>
       ) : null}
-      <CustomText style={[styles.error, { color: theme["color-danger-700"] }]}>
+      <CustomText style={{ ...styles.error, color: theme["color-danger-700"] }}>
         {errorText || " "}
       </CustomText>
     </View>

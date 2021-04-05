@@ -76,7 +76,7 @@ export const postAuditForm = (auditData) => {
   };
 };
 
-export const postAuditImages = (formData) => {
+export const postAuditImages = (data) => {
   return async () => {
     const postImages = {
       url: `${endpoint}images`,
@@ -85,7 +85,7 @@ export const postAuditImages = (formData) => {
         Accept: "application/json",
         "Content-Type": "multipart/form-data",
       },
-      data: formData,
+      data,
       timeout: 50000,
     };
     const res = await httpClient(postImages);
@@ -94,7 +94,7 @@ export const postAuditImages = (formData) => {
   };
 };
 
-export const postAuditImagesWeb = (base64images) => {
+export const postAuditImagesWeb = (data) => {
   return async () => {
     const postImagesWeb = {
       url: `${endpoint}images`,
@@ -103,7 +103,7 @@ export const postAuditImagesWeb = (base64images) => {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      data: base64images,
+      data,
       timeout: 50000,
     };
     const res = await httpClient(postImagesWeb);
@@ -117,6 +117,24 @@ export const exportAndEmail = (auditID) => {
     const options = {
       url: `${endpoint}email/${auditID}`,
       method: "post",
+    };
+
+    const res = await httpClient(options);
+
+    return res;
+  };
+};
+
+export const createNewTenant = (data) => {
+  return async () => {
+    const options = {
+      url: `${endpoint}tenant`,
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      data,
     };
 
     const res = await httpClient(options);
