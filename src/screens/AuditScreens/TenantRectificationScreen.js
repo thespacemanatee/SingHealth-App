@@ -395,7 +395,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
           { backgroundColor: theme["color-primary-400"] },
         ]}
       >
-        <CustomText style={styles.text}>{question}</CustomText>
+        <CustomText bold>{question}</CustomText>
       </View>
       <Button onPress={handleSubmitRectification} disabled={rectified}>
         {rectified ? "SUBMISSION APPROVED" : "SUBMIT FOR APPROVAL"}
@@ -420,7 +420,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
             </Toggle>
           </View>
           <View style={styles.inputContainer}>
-            <CustomText category="h6">Remarks: </CustomText>
+            <CustomText bold>Remarks: </CustomText>
             <Input
               height={SCREEN_HEIGHT * 0.1}
               multiline
@@ -451,9 +451,6 @@ const styles = StyleService.create({
   },
   contentContainer: {
     paddingBottom: 25,
-  },
-  text: {
-    fontWeight: "bold",
   },
   toggleContainer: {
     flex: 1,

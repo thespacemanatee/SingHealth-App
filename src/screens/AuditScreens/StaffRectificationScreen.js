@@ -220,7 +220,7 @@ const StaffRectificationScreen = ({ route, navigation }) => {
           { backgroundColor: theme["color-primary-400"] },
         ]}
       >
-        <CustomText style={styles.text}>{question}</CustomText>
+        <CustomText bold>{question}</CustomText>
       </View>
       <Button onPress={handleSubmitApproval}>
         {isRectified ? "REVOKE APPROVAL" : "APPROVE"}
@@ -238,7 +238,9 @@ const StaffRectificationScreen = ({ route, navigation }) => {
             </Toggle>
           </View>
           <View style={styles.inputContainer}>
-            <CustomText category="h6">Tenant&apos;s Remarks: </CustomText>
+            <CustomText bold category="h6">
+              Tenant&apos;s Remarks:{" "}
+            </CustomText>
             <Input
               height={SCREEN_HEIGHT * 0.1}
               multiline
@@ -269,9 +271,6 @@ const styles = StyleService.create({
   },
   contentContainer: {
     paddingBottom: 25,
-  },
-  text: {
-    fontWeight: "bold",
   },
   toggleContainer: {
     flex: 1,

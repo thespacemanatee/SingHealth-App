@@ -192,7 +192,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
           { backgroundColor: theme["color-primary-400"] },
         ]}
       >
-        <CustomText style={styles.text}>{question}</CustomText>
+        <CustomText bold>{question}</CustomText>
       </View>
       <Button onPress={handleGoToTenantRectifications}>
         {authStore.userType === "staff" ? "CHECK STATUS" : "RECTIFY NOW"}
@@ -204,11 +204,15 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
             renderListItems={renderListItems}
           />
           <View style={styles.datePickerContainer}>
-            <CustomText category="h6">Deadline: </CustomText>
+            <CustomText bold category="h6">
+              Deadline:{" "}
+            </CustomText>
             <CustomDatepicker deadline={deadline} disabled />
           </View>
           <View style={styles.inputContainer}>
-            <CustomText category="h6">Remarks: </CustomText>
+            <CustomText bold category="h6">
+              Remarks:{" "}
+            </CustomText>
             <Input
               height={SCREEN_HEIGHT * 0.1}
               multiline
@@ -239,9 +243,6 @@ const styles = StyleService.create({
   },
   contentContainer: {
     paddingBottom: 25,
-  },
-  text: {
-    fontWeight: "bold",
   },
   datePickerContainer: {
     marginTop: 20,
