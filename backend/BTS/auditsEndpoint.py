@@ -1,4 +1,4 @@
-from .utils import serverResponse, send_push_message
+from .utils import serverResponse, send_push_message, send_email_notif
 from .constants import MAX_NUM_IMAGES_PER_NC
 from flask import request, make_response, jsonify
 from flask_login import login_required
@@ -328,6 +328,17 @@ def addAuditsEndpoint(app, mongo):
                         send_push_message(token, "SingHealth Audits", "Recent audit results ready for viewing")
                     except:
                         continue
+                
+                send_email_notif(
+                    app, 
+                    tenant["email"], 
+                    "Audit Results", 
+                    f"""Dear {tenant["name"]},
+                        Your recent audit results dated '{auditMetaData["date"]}' are ready for reviewing. Please check your app for details.
+                        
+                        This email is auto generated. No signature is required.
+                        You do not have to reply to this email."""
+                    )
             return serverResponse(None, 200, "Forms have been submitted successfully!")
 
     @app.route("/audits/<auditID>", methods=['GET'])
