@@ -354,7 +354,7 @@ def addAuditsEndpoint(app, mongo):
                     )
             return serverResponse(None, 200, "Forms have been submitted successfully!")
         elif request.method == "GET":
-            daysBefore = request.args.get("daysBefore", 0)
+            daysBefore = int(request.args.get("daysBefore", 0))
             tenantID = request.args.get("tenantID", None)
             if tenantID == None:
                 return serverResponse(None, 400, "No tenant ID provided")
@@ -375,7 +375,7 @@ def addAuditsEndpoint(app, mongo):
             auditsList = []
             for audit in audits:
                 tenant = mongo.db.tenant.find_one(
-                    {"tenantID": tenantID }, 
+                    {"_id": tenantID }, 
                     {
                         "stall": {
                             "name": 1
