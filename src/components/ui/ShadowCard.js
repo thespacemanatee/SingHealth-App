@@ -1,31 +1,23 @@
-import { StyleService, useTheme } from "@ui-kitten/components";
 import React from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Platform } from "react-native";
+import { StyleService, useStyleSheet } from "@ui-kitten/components";
 
 const ShadowCard = ({ style, children, onPress }) => {
-  const theme = useTheme();
-
+  const styles = useStyleSheet(themedStyles);
   return (
     <TouchableOpacity
       style={styles.shadowContainer}
       activeOpacity={0.5}
       onPress={onPress}
     >
-      <View
-        style={[
-          { ...style, ...styles.shadow },
-          { backgroundColor: theme["color-primary-100"] },
-        ]}
-      >
-        {children}
-      </View>
+      <View style={[style, styles.shadow]}>{children}</View>
     </TouchableOpacity>
   );
 };
 
 export default ShadowCard;
 
-const styles = StyleService.create({
+const themedStyles = StyleService.create({
   shadowContainer: {
     elevation: 10,
     shadowOffset: { width: 5, height: 5 },
@@ -37,5 +29,10 @@ const styles = StyleService.create({
   shadow: {
     borderRadius: 10,
     overflow: "hidden",
+    backgroundColor: Platform.select({
+      web: "#FAFAFA",
+      ios: "white",
+      android: "white",
+    }),
   },
 });

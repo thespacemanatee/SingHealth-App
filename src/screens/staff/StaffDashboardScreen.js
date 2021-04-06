@@ -143,11 +143,8 @@ const StaffDashboardScreen = ({ navigation }) => {
       />
       <Divider />
       <Layout style={styles.layout}>
-        <Graph />
+        <Graph label="Average Scores (All Institutions)" />
         <Divider />
-        <View style={styles.textContainer}>
-          <CustomText style={styles.text}>Rectification Progress</CustomText>
-        </View>
         <CenteredLoading loading={loading} />
         <FlatList
           contentContainerStyle={styles.contentContainer}
@@ -157,6 +154,13 @@ const StaffDashboardScreen = ({ navigation }) => {
           onRefresh={getListData}
           refreshing={listLoading}
           ListEmptyComponent={renderEmptyComponent}
+          ListHeaderComponent={() => (
+            <View style={styles.textContainer}>
+              <CustomText style={styles.text}>
+                Rectification Progress
+              </CustomText>
+            </View>
+          )}
         />
 
         <FAB.Group
@@ -199,7 +203,7 @@ const styles = StyleService.create({
     flex: 1,
   },
   textContainer: {
-    margin: 20,
+    marginVertical: 10,
   },
   text: {
     fontSize: 26,
