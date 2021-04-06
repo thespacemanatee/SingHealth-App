@@ -31,6 +31,7 @@ import ManageTenantAccountsScreen from "../screens/staff/AddTenantScreens/Manage
 import CreateTenantScreen from "../screens/staff/AddTenantScreens/CreateTenantScreen";
 import AddAccountDetailsScreen from "../screens/staff/AddTenantScreens/AddAccountDetailsScreen";
 import ExpandImagesScreen from "../screens/ExpandImagesScreen";
+import TenantInfoScreen from "../screens/TenantInfoScreen";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
 
@@ -169,6 +170,7 @@ const StaffDirectoryStackNavigator = () => {
     <Navigator headerMode="none">
       <Screen name="Directory" component={DirectoryScreen} />
       <Screen name="TenantsDirectory" component={TenantsDirectoryScreen} />
+      <Screen name="TenantInfo" component={TenantInfoScreen} />
     </Navigator>
   );
 };

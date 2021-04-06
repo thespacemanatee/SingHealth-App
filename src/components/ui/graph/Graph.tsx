@@ -8,10 +8,12 @@ import {
   interpolate,
   Extrapolate,
 } from "react-native-reanimated";
+import { useTheme } from "@ui-kitten/components";
 
 import { parsePath, getPointAtLength } from "../../AnimatedHelpers";
 
 import Cursor from "./Cursor";
+import CustomText from "../CustomText";
 
 const { width } = Dimensions.get("window");
 const height = width / 3;
@@ -63,9 +65,17 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     overflow: "hidden",
   },
+  labelContainer: {
+    width: "100%",
+    alignItems: "center",
+  },
+  label: {
+    color: "gray",
+  },
 });
 
-const Graph = () => {
+const Graph = ({ label }) => {
+  const theme = useTheme();
   const length = useSharedValue(0);
   const point = useDerivedValue(() => {
     const p = getPointAtLength(path, length.value);
@@ -81,30 +91,37 @@ const Graph = () => {
     };
   });
   return (
-    <View style={styles.container}>
-      <View>
-        <Svg {...{ width, height }}>
-          <Defs>
-            <LinearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="gradient">
-              <Stop stopColor="#CDE3F8" offset="0%" />
-              <Stop stopColor="#eef6fd" offset="80%" />
-              <Stop stopColor="#FEFFFF" offset="100%" />
-            </LinearGradient>
-          </Defs>
-          <Path
-            fill="transparent"
-            stroke="#367be2"
-            strokeWidth={5}
-            {...{ d }}
-          />
-          <Path
-            d={`${d}  L ${width} ${height} L 0 ${height}`}
-            fill="url(#gradient)"
-          />
-        </Svg>
-        <Cursor {...{ path, length, point }} />
+    <>
+      <View style={styles.labelContainer}>
+        <CustomText bold={false} style={styles.label}>
+          {label}
+        </CustomText>
       </View>
-    </View>
+      <View style={styles.container}>
+        <View>
+          <Svg {...{ width, height }}>
+            <Defs>
+              <LinearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="gradient">
+                <Stop stopColor={theme["color-danger-200"]} offset="0%" />
+                <Stop stopColor={theme["color-danger-100"]} offset="80%" />
+                <Stop stopColor={theme["color-basic-100"]} offset="100%" />
+              </LinearGradient>
+            </Defs>
+            <Path
+              fill="transparent"
+              stroke={theme["color-danger-600"]}
+              strokeWidth={5}
+              {...{ d }}
+            />
+            <Path
+              d={`${d}  L ${width} ${height} L 0 ${height}`}
+              fill="url(#gradient)"
+            />
+          </Svg>
+          <Cursor {...{ path, length, point }} />
+        </View>
+      </View>
+    </>
   );
 };
 

@@ -32,15 +32,25 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
     />
   );
 
-  const renderTenants = useCallback((itemData) => {
-    return (
-      <EntityCard
-        onPress={{}}
-        displayName={itemData.item.stallName}
-        _id={itemData.item.tenantID}
-      />
-    );
-  }, []);
+  const handleOpenTenant = useCallback(
+    (tenantID, stallName) => {
+      navigation.navigate("TenantInfo", { tenantID, stallName });
+    },
+    [navigation]
+  );
+
+  const renderTenants = useCallback(
+    (itemData) => {
+      return (
+        <EntityCard
+          onPress={handleOpenTenant}
+          displayName={itemData.item.stallName}
+          _id={itemData.item.tenantID}
+        />
+      );
+    },
+    [handleOpenTenant]
+  );
 
   const getTenants = useCallback(async () => {
     try {

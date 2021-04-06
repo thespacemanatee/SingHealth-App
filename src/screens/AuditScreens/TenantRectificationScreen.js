@@ -99,19 +99,17 @@ const TenantRectificationScreen = ({ route, navigation }) => {
 
       // let res;
       if (base64images.images.length > 0) {
-        await Promise.all([
-          dispatch(
-            checklistActions.submitRectification(
-              checklistStore.auditMetadata._id,
-              data,
-              authStore.userType,
-              checklistType,
-              section,
-              index
-            )
-          ),
-          dispatch(databaseActions.postAuditImagesWeb(base64images)),
-        ]);
+        await dispatch(databaseActions.postAuditImagesWeb(base64images));
+        await dispatch(
+          checklistActions.submitRectification(
+            checklistStore.auditMetadata._id,
+            data,
+            authStore.userType,
+            checklistType,
+            section,
+            index
+          )
+        );
       } else {
         await dispatch(
           checklistActions.submitRectification(

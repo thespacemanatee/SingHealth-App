@@ -31,9 +31,9 @@ def addRecentAuditsEndpoints(app, mongo):
                 auditsList.append(auditObject)
 
             if len(auditsList) == 0:
-                return serverResponse(None, 404, "No matching forms")
+                return serverResponse(None, 200, "No audits found")
 
-            return serverResponse(auditsList, 200, "Forms found")
+            return serverResponse(auditsList, 200, "Audits found")
 
             # else:
             #     return serverResponse(None, 403, "You do not have access to this as you are not a tenant")
@@ -64,8 +64,8 @@ def addRecentAuditsEndpoints(app, mongo):
                     auditMetadataObject["stallName"] = tenantStallName
                 auditsList.append(auditMetadataObject)
 
-            if len(auditsList) == 0:
-                return serverResponse(None, 404, "No matching forms")
+                if len(auditsList) == 0:
+                    return serverResponse(None, 200, "No forms found")
 
             return serverResponse(auditsList, 200, "Forms found")
 

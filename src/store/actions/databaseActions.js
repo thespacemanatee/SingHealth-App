@@ -58,6 +58,20 @@ export const getStaffActiveAudits = (institutionID, daysBefore = 0) => {
   };
 };
 
+export const getTenantAudits = (tenantID, daysBefore = 0) => {
+  return async () => {
+    const getAudit = {
+      url: `${endpoint}audits`,
+      method: "get",
+      params: { tenantID, daysBefore },
+    };
+
+    const res = await httpClient(getAudit);
+
+    return res;
+  };
+};
+
 export const postAuditForm = (auditData) => {
   return async () => {
     const postAudit = {
