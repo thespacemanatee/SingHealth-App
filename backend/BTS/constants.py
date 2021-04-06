@@ -1,4 +1,4 @@
-MAX_NUM_IMAGES_PER_NC = 3
+MAX_NUM_IMAGES_PER_NC = 20
 
 BTS_EMAIL = "Build.Tech.for.SingHealth@gmail.com"
 
