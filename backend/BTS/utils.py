@@ -2,6 +2,7 @@ import os
 import json
 from flask import make_response, jsonify
 from bson import json_util
+from .constants import BTS_EMAIL, BTS_APP_CONFIG_EMAIL
 from exponent_server_sdk import (
     DeviceNotRegisteredError,
     PushClient,
@@ -89,7 +90,6 @@ def send_push_message(token, title, message, extra=None):
             raise self.retry(exc=exc)
     except ValueError:
         pass
-
 
 # for checking data
 def check_required_info(mydict, key_arr):
@@ -220,13 +220,13 @@ def from_audit_to_excel(workbook, page_name, data):
     worksheet.write('A11', "Forms", bold)
     worksheet.write('B11', "Scores", bold)
     worksheet.write('C11', "Rectification Progress", bold)
-    worksheet.set_column(2, 2, cell_format=percentage)
+    worksheet.set_column(1, 2, cell_format=percentage)
 
     # Value fields from dict
     staff_field = ["name", "email"]
     inst_field = ["name", "_id"]
     tenant_field = ["name", "email", "stall.name", "stall.companyName"]
-    audit_field = ["rectificationProgress", "score"]
+    audit_field = ["score", "rectificationProgress"]
 
     # get and enter field
     excel_enter_field_down(worksheet, staff_start_pos, staff_field, staff_dict)
@@ -246,23 +246,12 @@ def from_audit_to_excel(workbook, page_name, data):
 def send_audit_email(app, to_email, subject, message,
                      excel_name, page_name, data):
 
-    BTS_email = "Build.Tech.for.SingHealth@gmail.com"
-
     # for mailing
-    app.config.update(dict(
-        DEBUG=True,
-        MAIL_SERVER='smtp.gmail.com',
-        MAIL_PORT=587,
-        MAIL_USE_TLS=True,
-        MAIL_USE_SSL=False,
-        MAIL_USERNAME='Build.Tech.for.SingHealth@gmail.com',
-        MAIL_PASSWORD='BTS_admin_1',
-    ))
-
+    app.config.update(BTS_APP_CONFIG_EMAIL)
     mail = Mail(app)
 
     try:
-        msg = Message(sender=BTS_email,
+        msg = Message(sender=BTS_EMAIL,
                       recipients=[to_email],
                       subject=subject,
                       body=message)
@@ -289,3 +278,20 @@ def send_audit_email(app, to_email, subject, message,
         return False
 
     return True
+
+def send_email_notif(app, to_email, subject, message):
+    # for mailing
+    # for mailing
+    app.config.update(BTS_APP_CONFIG_EMAIL)
+    mail = Mail(app)
+
+    try:
+        msg = Message(
+            sender=BTS_EMAIL,
+            recipients=[to_email],
+            subject=subject,
+            body=message
+            )
+        mail.send(msg)  
+    except:
+        print("Mail failed to send")

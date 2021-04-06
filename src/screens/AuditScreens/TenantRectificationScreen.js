@@ -18,6 +18,7 @@ import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { StackActions } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 
 import alert from "../../components/CustomAlert";
 import * as checklistActions from "../../store/actions/checklistActions";
@@ -125,11 +126,15 @@ const TenantRectificationScreen = ({ route, navigation }) => {
       }
 
       // console.log("RESPONSE:", res);
+      Toast.show({
+        text1: "Success",
+        text2: "Your rectification has been submitted.",
+      });
+      navigation.dispatch(StackActions.pop(2));
     } catch (err) {
       handleErrorResponse(err);
     } finally {
       setLoadDialog(false);
-      navigation.dispatch(StackActions.pop(2));
     }
   };
 

@@ -67,6 +67,7 @@ const CustomCard = (props) => {
         // eslint-disable-next-line no-nested-ternary
         deleted ? "warning" : !checked && !rectified ? "danger" : "success"
       }
+      style={styles.card}
     >
       <View style={styles.questionContainer}>
         <CheckBox
@@ -76,7 +77,7 @@ const CustomCard = (props) => {
         />
         <View style={styles.questionTextContainer}>
           <CustomText
-            numberOfLines={3}
+            numberOfLines={2}
             // eslint-disable-next-line react-native/no-inline-styles
             style={{
               width: Platform.OS === "web" ? SCREEN_WIDTH - 100 : null,
@@ -95,6 +96,9 @@ const CustomCard = (props) => {
 export default CustomCard;
 
 const styles = StyleService.create({
+  card: {
+    height: 120,
+  },
   font: {
     fontFamily: "SFProDisplay-Regular",
   },
@@ -105,10 +109,8 @@ const styles = StyleService.create({
     paddingLeft: 10,
   },
   deleteBox: {
-    // flex: 1,
     justifyContent: "center",
     alignItems: "flex-start",
-    // width: 100,
   },
   header: {
     padding: 10,

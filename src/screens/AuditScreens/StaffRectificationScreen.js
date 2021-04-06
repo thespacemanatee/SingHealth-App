@@ -13,7 +13,9 @@ import {
   Button,
   Toggle,
 } from "@ui-kitten/components";
+import Toast from "react-native-toast-message";
 import axios from "axios";
+import { StackActions } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import alert from "../../components/CustomAlert";
@@ -70,6 +72,13 @@ const StaffRectificationScreen = ({ route, navigation }) => {
       );
 
       console.log(res);
+      Toast.show({
+        text1: "Success",
+        text2: `Your ${
+          isRectified ? "revocation" : "approval"
+        } has been recorded.`,
+      });
+      navigation.dispatch(StackActions.pop(2));
     } catch (err) {
       handleErrorResponse(err);
     } finally {

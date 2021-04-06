@@ -1,9 +1,10 @@
-from .utils import serverResponse, send_push_message
-from .constants import MAX_NUM_IMAGES_PER_NC
+from .utils import serverResponse, send_push_message, send_email_notif
+from .constants import MAX_NUM_IMAGES_PER_NC, SGT_TIMEZONE
 from flask import request, make_response, jsonify
 from flask_login import login_required
 from pymongo.errors import DuplicateKeyError
 from datetime import datetime
+from pytz import timezone
 import iso8601
 
 requiredPatchKeys = ["category", "index"]
@@ -334,15 +335,23 @@ def addAuditsEndpoint(app, mongo):
             tenant = mongo.db.tenant.find_one(
                 {"_id": auditMetaData["tenantID"]})
             if tenant:
-                try:
-                    for token in tenant["expoToken"]:
+                if (expoTokens := tenant.get("expoToken")) != None:
+                    for token in expoTokens:
                         try:
-                            send_push_message(
-                                token, "SingHealth Audits", "Recent audit results ready for viewing")
+                            send_push_message(token, "SingHealth Audits", "Recent audit results ready for viewing")
                         except:
                             continue
-                except:
-                    print("No expoToken found")
+                
+                
+                send_email_notif(
+                    app,
+                    tenant["email"], 
+                    "Audit Results", 
+                    f"""Dear {tenant["name"]},
+                        Your recent audit results dated {timezone(SGT_TIMEZONE).localize(auditMetaData_ID_processed['date']).strftime('%B %d, %Y')} are ready for reviewing. Please check your app for details.
+                        This email is auto generated. No signature is required.
+                        You do not have to reply to this email."""
+                    )
             return serverResponse(None, 200, "Forms have been submitted successfully!")
 
     @app.route("/audits/<auditID>", methods=['GET'])
@@ -408,7 +417,7 @@ def addAuditsEndpoint(app, mongo):
                 {"_id": selectedAudit["tenantID"]}
             )
             tenantStallName = tenant["stall"]["name"]
-            staffExpoTokens = staff["expoToken"]
+            staffExpoTokens = staff.get("expoToken")
 
             auditChecklists = selectedAudit["auditChecklists"]
 
@@ -426,13 +435,25 @@ def addAuditsEndpoint(app, mongo):
                 allowedTenantPatchKeys,
                 auditChecklists
             )
-            for device in staffExpoTokens:
-                try:
-                    send_push_message(device, tenantStallName,
-                                      "has rectified a noncompliance")
-                except:
-                    print("Some error detected")
-                    continue
+            if staffExpoTokens != None:
+                for device in staffExpoTokens:
+                    try:
+                        send_push_message(device, tenantStallName,
+                                        "has reviewed an audit form")
+                    except:
+                        print("Some error detected")
+                        continue
+                    
+            send_email_notif(
+                    app,
+                    staff["email"], 
+                    "Audit Results", 
+                    f"""Dear {staff['name']},
+                        Your tenant, {tenant['stall']['name']}, has submitted a review for one of his NCs for the audit dated {timezone(SGT_TIMEZONE).localize(selectedAudit['date']).strftime('%d %B %Y, %I:%M %p')}. 
+                        Please check your app for details.
+                        This email is auto generated. No signature is required.
+                        You do not have to reply to this email."""
+                    )
             return serverResponse(patchResults, 200, "Changes sent to the database.")
 
     @app.route("/audits/<auditID>/staff", methods=['PATCH'])
@@ -499,16 +520,25 @@ def addAuditsEndpoint(app, mongo):
 
             tenant = mongo.db.tenant.find_one({"_id": tenantID})
             if tenant:
-                try:
-                    for device in tenant["expoToken"]:
+                if (expoTokens := tenant.get("expoToken")) != None:
+                    for device in expoTokens:
                         try:
                             send_push_message(device, institution,
                                               "has reviewed your rectifications")
                         except:
                             print("Some error detected")
                             continue
-                except:
-                    print("No token found")
+                
+                send_email_notif(
+                    app,
+                    tenant["email"], 
+                    "Audit Results", 
+                    f"""Dear {tenant['stall']['name']},
+                        {institution} has submitted a review for your rectifications for your audit dated {timezone(SGT_TIMEZONE).localize(selectedAudit['date']).strftime('%d %B %Y, %I:%M %p')}. 
+                        Please check your app for details.
+                        This email is auto generated. No signature is required.
+                        You do not have to reply to this email."""
+                    )
             return serverResponse(
                 ack,
                 200,

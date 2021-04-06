@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View } from "react-native";
+import { FlatList, View } from "react-native";
 import { useDispatch } from "react-redux";
 import {
   Divider,
@@ -66,7 +66,12 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
       />
       <Divider />
       <Layout style={styles.layout}>
-        <List data={tenants} renderItem={renderTenants} />
+        <FlatList
+          data={tenants}
+          renderItem={renderTenants}
+          contentContainerStyle={styles.contentContainer}
+          keyExtractor={(item, index) => String(index)}
+        />
       </Layout>
     </View>
   );
@@ -78,6 +83,11 @@ const styles = StyleService.create({
   },
   layout: {
     flex: 1,
+  },
+  contentContainer: {
+    // flexGrow: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
 });
 

@@ -15,6 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as checklistActions from "../store/actions/checklistActions";
 import alert from "./CustomAlert";
 import CustomText from "./ui/CustomText";
+import ShadowCard from "./ui/ShadowCard";
 
 const TrashIcon = (props) => <Icon {...props} name="trash" />;
 
@@ -46,12 +47,12 @@ const SavedChecklistCard = ({
         data = JSON.parse(data);
       }
       delete data[item.time];
-      console.log(data);
       AsyncStorage.setItem("savedChecklists", JSON.stringify(data));
 
       await deleteSave();
     } catch (err) {
       onError(err);
+    } finally {
       onLoading(false);
     }
   }, [deleteSave, item.time, onError, onLoading]);
@@ -89,9 +90,10 @@ const SavedChecklistCard = ({
       }}
       friction={2}
     >
-      <Card
-        style={styles.item}
-        status="basic"
+      <ShadowCard
+        style={styles.cardContainer}
+        status="info"
+        activeOpacity={0.5}
         onPress={handleOpenSavedChecklist}
       >
         <View>
@@ -106,7 +108,7 @@ const SavedChecklistCard = ({
               .join(" ")}
           </CustomText>
         </View>
-      </Card>
+      </ShadowCard>
     </Swipeable>
   );
 };
@@ -114,8 +116,10 @@ const SavedChecklistCard = ({
 export default SavedChecklistCard;
 
 const styles = StyleService.create({
-  item: {
-    // marginVertical: 4,
+  cardContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 20,
   },
   deleteBox: {
     // flex: 1,
