@@ -17,8 +17,8 @@ const NewChecklistCard = ({
   const dispatch = useDispatch();
 
   const handleCreateNewChecklist = async () => {
-    onLoading(true);
     try {
+      onLoading(true);
       await dispatch(checklistActions.getChecklist(item.fnb, item));
 
       const now = moment(new Date()).toISOString();
@@ -34,15 +34,15 @@ const NewChecklistCard = ({
 
       dispatch(checklistActions.createAuditMetadata(auditMetadata));
 
-      onLoading(false);
       navigation.navigate("Checklist", {
         auditID: now,
         stallName: item.stallName,
       });
     } catch (err) {
       console.error(err);
-      onLoading(false);
       onError(err);
+    } finally {
+      onLoading(false);
     }
   };
 
