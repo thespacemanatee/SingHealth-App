@@ -54,7 +54,7 @@ def addWenXinEndpoints(app, mongo):
 
                 output = serverResponse(result, 200, "Success")
             else:
-                output = serverResponse(None, 404, "No matching form")
+                output = serverResponse(None, 200, "No forms found")
 
         except:
             output = serverResponse(None, 404, "Error in connection")

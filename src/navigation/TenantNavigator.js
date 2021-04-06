@@ -22,8 +22,10 @@ import TenantRectificationScreen from "../screens/AuditScreens/TenantRectificati
 import CameraScreen from "../screens/CameraScreen";
 import ExpandImagesScreen from "../screens/ExpandImagesScreen";
 import * as authActions from "../store/actions/authActions";
+import TenantInfoScreen from "../screens/TenantInfoScreen";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
+const ArchiveIcon = (props) => <Icon {...props} name="archive-outline" />;
 
 const useBottomNavigationState = (initialState = 0) => {
   const [selectedIndex, setSelectedIndex] = useState(initialState);
@@ -41,7 +43,7 @@ export const BottomNavigationAccessoriesShowcase = ({ navigation, state }) => {
       onSelect={(index) => navigation.navigate(state.routeNames[index])}
     >
       <BottomNavigationTab title="DASHBOARD" icon={DashboardIcon} />
-      {/* <BottomNavigationTab title="DIRECTORY" icon={DirectoryIcon} /> */}
+      <BottomNavigationTab title="RECORDS" icon={ArchiveIcon} />
     </BottomNavigation>
   );
 };
@@ -96,6 +98,7 @@ const TenantModalStackNavigator = () => {
 };
 
 const TenantTabNavigator = () => {
+  const authStore = useSelector((state) => state.auth);
   const { Navigator, Screen } = createBottomTabNavigator();
   return (
     <SafeAreaView style={styles.screen}>
@@ -105,6 +108,14 @@ const TenantTabNavigator = () => {
         <Screen
           name="TenantDashboardStack"
           component={TenantDashboardStackNavigator}
+        />
+        <Screen
+          name="TenantRecords"
+          component={TenantInfoScreen}
+          initialParams={{
+            tenantID: authStore._id,
+            stallName: authStore.stall.name,
+          }}
         />
       </Navigator>
     </SafeAreaView>
