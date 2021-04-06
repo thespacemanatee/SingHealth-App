@@ -144,6 +144,7 @@ const ChooseTenantScreen = ({ navigation }) => {
         </View>
         <FlatList
           data={tenants}
+          contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
           renderItem={renderTenants}
         />
@@ -161,6 +162,7 @@ const ChooseTenantScreen = ({ navigation }) => {
         </View>
         <FlatList
           data={saved}
+          contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
           renderItem={renderSaved}
         />
@@ -179,6 +181,7 @@ const ChooseTenantScreen = ({ navigation }) => {
       <CenteredLoading loading={loading} />
       <Navigator
         initialRouteName="Tenants"
+        backBehavior="none"
         tabBarOptions={{
           labelStyle: { fontSize: 12, fontFamily: "SFProDisplay-Regular" },
           indicatorStyle: { backgroundColor: theme["color-primary-500"] },
@@ -219,8 +222,9 @@ const styles = StyleService.create({
     fontSize: 20,
   },
   contentContainer: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    // flexGrow: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
 });
 

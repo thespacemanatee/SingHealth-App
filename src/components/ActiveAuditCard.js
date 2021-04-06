@@ -26,13 +26,7 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
   }, [auditMetadata.rectificationProgress]);
 
   return (
-    <ShadowCard
-      style={{
-        ...styles.cardContainer,
-        backgroundColor: theme["color-primary-100"],
-      }}
-      onPress={handleOnPress}
-    >
+    <ShadowCard style={styles.cardContainer} onPress={handleOnPress}>
       <View>
         <CustomText bold>{stallName}</CustomText>
         <CustomText>
