@@ -1,10 +1,6 @@
-import React from "react";
-import {
-  View,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Platform,
-} from "react-native";
+import React, { useState } from "react";
+import { View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
   Divider,
@@ -14,21 +10,57 @@ import {
   Icon,
   StyleService,
   useTheme,
+  Toggle,
 } from "@ui-kitten/components";
+import { StackActions } from "@react-navigation/routers";
+import moment from "moment";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import CustomTextInput from "../../../components/CustomTextInput";
 import Logo from "../../../components/ui/Logo";
 import CustomDatepicker from "../../../components/CustomDatePicker";
+import * as databaseActions from "../../../store/actions/databaseActions";
+import { handleErrorResponse } from "../../../helpers/utils";
+import alert from "../../../components/CustomAlert";
+import CenteredLoading from "../../../components/ui/CenteredLoading";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
-const AddAccountDetails = ({ navigation }) => {
+const AddAccountDetails = ({ route, navigation }) => {
+  const authStore = useSelector((state) => state.auth);
+  const [checked, setChecked] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { credentials } = route.params;
+
   const theme = useTheme();
 
+  const dispatch = useDispatch();
+
   const handleSubmitForm = async (values) => {
-    console.log(values);
+    try {
+      setLoading(true);
+      const data = {
+        ...credentials,
+        ...values,
+        institutionID: authStore.institutionID,
+        staffID: authStore._id,
+      };
+      console.log(data);
+      const res = await dispatch(databaseActions.createNewTenant(data));
+
+      console.log(res);
+
+      alert(
+        "Success",
+        `You have successfully added ${values.stallName} to the database!`
+      );
+      navigation.dispatch(StackActions.popToTop());
+    } catch (err) {
+      handleErrorResponse(err);
+    } finally {
+      setLoading(false);
+    }
     // navigation.navigate("AddAccountDetails", { values });
   };
 
@@ -40,6 +72,10 @@ const AddAccountDetails = ({ navigation }) => {
       }}
     />
   );
+
+  const onCheckedChange = (isChecked) => {
+    setChecked(isChecked);
+  };
 
   const RegisterSchema = Yup.object().shape({
     stallName: Yup.string().required("Please enter tenant's stall name!"),
@@ -63,30 +99,42 @@ const AddAccountDetails = ({ navigation }) => {
   });
 
   return (
-    <TouchableWithoutFeedback
-      onPress={() => {
-        if (Platform.OS !== "web") {
-          Keyboard.dismiss();
-        }
-      }}
-    >
-      <KeyboardAwareScrollView
-        style={styles.screen}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <TopNavigation
-          title="Account Details"
-          alignment="center"
-          accessoryLeft={BackAction}
-        />
-        <Divider />
+    <View style={styles.screen}>
+      <TopNavigation
+        title="Account Details"
+        alignment="center"
+        accessoryLeft={BackAction}
+      />
+      <Divider />
+      <CenteredLoading loading={loading} />
+      <KeyboardAwareScrollView>
         <Layout style={styles.layout}>
           <Formik
-            initialValues={{ stallName: "", email: "", password: "" }}
+            initialValues={{
+              stallName: "",
+              companyName: "",
+              companyPOCName: "",
+              companyPOCEmail: "",
+              unitNo: "",
+              fnb: false,
+              tenantDateStart: moment(Date.now()),
+              tenantDateEnd: moment(Date.now()),
+              block: "",
+              street: "",
+              building: "",
+              zipCode: "",
+            }}
             onSubmit={handleSubmitForm}
             validationSchema={RegisterSchema}
           >
-            {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+            {({
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              setFieldValue,
+              values,
+              errors,
+            }) => (
               <View style={styles.keyboardContainer}>
                 <Logo />
                 <CustomTextInput
@@ -193,11 +241,38 @@ const AddAccountDetails = ({ navigation }) => {
                     );
                   }}
                 />
-                <CustomDatepicker label="Tenant Start Date" />
-                <CustomDatepicker label="Tenant End Date" />
+                <CustomDatepicker
+                  label="Tenant Start Date"
+                  value={values.tenantDateStart}
+                  onSelect={(val) => {
+                    setFieldValue("tenantDateStart", val);
+                  }}
+                  error={!!errors.tenantDateStart}
+                  errorText={errors.tenantDateStart}
+                />
+                <CustomDatepicker
+                  label="Tenant End Date"
+                  value={values.tenantDateEnd}
+                  onSelect={(val) => {
+                    setFieldValue("tenantDateEnd", val);
+                  }}
+                  error={!!errors.tenantDateEnd}
+                  errorText={errors.tenantDateEnd}
+                />
+                <View style={styles.toggleContainer}>
+                  <Toggle
+                    checked={checked}
+                    onChange={(val) => {
+                      setFieldValue("fnb", val);
+                      onCheckedChange(val);
+                    }}
+                  >
+                    {checked ? "FNB" : "NON-FNB"}
+                  </Toggle>
+                </View>
                 <View style={styles.buttonContainer}>
                   <Button onPress={handleSubmit} style={styles.button}>
-                    Add Account Details
+                    SUBMIT
                   </Button>
                 </View>
               </View>
@@ -205,7 +280,7 @@ const AddAccountDetails = ({ navigation }) => {
           </Formik>
         </Layout>
       </KeyboardAwareScrollView>
-    </TouchableWithoutFeedback>
+    </View>
   );
 };
 
@@ -237,6 +312,11 @@ const styles = StyleService.create({
     width: "100%",
     marginBottom: 20,
     justifyContent: "flex-end",
+  },
+  toggleContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    width: "100%",
   },
   button: {
     marginTop: 24,

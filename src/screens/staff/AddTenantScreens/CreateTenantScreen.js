@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, Platform } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import {
   Button,
   Divider,
@@ -24,9 +24,9 @@ const AddTenantCredScreen = ({ navigation }) => {
 
   const theme = useTheme();
 
-  const handleSubmitForm = async (values) => {
-    console.log(values);
-    navigation.navigate("AddAccountDetails", { values });
+  const handleSubmitForm = (credentials) => {
+    console.log(credentials);
+    navigation.navigate("AddAccountDetails", { credentials });
   };
 
   const BackAction = () => (
@@ -39,15 +39,15 @@ const AddTenantCredScreen = ({ navigation }) => {
   );
 
   const RegisterSchema = Yup.object().shape({
-    tenantName: Yup.string().required("Please enter tenant name!"),
+    name: Yup.string().required("Please enter tenant name!"),
     email: Yup.string()
       .email("Invalid email!")
       .required("Please enter tenant's email!"),
-    password: Yup.string()
+    pswd: Yup.string()
       .required("Please enter your password!")
       .min(8, "Password is too short - should be 8 chars minimum."),
     passwordConfirmation: Yup.string().oneOf(
-      [Yup.ref("password"), null],
+      [Yup.ref("pswd"), null],
       "Passwords must match"
     ),
   });
@@ -63,90 +63,89 @@ const AddTenantCredScreen = ({ navigation }) => {
   );
 
   return (
-    <KeyboardAwareScrollView
-      style={styles.screen}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
+    <View style={styles.screen}>
       <TopNavigation
         title="Add Tenant"
         alignment="center"
         accessoryLeft={BackAction}
       />
       <Divider />
-      <Layout style={styles.layout}>
-        <Formik
-          initialValues={{ tenantName: "", email: "", password: "" }}
-          onSubmit={handleSubmitForm}
-          validationSchema={RegisterSchema}
-        >
-          {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
-            <View style={styles.keyboardContainer}>
-              <Logo />
-              <CustomTextInput
-                label="Tenant Name"
-                returnKeyType="next"
-                value={values.tenantName}
-                onChangeText={handleChange("tenantName")}
-                onBlur={handleBlur("tenantName")}
-                error={!!errors.tenantName}
-                errorText={errors.tenantName}
-                accessoryRight={(props) => {
-                  return (
-                    !!errors.tenantName && (
-                      <Icon
-                        {...props}
-                        name="alert-circle-outline"
-                        fill={theme["color-danger-700"]}
-                      />
-                    )
-                  );
-                }}
-              />
-              <CustomTextInput
-                label="Email"
-                returnKeyType="next"
-                value={values.email}
-                onChangeText={handleChange("email")}
-                onBlur={handleBlur("email")}
-                error={!!errors.email}
-                errorText={errors.email}
-                autoCapitalize="none"
-                autoCompleteType="email"
-                textContentType="emailAddress"
-                keyboardType="email-address"
-                accessoryRight={(props) => {
-                  return (
-                    !!errors.email && (
-                      <Icon
-                        {...props}
-                        name="alert-circle-outline"
-                        fill={theme["color-danger-700"]}
-                      />
-                    )
-                  );
-                }}
-              />
-              <CustomTextInput
-                label="Password"
-                returnKeyType="done"
-                value={values.password}
-                onChangeText={handleChange("password")}
-                onBlur={handleBlur("password")}
-                error={!!errors.password}
-                errorText={errors.password}
-                secureTextEntry={secureTextEntry}
-                accessoryRight={renderSecureIcon}
-              />
-              <View style={styles.buttonContainer}>
-                <Button onPress={handleSubmit} style={styles.button}>
-                  Next
-                </Button>
+      <KeyboardAwareScrollView>
+        <Layout style={styles.layout}>
+          <Formik
+            initialValues={{ name: "", email: "", pswd: "" }}
+            onSubmit={handleSubmitForm}
+            validationSchema={RegisterSchema}
+          >
+            {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+              <View style={styles.keyboardContainer}>
+                <Logo />
+                <CustomTextInput
+                  label="Tenant Name"
+                  returnKeyType="next"
+                  value={values.name}
+                  onChangeText={handleChange("name")}
+                  onBlur={handleBlur("name")}
+                  error={!!errors.name}
+                  errorText={errors.name}
+                  accessoryRight={(props) => {
+                    return (
+                      !!errors.name && (
+                        <Icon
+                          {...props}
+                          name="alert-circle-outline"
+                          fill={theme["color-danger-700"]}
+                        />
+                      )
+                    );
+                  }}
+                />
+                <CustomTextInput
+                  label="Email"
+                  returnKeyType="next"
+                  value={values.email}
+                  onChangeText={handleChange("email")}
+                  onBlur={handleBlur("email")}
+                  error={!!errors.email}
+                  errorText={errors.email}
+                  autoCapitalize="none"
+                  autoCompleteType="email"
+                  textContentType="emailAddress"
+                  keyboardType="email-address"
+                  accessoryRight={(props) => {
+                    return (
+                      !!errors.email && (
+                        <Icon
+                          {...props}
+                          name="alert-circle-outline"
+                          fill={theme["color-danger-700"]}
+                        />
+                      )
+                    );
+                  }}
+                />
+                <CustomTextInput
+                  label="Password"
+                  returnKeyType="done"
+                  value={values.pswd}
+                  onChangeText={handleChange("pswd")}
+                  onBlur={handleBlur("pswd")}
+                  error={!!errors.pswd}
+                  errorText={errors.pswd}
+                  secureTextEntry={secureTextEntry}
+                  accessoryRight={renderSecureIcon}
+                />
+                <View style={styles.buttonContainer}>
+                  <Button onPress={handleSubmit} style={styles.button}>
+                    NEXT
+                  </Button>
+                </View>
               </View>
-            </View>
-          )}
-        </Formik>
-      </Layout>
-    </KeyboardAwareScrollView>
+            )}
+          </Formik>
+        </Layout>
+      </KeyboardAwareScrollView>
+    </View>
   );
 };
 
@@ -181,9 +180,6 @@ const styles = StyleService.create({
   },
   button: {
     marginTop: 24,
-  },
-  link: {
-    fontWeight: "bold",
   },
 });
 

@@ -2,9 +2,10 @@ import React from "react";
 import { View, StyleSheet, Platform } from "react-native";
 import Animated, { useDerivedValue } from "react-native-reanimated";
 import { ReText, round } from "react-native-redash";
-import { Card, Text } from "@ui-kitten/components";
+import { Card } from "@ui-kitten/components";
 
 import StyleGuide from "../../StyleGuide";
+import CustomText from "../CustomText";
 
 const styles = StyleSheet.create({
   date: {
@@ -60,11 +61,11 @@ const Label = ({ point }: LabelProps) => {
     <Card>
       <View style={styles.labelContainer}>
         <View style={styles.dateContainer}>
-          <Text>Date: </Text>
+          <CustomText>Date: </CustomText>
           <ReText style={styles.date} text={date} />
         </View>
         <View style={styles.contentContainer}>
-          <Text>Average: </Text>
+          <CustomText>Average: </CustomText>
           <ReText style={styles.score} text={points} />
         </View>
       </View>

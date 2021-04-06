@@ -13,6 +13,8 @@ import { Provider } from "react-redux";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import * as Notifications from "expo-notifications";
 import AppLoading from "expo-app-loading";
+import * as Font from "expo-font";
+import Toast, { BaseToast } from "react-native-toast-message";
 
 import store from "./src/store/store";
 import AppNavigator from "./src/navigation/AppNavigator";
@@ -79,10 +81,21 @@ const App = () => {
     return token;
   };
 
+  const loadFonts = async () => {
+    await Font.loadAsync({
+      // eslint-disable-next-line global-require
+      "SFProDisplay-Regular": require("./assets/fonts/SFProDisplay-Regular.ttf"),
+
+      // eslint-disable-next-line global-require
+      "SFProDisplay-Bold": require("./assets/fonts/SFProDisplay-Bold.ttf"),
+    });
+  };
+
   const loadAppAssets = () => {
     if (Platform.OS !== "web") {
       registerForPushNotificationsAsync().then((token) => setExpoToken(token));
     }
+    loadFonts().then();
     store.dispatch(authActions.restoreToken());
   };
 
@@ -104,6 +117,10 @@ const App = () => {
             <SafeAreaProvider style={styles.screen}>
               {Platform.OS === "ios" && <StatusBar barStyle="dark-content" />}
               <AppNavigator expoToken={expoToken} />
+              <Toast
+                topOffset={StatusBar.currentHeight}
+                ref={(ref) => Toast.setRef(ref)}
+              />
             </SafeAreaProvider>
           </ApplicationProvider>
         </PaperProvider>
@@ -117,6 +134,6 @@ export default App;
 const styles = StyleService.create({
   screen: {
     flex: 1,
-    marginTop: Platform.OS === "web" ? 0 : StatusBar.currentHeight,
+    // marginTop: Platform.OS === "web" ? 0 : StatusBar.currentHeight,
   },
 });

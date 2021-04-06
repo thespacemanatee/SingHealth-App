@@ -9,7 +9,6 @@ import {
   Icon,
   StyleService,
   Input,
-  Text,
   useTheme,
   Button,
   Toggle,
@@ -18,6 +17,7 @@ import axios from "axios";
 import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { StackActions } from "@react-navigation/native";
 
 import alert from "../../components/CustomAlert";
 import * as checklistActions from "../../store/actions/checklistActions";
@@ -27,6 +27,7 @@ import ImageViewPager from "../../components/ImageViewPager";
 import { SCREEN_HEIGHT } from "../../helpers/config";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
+import CustomText from "../../components/ui/CustomText";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
@@ -101,7 +102,11 @@ const TenantRectificationScreen = ({ route, navigation }) => {
           dispatch(
             checklistActions.submitRectification(
               checklistStore.auditMetadata._id,
-              data
+              data,
+              authStore.userType,
+              checklistType,
+              section,
+              index
             )
           ),
           dispatch(databaseActions.postAuditImagesWeb(base64images)),
@@ -111,7 +116,10 @@ const TenantRectificationScreen = ({ route, navigation }) => {
           checklistActions.submitRectification(
             checklistStore.auditMetadata._id,
             data,
-            authStore.userType
+            authStore.userType,
+            checklistType,
+            section,
+            index
           )
         );
       }
@@ -121,6 +129,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
       handleErrorResponse(err);
     } finally {
       setLoadDialog(false);
+      navigation.dispatch(StackActions.pop(2));
     }
   };
 
@@ -393,7 +402,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
           { backgroundColor: theme["color-primary-400"] },
         ]}
       >
-        <Text style={styles.text}>{question}</Text>
+        <CustomText bold>{question}</CustomText>
       </View>
       <Button onPress={handleSubmitRectification} disabled={rectified}>
         {rectified ? "SUBMISSION APPROVED" : "SUBMIT FOR APPROVAL"}
@@ -418,7 +427,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
             </Toggle>
           </View>
           <View style={styles.inputContainer}>
-            <Text category="h6">Remarks: </Text>
+            <CustomText bold>Remarks: </CustomText>
             <Input
               height={SCREEN_HEIGHT * 0.1}
               multiline
@@ -449,9 +458,6 @@ const styles = StyleService.create({
   },
   contentContainer: {
     paddingBottom: 25,
-  },
-  text: {
-    fontWeight: "bold",
   },
   toggleContainer: {
     flex: 1,

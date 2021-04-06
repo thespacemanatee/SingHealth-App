@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
-import { Text, Card, useTheme, StyleService } from "@ui-kitten/components";
+import { useTheme, StyleService } from "@ui-kitten/components";
 import moment from "moment";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+import ShadowCard from "./ui/ShadowCard";
+import CustomText from "./ui/CustomText";
 
 const ActiveAuditCard = ({ userType, item, onPress }) => {
   const animation = useRef(null);
@@ -24,51 +26,51 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
   }, [auditMetadata.rectificationProgress]);
 
   return (
-    <Card
-      style={{ backgroundColor: theme["color-info-100"] }}
-      status="info"
-      activeOpacity={0.5}
+    <ShadowCard
+      style={{
+        ...styles.cardContainer,
+        backgroundColor: theme["color-primary-100"],
+      }}
       onPress={handleOnPress}
     >
-      <View style={styles.cardContainer}>
-        <View style={{}}>
-          <Text style={styles.timeStamp}>{stallName}</Text>
-          <Text style={styles.timeStamp}>
-            {moment(auditMetadata.date)
-              .toLocaleString()
-              .split(" ")
-              .slice(0, 5)
-              .join(" ")}
-          </Text>
-          <Text>{`${userType === "staff" ? "Tenant" : "You"} scored: ${(
-            Number.parseFloat(auditMetadata.score) * 100
-          ).toFixed(1)}`}</Text>
-        </View>
-        <View>
-          <AnimatedCircularProgress
-            ref={animation}
-            size={120}
-            width={15}
-            rotation={0}
-            fill={progress}
-            duration={1000}
-            tintColor={theme["color-info-500"]}
-            backgroundColor={theme["color-danger-600"]}
-          >
-            {() => (
-              <View style={styles.progressContainer}>
-                <Text style={styles.progressText}>
-                  {`${(
-                    Number.parseFloat(auditMetadata.rectificationProgress) * 100
-                  ).toFixed(1)}%`}
-                </Text>
-                <Text style={styles.progressText}>Progress</Text>
-              </View>
-            )}
-          </AnimatedCircularProgress>
-        </View>
+      <View>
+        <CustomText bold>{stallName}</CustomText>
+        <CustomText>
+          {moment(auditMetadata.date.$date)
+            .toLocaleString()
+            .split(" ")
+            .slice(0, 5)
+            .join(" ")}
+        </CustomText>
+        <CustomText>{`${userType === "staff" ? "Tenant" : "You"} scored: ${(
+          Number.parseFloat(auditMetadata.score) * 100
+        ).toFixed(1)}`}</CustomText>
       </View>
-    </Card>
+      <View>
+        <AnimatedCircularProgress
+          ref={animation}
+          size={120}
+          width={10}
+          rotation={0}
+          lineCap="round"
+          fill={progress}
+          duration={1000}
+          tintColor={theme["color-info-500"]}
+          backgroundColor={theme["color-danger-600"]}
+        >
+          {() => (
+            <View style={styles.progressContainer}>
+              <CustomText bold>
+                {`${(
+                  Number.parseFloat(auditMetadata.rectificationProgress) * 100
+                ).toFixed(1)}%`}
+              </CustomText>
+              <CustomText>Progress</CustomText>
+            </View>
+          )}
+        </AnimatedCircularProgress>
+      </View>
+    </ShadowCard>
   );
 };
 
@@ -78,16 +80,10 @@ const styles = StyleService.create({
   cardContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-start",
-  },
-  timeStamp: {
-    fontWeight: "bold",
+    padding: 20,
   },
   progressContainer: {
     justifyContent: "center",
     alignItems: "center",
-  },
-  progressText: {
-    fontWeight: "bold",
   },
 });

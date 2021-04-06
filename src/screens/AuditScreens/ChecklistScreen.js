@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, SectionList, Platform } from "react-native";
+import { View, SectionList } from "react-native";
 import { useSelector } from "react-redux";
 import {
   Button,
@@ -8,17 +8,19 @@ import {
   TopNavigation,
   TopNavigationAction,
   Icon,
-  Text,
   StyleService,
   useTheme,
+  CheckBox,
 } from "@ui-kitten/components";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
+import sectionListGetItemLayout from "react-native-section-list-get-item-layout";
 
 import QuestionCard from "../../components/QuestionCard";
 import alert from "../../components/CustomAlert";
 import SectionHeader from "../../components/ui/SectionHeader";
 import CenteredLoading from "../../components/ui/CenteredLoading";
+import CustomText from "../../components/ui/CustomText";
 
 export const FNB_SECTION = "F&B Checklist";
 export const NON_FNB_SECTION = "Non-F&B Checklist";
@@ -32,10 +34,52 @@ const ChecklistScreen = ({ route, navigation }) => {
   const [completeChecklist, setCompleteChecklist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [covid19Keys, setCovid19Keys] = useState([]);
+  const [allChecked, setAllChecked] = useState(false);
+  const [indeterminate, setIndeterminate] = useState(false);
 
   const { auditID, stallName } = route.params;
 
   const theme = useTheme();
+
+  console.log(checklistStore);
+
+  const onGroupCheckedChange = (checked) => {
+    // console.log(completeChecklist);
+    completeChecklist.map((e) => {
+      if (e.data.length > 0) {
+        const inner = e.data.map((i) => {
+          // eslint-disable-next-line no-param-reassign
+          i.answer = checked;
+          return i;
+        });
+        e.data = inner;
+      }
+      return e;
+    });
+    // console.log(temp);
+    setAllChecked(checked);
+    updateGroup();
+  };
+
+  const updateGroup = () => {
+    const someChecked = completeChecklist.some((e) =>
+      e.data.some((i) => i.answer)
+    );
+    const everyChecked = completeChecklist.every((e) =>
+      e.data.some((i) => i.answer)
+    );
+
+    if (someChecked && !everyChecked) {
+      setAllChecked(true);
+      setIndeterminate(true);
+    } else if (!someChecked && !everyChecked) {
+      setAllChecked(false);
+      setIndeterminate(false);
+    } else if (everyChecked) {
+      setAllChecked(true);
+      setIndeterminate(false);
+    }
+  };
 
   const BackAction = () => (
     <TopNavigationAction
@@ -96,19 +140,15 @@ const ChecklistScreen = ({ route, navigation }) => {
   };
 
   const onSubmitHandler = () => {
-    if (Platform.OS === "web") {
-      navigation.navigate("AuditSubmit");
-    } else {
-      alert("Confirm Submission", "Are you sure you want to submit?", [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Submit",
-          onPress: () => {
-            navigation.navigate("AuditSubmit");
-          },
+    alert("Confirm Submission", "Are you sure you want to submit?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Submit",
+        onPress: () => {
+          navigation.navigate("AuditSubmit");
         },
-      ]);
-    }
+      },
+    ]);
   };
 
   const handleOpenQuestionCard = useCallback(
@@ -120,6 +160,11 @@ const ChecklistScreen = ({ route, navigation }) => {
     [navigation]
   );
 
+  const getItemLayout = sectionListGetItemLayout({
+    getItemHeight: () => 120,
+    getSectionHeaderHeight: () => 50,
+  });
+
   const renderChosenChecklist = useCallback(
     (itemData) => {
       const checklistType = covid19Keys.includes(itemData.section.title)
@@ -127,7 +172,7 @@ const ChecklistScreen = ({ route, navigation }) => {
         : checklistStore.chosen_checklist_type;
       return (
         <QuestionCard
-          index={itemData.index}
+          index={itemData.item.index - 1}
           checklistType={checklistType}
           question={itemData.item.question}
           answer={itemData.item.answer}
@@ -148,15 +193,7 @@ const ChecklistScreen = ({ route, navigation }) => {
   );
 
   const createNewSections = useCallback(() => {
-    const checklist = [
-      {
-        title:
-          checklistStore.chosen_checklist_type === "fnb"
-            ? FNB_SECTION
-            : NON_FNB_SECTION,
-        data: [],
-      },
-    ];
+    const checklist = [];
 
     let temp;
     temp = Object.keys(checklistStore.chosen_checklist.questions);
@@ -167,7 +204,6 @@ const ChecklistScreen = ({ route, navigation }) => {
       });
     });
 
-    checklist.push({ title: COVID_SECTION, data: [] });
     temp = Object.keys(checklistStore.covid19.questions);
     temp.forEach((title) => {
       checklist.push({
@@ -180,7 +216,6 @@ const ChecklistScreen = ({ route, navigation }) => {
     setCompleteChecklist(checklist);
   }, [
     checklistStore.chosen_checklist.questions,
-    checklistStore.chosen_checklist_type,
     checklistStore.covid19.questions,
   ]);
 
@@ -206,26 +241,38 @@ const ChecklistScreen = ({ route, navigation }) => {
             { backgroundColor: theme["color-primary-400"] },
           ]}
         >
-          <Text style={styles.title}>Audit: {stallName}</Text>
-          <Text>
-            {moment(checklistStore.auditMetadata.date)
+          <CustomText style={styles.title}>Audit: {stallName}</CustomText>
+          <CustomText>
+            {moment(checklistStore.auditMetadata.date.$date)
               .toLocaleString()
               .split(" ")
               .slice(0, 5)
               .join(" ")}
-          </Text>
+          </CustomText>
         </View>
 
         <CenteredLoading loading={loading} />
         <SectionList
           sections={completeChecklist}
-          keyExtractor={(item, index) => item + index}
+          stickySectionHeadersEnabled
+          keyExtractor={(item, index) => String(index)}
           renderItem={renderChosenChecklist}
-          initialNumToRender={40}
           renderSectionHeader={renderSectionHeader}
           SectionSeparatorComponent={() => <Divider />}
+          extraData={allChecked}
+          getItemLayout={getItemLayout}
+          initialNumToRender={40}
+          // maxToRenderPerBatch={40}
         />
         <View style={styles.bottomContainer}>
+          <CheckBox
+            style={styles.group}
+            checked={allChecked}
+            indeterminate={indeterminate}
+            onChange={onGroupCheckedChange}
+          >
+            {`${allChecked ? "Uncheck" : "Check"} All`}
+          </CheckBox>
           <Button status="primary" onPress={onSubmitHandler}>
             SUBMIT
           </Button>
@@ -256,7 +303,7 @@ const styles = StyleService.create({
     flexWrap: "wrap",
   },
   bottomContainer: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     padding: 20,
     borderColor: "grey",
     borderTopWidth: 1,
