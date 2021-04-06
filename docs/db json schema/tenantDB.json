@@ -84,7 +84,7 @@
                     "type": "boolean"
                 }
             },
-            "required": ["name", "companyName", "companyPOC", "address", "fnb"]
+            "required": ["name", "fnb"]
         },
         "createdBy": {
             "description": "ID of staff who created this account",
@@ -111,5 +111,5 @@
             }
         }
     },
-    "required": [ "_id", "name", "email", "pswd", "institutionId", "stall", "createdBy", "dateCreated", "tenantDateStart", "tenantDateEnd"]
+    "required": [ "_id", "name", "email", "pswd", "institutionId", "stall", "createdBy", "dateCreated"]
   }
