@@ -449,7 +449,7 @@ def addAuditsEndpoint(app, mongo):
                     staff["email"], 
                     "Audit Results", 
                     f"""Dear {staff['name']},
-                        Your tenant, {tenant['stall']['name']}, has submitted a review for one of his NCs for the audit dated {timezone(SGT_TIMEZONE).localize(selectedAudit['date']).strftime('%B %d, %Y')}. 
+                        Your tenant, {tenant['stall']['name']}, has submitted a review for one of his NCs for the audit dated {timezone(SGT_TIMEZONE).localize(selectedAudit['date']).strftime('%d %B %Y, %I:%M %p')}. 
                         Please check your app for details.
                         This email is auto generated. No signature is required.
                         You do not have to reply to this email."""
@@ -520,16 +520,25 @@ def addAuditsEndpoint(app, mongo):
 
             tenant = mongo.db.tenant.find_one({"_id": tenantID})
             if tenant:
-                try:
-                    for device in tenant["expoToken"]:
+                if (expoTokens := tenant.get("expoToken")) != None:
+                    for device in expoTokens:
                         try:
                             send_push_message(device, institution,
                                               "has reviewed your rectifications")
                         except:
                             print("Some error detected")
                             continue
-                except:
-                    print("No token found")
+                
+                send_email_notif(
+                    app,
+                    tenant["email"], 
+                    "Audit Results", 
+                    f"""Dear {tenant['stall']['name']},
+                        {institution} has submitted a review for your rectifications for your audit dated {timezone(SGT_TIMEZONE).localize(selectedAudit['date']).strftime('%d %B %Y, %I:%M %p')}. 
+                        Please check your app for details.
+                        This email is auto generated. No signature is required.
+                        You do not have to reply to this email."""
+                    )
             return serverResponse(
                 ack,
                 200,
