@@ -18,6 +18,10 @@ docs/uml/*.pdf
 backend/backend/**
 **/.vscode
 
+# Backend unittesting
+backend/test/htmlcov/*
+backend/test/.coverage
+
 # wx test files
 backend/test_backend_wx.py
 backend/TestDeploy

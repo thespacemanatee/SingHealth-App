@@ -1,0 +1,14 @@
+{
+	"_id": "x68765yt34kmujnyhbtgR606969818e6e53b0f4e6ab4fSKH2021-04-04T18:42:31.460Z",
+	"staffID": "x68765yt34kmujnyhbtgR",
+	"tenantID": "606969818e6e53b0f4e6ab4f",
+	"institutionID": "SKH",
+	"date": "2021-04-06T10:49:18+0000",
+	"auditChecklists": {
+		"non_fnb": "2021-04-04T18:42:31.460Z606969818e6e53b0f4e6ab4fnon_fnb",
+		"covid19": "2021-04-04T18:42:31.460Z606969818e6e53b0f4e6ab4fcovid19"
+	},
+	"score": 0.9,
+	"rectificationProgress": 0.3333333333333333
+	
+}
