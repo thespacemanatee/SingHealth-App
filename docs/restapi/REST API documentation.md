@@ -30,6 +30,7 @@
 - [x] [`GET /audits/<auditID>`](#`GET-/audits/auditID`)
 - [x] [`PATCH /audits/<auditID>/tenant`](#`PATCH-/audits/auditID/tenant`)
 - [x] [`PATCH /audits/<auditID>/staff`](#`PATCH-/audits/auditID/staff`)
+- [x] [`GET /audits`](#`GET-/audits`)
 
 ### Audit Email
 - [x] [`POST /email/<auditID>`](#`POST-/email/<auditID>`)
@@ -125,8 +126,72 @@ localhost:5000/auditForms/fnb
 
 <br>
 
+
+## `GET /audits`
+### URL Query Arguments
+URL Arguments | Description
+-|-
+`tenantID` | The unique identifier for a tenant
+`daysBefore` | The number of days before which to retrieve audits from. Sending 0, which is the default input, will retrieve an infinite number of days before.
+
+### Sample Request
+```
+localhost:5000/audits?tenantID=veagvtrhfvrtbhtvg&daysBefore=0
+```
+### Sample Response
+#### Success
+##### Found several matching audits
+```js
+"status": 200,
+"data": {
+    "data": [
+        {
+            "auditMetadata": {
+                ...                
+            },
+            "stallName": "Mr Bean"
+        },
+        <AuditMetadata object w stallName/>,
+        <AuditMetadata object w stallName/>
+    ],
+    "description": "Audits retrieved successfully"
+}
+```
+##### Request performed, but found no matching audits
+```js
+"status": 200,
+"data": {
+    "data": [],
+    "description": "No audits found"
+}
+```
+
+#### Failure
+##### `tenantID` not provided
+```js
+"status": 400,
+"data": {
+    "description": "No tenant ID provided"
+}
+```
+##### `daysBefore` negative
+```js
+"status": 400,
+"data": {
+    "description": "Invalid date range provided"
+}
+```
+
+
+
+
+
+
 ## `POST /images`
 ---
+Duplicate filenames will be rejected.
+Will throw a 400 error if no images are received.
+
 There are 2 ways to send in images to this endpoint, choose only 1 per request:
 - by json in base64 encoded format
 - by Multipart/formdata
@@ -184,6 +249,8 @@ Key | `images`
 
 ## `GET /images`
 ---
+
+
 ### Query string args
 Arg | Description
 -|-

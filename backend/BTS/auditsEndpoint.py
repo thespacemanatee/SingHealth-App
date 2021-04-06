@@ -279,7 +279,7 @@ def mongoUpdateGivenFields(mongo, patches, fields, auditChecklists):
 
 
 def addAuditsEndpoint(app, mongo):
-    @app.route("/audits", methods=['POST'])
+    @app.route("/audits", methods=['POST', 'GET'])
     @login_required
     def audits():
         if request.method == 'POST':
@@ -353,6 +353,51 @@ def addAuditsEndpoint(app, mongo):
                         You do not have to reply to this email."""
                     )
             return serverResponse(None, 200, "Forms have been submitted successfully!")
+        elif request.method == "GET":
+            daysBefore = request.args.get("daysBefore", 0)
+            tenantID = request.args.get("tenantID", None)
+            if tenantID == None:
+                return serverResponse(None, 400, "No tenant ID provided")
+
+            if daysBefore < 0:
+                return serverResponse(None, 400, "Invalid date range provided")
+            elif daysBefore == 0:
+                queryDict = {"tenantID": tenantID}
+            else:
+                queryDict = {
+                        "tenantID": tenantID,
+                        "date": {
+                            "$gt": datetime.utcnow() - datetime.timedelta(days=daysBefore)
+                            }
+                    }
+                
+            audits = mongo.db.audits.find(queryDict)
+            auditsList = []
+            for audit in audits:
+                tenant = mongo.db.tenant.find_one(
+                    {"tenantID": tenantID }, 
+                    {
+                        "stall": {
+                            "name": 1
+                        }
+                    }
+                )
+                stallName = tenant["stall"]["name"]
+                
+                auditsList.append(
+                    {
+                        "auditMetadata": audit, 
+                        "stallName": stallName
+                    }
+                )
+                
+            if len(auditsList) == 0:
+                msg = "No audits found"
+            else:
+                msg = "Audits retrieved successfully"
+            return serverResponse(auditsList, 200, msg)
+                
+
 
     @app.route("/audits/<auditID>", methods=['GET'])
     @login_required
@@ -544,3 +589,5 @@ def addAuditsEndpoint(app, mongo):
                 200,
                 "Updates submitted successfully. "
             )
+
+           
