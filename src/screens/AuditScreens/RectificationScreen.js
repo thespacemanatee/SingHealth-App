@@ -12,6 +12,8 @@ import {
 } from "@ui-kitten/components";
 import { Chip } from "react-native-paper";
 import moment from "moment";
+import Toast from "react-native-toast-message";
+import sectionListGetItemLayout from "react-native-section-list-get-item-layout";
 
 import alert from "../../components/CustomAlert";
 import SectionHeader from "../../components/ui/SectionHeader";
@@ -104,7 +106,10 @@ const RectificationScreen = ({ route, navigation }) => {
       await dispatch(
         databaseActions.exportAndEmail(checklistStore.auditMetadata._id)
       );
-      alert("Success", "Please check your email.");
+      Toast.show({
+        text1: "Success",
+        text2: "Please check your email!",
+      });
     } catch (err) {
       handleErrorResponse(err);
     }
@@ -118,6 +123,11 @@ const RectificationScreen = ({ route, navigation }) => {
     },
     [navigation]
   );
+
+  const getItemLayout = sectionListGetItemLayout({
+    getItemHeight: () => 120,
+    getSectionHeaderHeight: () => 50,
+  });
 
   const renderChosenChecklist = useCallback(
     (itemData) => {
@@ -149,21 +159,10 @@ const RectificationScreen = ({ route, navigation }) => {
 
   const createNewSections = useCallback(
     (filter) => {
-      // const checklist = [
-      //   {
-      //     title:
-      //       checklistStore.chosen_checklist_type === "fnb"
-      //         ? FNB_SECTION
-      //         : NON_FNB_SECTION,
-      //     data: [],
-      //   },
-      // ];
-
       const checklist = [];
 
       const chosenKeys = Object.keys(checklistStore.chosen_checklist.questions);
       const covidKeys = Object.keys(checklistStore.covid19.questions);
-      // let temp;
 
       if (filter === NON_COMPLIANT) {
         chosenKeys.forEach((title) => {
@@ -287,9 +286,8 @@ const RectificationScreen = ({ route, navigation }) => {
           stickySectionHeadersEnabled
           keyExtractor={(item, index) => String(index)}
           renderItem={renderChosenChecklist}
-          initialNumToRender={40}
           renderSectionHeader={renderSectionHeader}
-          SectionSeparatorComponent={() => <Divider />}
+          getItemLayout={getItemLayout}
         />
         <View style={styles.bottomContainer}>
           <Chip

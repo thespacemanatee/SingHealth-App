@@ -14,6 +14,7 @@ import {
 } from "@ui-kitten/components";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
+import sectionListGetItemLayout from "react-native-section-list-get-item-layout";
 
 import QuestionCard from "../../components/QuestionCard";
 import alert from "../../components/CustomAlert";
@@ -159,6 +160,11 @@ const ChecklistScreen = ({ route, navigation }) => {
     [navigation]
   );
 
+  const getItemLayout = sectionListGetItemLayout({
+    getItemHeight: () => 120,
+    getSectionHeaderHeight: () => 50,
+  });
+
   const renderChosenChecklist = useCallback(
     (itemData) => {
       const checklistType = covid19Keys.includes(itemData.section.title)
@@ -187,16 +193,6 @@ const ChecklistScreen = ({ route, navigation }) => {
   );
 
   const createNewSections = useCallback(() => {
-    // const checklist = [
-    //   {
-    //     title:
-    //       checklistStore.chosen_checklist_type === "fnb"
-    //         ? FNB_SECTION
-    //         : NON_FNB_SECTION,
-    //     data: [],
-    //   },
-    // ];
-
     const checklist = [];
 
     let temp;
@@ -208,7 +204,6 @@ const ChecklistScreen = ({ route, navigation }) => {
       });
     });
 
-    // checklist.push({ title: COVID_SECTION, data: [] });
     temp = Object.keys(checklistStore.covid19.questions);
     temp.forEach((title) => {
       checklist.push({
@@ -262,10 +257,12 @@ const ChecklistScreen = ({ route, navigation }) => {
           stickySectionHeadersEnabled
           keyExtractor={(item, index) => String(index)}
           renderItem={renderChosenChecklist}
-          initialNumToRender={40}
           renderSectionHeader={renderSectionHeader}
           SectionSeparatorComponent={() => <Divider />}
           extraData={allChecked}
+          getItemLayout={getItemLayout}
+          initialNumToRender={40}
+          // maxToRenderPerBatch={40}
         />
         <View style={styles.bottomContainer}>
           <CheckBox

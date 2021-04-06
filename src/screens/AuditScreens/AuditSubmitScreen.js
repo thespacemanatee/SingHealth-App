@@ -13,12 +13,12 @@ import {
 import _ from "lodash";
 import moment from "moment";
 import { StackActions } from "@react-navigation/routers";
+import Toast from "react-native-toast-message";
 
 import SuccessAnimation from "../../components/ui/SuccessAnimation";
 import CrossAnimation from "../../components/ui/CrossAnimation";
 import * as databaseActions from "../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../helpers/utils";
-import CustomText from "../../components/ui/CustomText";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -144,6 +144,14 @@ const AuditSubmitScreen = ({ navigation }) => {
         );
 
         console.log(formRes);
+        Toast.show({
+          text1: "Success",
+          text2: `Audit submitted on: ${moment(new Date())
+            .toLocaleString()
+            .split(" ")
+            .slice(0, 5)
+            .join(" ")}`,
+        });
       } catch (err) {
         setError(true);
         handleErrorResponse(err, handleGoBack);
@@ -193,25 +201,14 @@ const AuditSubmitScreen = ({ navigation }) => {
         <View style={styles.layoutContent} />
         {!submitting && (
           <View style={styles.bottomContainer}>
-            {error ? (
+            {error && (
               <Button style={styles.button} onPress={handleRetry}>
                 RETRY
               </Button>
-            ) : null}
+            )}
             <Button style={styles.button} onPress={handleGoHome}>
               GO HOME
             </Button>
-
-            {!error ? (
-              <CustomText style={styles.text}>
-                Audit submitted on:{" "}
-                {moment(new Date())
-                  .toLocaleString()
-                  .split(" ")
-                  .slice(0, 5)
-                  .join(" ")}
-              </CustomText>
-            ) : null}
           </View>
         )}
       </Layout>
@@ -242,7 +239,9 @@ const styles = StyleService.create({
     fontWeight: "bold",
   },
   bottomContainer: {
+    width: "100%",
     marginVertical: 10,
+    paddingHorizontal: 20,
   },
   button: {
     marginBottom: 10,

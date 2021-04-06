@@ -14,6 +14,7 @@ import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import * as Notifications from "expo-notifications";
 import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
+import Toast, { BaseToast } from "react-native-toast-message";
 
 import store from "./src/store/store";
 import AppNavigator from "./src/navigation/AppNavigator";
@@ -116,6 +117,10 @@ const App = () => {
             <SafeAreaProvider style={styles.screen}>
               {Platform.OS === "ios" && <StatusBar barStyle="dark-content" />}
               <AppNavigator expoToken={expoToken} />
+              <Toast
+                topOffset={StatusBar.currentHeight}
+                ref={(ref) => Toast.setRef(ref)}
+              />
             </SafeAreaProvider>
           </ApplicationProvider>
         </PaperProvider>
@@ -129,6 +134,6 @@ export default App;
 const styles = StyleService.create({
   screen: {
     flex: 1,
-    marginTop: Platform.OS === "web" ? 0 : StatusBar.currentHeight,
+    // marginTop: Platform.OS === "web" ? 0 : StatusBar.currentHeight,
   },
 });

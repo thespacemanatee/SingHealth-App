@@ -1,16 +1,22 @@
 import React from "react";
 import { View } from "react-native";
-import { StyleService, Divider, useTheme } from "@ui-kitten/components";
+import { StyleService, useTheme } from "@ui-kitten/components";
 import CustomText from "./CustomText";
 
 const SectionHeader = ({ title }) => {
   const theme = useTheme();
   return (
-    <View style={{ backgroundColor: theme["color-primary-300"] }}>
+    <View
+      style={[
+        styles.headerContainer,
+        {
+          backgroundColor: theme["color-primary-300"],
+        },
+      ]}
+    >
       <CustomText bold style={styles.header}>
         {title}
       </CustomText>
-      <Divider />
     </View>
   );
 };
@@ -18,8 +24,12 @@ const SectionHeader = ({ title }) => {
 export default SectionHeader;
 
 const styles = StyleService.create({
+  headerContainer: {
+    height: 50,
+    justifyContent: "center",
+  },
   header: {
-    fontSize: 20,
+    fontSize: 16,
     padding: 10,
   },
 });
