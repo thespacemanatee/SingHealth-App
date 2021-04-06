@@ -13,16 +13,17 @@ import {
   Toggle,
 } from "@ui-kitten/components";
 import { StackActions } from "@react-navigation/routers";
+import Toast from "react-native-toast-message";
 import moment from "moment";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import CustomTextInput from "../../../components/CustomTextInput";
+
 import Logo from "../../../components/ui/Logo";
 import CustomDatepicker from "../../../components/CustomDatePicker";
 import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
-import alert from "../../../components/CustomAlert";
 import CenteredLoading from "../../../components/ui/CenteredLoading";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
@@ -51,17 +52,17 @@ const AddAccountDetails = ({ route, navigation }) => {
 
       console.log(res);
 
-      alert(
-        "Success",
-        `You have successfully added ${values.stallName} to the database!`
-      );
+      Toast.show({
+        text1: "Success",
+        text2: `You have successfully added ${values.stallName} to the database!`,
+      });
+
       navigation.dispatch(StackActions.popToTop());
     } catch (err) {
       handleErrorResponse(err);
     } finally {
       setLoading(false);
     }
-    // navigation.navigate("AddAccountDetails", { values });
   };
 
   const BackAction = () => (
