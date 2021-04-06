@@ -31,6 +31,7 @@
 - [x] [`PATCH /audits/<auditID>/tenant`](#`PATCH-/audits/auditID/tenant`)
 - [x] [`PATCH /audits/<auditID>/staff`](#`PATCH-/audits/auditID/staff`)
 - [x] [`GET /audits`](#`GET-/audits`)
+- [x] [`GET /auditTimeframe`](#`GET-/auditTimeframe`)
 
 ### Audit Email
 - [x] [`POST /email/<auditID>`](#`POST-/email/<auditID>`)
@@ -1257,7 +1258,7 @@ localhost:5000/institutions
 
 ### Sample responses
 #### Success
-```
+```js
 "status": 200,
 "data": {
     "description": "Success",
@@ -1280,7 +1281,7 @@ Attribute | Description
 
 #### Failures
 ##### No institution found
-```
+```js
 "status": 404,
 "data": {
     "description": "No institution found"
@@ -1288,7 +1289,76 @@ Attribute | Description
 ```
 
 ##### Server Connection Error
+```js
+"status": 404,
+"data": {
+    "description": "Error in connection"
+}
 ```
+
+## `GET /auditTimeframe`
+### Description of use case
+The staff to get all audit data within a timeframe.
+
+### Compulsory JSON Query string parameters
+JSON param | Description
+-|-
+`fromDate` | DateTime object with the start date of audit data to extract
+`toDate` | DateTime object with the end date of audit data to extract
+
+
+### Sample request
+```js
+{
+    "fromDate": datetime.datetime(2021, 4, 1, 0, 0, 0, 0) ,
+    "toDate": datetime.datetime(2021, 4, 6, 23, 59, 59, 999999) 
+}
+```
+
+### Sample responses
+#### Success
+```js
+"status": 200,
+"data": {
+    "description": "Success",
+    "data": [
+        {"date": datetime.datetime(2021, 4, 1, 0, 0, 0, 0), "avg_score" : 0.032},  {"date": datetime.datetime(2021, 4, 2, 0, 0, 0, 0), "avgScore" : 0.932}, 
+        {...}
+        ...
+    ]
+}
+```
+
+### Response definitions
+Attribute | Description
+-|-
+`date` | DateTime object of the audit data
+`avgScore` | Average score of all audit perform on this date, rounded in 3dp
+
+#### Partial Failures
+##### Missing or empty input JSON
+```js
+"status": 404,
+"data": {
+    "description": "No audit data found within the timeframe",
+    "data": {
+        "missing_keys":[field1, ...]
+        "key_value_error": [field2, ...]
+    }
+}
+```
+
+#### Failures
+##### No audit data found
+```js
+"status": 404,
+"data": {
+    "description": "No audit data found within the timeframe"
+}
+```
+
+##### Server Connection Error
+```js
 "status": 404,
 "data": {
     "description": "Error in connection"
