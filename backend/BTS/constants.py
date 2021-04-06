@@ -11,3 +11,5 @@ BTS_APP_CONFIG_EMAIL = dict(
         MAIL_USERNAME=BTS_EMAIL,
         MAIL_PASSWORD='BTS_admin_1',
         )
+
+SGT_TIMEZONE = "Asia/Singapore"
