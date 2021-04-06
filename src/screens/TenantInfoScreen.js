@@ -41,7 +41,7 @@ const TenantInfoScreen = ({ route, navigation }) => {
   );
 
   const handleOpenAudit = useCallback(
-    async (auditID, stallName) => {
+    async (auditID, name) => {
       try {
         setLoading(true);
 
@@ -50,7 +50,7 @@ const TenantInfoScreen = ({ route, navigation }) => {
         await dispatch(checklistActions.getAuditData(auditID));
 
         setLoading(false);
-        navigation.navigate("Rectification", { stallName });
+        navigation.navigate("Rectification", { stallName: name });
       } catch (err) {
         handleErrorResponse(err);
         setError(err.message);

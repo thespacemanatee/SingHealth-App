@@ -885,9 +885,9 @@ localhost:5000/audits/unrectified/recent/staff/grwrbgbgbewvw/0
 
 #### Failure
 ```js
-"status": 404,
+"status": 200,
 "data": {
-    "description": "No matching Forms",
+    "description": "No forms found",
     "data": []
 }
 ```
@@ -931,9 +931,9 @@ localhost:5000/audits/unrectified/recent/tenant/grwrbgbgbewvw/0
 
 #### Failure
 ```js
-"status": 404,
+"status": 200,
 "data": {
-    "description": "No matching Forms",
+    "description": "No forms found",
     "data": []
 }
 ```

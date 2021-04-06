@@ -98,7 +98,6 @@ const TenantModalStackNavigator = () => {
 };
 
 const TenantTabNavigator = () => {
-  const authStore = useSelector((state) => state.auth);
   const { Navigator, Screen } = createBottomTabNavigator();
   return (
     <SafeAreaView style={styles.screen}>
@@ -110,12 +109,8 @@ const TenantTabNavigator = () => {
           component={TenantDashboardStackNavigator}
         />
         <Screen
-          name="TenantRecords"
-          component={TenantInfoScreen}
-          initialParams={{
-            tenantID: authStore._id,
-            stallName: authStore.stall.name,
-          }}
+          name="TenantRecordsStack"
+          component={TenantRecordsStackNavigator}
         />
       </Navigator>
     </SafeAreaView>
@@ -127,6 +122,32 @@ const TenantDashboardStackNavigator = () => {
   return (
     <Navigator headerMode="none">
       <Screen name="TenantDashboard" component={TenantDashboardScreen} />
+      <Screen name="Rectification" component={RectificationScreen} />
+      <Screen
+        name="RectificationDetails"
+        component={RectificationDetailsScreen}
+      />
+      <Screen
+        name="TenantRectification"
+        component={TenantRectificationScreen}
+      />
+    </Navigator>
+  );
+};
+
+const TenantRecordsStackNavigator = () => {
+  const authStore = useSelector((state) => state.auth);
+  const { Navigator, Screen } = createStackNavigator();
+  return (
+    <Navigator headerMode="none">
+      <Screen
+        name="TenantRecords"
+        component={TenantInfoScreen}
+        initialParams={{
+          tenantID: authStore._id,
+          stallName: authStore.stall.name,
+        }}
+      />
       <Screen name="Rectification" component={RectificationScreen} />
       <Screen
         name="RectificationDetails"
