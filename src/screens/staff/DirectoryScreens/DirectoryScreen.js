@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
-import { View } from "react-native";
+import { FlatList, View } from "react-native";
 import {
   Divider,
   Icon,
@@ -92,8 +92,10 @@ const DirectoryScreen = ({ navigation }) => {
       />
       <Divider />
       <Layout style={styles.layout}>
-        <List
+        <FlatList
           data={institutions}
+          contentContainerStyle={styles.contentContainer}
+          keyExtractor={(item, index) => String(index)}
           renderItem={renderInstitutions}
           onRefresh={getInstitutions}
           refreshing={listLoading}
@@ -109,6 +111,11 @@ const styles = StyleService.create({
   },
   layout: {
     flex: 1,
+  },
+  contentContainer: {
+    // flexGrow: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
 });
 

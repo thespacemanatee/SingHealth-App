@@ -1,10 +1,12 @@
 import React from "react";
+import { View } from "react-native";
 import { useDispatch } from "react-redux";
-import { Card, StyleService } from "@ui-kitten/components";
+import { StyleService } from "@ui-kitten/components";
 import moment from "moment";
 
 import * as checklistActions from "../store/actions/checklistActions";
 import CustomText from "./ui/CustomText";
+import ShadowCard from "./ui/ShadowCard";
 
 const NewChecklistCard = ({
   item,
@@ -47,15 +49,27 @@ const NewChecklistCard = ({
   };
 
   return (
-    <Card style={styles.item} status="basic" onPress={handleCreateNewChecklist}>
-      <CustomText style={styles.stallNameText}>{item.stallName}</CustomText>
-    </Card>
+    <ShadowCard
+      style={styles.cardContainer}
+      status="info"
+      activeOpacity={0.5}
+      onPress={handleCreateNewChecklist}
+    >
+      <View>
+        <CustomText style={styles.stallNameText}>{item.stallName}</CustomText>
+      </View>
+    </ShadowCard>
   );
 };
 
 export default NewChecklistCard;
 
 const styles = StyleService.create({
+  cardContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 20,
+  },
   item: {
     // marginVertical: 4,
   },
