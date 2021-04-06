@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { SectionList, View } from "react-native";
+import { FlatList, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -11,6 +11,7 @@ import {
   useTheme,
 } from "@ui-kitten/components";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 import * as checklistActions from "../../store/actions/checklistActions";
 import * as databaseActions from "../../store/actions/databaseActions";
@@ -25,8 +26,10 @@ const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const ChooseTenantScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
-  const [sectionData, setSectionData] = useState([]);
+  const [tenants, setTenants] = useState([]);
+  const [saved, setSaved] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { Navigator, Screen } = createMaterialTopTabNavigator();
 
   const theme = useTheme();
 
@@ -42,35 +45,11 @@ const ChooseTenantScreen = ({ navigation }) => {
   );
 
   const handleDeleteSavedChecklist = useCallback(() => {
-    getSectionData();
-  }, [getSectionData]);
+    getListData();
+  }, [getListData]);
 
-  const renderSectionHeader = useCallback(
-    ({ section: { title } }) => {
-      return (
-        <View style={{ backgroundColor: theme["color-primary-300"] }}>
-          <CustomText style={styles.header}>{title}</CustomText>
-          <Divider />
-        </View>
-      );
-    },
-    [theme]
-  );
-
-  const renderSectionList = useCallback(
+  const renderTenants = useCallback(
     (itemData) => {
-      if (itemData.item.data) {
-        return (
-          <SavedChecklistCard
-            item={itemData.item}
-            navigation={navigation}
-            deleteSave={handleDeleteSavedChecklist}
-            onError={handleErrorResponse}
-            onLoading={setLoading}
-          />
-        );
-      }
-
       return (
         <NewChecklistCard
           item={itemData.item}
@@ -82,27 +61,36 @@ const ChooseTenantScreen = ({ navigation }) => {
         />
       );
     },
-    [
-      authStore._id,
-      authStore.institutionID,
-      handleDeleteSavedChecklist,
-      navigation,
-    ]
+    [authStore._id, authStore.institutionID, navigation]
   );
 
-  const getSectionData = useCallback(async () => {
+  const renderSaved = useCallback(
+    (itemData) => {
+      return (
+        <SavedChecklistCard
+          item={itemData.item}
+          navigation={navigation}
+          deleteSave={handleDeleteSavedChecklist}
+          onError={handleErrorResponse}
+          onLoading={setLoading}
+        />
+      );
+    },
+    [handleDeleteSavedChecklist, navigation]
+  );
+
+  const getListData = useCallback(async () => {
     try {
       const res = await dispatch(
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
 
       // console.log(res.data.data);
-      const tempChecklists = [
-        {
-          title: "Available Tenants",
-          data: res.data.data,
-        },
-      ];
+      const tempTenants = res.data.data;
+
+      setTenants(tempTenants);
+
+      let tempSaved = [];
 
       let data = await AsyncStorage.getItem("savedChecklists");
 
@@ -116,27 +104,24 @@ const ChooseTenantScreen = ({ navigation }) => {
               e.data.auditMetadata.institutionID === authStore.institutionID
           );
           if (final.length > 0) {
-            tempChecklists.push({
-              title: "Saved Checklists",
-              data: final,
-            });
+            tempSaved = final;
           }
         }
       }
-      setSectionData(tempChecklists);
-      setLoading(false);
+      setSaved(tempSaved);
     } catch (err) {
       handleErrorResponse(err);
+    } finally {
       setLoading(false);
     }
   }, [authStore.institutionID, dispatch]);
 
   useEffect(() => {
     // Subscribe for the focus Listener
-    getSectionData();
+    getListData();
     const unsubscribe = navigation.addListener("focus", () => {
       // setLoading(true);
-      getSectionData();
+      getListData();
       setTimeout(() => {
         dispatch(checklistActions.resetChecklistStore());
       }, 500);
@@ -147,7 +132,41 @@ const ChooseTenantScreen = ({ navigation }) => {
       // eslint-disable-next-line no-unused-expressions
       unsubscribe;
     };
-  }, [dispatch, getSectionData, navigation]);
+  }, [dispatch, getListData, navigation]);
+
+  const Tenants = () => {
+    return (
+      <Layout style={styles.screen}>
+        <View style={styles.titleContainer}>
+          <CustomText bold style={styles.title}>
+            Choose a Tenant to Audit
+          </CustomText>
+        </View>
+        <FlatList
+          data={tenants}
+          keyExtractor={(item, index) => String(index)}
+          renderItem={renderTenants}
+        />
+      </Layout>
+    );
+  };
+
+  const Saved = () => {
+    return (
+      <Layout style={styles.screen}>
+        <View style={styles.titleContainer}>
+          <CustomText bold style={styles.title}>
+            Saved Checklists
+          </CustomText>
+        </View>
+        <FlatList
+          data={saved}
+          keyExtractor={(item, index) => String(index)}
+          renderItem={renderSaved}
+        />
+      </Layout>
+    );
+  };
 
   return (
     <View style={styles.screen}>
@@ -157,21 +176,25 @@ const ChooseTenantScreen = ({ navigation }) => {
         accessoryLeft={BackAction}
       />
       <Divider />
-      <Layout style={styles.screen}>
-        <View style={styles.titleContainer}>
-          <CustomText style={styles.title}>Choose a Tenant to Audit</CustomText>
-        </View>
-        <CenteredLoading loading={loading} />
-        <SectionList
-          sections={sectionData}
-          stickySectionHeadersEnabled
-          keyExtractor={(item, index) => String(index)}
-          renderItem={renderSectionList}
-          // contentContainerStyle={styles.contentContainer}
-          renderSectionHeader={renderSectionHeader}
-          SectionSeparatorComponent={() => <Divider />}
+      <CenteredLoading loading={loading} />
+      <Navigator
+        initialRouteName="Tenants"
+        tabBarOptions={{
+          labelStyle: { fontSize: 12, fontFamily: "SFProDisplay-Regular" },
+          indicatorStyle: { backgroundColor: theme["color-primary-500"] },
+        }}
+      >
+        <Screen
+          name="Tenants"
+          component={Tenants}
+          options={{ tabBarLabel: "Available" }}
         />
-      </Layout>
+        <Screen
+          name="Saved"
+          component={Saved}
+          options={{ tabBarLabel: "Saved" }}
+        />
+      </Navigator>
     </View>
   );
 };

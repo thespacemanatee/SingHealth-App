@@ -41,8 +41,6 @@ const ChecklistScreen = ({ route, navigation }) => {
 
   const theme = useTheme();
 
-  console.log(checklistStore);
-
   const onGroupCheckedChange = (checked) => {
     // console.log(completeChecklist);
     completeChecklist.map((e) => {

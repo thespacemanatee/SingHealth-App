@@ -46,12 +46,12 @@ const SavedChecklistCard = ({
         data = JSON.parse(data);
       }
       delete data[item.time];
-      console.log(data);
       AsyncStorage.setItem("savedChecklists", JSON.stringify(data));
 
       await deleteSave();
     } catch (err) {
       onError(err);
+    } finally {
       onLoading(false);
     }
   }, [deleteSave, item.time, onError, onLoading]);
