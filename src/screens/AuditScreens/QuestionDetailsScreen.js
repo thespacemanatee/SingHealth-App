@@ -54,7 +54,10 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   const changeTextHandler = (val) => {
     setValue(val);
     console.log(val);
-    dispatch(checklistActions.addRemarks(checklistType, section, index, val));
+  };
+
+  const onBlurHandler = () => {
+    dispatch(checklistActions.addRemarks(checklistType, section, index, value));
   };
 
   useEffect(() => {
@@ -282,6 +285,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
               placeholder="Enter your remarks here"
               value={value}
               onChangeText={changeTextHandler}
+              onBlur={onBlurHandler}
             />
           </View>
         </KeyboardAwareScrollView>
