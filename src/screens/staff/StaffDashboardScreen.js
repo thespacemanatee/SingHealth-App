@@ -10,6 +10,7 @@ import {
   TopNavigationAction,
 } from "@ui-kitten/components";
 import { FAB } from "react-native-paper";
+import moment from "moment";
 
 import Graph from "../../components/ui/graph/Graph.tsx";
 import * as databaseActions from "../../store/actions/databaseActions";
@@ -31,6 +32,7 @@ const StaffDashboardScreen = ({ navigation }) => {
   const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
+  const [graphData, setGraphData] = useState();
 
   const dispatch = useDispatch();
 
@@ -105,7 +107,6 @@ const StaffDashboardScreen = ({ navigation }) => {
       await dispatch(
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
-      console.log(res.data.data);
       setListData(res.data.data);
     } catch (err) {
       handleErrorResponse(err);
@@ -115,14 +116,24 @@ const StaffDashboardScreen = ({ navigation }) => {
     }
   }, [authStore.institutionID, dispatch]);
 
-  const getGraphData = async () => {
+  const getGraphData = useCallback(async () => {
     try {
-      const res = await dispatch(databaseActions.getGraphData());
-      console.log(res);
+      const fromDate = new Date(2021, 3).getTime();
+      const toDate = new Date(2021, 4).getTime();
+      const res = await dispatch(
+        databaseActions.getGraphData(fromDate, toDate)
+      );
+      console.log(res.data.data);
+      const temp = res.data.data.map((e) => ({
+        x: moment(e.date).toDate(),
+        y: Number.parseFloat(e.avgScore) * 100,
+      }));
+      console.log(temp.map((p) => [p.x.getTime(), p.y]));
+      setGraphData(temp.map((p) => [p.x.getTime(), p.y]));
     } catch (err) {
       handleErrorResponse(err);
     }
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     // Subscribe for the focus Listener
@@ -138,7 +149,7 @@ const StaffDashboardScreen = ({ navigation }) => {
       // eslint-disable-next-line no-unused-expressions
       unsubscribe;
     };
-  }, [getListData, navigation]);
+  }, [getGraphData, getListData, navigation]);
 
   return (
     <View style={styles.screen}>
@@ -150,8 +161,8 @@ const StaffDashboardScreen = ({ navigation }) => {
       />
       <Divider />
       <Layout style={styles.layout}>
-        <Graph label="Average Scores (All Institutions)" />
-        <Divider />
+        <Graph label="Average Scores (All Institutions)" data={graphData} />
+        {/* <Divider /> */}
         <CenteredLoading loading={loading} />
         <FlatList
           contentContainerStyle={styles.contentContainer}
