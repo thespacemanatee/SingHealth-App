@@ -31,7 +31,7 @@
 - [x] [`PATCH /audits/<auditID>/tenant`](#`PATCH-/audits/auditID/tenant`)
 - [x] [`PATCH /audits/<auditID>/staff`](#`PATCH-/audits/auditID/staff`)
 - [x] [`GET /audits`](#`GET-/audits`)
-- [x] [`GET /auditTimeframe`](#`GET-/auditTimeframe`)
+- [x] [`GET /auditTimeframe/fromDate=<fromDate>&toDate=<toDate>`](#`GET-/auditTimeframe/fromDate=<fromDate>&toDate=<toDate>`)
 
 ### Audit Email
 - [x] [`POST /email/<auditID>`](#`POST-/email/<auditID>`)
@@ -1296,23 +1296,20 @@ Attribute | Description
 }
 ```
 
-## `GET /auditTimeframe`
+## `GET /auditTimeframe/fromDate=<fromDate>&toDate=<toDate>`
 ### Description of use case
 The staff to get all audit data within a timeframe.
 
 ### Compulsory JSON Query string parameters
 JSON param | Description
 -|-
-`fromDate` | DateTime object with the start date of audit data to extract
-`toDate` | DateTime object with the end date of audit data to extract
+`fromDate` | DateTime string in YYYY:MM:DD format with the start date of audit data to extract
+`toDate` | DateTime string in YYYY:MM:DD format with the end date of audit data to extract
 
 
 ### Sample request
 ```js
-{
-    "fromDate": datetime.datetime(2021, 4, 1, 0, 0, 0, 0) ,
-    "toDate": datetime.datetime(2021, 4, 6, 23, 59, 59, 999999) 
-}
+127.0.0.1:5000/auditTimeframe?fromDate=1610096007965&toDate=1617796007965
 ```
 
 ### Sample responses
@@ -1321,18 +1318,26 @@ JSON param | Description
 "status": 200,
 "data": {
     "description": "Success",
-    "data": [
-        {"date": datetime.datetime(2021, 4, 1, 0, 0, 0, 0), "avg_score" : 0.032},  {"date": datetime.datetime(2021, 4, 2, 0, 0, 0, 0), "avgScore" : 0.932}, 
-        {...}
-        ...
-    ]
+    "data": [{
+        "avgScore": 0.9,
+        "date": "2021-04-04T00:00:00"
+        }, {
+        "avgScore": 0.994,
+        "date": "2021-04-05T00:00:00"
+        }, {
+        "avgScore": 0.994,
+        "date": "2021-04-06T00:00:00"
+        }, {
+        "avgScore": 0.983,
+        "date": "2021-04-07T00:00:00"
+        }]
 }
 ```
 
 ### Response definitions
 Attribute | Description
 -|-
-`date` | DateTime object of the audit data
+`date` | DateTime is iso format of the audit data
 `avgScore` | Average score of all audit perform on this date, rounded in 3dp
 
 #### Partial Failures

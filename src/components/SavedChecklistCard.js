@@ -1,13 +1,7 @@
 import React, { useCallback, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { View } from "react-native";
-import {
-  Card,
-  StyleService,
-  Button,
-  useTheme,
-  Icon,
-} from "@ui-kitten/components";
+import { StyleService, Button, useTheme, Icon } from "@ui-kitten/components";
 import moment from "moment";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import AsyncStorage from "@react-native-async-storage/async-storage";

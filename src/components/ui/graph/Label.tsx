@@ -55,7 +55,7 @@ const Label = ({ point }: LabelProps) => {
   });
   const points = useDerivedValue(() => {
     const p = point.value.data.y;
-    return `${round(p, 0)}`;
+    return `${round(p, 1)}`;
   });
   return (
     <Card>
