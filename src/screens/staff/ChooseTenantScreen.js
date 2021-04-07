@@ -17,10 +17,11 @@ import * as checklistActions from "../../store/actions/checklistActions";
 import * as databaseActions from "../../store/actions/databaseActions";
 import SavedChecklistCard from "../../components/SavedChecklistCard";
 import NewChecklistCard from "../../components/NewChecklistCard";
-// import SkeletonLoading from "../../../components/ui/SkeletonLoading";
+
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
+import EntityLoading from "../../components/ui/loading/EntityLoading";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -28,7 +29,8 @@ const ChooseTenantScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
   const [tenants, setTenants] = useState([]);
   const [saved, setSaved] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [listLoading, setListLoading] = useState(true);
   const { Navigator, Screen } = createMaterialTopTabNavigator();
 
   const theme = useTheme();
@@ -134,6 +136,15 @@ const ChooseTenantScreen = ({ navigation }) => {
     };
   }, [dispatch, getListData, navigation]);
 
+  const renderEmptyComponent = () =>
+    listLoading ? (
+      <EntityLoading />
+    ) : (
+      <View style={styles.emptyComponent}>
+        <CustomText bold>NO OUTSTANDING AUDITS</CustomText>
+      </View>
+    );
+
   const Tenants = () => {
     return (
       <Layout style={styles.screen}>
@@ -147,6 +158,8 @@ const ChooseTenantScreen = ({ navigation }) => {
           contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
           renderItem={renderTenants}
+          refreshing={listLoading}
+          ListEmptyComponent={renderEmptyComponent}
         />
       </Layout>
     );
@@ -165,6 +178,8 @@ const ChooseTenantScreen = ({ navigation }) => {
           contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
           renderItem={renderSaved}
+          refreshing={listLoading}
+          ListEmptyComponent={renderEmptyComponent}
         />
       </Layout>
     );

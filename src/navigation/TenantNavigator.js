@@ -22,8 +22,10 @@ import TenantRectificationScreen from "../screens/AuditScreens/TenantRectificati
 import CameraScreen from "../screens/CameraScreen";
 import ExpandImagesScreen from "../screens/ExpandImagesScreen";
 import * as authActions from "../store/actions/authActions";
+import TenantInfoScreen from "../screens/TenantInfoScreen";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
+const ArchiveIcon = (props) => <Icon {...props} name="archive-outline" />;
 
 const useBottomNavigationState = (initialState = 0) => {
   const [selectedIndex, setSelectedIndex] = useState(initialState);
@@ -41,7 +43,7 @@ export const BottomNavigationAccessoriesShowcase = ({ navigation, state }) => {
       onSelect={(index) => navigation.navigate(state.routeNames[index])}
     >
       <BottomNavigationTab title="DASHBOARD" icon={DashboardIcon} />
-      {/* <BottomNavigationTab title="DIRECTORY" icon={DirectoryIcon} /> */}
+      <BottomNavigationTab title="RECORDS" icon={ArchiveIcon} />
     </BottomNavigation>
   );
 };
@@ -106,6 +108,10 @@ const TenantTabNavigator = () => {
           name="TenantDashboardStack"
           component={TenantDashboardStackNavigator}
         />
+        <Screen
+          name="TenantRecordsStack"
+          component={TenantRecordsStackNavigator}
+        />
       </Navigator>
     </SafeAreaView>
   );
@@ -116,6 +122,32 @@ const TenantDashboardStackNavigator = () => {
   return (
     <Navigator headerMode="none">
       <Screen name="TenantDashboard" component={TenantDashboardScreen} />
+      <Screen name="Rectification" component={RectificationScreen} />
+      <Screen
+        name="RectificationDetails"
+        component={RectificationDetailsScreen}
+      />
+      <Screen
+        name="TenantRectification"
+        component={TenantRectificationScreen}
+      />
+    </Navigator>
+  );
+};
+
+const TenantRecordsStackNavigator = () => {
+  const authStore = useSelector((state) => state.auth);
+  const { Navigator, Screen } = createStackNavigator();
+  return (
+    <Navigator headerMode="none">
+      <Screen
+        name="TenantRecords"
+        component={TenantInfoScreen}
+        initialParams={{
+          tenantID: authStore._id,
+          stallName: authStore.stall.name,
+        }}
+      />
       <Screen name="Rectification" component={RectificationScreen} />
       <Screen
         name="RectificationDetails"

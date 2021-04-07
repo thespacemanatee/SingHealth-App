@@ -7,18 +7,20 @@ import {
   Layout,
   TopNavigation,
   TopNavigationAction,
-  List,
   StyleService,
 } from "@ui-kitten/components";
 
 import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
 import EntityCard from "../../../components/EntityCard";
+import EntityLoading from "../../../components/ui/loading/EntityLoading";
+import CustomText from "../../../components/ui/CustomText";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const TenantsDirectoryScreen = ({ route, navigation }) => {
   const [tenants, setTenants] = useState([]);
+  const [listLoading, setListLoading] = useState(true);
   const { institutionID } = route.params;
 
   const dispatch = useDispatch();
@@ -32,15 +34,25 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
     />
   );
 
-  const renderTenants = useCallback((itemData) => {
-    return (
-      <EntityCard
-        onPress={{}}
-        displayName={itemData.item.stallName}
-        _id={itemData.item.tenantID}
-      />
-    );
-  }, []);
+  const handleOpenTenant = useCallback(
+    (tenantID, stallName) => {
+      navigation.navigate("TenantInfo", { tenantID, stallName });
+    },
+    [navigation]
+  );
+
+  const renderTenants = useCallback(
+    (itemData) => {
+      return (
+        <EntityCard
+          onPress={handleOpenTenant}
+          displayName={itemData.item.stallName}
+          _id={itemData.item.tenantID}
+        />
+      );
+    },
+    [handleOpenTenant]
+  );
 
   const getTenants = useCallback(async () => {
     try {
@@ -57,6 +69,15 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
     getTenants();
   }, [getTenants]);
 
+  const renderEmptyComponent = () =>
+    listLoading ? (
+      <EntityLoading />
+    ) : (
+      <View style={styles.emptyComponent}>
+        <CustomText bold>NO OUTSTANDING AUDITS</CustomText>
+      </View>
+    );
+
   return (
     <View style={styles.screen}>
       <TopNavigation
@@ -71,6 +92,8 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
           renderItem={renderTenants}
           contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
+          refreshing={listLoading}
+          ListEmptyComponent={renderEmptyComponent}
         />
       </Layout>
     </View>

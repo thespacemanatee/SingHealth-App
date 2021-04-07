@@ -10,45 +10,38 @@ import {
   TopNavigationAction,
 } from "@ui-kitten/components";
 
-import * as databaseActions from "../../store/actions/databaseActions";
-import * as checklistActions from "../../store/actions/checklistActions";
-import ActiveAuditCard from "../../components/ActiveAuditCard";
-import { handleErrorResponse } from "../../helpers/utils";
-import CustomText from "../../components/ui/CustomText";
-import SkeletonLoading from "../../components/ui/loading/SkeletonLoading";
-import CenteredLoading from "../../components/ui/CenteredLoading";
+import Graph from "../components/ui/graph/Graph.tsx";
+import * as databaseActions from "../store/actions/databaseActions";
+import * as checklistActions from "../store/actions/checklistActions";
+import ActiveAuditCard from "../components/ActiveAuditCard";
+import CenteredLoading from "../components/ui/CenteredLoading";
+import { handleErrorResponse } from "../helpers/utils";
+import CustomText from "../components/ui/CustomText";
+import SkeletonLoading from "../components/ui/loading/SkeletonLoading";
 
-const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
-const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
+const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
-const TenantDashboardScreen = ({ navigation }) => {
+const TenantInfoScreen = ({ route, navigation }) => {
   const authStore = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
+  const { tenantID, stallName } = route.params;
 
   const dispatch = useDispatch();
 
-  const DrawerAction = () => (
+  const BackAction = () => (
     <TopNavigationAction
-      icon={DrawerIcon}
+      icon={BackIcon}
       onPress={() => {
-        navigation.openDrawer();
+        navigation.goBack();
       }}
     />
   );
 
-  const NotificationAction = () => (
-    <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
-  );
-
-  const handleRefreshList = () => {
-    getListData();
-  };
-
   const handleOpenAudit = useCallback(
-    async (auditID, stallName) => {
+    async (auditID, name) => {
       try {
         setLoading(true);
 
@@ -56,7 +49,8 @@ const TenantDashboardScreen = ({ navigation }) => {
 
         await dispatch(checklistActions.getAuditData(auditID));
 
-        navigation.navigate("Rectification", { stallName });
+        setLoading(false);
+        navigation.navigate("Rectification", { stallName: name });
       } catch (err) {
         handleErrorResponse(err);
         setError(err.message);
@@ -67,7 +61,7 @@ const TenantDashboardScreen = ({ navigation }) => {
     [dispatch, navigation]
   );
 
-  const renderActiveAudits = useCallback(
+  const renderAudits = useCallback(
     ({ item }) => {
       return (
         <View style={styles.item}>
@@ -94,10 +88,8 @@ const TenantDashboardScreen = ({ navigation }) => {
   const getListData = useCallback(async () => {
     try {
       setListLoading(true);
-      const res = await dispatch(
-        databaseActions.getTenantActiveAudits(authStore._id)
-      );
-      console.log(res.data.data);
+      const res = await dispatch(databaseActions.getTenantAudits(tenantID));
+      console.log(res);
       setListData(res.data.data);
     } catch (err) {
       handleErrorResponse(err);
@@ -105,7 +97,7 @@ const TenantDashboardScreen = ({ navigation }) => {
       setListLoading(false);
       setLoading(false);
     }
-  }, [authStore._id, dispatch]);
+  }, [dispatch, tenantID]);
 
   useEffect(() => {
     // Subscribe for the focus Listener
@@ -125,35 +117,33 @@ const TenantDashboardScreen = ({ navigation }) => {
   return (
     <View style={styles.screen}>
       <TopNavigation
-        title="Dashboard"
+        title={stallName}
         alignment="center"
-        accessoryLeft={DrawerAction}
-        accessoryRight={NotificationAction}
+        accessoryLeft={BackAction}
       />
       <Divider />
-      <CenteredLoading loading={loading} />
       <Layout style={styles.layout}>
+        <Graph label="Average Scores" />
         <Divider />
+        <View style={styles.textContainer}>
+          <CustomText style={styles.text}>All Audits</CustomText>
+        </View>
+        <CenteredLoading loading={loading} />
         <FlatList
           contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
           data={listData}
-          renderItem={renderActiveAudits}
-          onRefresh={handleRefreshList}
+          renderItem={renderAudits}
+          onRefresh={getListData}
           refreshing={listLoading}
           ListEmptyComponent={renderEmptyComponent}
-          ListHeaderComponent={() => (
-            <View style={styles.textContainer}>
-              <CustomText style={styles.text}>Outstanding Audits</CustomText>
-            </View>
-          )}
         />
       </Layout>
     </View>
   );
 };
 
-export default TenantDashboardScreen;
+export default TenantInfoScreen;
 
 const styles = StyleService.create({
   screen: {
@@ -163,16 +153,16 @@ const styles = StyleService.create({
     flex: 1,
   },
   textContainer: {
-    marginVertical: 20,
+    margin: 20,
   },
   text: {
     fontSize: 26,
     fontFamily: "SFProDisplay-Bold",
   },
   contentContainer: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
     flexGrow: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   item: {
     paddingVertical: 4,

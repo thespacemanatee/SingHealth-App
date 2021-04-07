@@ -143,10 +143,8 @@ def generateIDs(auditMetaData, auditForms):
 
 
 def postProcessLineItem(lineItem):
-    # convert all time to datetime objects
-    #             if answer = False, add a rectified = False
-    #             rm qns
-    lineItem.pop("question")
+    if "question" in lineItem.keys():
+        lineItem.pop("question")
 
     if not lineItem["answer"]:
         lineItem["rectified"] = False
@@ -279,7 +277,7 @@ def mongoUpdateGivenFields(mongo, patches, fields, auditChecklists):
 
 
 def addAuditsEndpoint(app, mongo):
-    @app.route("/audits", methods=['POST'])
+    @app.route("/audits", methods=['POST', 'GET'])
     @login_required
     def audits():
         if request.method == 'POST':
@@ -342,17 +340,65 @@ def addAuditsEndpoint(app, mongo):
                         except:
                             continue
                 
+                date = auditMetaData_ID_processed['date']
+                if date.tzinfo is None or date.tzinfo.utcoffset(date) is None:
+                    date = timezone(SGT_TIMEZONE).localize(date)
                 
                 send_email_notif(
                     app,
                     tenant["email"], 
                     "Audit Results", 
                     f"""Dear {tenant["name"]},
-                        Your recent audit results dated {timezone(SGT_TIMEZONE).localize(auditMetaData_ID_processed['date']).strftime('%B %d, %Y')} are ready for reviewing. Please check your app for details.
+                        Your recent audit results dated {date.strftime('%d %B %Y, %I:%M %p')} are ready for reviewing. Please check your app for details.
                         This email is auto generated. No signature is required.
                         You do not have to reply to this email."""
                     )
             return serverResponse(None, 200, "Forms have been submitted successfully!")
+        elif request.method == "GET":
+            daysBefore = int(request.args.get("daysBefore", 0))
+            tenantID = request.args.get("tenantID", None)
+            if tenantID == None:
+                return serverResponse(None, 400, "No tenant ID provided")
+
+            if daysBefore < 0:
+                return serverResponse(None, 400, "Invalid date range provided")
+            elif daysBefore == 0:
+                queryDict = {"tenantID": tenantID}
+            else:
+                queryDict = {
+                        "tenantID": tenantID,
+                        "date": {
+                            "$gt": datetime.utcnow() - datetime.timedelta(days=daysBefore)
+                            }
+                    }
+                
+            audits = mongo.db.audits.find(queryDict)
+            auditsList = []
+            for audit in audits:
+                tenant = mongo.db.tenant.find_one(
+                    {"_id": tenantID }, 
+                    {
+                        "stall": {
+                            "name": 1
+                        }
+                    }
+                )
+                stallName = tenant["stall"]["name"]
+                
+                auditsList.append(
+                    {
+                        "auditMetadata": audit, 
+                        "stallName": stallName
+                    }
+                )
+                
+            if len(auditsList) == 0:
+                msg = "No audits found"
+            else:
+                msg = "Audits retrieved successfully"
+            return serverResponse(auditsList, 200, msg)
+                
+
 
     @app.route("/audits/<auditID>", methods=['GET'])
     @login_required
@@ -443,17 +489,21 @@ def addAuditsEndpoint(app, mongo):
                     except:
                         print("Some error detected")
                         continue
-                    
+            
+            date = selectedAudit['date']
+            if date.tzinfo is None or date.tzinfo.utcoffset(date) is None:
+                date = timezone(SGT_TIMEZONE).localize(date)        
+            
             send_email_notif(
-                    app,
-                    staff["email"], 
-                    "Audit Results", 
-                    f"""Dear {staff['name']},
-                        Your tenant, {tenant['stall']['name']}, has submitted a review for one of his NCs for the audit dated {timezone(SGT_TIMEZONE).localize(selectedAudit['date']).strftime('%d %B %Y, %I:%M %p')}. 
-                        Please check your app for details.
-                        This email is auto generated. No signature is required.
-                        You do not have to reply to this email."""
-                    )
+                app,
+                staff["email"], 
+                "Audit Results", 
+                f"""Dear {staff['name']},
+                    Your tenant, {tenant['stall']['name']}, has submitted a review for one of his NCs for the audit dated {date.strftime('%d %B %Y, %I:%M %p')}. 
+                    Please check your app for details.
+                    This email is auto generated. No signature is required.
+                    You do not have to reply to this email."""
+                )
             return serverResponse(patchResults, 200, "Changes sent to the database.")
 
     @app.route("/audits/<auditID>/staff", methods=['PATCH'])
@@ -529,12 +579,15 @@ def addAuditsEndpoint(app, mongo):
                             print("Some error detected")
                             continue
                 
+                date = selectedAudit['date']
+                if date.tzinfo is None or date.tzinfo.utcoffset(date) is None:
+                    date = timezone(SGT_TIMEZONE).localize(date)  
                 send_email_notif(
                     app,
                     tenant["email"], 
                     "Audit Results", 
                     f"""Dear {tenant['stall']['name']},
-                        {institution} has submitted a review for your rectifications for your audit dated {timezone(SGT_TIMEZONE).localize(selectedAudit['date']).strftime('%d %B %Y, %I:%M %p')}. 
+                        {institution} has submitted a review for your rectifications for your audit dated {date.strftime('%d %B %Y, %I:%M %p')}. 
                         Please check your app for details.
                         This email is auto generated. No signature is required.
                         You do not have to reply to this email."""
@@ -544,3 +597,5 @@ def addAuditsEndpoint(app, mongo):
                 200,
                 "Updates submitted successfully. "
             )
+
+           

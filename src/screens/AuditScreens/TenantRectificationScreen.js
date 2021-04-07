@@ -99,19 +99,17 @@ const TenantRectificationScreen = ({ route, navigation }) => {
 
       // let res;
       if (base64images.images.length > 0) {
-        await Promise.all([
-          dispatch(
-            checklistActions.submitRectification(
-              checklistStore.auditMetadata._id,
-              data,
-              authStore.userType,
-              checklistType,
-              section,
-              index
-            )
-          ),
-          dispatch(databaseActions.postAuditImagesWeb(base64images)),
-        ]);
+        await dispatch(databaseActions.postAuditImagesWeb(base64images));
+        await dispatch(
+          checklistActions.submitRectification(
+            checklistStore.auditMetadata._id,
+            data,
+            authStore.userType,
+            checklistType,
+            section,
+            index
+          )
+        );
       } else {
         await dispatch(
           checklistActions.submitRectification(
@@ -141,8 +139,11 @@ const TenantRectificationScreen = ({ route, navigation }) => {
   const changeTextHandler = (val) => {
     setValue(val);
     // console.log(val);
+  };
+
+  const onBlurHandler = () => {
     dispatch(
-      checklistActions.addRemarks(checklistType, section, index, val, true)
+      checklistActions.addRemarks(checklistType, section, index, value, true)
     );
   };
 
@@ -440,6 +441,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
               placeholder="Enter your remarks here"
               value={value}
               onChangeText={changeTextHandler}
+              onBlur={onBlurHandler}
             />
           </View>
         </KeyboardAwareScrollView>

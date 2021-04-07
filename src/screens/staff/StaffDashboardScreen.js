@@ -19,15 +19,15 @@ import CenteredLoading from "../../components/ui/CenteredLoading";
 // import SkeletonLoading from "../../components/ui/SkeletonLoading";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
+import SkeletonLoading from "../../components/ui/loading/SkeletonLoading";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
-const AddIcon = (props) => <Icon {...props} name="file-add-outline" />;
 
 const StaffDashboardScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
   const [state, setState] = useState({ open: false });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
@@ -87,17 +87,14 @@ const StaffDashboardScreen = ({ navigation }) => {
     [authStore.userType, handleOpenAudit]
   );
 
-  const renderEmptyComponent = () => (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <AddIcon style={{ width: 200, height: 300 }} fill="gray" />
-    </View>
-  );
+  const renderEmptyComponent = () =>
+    listLoading ? (
+      <SkeletonLoading />
+    ) : (
+      <View style={styles.emptyComponent}>
+        <CustomText bold>NO OUTSTANDING AUDITS</CustomText>
+      </View>
+    );
 
   const getListData = useCallback(async () => {
     try {
@@ -143,11 +140,8 @@ const StaffDashboardScreen = ({ navigation }) => {
       />
       <Divider />
       <Layout style={styles.layout}>
-        <Graph />
+        <Graph label="Average Scores (All Institutions)" />
         <Divider />
-        <View style={styles.textContainer}>
-          <CustomText style={styles.text}>Rectification Progress</CustomText>
-        </View>
         <CenteredLoading loading={loading} />
         <FlatList
           contentContainerStyle={styles.contentContainer}
@@ -157,6 +151,13 @@ const StaffDashboardScreen = ({ navigation }) => {
           onRefresh={getListData}
           refreshing={listLoading}
           ListEmptyComponent={renderEmptyComponent}
+          ListHeaderComponent={() => (
+            <View style={styles.textContainer}>
+              <CustomText style={styles.text}>
+                Rectification Progress
+              </CustomText>
+            </View>
+          )}
         />
 
         <FAB.Group
@@ -199,18 +200,23 @@ const styles = StyleService.create({
     flex: 1,
   },
   textContainer: {
-    margin: 20,
+    marginVertical: 10,
   },
   text: {
     fontSize: 26,
     fontFamily: "SFProDisplay-Bold",
   },
   contentContainer: {
-    // flexGrow: 1,
+    flexGrow: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
   },
   item: {
     paddingVertical: 4,
+  },
+  emptyComponent: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexGrow: 1,
   },
 });
