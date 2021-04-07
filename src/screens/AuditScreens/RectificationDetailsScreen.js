@@ -194,7 +194,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
       >
         <CustomText bold>{question}</CustomText>
       </View>
-      <Button onPress={handleGoToTenantRectifications}>
+      <Button style={styles.button} onPress={handleGoToTenantRectifications}>
         {authStore.userType === "staff" ? "CHECK STATUS" : "RECTIFY NOW"}
       </Button>
       <Layout style={styles.layout}>
@@ -249,6 +249,9 @@ const styles = StyleService.create({
   },
   inputContainer: {
     // margin: 20,
+  },
+  button: {
+    borderRadius: 0,
   },
   input: {
     minHeight: 64,

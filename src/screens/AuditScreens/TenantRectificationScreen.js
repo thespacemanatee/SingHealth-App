@@ -50,25 +50,47 @@ const TenantRectificationScreen = ({ route, navigation }) => {
 
   console.log("RECTIFIED:", rectified);
 
+  const theme = useTheme();
+
+  const dispatch = useDispatch();
+
+  const handleExtendDeadline = async (isChecked) => {
+    setToggle(true);
+    setDisableToggle(true);
+    const data = {
+      [checklistType]: [
+        {
+          category: section,
+          index,
+          requestForExt: isChecked,
+        },
+      ],
+    };
+    await dispatch(
+      checklistActions.submitRectification(
+        checklistStore.auditMetadata._id,
+        data,
+        authStore.userType,
+        checklistType,
+        section,
+        index
+      )
+    );
+  };
+
   const onToggleChange = (isChecked) => {
     if (isChecked) {
       alert("Are you sure?", "You can only do this once.", [
         { text: "Cancel", style: "cancel" },
         {
           text: "Confirm",
-          onPress: () => {
-            setToggle(isChecked);
-          },
+          onPress: () => handleExtendDeadline(isChecked),
         },
       ]);
     } else {
       setToggle(isChecked);
     }
   };
-
-  const theme = useTheme();
-
-  const dispatch = useDispatch();
 
   const handleSubmitRectification = async () => {
     try {
@@ -204,7 +226,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
     return () => {
       source.cancel();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -411,7 +433,11 @@ const TenantRectificationScreen = ({ route, navigation }) => {
       >
         <CustomText bold>{question}</CustomText>
       </View>
-      <Button onPress={handleSubmitRectification} disabled={rectified}>
+      <Button
+        style={styles.button}
+        onPress={handleSubmitRectification}
+        disabled={rectified}
+      >
         {rectified ? "SUBMISSION APPROVED" : "SUBMIT FOR APPROVAL"}
       </Button>
       <CenteredLoading loading={loadDialog} />
@@ -474,6 +500,9 @@ const styles = StyleService.create({
   },
   inputContainer: {
     // marginVertical: 20,
+  },
+  button: {
+    borderRadius: 0,
   },
   input: {
     minHeight: 64,

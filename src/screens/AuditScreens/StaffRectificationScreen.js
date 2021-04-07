@@ -249,7 +249,7 @@ const StaffRectificationScreen = ({ route, navigation }) => {
       >
         <CustomText bold>{question}</CustomText>
       </View>
-      <Button onPress={handleSubmitApproval}>
+      <Button style={styles.button} onPress={handleSubmitApproval}>
         {isRectified ? "REVOKE APPROVAL" : "APPROVE"}
       </Button>
       <CenteredLoading loading={loadDialog} />
@@ -320,6 +320,9 @@ const styles = StyleService.create({
   },
   inputContainer: {
     // marginVertical: 20,
+  },
+  button: {
+    borderRadius: 0,
   },
   input: {
     minHeight: 64,
