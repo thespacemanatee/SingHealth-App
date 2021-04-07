@@ -246,7 +246,6 @@ const styles = StyleService.create({
   },
   datePickerContainer: {
     marginTop: 20,
-    marginBottom: 10,
   },
   inputContainer: {
     // margin: 20,
