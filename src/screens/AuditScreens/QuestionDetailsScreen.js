@@ -91,10 +91,6 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     }
     if (storeDeadline) {
       setDeadline(storeDeadline);
-    } else {
-      dispatch(
-        checklistActions.changeDeadline(checklistType, section, index, max)
-      );
     }
   }, [checklistStore, checklistType, dispatch, index, max, section]);
 

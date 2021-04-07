@@ -30,7 +30,9 @@ const CustomDatepicker = ({
   const theme = useTheme();
 
   useEffect(() => {
-    setDate(moment(deadline));
+    if (deadline) {
+      setDate(moment(deadline));
+    }
   }, [deadline]);
 
   return (
