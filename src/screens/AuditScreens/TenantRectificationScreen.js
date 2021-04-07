@@ -66,16 +66,20 @@ const TenantRectificationScreen = ({ route, navigation }) => {
         },
       ],
     };
-    await dispatch(
-      checklistActions.submitRectification(
-        checklistStore.auditMetadata._id,
-        data,
-        authStore.userType,
-        checklistType,
-        section,
-        index
-      )
-    );
+    try {
+      await dispatch(
+        checklistActions.submitRectification(
+          checklistStore.auditMetadata._id,
+          data,
+          authStore.userType,
+          checklistType,
+          section,
+          index
+        )
+      );
+    } catch (err) {
+      handleErrorResponse(err);
+    }
   };
 
   const onToggleChange = (isChecked) => {

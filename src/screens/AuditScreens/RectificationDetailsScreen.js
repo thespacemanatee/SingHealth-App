@@ -14,6 +14,7 @@ import {
 } from "@ui-kitten/components";
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import moment from "moment";
 
 import * as checklistActions from "../../store/actions/checklistActions";
 import CustomDatepicker from "../../components/CustomDatePicker";
@@ -139,7 +140,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
       setValue(storeRemarks);
     }
     if (storeDeadline) {
-      setDeadline(storeDeadline.$date);
+      setDeadline(moment(storeDeadline.$date || storeDeadline));
     }
   }, [checklistStore, dispatch, index, section]);
 

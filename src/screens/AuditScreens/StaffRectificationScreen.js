@@ -17,6 +17,7 @@ import Toast from "react-native-toast-message";
 import axios from "axios";
 import { StackActions } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import moment from "moment";
 
 import alert from "../../components/CustomAlert";
 import * as checklistActions from "../../store/actions/checklistActions";
@@ -43,6 +44,8 @@ const StaffRectificationScreen = ({ route, navigation }) => {
   const [deadline, setDeadline] = useState();
 
   const { index, checklistType, question, section, rectified } = route.params;
+
+  console.log(checklistStore);
 
   const theme = useTheme();
 
@@ -88,10 +91,42 @@ const StaffRectificationScreen = ({ route, navigation }) => {
     }
   };
 
-  const handleDateChange = (date) => {
+  const handleDateChange = async (date) => {
     console.log(date);
+    setLoadDialog(true);
+    setDeadline(date);
+    const data = {
+      [checklistType]: [
+        {
+          category: section,
+          index,
+          deadline: date,
+        },
+      ],
+    };
+
+    try {
+      const res = await dispatch(
+        checklistActions.submitRectification(
+          checklistStore.auditMetadata._id,
+          data,
+          authStore.userType,
+          checklistType,
+          section,
+          index
+        )
+      );
+      console.log(res);
+    } catch (err) {
+      handleErrorResponse(err);
+    } finally {
+      setLoadDialog(false);
+    }
+
     dispatch(
-      checklistActions.changeDeadline(checklistType, section, index, date)
+      checklistActions.changeDeadline(checklistType, section, index, {
+        $date: date,
+      })
     );
   };
 
@@ -194,7 +229,7 @@ const StaffRectificationScreen = ({ route, navigation }) => {
     }
     if (storeDeadline) {
       console.log("DEADLINE:", storeDeadline);
-      setDeadline(storeDeadline.$date);
+      setDeadline(moment(storeDeadline.$date || storeDeadline));
     }
   }, [checklistStore, checklistType, dispatch, index, section]);
 
