@@ -65,7 +65,7 @@ def addWenXinEndpoints(app, mongo):
         return output
 
     @app.route("/auditTimeframe", methods=["GET"])
-    @login_required
+    # @login_required
     def get_audit_time_frame():
         try:
             if request.method == "GET":
