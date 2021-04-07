@@ -17,13 +17,13 @@ import ActiveAuditCard from "../components/ActiveAuditCard";
 import CenteredLoading from "../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../helpers/utils";
 import CustomText from "../components/ui/CustomText";
+import SkeletonLoading from "../components/ui/loading/SkeletonLoading";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
-const AddIcon = (props) => <Icon {...props} name="file-add-outline" />;
 
 const TenantInfoScreen = ({ route, navigation }) => {
   const authStore = useSelector((state) => state.auth);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
@@ -76,17 +76,14 @@ const TenantInfoScreen = ({ route, navigation }) => {
     [authStore.userType, handleOpenAudit]
   );
 
-  const renderEmptyComponent = () => (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <AddIcon style={{ width: 200, height: 300 }} fill="gray" />
-    </View>
-  );
+  const renderEmptyComponent = () =>
+    listLoading ? (
+      <SkeletonLoading />
+    ) : (
+      <View style={styles.emptyComponent}>
+        <CustomText bold>NO OUTSTANDING AUDITS</CustomText>
+      </View>
+    );
 
   const getListData = useCallback(async () => {
     try {
@@ -163,11 +160,16 @@ const styles = StyleService.create({
     fontFamily: "SFProDisplay-Bold",
   },
   contentContainer: {
-    // flexGrow: 1,
+    flexGrow: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
   },
   item: {
     paddingVertical: 4,
+  },
+  emptyComponent: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexGrow: 1,
   },
 });

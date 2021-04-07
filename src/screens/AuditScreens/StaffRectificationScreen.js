@@ -26,6 +26,7 @@ import { SCREEN_HEIGHT } from "../../helpers/config";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
+import CustomDatepicker from "../../components/CustomDatePicker";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -39,6 +40,7 @@ const StaffRectificationScreen = ({ route, navigation }) => {
   const [error, setError] = useState(false);
   const [toggle, setToggle] = useState(false);
   const [isRectified, setIsRectified] = useState(false);
+  const [deadline, setDeadline] = useState();
 
   const { index, checklistType, question, section, rectified } = route.params;
 
@@ -84,6 +86,13 @@ const StaffRectificationScreen = ({ route, navigation }) => {
     } finally {
       setLoadDialog(false);
     }
+  };
+
+  const handleDateChange = (date) => {
+    console.log(date);
+    dispatch(
+      checklistActions.changeDeadline(checklistType, section, index, date)
+    );
   };
 
   const handleSubmitApproval = () => {
@@ -152,16 +161,19 @@ const StaffRectificationScreen = ({ route, navigation }) => {
     return () => {
       source.cancel();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     let storeImages;
     let storeRemarks;
+    let storeDeadline;
     if (checklistType === "covid19") {
       storeImages =
         checklistStore.covid19.questions[section][index].rectificationImages;
       storeRemarks =
         checklistStore.covid19.questions[section][index].rectificationRemarks;
+      storeDeadline = checklistStore.covid19.questions[section][index].deadline;
     } else {
       storeImages =
         checklistStore.chosen_checklist.questions[section][index]
@@ -169,6 +181,8 @@ const StaffRectificationScreen = ({ route, navigation }) => {
       storeRemarks =
         checklistStore.chosen_checklist.questions[section][index]
           .rectificationRemarks;
+      storeDeadline =
+        checklistStore.chosen_checklist.questions[section][index].deadline;
     }
 
     if (storeImages) {
@@ -177,6 +191,10 @@ const StaffRectificationScreen = ({ route, navigation }) => {
     }
     if (storeRemarks) {
       setValue(storeRemarks);
+    }
+    if (storeDeadline) {
+      console.log("DEADLINE:", storeDeadline);
+      setDeadline(storeDeadline.$date);
     }
   }, [checklistStore, checklistType, dispatch, index, section]);
 
@@ -246,6 +264,17 @@ const StaffRectificationScreen = ({ route, navigation }) => {
               {`Tenant has ${toggle ? "" : "not"} requested for extension`}
             </Toggle>
           </View>
+          {toggle && (
+            <View style={styles.datePickerContainer}>
+              <CustomText bold category="h6">
+                Extend Deadline:
+              </CustomText>
+              <CustomDatepicker
+                deadline={deadline}
+                onSelect={handleDateChange}
+              />
+            </View>
+          )}
           <View style={styles.inputContainer}>
             <CustomText bold category="h6">
               Tenant&apos;s Remarks:{" "}
@@ -285,6 +314,9 @@ const styles = StyleService.create({
     flex: 1,
     alignItems: "flex-start",
     marginVertical: 20,
+  },
+  datePickerContainer: {
+    marginTop: 20,
   },
   inputContainer: {
     // marginVertical: 20,

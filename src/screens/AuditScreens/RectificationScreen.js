@@ -47,6 +47,8 @@ const RectificationScreen = ({ route, navigation }) => {
 
   const theme = useTheme();
 
+  console.log(checklistStore.auditMetadata);
+
   const dispatch = useDispatch();
 
   const handleCompliantFilter = () => {

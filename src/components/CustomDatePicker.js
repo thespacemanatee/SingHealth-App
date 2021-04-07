@@ -17,20 +17,14 @@ const CustomDatepicker = ({
   max,
   ...props
 }) => {
-  const [date, setDate] = useState(
-    moment(
-      new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate() + 7
-      )
-    )
-  );
+  const [date, setDate] = useState(moment());
 
   const theme = useTheme();
 
   useEffect(() => {
-    setDate(moment(deadline));
+    if (deadline) {
+      setDate(moment(deadline));
+    }
   }, [deadline]);
 
   return (

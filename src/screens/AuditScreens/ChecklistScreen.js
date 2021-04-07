@@ -243,7 +243,7 @@ const ChecklistScreen = ({ route, navigation }) => {
         >
           <CustomText style={styles.title}>Audit: {stallName}</CustomText>
           <CustomText>
-            {moment(checklistStore.auditMetadata.date.$date)
+            {moment(checklistStore.auditMetadata.date)
               .toLocaleString()
               .split(" ")
               .slice(0, 5)

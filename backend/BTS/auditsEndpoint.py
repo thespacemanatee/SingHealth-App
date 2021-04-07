@@ -336,23 +336,24 @@ def addAuditsEndpoint(app, mongo):
                 if (expoTokens := tenant.get("expoToken")) != None:
                     for token in expoTokens:
                         try:
-                            send_push_message(token, "SingHealth Audits", "Recent audit results ready for viewing")
+                            send_push_message(
+                                token, "SingHealth Audits", "Recent audit results ready for viewing")
                         except:
                             continue
-                
+
                 date = auditMetaData_ID_processed['date']
                 if date.tzinfo is None or date.tzinfo.utcoffset(date) is None:
                     date = timezone(SGT_TIMEZONE).localize(date)
-                
+
                 send_email_notif(
                     app,
-                    tenant["email"], 
-                    "Audit Results", 
+                    tenant["email"],
+                    "Audit Results",
                     f"""Dear {tenant["name"]},
                         Your recent audit results dated {date.strftime('%d %B %Y, %I:%M %p')} are ready for reviewing. Please check your app for details.
                         This email is auto generated. No signature is required.
                         You do not have to reply to this email."""
-                    )
+                )
             return serverResponse(None, 200, "Forms have been submitted successfully!")
         elif request.method == "GET":
             daysBefore = int(request.args.get("daysBefore", 0))
@@ -366,17 +367,17 @@ def addAuditsEndpoint(app, mongo):
                 queryDict = {"tenantID": tenantID}
             else:
                 queryDict = {
-                        "tenantID": tenantID,
-                        "date": {
-                            "$gt": datetime.utcnow() - datetime.timedelta(days=daysBefore)
-                            }
+                    "tenantID": tenantID,
+                    "date": {
+                        "$gt": datetime.utcnow() - datetime.timedelta(days=daysBefore)
                     }
-                
+                }
+
             audits = mongo.db.audits.find(queryDict)
             auditsList = []
             for audit in audits:
                 tenant = mongo.db.tenant.find_one(
-                    {"_id": tenantID }, 
+                    {"_id": tenantID},
                     {
                         "stall": {
                             "name": 1
@@ -384,21 +385,19 @@ def addAuditsEndpoint(app, mongo):
                     }
                 )
                 stallName = tenant["stall"]["name"]
-                
+
                 auditsList.append(
                     {
-                        "auditMetadata": audit, 
+                        "auditMetadata": audit,
                         "stallName": stallName
                     }
                 )
-                
+
             if len(auditsList) == 0:
                 msg = "No audits found"
             else:
                 msg = "Audits retrieved successfully"
             return serverResponse(auditsList, 200, msg)
-                
-
 
     @app.route("/audits/<auditID>", methods=['GET'])
     # @login_required
@@ -429,9 +428,6 @@ def addAuditsEndpoint(app, mongo):
                     filledAuditForm["questions"] = questions
                     auditForms[formType] = filledAuditForm
 
-                date = audit["date"]
-                if isinstance(date, datetime):
-                    audit["date"] = date.isoformat()
                 responseJson["auditMetadata"] = audit
                 responseJson["auditForms"] = auditForms
 
@@ -485,25 +481,25 @@ def addAuditsEndpoint(app, mongo):
                 for device in staffExpoTokens:
                     try:
                         send_push_message(device, tenantStallName,
-                                        "has reviewed an audit form")
+                                          "has reviewed an audit form")
                     except:
                         print("Some error detected")
                         continue
-            
+
             date = selectedAudit['date']
             if date.tzinfo is None or date.tzinfo.utcoffset(date) is None:
-                date = timezone(SGT_TIMEZONE).localize(date)        
-            
+                date = timezone(SGT_TIMEZONE).localize(date)
+
             send_email_notif(
                 app,
-                staff["email"], 
-                "Audit Results", 
+                staff["email"],
+                "Audit Results",
                 f"""Dear {staff['name']},
                     Your tenant, {tenant['stall']['name']}, has submitted a review for one of his NCs for the audit dated {date.strftime('%d %B %Y, %I:%M %p')}. 
                     Please check your app for details.
                     This email is auto generated. No signature is required.
                     You do not have to reply to this email."""
-                )
+            )
             return serverResponse(patchResults, 200, "Changes sent to the database.")
 
     @app.route("/audits/<auditID>/staff", methods=['PATCH'])
@@ -578,24 +574,22 @@ def addAuditsEndpoint(app, mongo):
                         except:
                             print("Some error detected")
                             continue
-                
+
                 date = selectedAudit['date']
                 if date.tzinfo is None or date.tzinfo.utcoffset(date) is None:
-                    date = timezone(SGT_TIMEZONE).localize(date)  
+                    date = timezone(SGT_TIMEZONE).localize(date)
                 send_email_notif(
                     app,
-                    tenant["email"], 
-                    "Audit Results", 
+                    tenant["email"],
+                    "Audit Results",
                     f"""Dear {tenant['stall']['name']},
                         {institution} has submitted a review for your rectifications for your audit dated {date.strftime('%d %B %Y, %I:%M %p')}. 
                         Please check your app for details.
                         This email is auto generated. No signature is required.
                         You do not have to reply to this email."""
-                    )
+                )
             return serverResponse(
                 ack,
                 200,
                 "Updates submitted successfully. "
             )
-
-           
