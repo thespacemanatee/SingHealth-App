@@ -115,9 +115,19 @@ const StaffDashboardScreen = ({ navigation }) => {
     }
   }, [authStore.institutionID, dispatch]);
 
+  const getGraphData = async () => {
+    try {
+      const res = await dispatch(databaseActions.getGraphData());
+      console.log(res);
+    } catch (err) {
+      handleErrorResponse(err);
+    }
+  };
+
   useEffect(() => {
     // Subscribe for the focus Listener
     getListData();
+    getGraphData();
 
     const unsubscribe = navigation.addListener("focus", () => {
       getListData();

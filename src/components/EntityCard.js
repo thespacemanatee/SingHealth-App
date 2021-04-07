@@ -1,12 +1,10 @@
 import React from "react";
 import { View } from "react-native";
-import { StyleService, useTheme } from "@ui-kitten/components";
+import { StyleService } from "@ui-kitten/components";
 import CustomText from "./ui/CustomText";
 import ShadowCard from "./ui/ShadowCard";
 
 const EntityCard = ({ onPress, displayName, _id }) => {
-  const theme = useTheme();
-
   const handleOnPress = () => {
     // console.log(_id);
     onPress(_id, displayName);

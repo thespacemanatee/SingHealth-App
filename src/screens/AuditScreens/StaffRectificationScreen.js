@@ -131,13 +131,19 @@ const StaffRectificationScreen = ({ route, navigation }) => {
   };
 
   const handleSubmitApproval = () => {
-    alert("Are you sure?", "You can only do this once.", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Confirm",
-        onPress: submitApproval,
-      },
-    ]);
+    alert(
+      "Are you sure?",
+      isRectified
+        ? "Mark rectification as incomplete."
+        : "Mark rectification as complete.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Confirm",
+          onPress: submitApproval,
+        },
+      ]
+    );
   };
 
   // TODO: Cleanup memory leak when user leaves screen before image is loaded

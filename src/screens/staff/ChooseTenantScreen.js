@@ -114,6 +114,7 @@ const ChooseTenantScreen = ({ navigation }) => {
     } catch (err) {
       handleErrorResponse(err);
     } finally {
+      setListLoading(false);
       setLoading(false);
     }
   }, [authStore.institutionID, dispatch]);
@@ -141,7 +142,7 @@ const ChooseTenantScreen = ({ navigation }) => {
       <EntityLoading />
     ) : (
       <View style={styles.emptyComponent}>
-        <CustomText bold>NO OUTSTANDING AUDITS</CustomText>
+        <CustomText bold>NO TENANTS AVAILABLE</CustomText>
       </View>
     );
 
