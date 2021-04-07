@@ -13,18 +13,17 @@ import {
 import * as databaseActions from "../../store/actions/databaseActions";
 import * as checklistActions from "../../store/actions/checklistActions";
 import ActiveAuditCard from "../../components/ActiveAuditCard";
-import CenteredLoading from "../../components/ui/CenteredLoading";
-// import SkeletonLoading from "../../components/ui/SkeletonLoading";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
+import SkeletonLoading from "../../components/ui/SkeletonLoading";
+import CenteredLoading from "../../components/ui/CenteredLoading";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
-const AddIcon = (props) => <Icon {...props} name="file-add-outline" />;
 
 const TenantDashboardScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
@@ -83,17 +82,14 @@ const TenantDashboardScreen = ({ navigation }) => {
     [authStore.userType, handleOpenAudit]
   );
 
-  const renderEmptyComponent = () => (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <AddIcon style={{ width: 200, height: 300 }} fill="gray" />
-    </View>
-  );
+  const renderEmptyComponent = () =>
+    listLoading ? (
+      <SkeletonLoading />
+    ) : (
+      <View style={styles.emptyComponent}>
+        <CustomText bold>NO OUTSTANDING AUDITS</CustomText>
+      </View>
+    );
 
   const getListData = useCallback(async () => {
     try {
@@ -135,10 +131,9 @@ const TenantDashboardScreen = ({ navigation }) => {
         accessoryRight={NotificationAction}
       />
       <Divider />
+      <CenteredLoading loading={loading} />
       <Layout style={styles.layout}>
         <Divider />
-
-        <CenteredLoading loading={loading} />
         <FlatList
           contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
@@ -177,8 +172,14 @@ const styles = StyleService.create({
   contentContainer: {
     paddingHorizontal: 8,
     paddingVertical: 4,
+    flexGrow: 1,
   },
   item: {
     paddingVertical: 4,
+  },
+  emptyComponent: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexGrow: 1,
   },
 });
