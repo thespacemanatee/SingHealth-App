@@ -1878,10 +1878,10 @@
     native-url "^0.2.6"
     schema-utils "^2.6.5"
 
-"@react-native-async-storage/async-storage@^1.15.1":
-  version "1.15.1"
-  resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-1.15.1.tgz#9b26c32af6640d2d1f84862657825f75672bfa6b"
-  integrity sha512-rRQ3Zsz1DIzxVlRVsE4nRNLWyv4hXmt/Ecwan+ypKwp16+SUTsfdX7F/W0xu4FpUwQDFCjl7MAS9pKV2VEPwDg==
+"@react-native-async-storage/async-storage@^1.15.2":
+  version "1.15.2"
+  resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-1.15.2.tgz#895898363fbb8f6db477629fd4ba0b013fe27484"
+  integrity sha512-E1SajKtyeLwi6JVfMZQx+I01z3ZvA0/O2e09EVFzU75YK0696S5N2CqeKlxAZQFVSvzh+Jfq0q412Kdkuh+l6A==
   dependencies:
     deep-assign "^3.0.0"
 
@@ -11495,10 +11495,8 @@ watchpack@^1.6.1:
   resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-1.7.5.tgz#1267e6c55e0b9b5be44c2023aed5437a2c26c453"
   integrity sha512-9P3MWk6SrKjHsGkLT2KHXdQ/9SNkyoJbabxnKOoJepsvJjJG8uYTR3yTPxPQvNDI3w4Nz1xnE0TLHK4RIVe/MQ==
   dependencies:
-    chokidar "^3.4.1"
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
-    watchpack-chokidar2 "^2.0.1"
   optionalDependencies:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"
