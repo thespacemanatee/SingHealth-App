@@ -66,46 +66,42 @@ def addWenXinEndpoints(app, mongo):
 
     @app.route("/auditTimeframe", methods=["GET"])
     @login_required
-    def get_audit_by_timeframe():
-        required_info = ["fromDate","toDate"]
-        
+    def get_audit_time_frame():
         try:
             if request.method == "GET":
-                timeframe = request.json
-                if isinstance(timeframe, dict):
-                    valid, missing_data = validate_required_info(timeframe, required_info)
-                    
-                    if(valid):
-                        start_date = timeframe["fromDate"].replace(hour = 0, minute = 0, second = 0, microsecond = 0)
-                        end_date = timeframe["toDate"].replace(hour = 23, minute = 59, second = 59, microsecond = 999999)
-                        
-                        query = { "date": {"$gt": start_date, "$lt": end_date}}
-                        try:
-                            audits = mongo.db.audits.find(query)
-                        except: return serverResponse(None, 404, "Error in connection")
-                            
-                        if len(audits) > 0:
-                            return serverResponse(None, 404, "No audit data found within the timeframe")
-                        
-                        date_arr, score_arr = []
-                        for audit in audits:
-                            date_arr.append(audit["date"])
-                            score_arr.append(audit["score"])
-                        
-                        sorted_audit = {}
-                        for i in range(len(date_arr)):
-                            date_diff = date_arr[i] - start_date
-                            sorted_audit.setdefault(start_date + timedelta(days = date_diff.days), []).append(score_arr[i])
-                        
-                        #pack data 
-                        data = []
-                        for date in sorted_audit.keys():
-                            data.append({"date": date, "avgScore": round(statistics.mean(sorted_audit[date]),3)})
-                        
-                        return serverResponse(data, 200, "Success")
-                    else:
-                        return serverResponse(missing_data, 404, "Missing data or insufficent data")
-                else:
-                    return serverResponse(None, 404, "Input type error")
+                fromDate = int(request.args.get("fromDate", 0))
+                toDate = int(request.args.get("toDate", 0))
+                
+                try: 
+                    start_date = datetime.fromtimestamp(fromDate/1000.0)
+                    end_date = datetime.fromtimestamp(toDate/1000.0)
+        
+                except:
+                    return serverResponse(None, 404, "Wrong date format")
+                start_date = start_date.replace(hour = 0, minute = 0, second = 0, microsecond = 0)
+                end_date = end_date.replace(hour = 23, minute = 59, second = 59, microsecond = 999999)
+                
+                query = { "date": {"$gt": start_date, "$lt": end_date}}
+                audits = mongo.db.audits.find(query)
+                
+                if audits.count() < 1:
+                    return serverResponse(None, 404, "No audit data found within the timeframe")
+                
+                date_arr = []
+                score_arr = []
+                for audit in audits:
+                    date_arr.append(audit["date"])
+                    score_arr.append(audit["score"])
+            
+                sorted_audit = {}
+                for i in range(len(date_arr)):
+                    date_diff = date_arr[i] - start_date
+                    sorted_audit.setdefault(start_date + timedelta(days = date_diff.days), []).append(score_arr[i])
+                
+                #pack data 
+                data = []
+                for date_val in sorted_audit.keys():
+                    data.append({"date": date_val.isoformat(), "avgScore": round(statistics.mean(sorted_audit[date_val]),3)})
+                return serverResponse(data, 200, "Success")
         except:
             return serverResponse(None, 404, "No response received")
