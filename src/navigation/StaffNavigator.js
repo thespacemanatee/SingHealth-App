@@ -171,6 +171,12 @@ const StaffDirectoryStackNavigator = () => {
       <Screen name="Directory" component={DirectoryScreen} />
       <Screen name="TenantsDirectory" component={TenantsDirectoryScreen} />
       <Screen name="TenantInfo" component={TenantInfoScreen} />
+      <Screen name="Rectification" component={RectificationScreen} />
+      <Screen
+        name="RectificationDetails"
+        component={RectificationDetailsScreen}
+      />
+      <Screen name="StaffRectification" component={StaffRectificationScreen} />
     </Navigator>
   );
 };

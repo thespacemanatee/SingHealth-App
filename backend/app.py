@@ -9,7 +9,8 @@ from BTS.auditEmailEndpoint import addAuditEmailEndpoints
 from BTS.institutionEndpoint import institution_info
 from BTS.utils import serverResponse
 from flask import Flask
-from flask_pymongo import PyMongo
+from BTS.database import mongo
+
 from flask_cors import CORS
 import os
 from dotenv import load_dotenv
@@ -22,7 +23,7 @@ app.config["FLASK_ENV"] = "development"
 app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 # app.config["SESSION_COOKIE_DOMAIN"] = "singhealth-backend-bts.herokuapp.com"
-mongo = PyMongo(app)
+mongo.init_app(app)
 
 WEB_APP_URI = os.getenv("WEB_APP_URI")
 CORS(app, supports_credentials=True, resources={r"/*": {"origins": [

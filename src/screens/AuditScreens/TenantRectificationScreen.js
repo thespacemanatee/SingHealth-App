@@ -139,8 +139,11 @@ const TenantRectificationScreen = ({ route, navigation }) => {
   const changeTextHandler = (val) => {
     setValue(val);
     // console.log(val);
+  };
+
+  const onBlurHandler = () => {
     dispatch(
-      checklistActions.addRemarks(checklistType, section, index, val, true)
+      checklistActions.addRemarks(checklistType, section, index, value, true)
     );
   };
 
@@ -438,6 +441,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
               placeholder="Enter your remarks here"
               value={value}
               onChangeText={changeTextHandler}
+              onBlur={onBlurHandler}
             />
           </View>
         </KeyboardAwareScrollView>

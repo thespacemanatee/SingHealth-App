@@ -35,6 +35,6 @@ const styles = StyleService.create({
     padding: 20,
   },
   listContentText: {
-    fontSize: 30,
+    // fontSize: 30,
   },
 });

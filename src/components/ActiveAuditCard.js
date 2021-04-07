@@ -25,7 +25,9 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
     const temp = Number.parseFloat(
       (Number.parseFloat(auditMetadata.rectificationProgress) * 100).toFixed(1)
     );
-    if (temp > 0) {
+    if (auditMetadata.rectificationProgress === undefined) {
+      setProgress(100);
+    } else if (temp > 0) {
       setProgress(temp);
     }
   }, [auditMetadata.rectificationProgress]);
@@ -69,9 +71,14 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
           {() => (
             <View style={styles.progressContainer}>
               <CustomText>
-                {`${(
-                  Number.parseFloat(auditMetadata.rectificationProgress) * 100
-                ).toFixed(1)}%`}
+                {`${
+                  auditMetadata.rectificationProgress !== undefined
+                    ? (
+                        Number.parseFloat(auditMetadata.rectificationProgress) *
+                        100
+                      ).toFixed(1)
+                    : 100
+                }%`}
               </CustomText>
               <CustomText>Progress</CustomText>
             </View>
