@@ -1,5 +1,6 @@
+/* eslint-disable no-nested-ternary */
 import React from "react";
-import { View, Dimensions, StyleSheet } from "react-native";
+import { View, Dimensions, StyleSheet, ActivityIndicator } from "react-native";
 import Svg, { Path, Defs, Stop, LinearGradient } from "react-native-svg";
 import * as shape from "d3-shape";
 import {
@@ -42,6 +43,7 @@ const Graph = ({
     { x: new Date(0), y: 100 },
     { x: new Date(1), y: 100 },
   ].map((p) => [p.x.getTime(), p.y]),
+  loading,
 }) => {
   const theme = useTheme();
   const length = useSharedValue(0);
@@ -100,39 +102,46 @@ const Graph = ({
         </CustomText>
       </View>
       <View style={styles.container}>
-        {data.length > 2 ? (
-          <View>
-            <Svg {...{ width, height }}>
-              <Defs>
-                <LinearGradient
-                  x1="50%"
-                  y1="0%"
-                  x2="50%"
-                  y2="100%"
-                  id="gradient"
-                >
-                  <Stop stopColor={theme["color-danger-200"]} offset="0%" />
-                  <Stop stopColor={theme["color-danger-100"]} offset="80%" />
-                  <Stop stopColor={theme["color-basic-100"]} offset="100%" />
-                </LinearGradient>
-              </Defs>
-              <Path
-                fill="transparent"
-                stroke={theme["color-danger-600"]}
-                strokeWidth={5}
-                {...{ d }}
-              />
-              <Path
-                d={`${d}  L ${width} ${height} L 0 ${height}`}
-                fill="url(#gradient)"
-              />
-            </Svg>
-            <Cursor {...{ path, length, point }} />
-          </View>
+        {!loading ? (
+          data.length > 2 ? (
+            <View>
+              <Svg {...{ width, height }}>
+                <Defs>
+                  <LinearGradient
+                    x1="50%"
+                    y1="0%"
+                    x2="50%"
+                    y2="100%"
+                    id="gradient"
+                  >
+                    <Stop stopColor={theme["color-danger-200"]} offset="0%" />
+                    <Stop stopColor={theme["color-danger-100"]} offset="80%" />
+                    <Stop stopColor={theme["color-basic-100"]} offset="100%" />
+                  </LinearGradient>
+                </Defs>
+                <Path
+                  fill="transparent"
+                  stroke={theme["color-danger-600"]}
+                  strokeWidth={5}
+                  {...{ d }}
+                />
+                <Path
+                  d={`${d}  L ${width} ${height} L 0 ${height}`}
+                  fill="url(#gradient)"
+                />
+              </Svg>
+              <Cursor {...{ path, length, point }} />
+            </View>
+          ) : (
+            <CustomText bold={false} style={{}}>
+              NOT ENOUGH DATA
+            </CustomText>
+          )
         ) : (
-          <CustomText bold={false} style={{}}>
-            NOT ENOUGH DATA
-          </CustomText>
+          <ActivityIndicator
+            size="large"
+            color={theme["color-primary-default"]}
+          />
         )}
       </View>
     </>

@@ -17,7 +17,6 @@ import * as databaseActions from "../../store/actions/databaseActions";
 import * as checklistActions from "../../store/actions/checklistActions";
 import ActiveAuditCard from "../../components/ActiveAuditCard";
 import CenteredLoading from "../../components/ui/CenteredLoading";
-// import SkeletonLoading from "../../components/ui/SkeletonLoading";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
 import SkeletonLoading from "../../components/ui/loading/SkeletonLoading";
@@ -27,18 +26,14 @@ const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 
 const StaffDashboardScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
-  const [state, setState] = useState({ open: false });
   const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
+  const [graphLoading, setGraphLoading] = useState(true);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
   const [graphData, setGraphData] = useState();
 
   const dispatch = useDispatch();
-
-  const onStateChange = ({ open }) => setState({ open });
-
-  const { open } = state;
 
   const DrawerAction = () => (
     <TopNavigationAction
@@ -118,6 +113,7 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   const getGraphData = useCallback(async () => {
     try {
+      setGraphLoading(true);
       const fromDate = new Date(2021, 3).getTime();
       const toDate = new Date(2021, 4).getTime();
       const res = await dispatch(
@@ -132,6 +128,8 @@ const StaffDashboardScreen = ({ navigation }) => {
       setGraphData(temp.map((p) => [p.x.getTime(), p.y]));
     } catch (err) {
       handleErrorResponse(err);
+    } finally {
+      setGraphLoading(false);
     }
   }, [dispatch]);
 
@@ -161,7 +159,11 @@ const StaffDashboardScreen = ({ navigation }) => {
       />
       <Divider />
       <Layout style={styles.layout}>
-        <Graph label="Average Scores (All Institutions)" data={graphData} />
+        <Graph
+          label="Average Scores (All Institutions)"
+          data={graphData}
+          loading={graphLoading}
+        />
         {/* <Divider /> */}
         <CenteredLoading loading={loading} />
         <FlatList
@@ -181,29 +183,12 @@ const StaffDashboardScreen = ({ navigation }) => {
           )}
         />
 
-        <FAB.Group
-          open={open}
+        <FAB
           icon="plus"
-          actions={[
-            {
-              icon: "pencil-plus",
-              label: "Create new checklist",
-              onPress: () => console.log("Pressed new checklist"),
-            },
-            {
-              icon: "file-plus",
-              label: "New Audit",
-              onPress: () => {
-                navigation.navigate("ChooseTenant");
-              },
-              small: false,
-            },
-          ]}
-          onStateChange={onStateChange}
+          label="New Audit"
+          style={styles.fab}
           onPress={() => {
-            if (open) {
-              // do something if the speed dial is open
-            }
+            navigation.navigate("ChooseTenant");
           }}
         />
       </Layout>
@@ -234,6 +219,12 @@ const styles = StyleService.create({
   },
   item: {
     paddingVertical: 4,
+  },
+  fab: {
+    position: "absolute",
+    margin: 16,
+    right: 0,
+    bottom: 0,
   },
   emptyComponent: {
     justifyContent: "center",
