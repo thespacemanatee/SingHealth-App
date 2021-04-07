@@ -19,7 +19,7 @@ import CenteredLoading from "../../components/ui/CenteredLoading";
 // import SkeletonLoading from "../../components/ui/SkeletonLoading";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
-import SkeletonLoading from "../../components/ui/SkeletonLoading";
+import SkeletonLoading from "../../components/ui/loading/SkeletonLoading";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;

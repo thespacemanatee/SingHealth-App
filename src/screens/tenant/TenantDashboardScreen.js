@@ -15,7 +15,7 @@ import * as checklistActions from "../../store/actions/checklistActions";
 import ActiveAuditCard from "../../components/ActiveAuditCard";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
-import SkeletonLoading from "../../components/ui/SkeletonLoading";
+import SkeletonLoading from "../../components/ui/loading/SkeletonLoading";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;

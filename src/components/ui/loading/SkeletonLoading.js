@@ -1,8 +1,8 @@
 import React from "react";
 import { Platform } from "react-native";
-import { SCREEN_WIDTH, SCREEN_HEIGHT } from "../../helpers/config";
+import { SCREEN_WIDTH, SCREEN_HEIGHT } from "../../../helpers/config";
 
-import { ContentLoader, Rect, Circle } from "../../index";
+import { ContentLoader, Rect, Circle } from "../../../index";
 
 const SkeletonLoading = (props) => {
   const SVG_HEIGHT = 140;
@@ -12,7 +12,7 @@ const SkeletonLoading = (props) => {
       return (
         <ContentLoader
           key={String(index)}
-          speed={1}
+          speed={0.8}
           width={SCREEN_WIDTH}
           height={SVG_HEIGHT}
           viewBox="0 0 400 140"
@@ -33,7 +33,7 @@ const SkeletonLoading = (props) => {
     return (
       <ContentLoader
         key={String(index)}
-        speed={1}
+        speed={0.8}
         width={SCREEN_WIDTH}
         height={SVG_HEIGHT}
         viewBox="0 0 400 140"

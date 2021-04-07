@@ -17,7 +17,7 @@ import ActiveAuditCard from "../components/ActiveAuditCard";
 import CenteredLoading from "../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../helpers/utils";
 import CustomText from "../components/ui/CustomText";
-import SkeletonLoading from "../components/ui/SkeletonLoading";
+import SkeletonLoading from "../components/ui/loading/SkeletonLoading";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
