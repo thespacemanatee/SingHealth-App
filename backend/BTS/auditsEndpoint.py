@@ -79,28 +79,28 @@ def validateFilledAuditForms(filledAuditForms):
         for category, answerList in answers.items():
             for index, answer in enumerate(answerList):
                 if not "answer" in answer.keys():
-                    return False, category, index, "Please fill in the 'answer' field."
+                    return False, category, index + 1, "Please fill in the 'answer' field."
 
                 if "images" in answer.keys():
                     if (numImages := len(answer.get("images", []))) > MAX_NUM_IMAGES_PER_NC:
-                        return False, category, index, f"Max allowed is {MAX_NUM_IMAGES_PER_NC} images but {numImages} provided."
+                        return False, category, index + 1, f"Max allowed is {MAX_NUM_IMAGES_PER_NC} images but {numImages} provided."
 
                     numUniqueFilenames = len(set(answer["images"]))
                     numFilenames = len(answer["images"])
                     if numFilenames > numUniqueFilenames:
-                        return False, category, index, f"Duplicate filenames found."
+                        return False, category, index + 1, f"Duplicate filenames found."
 
-                if not answer["answer"]:
+                if answer["answer"] == False:
                     if len(answer.get("remarks", [])) == 0:
-                        return False, category, index, "Please fill in the remarks section"
+                        return False, category, index + 1, "Please fill in the remarks section"
 
                     if "deadline" not in answer.keys():
-                        return False, category, index, "Please provide the deadline for the rectification"
+                        return False, category, index + 1, "Please provide the deadline for the rectification"
                     else:
                         try:
                             date = iso8601.parse_date(answer["deadline"])
                         except:
-                            return False, category, index, "Please provide an ISO format for the deadline"
+                            return False, category, index + 1, "Please provide an ISO format for the deadline"
 
         return True, "Form is valid and ready for uploading"
 
