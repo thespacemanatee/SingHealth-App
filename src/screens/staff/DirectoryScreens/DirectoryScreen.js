@@ -7,7 +7,6 @@ import {
   Layout,
   TopNavigation,
   TopNavigationAction,
-  List,
   StyleService,
 } from "@ui-kitten/components";
 

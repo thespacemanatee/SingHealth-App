@@ -4,6 +4,7 @@ export const GET_RELEVANT_TENANTS = "GET_RELEVANT_TENANTS";
 export const GET_INSTITUTIONS = "GET_INSTITUTIONS";
 export const GET_TENANT_ACTIVE_AUDITS = "GET_TENANT_ACTIVE_AUDITS";
 export const GET_STAFF_ACTIVE_AUDITS = "GET_STAFF_ACTIVE_AUDITS";
+export const GET_GRAPH_DATA = "GET_GRAPH_DATA";
 
 export const getInstitutions = () => {
   return async (dispatch) => {
@@ -152,6 +153,23 @@ export const createNewTenant = (data) => {
     };
 
     const res = await httpClient(options);
+
+    return res;
+  };
+};
+
+export const getGraphData = (
+  fromDate = Date.now(),
+  toDate = Date.now() + 2592000000
+) => {
+  return async () => {
+    const getAudit = {
+      url: `${endpoint}auditTimeframe`,
+      method: "get",
+      params: { fromDate, toDate },
+    };
+
+    const res = await httpClient(getAudit);
 
     return res;
   };

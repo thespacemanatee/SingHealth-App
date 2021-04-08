@@ -22,10 +22,8 @@ def change_tenant_info(app, mongo):
     @login_required
     def add_tenant():
         required_info = [ "name", "email", "pswd", "institutionID", 
-                         "stallName", "companyName", 
-                         "companyPOCName", "companyPOCEmail",
-                         "unitNo", "fnb",
-                         "staffID", "tenantDateStart", "tenantDateEnd"]
+                         "stallName","companyPOCName", "companyPOCEmail",
+                         "unitNo", "fnb","staffID"]
         
         try:
             if request.method == "POST":

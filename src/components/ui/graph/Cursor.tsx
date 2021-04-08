@@ -27,6 +27,7 @@ function useForceUpdate() {
 }
 
 const { width } = Dimensions.get("window");
+const height = width / 3;
 const CURSOR = 150;
 const styles = StyleSheet.create({
   cursorContainer: {
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   line: {
-    height: 1000,
+    height,
     width: 1,
     backgroundColor: "grey",
   },

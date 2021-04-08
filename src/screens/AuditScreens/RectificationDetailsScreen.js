@@ -14,6 +14,7 @@ import {
 } from "@ui-kitten/components";
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import moment from "moment";
 
 import * as checklistActions from "../../store/actions/checklistActions";
 import CustomDatepicker from "../../components/CustomDatePicker";
@@ -139,7 +140,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
       setValue(storeRemarks);
     }
     if (storeDeadline) {
-      setDeadline(storeDeadline.$date);
+      setDeadline(moment(storeDeadline.$date || storeDeadline));
     }
   }, [checklistStore, dispatch, index, section]);
 
@@ -194,7 +195,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
       >
         <CustomText bold>{question}</CustomText>
       </View>
-      <Button onPress={handleGoToTenantRectifications}>
+      <Button style={styles.button} onPress={handleGoToTenantRectifications}>
         {authStore.userType === "staff" ? "CHECK STATUS" : "RECTIFY NOW"}
       </Button>
       <Layout style={styles.layout}>
@@ -249,6 +250,9 @@ const styles = StyleService.create({
   },
   inputContainer: {
     // margin: 20,
+  },
+  button: {
+    borderRadius: 0,
   },
   input: {
     minHeight: 64,
