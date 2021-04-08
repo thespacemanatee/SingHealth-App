@@ -20,6 +20,7 @@ import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
 import SkeletonLoading from "../../components/ui/loading/SkeletonLoading";
+import useHandleScroll from "../../helpers/hooks/useHandleScroll";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
@@ -32,6 +33,8 @@ const StaffDashboardScreen = ({ navigation }) => {
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
   const [graphData, setGraphData] = useState();
+
+  const { handleScroll, showButton } = useHandleScroll();
 
   const dispatch = useDispatch();
 
@@ -173,6 +176,7 @@ const StaffDashboardScreen = ({ navigation }) => {
           renderItem={renderActiveAudits}
           onRefresh={getListData}
           refreshing={listLoading}
+          onScroll={handleScroll}
           ListEmptyComponent={renderEmptyComponent}
           ListHeaderComponent={() => (
             <View style={styles.textContainer}>
@@ -185,7 +189,7 @@ const StaffDashboardScreen = ({ navigation }) => {
 
         <FAB
           icon="plus"
-          label="New Audit"
+          label={showButton ? "New Audit" : null}
           style={styles.fab}
           onPress={() => {
             navigation.navigate("ChooseTenant");

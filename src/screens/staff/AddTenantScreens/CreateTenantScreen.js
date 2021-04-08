@@ -70,7 +70,7 @@ const AddTenantCredScreen = ({ navigation }) => {
         accessoryLeft={BackAction}
       />
       <Divider />
-      <KeyboardAwareScrollView>
+      <KeyboardAwareScrollView contentContainerStyle={styles.screen}>
         <Layout style={styles.layout}>
           <Formik
             initialValues={{ name: "", email: "", pswd: "" }}
