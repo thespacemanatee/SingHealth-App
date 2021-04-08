@@ -42,7 +42,10 @@ def change_tenant_info(app, mongo):
                     "email": tenant_info["email"].lower(),
                     "pswd": tenant_info["pswd"],
                     "institutionID": tenant_info["institutionID"],
-                    "fnb": tenant_info["fnb"]},
+                    "fnb": tenant_info["fnb"],
+                    "createdBy": tenant_info["staffID"],
+                    "dateCreated": datetime.datetime.now().isoformat(),
+                    "expoToken": []
                     # "stall": {
                     #     "name": tenant_info["stallName"],
                     #     "companyName": tenant_info["companyName"],
@@ -56,8 +59,6 @@ def change_tenant_info(app, mongo):
                     #         "unitNo": tenant_info["unitNo"],
                     #         "zipCode": tenant_info.get("zipCode", None)},
                     #     "fnb": tenant_info["fnb"]},
-                    "createdBy": tenant_info["staffID"],
-                    "dateCreated": datetime.datetime.now().isoformat(),
                     # "tenantDateStart": tenant_info.get("tenantDateStart", None),
                     # "tenantDateEnd": tenant_info.get("tenantDateEnd", None)
                 }
