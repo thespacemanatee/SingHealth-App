@@ -51,21 +51,21 @@ def addRecentAuditsEndpoints(app, mongo):
                     "$gt": datetime.utcnow() - datetime.timedelta(days=daysBefore)
                 }
 
-                audits = mongo.db.audits.find(queryDict)
-                auditsList = []
-                for audit in audits:
-                    auditMetadataObject = {"auditMetadata": audit}
-                    tenantID = audit["tenantID"]
-                    audit["date"] = audit["date"]
-                    tenant = mongo.db.tenant.find_one({"_id": tenantID})
-                    auditMetadataObject["stallName"] = ""
-                    if tenant:
-                        tenantStallName = tenant["stallName"]
-                        auditMetadataObject["stallName"] = tenantStallName
-                    auditsList.append(auditMetadataObject)
+            audits = mongo.db.audits.find(queryDict)
+            auditsList = []
+            for audit in audits:
+                auditMetadataObject = {"auditMetadata": audit}
+                tenantID = audit["tenantID"]
+                audit["date"] = audit["date"]
+                tenant = mongo.db.tenant.find_one({"_id": tenantID})
+                auditMetadataObject["stallName"] = ""
+                if tenant:
+                    tenantStallName = tenant["stallName"]
+                    auditMetadataObject["stallName"] = tenantStallName
+                auditsList.append(auditMetadataObject)
 
-                if len(auditsList) == 0:
-                    return serverResponse(None, 200, "No forms found")
+            if len(auditsList) == 0:
+                return serverResponse(None, 200, "No forms found")
 
             return serverResponse(auditsList, 200, "Forms found")
 
