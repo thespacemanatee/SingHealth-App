@@ -127,7 +127,7 @@ const AuditSubmitScreen = ({ navigation }) => {
         let imageRes;
         if (imageAdded) {
           if (Platform.OS === "web") {
-            imageRes = dispatch(
+            imageRes = await dispatch(
               databaseActions.postAuditImagesWeb(base64images)
             );
           } else {

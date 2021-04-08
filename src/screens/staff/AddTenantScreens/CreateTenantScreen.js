@@ -9,24 +9,61 @@ import {
   Icon,
   StyleService,
   useTheme,
+  Toggle,
 } from "@ui-kitten/components";
+import { useDispatch, useSelector } from "react-redux";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Toast from "react-native-toast-message";
+import { StackActions } from "@react-navigation/routers";
 
 import CustomTextInput from "../../../components/CustomTextInput";
 import Logo from "../../../components/ui/Logo";
+import * as databaseActions from "../../../store/actions/databaseActions";
+import { handleErrorResponse } from "../../../helpers/utils";
+import CenteredLoading from "../../../components/ui/CenteredLoading";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const AddTenantCredScreen = ({ navigation }) => {
+  const authStore = useSelector((state) => state.auth);
   const [secureTextEntry, setSecureTextEntry] = useState(true);
+  const [checked, setChecked] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const theme = useTheme();
 
-  const handleSubmitForm = (credentials) => {
-    console.log(credentials);
-    navigation.navigate("AddAccountDetails", { credentials });
+  const dispatch = useDispatch();
+
+  const onCheckedChange = (isChecked) => {
+    setChecked(isChecked);
+  };
+
+  const handleSubmitForm = async (values) => {
+    try {
+      setLoading(true);
+      const data = {
+        ...values,
+        institutionID: authStore.institutionID,
+        staffID: authStore._id,
+      };
+      console.log(data);
+      const res = await dispatch(databaseActions.createNewTenant(data));
+
+      console.log(res);
+
+      Toast.show({
+        text1: "Success",
+        text2: `You have successfully added ${values.stallName} to the database!`,
+      });
+
+      navigation.dispatch(StackActions.popToTop());
+    } catch (err) {
+      handleErrorResponse(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const BackAction = () => (
@@ -50,6 +87,10 @@ const AddTenantCredScreen = ({ navigation }) => {
       [Yup.ref("pswd"), null],
       "Passwords must match"
     ),
+    stallName: Yup.string().required("Please enter tenant's stall name!"),
+    fnb: Yup.boolean().required(
+      "Please indicate if the stall is FNB or non-FNB!"
+    ),
   });
 
   const renderSecureIcon = (props) => (
@@ -70,14 +111,28 @@ const AddTenantCredScreen = ({ navigation }) => {
         accessoryLeft={BackAction}
       />
       <Divider />
+      <CenteredLoading loading={loading} />
       <KeyboardAwareScrollView>
         <Layout style={styles.layout}>
           <Formik
-            initialValues={{ name: "", email: "", pswd: "" }}
+            initialValues={{
+              name: "",
+              email: "",
+              pswd: "",
+              stallName: "",
+              fnb: false,
+            }}
             onSubmit={handleSubmitForm}
             validationSchema={RegisterSchema}
           >
-            {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+            {({
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              setFieldValue,
+              values,
+              errors,
+            }) => (
               <View style={styles.keyboardContainer}>
                 <Logo />
                 <CustomTextInput
@@ -91,6 +146,26 @@ const AddTenantCredScreen = ({ navigation }) => {
                   accessoryRight={(props) => {
                     return (
                       !!errors.name && (
+                        <Icon
+                          {...props}
+                          name="alert-circle-outline"
+                          fill={theme["color-danger-700"]}
+                        />
+                      )
+                    );
+                  }}
+                />
+                <CustomTextInput
+                  label="Stall Name"
+                  returnKeyType="next"
+                  value={values.stallName}
+                  onChangeText={handleChange("stallName")}
+                  onBlur={handleBlur("stallName")}
+                  error={!!errors.stallName}
+                  errorText={errors.stallName}
+                  accessoryRight={(props) => {
+                    return (
+                      !!errors.stallName && (
                         <Icon
                           {...props}
                           name="alert-circle-outline"
@@ -135,6 +210,17 @@ const AddTenantCredScreen = ({ navigation }) => {
                   secureTextEntry={secureTextEntry}
                   accessoryRight={renderSecureIcon}
                 />
+                <View style={styles.toggleContainer}>
+                  <Toggle
+                    checked={checked}
+                    onChange={(val) => {
+                      setFieldValue("fnb", val);
+                      onCheckedChange(val);
+                    }}
+                  >
+                    {checked ? "FNB" : "NON-FNB"}
+                  </Toggle>
+                </View>
                 <View style={styles.buttonContainer}>
                   <Button onPress={handleSubmit} style={styles.button}>
                     NEXT
@@ -153,9 +239,6 @@ const styles = StyleService.create({
   screen: {
     flex: 1,
   },
-  topNavigation: {
-    zIndex: 5,
-  },
   layout: {
     flex: 1,
     alignItems: "center",
@@ -168,10 +251,6 @@ const styles = StyleService.create({
     paddingLeft: 20,
     paddingRight: 20,
   },
-  row: {
-    flexDirection: "row",
-    marginBottom: 20,
-  },
   buttonContainer: {
     flex: 1,
     width: "100%",
@@ -180,6 +259,11 @@ const styles = StyleService.create({
   },
   button: {
     marginTop: 24,
+  },
+  toggleContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    width: "100%",
   },
 });
 

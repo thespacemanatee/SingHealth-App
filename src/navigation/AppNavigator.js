@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Platform } from "react-native";
+import { View } from "react-native";
 import { useSelector } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -19,9 +19,87 @@ const { Navigator, Screen } = createStackNavigator();
 const AppNavigator = () => {
   const authStore = useSelector((state) => state.auth);
 
+  const config = {
+    screens: {
+      StaffNavigator: {
+        screens: {
+          StaffModalStack: {
+            screens: {
+              StaffTabNavigator: {
+                screens: {
+                  StaffDashboardStack: {
+                    screens: {
+                      StaffDashboard: "staff/dashboard",
+                      ChooseTenant: "staff/new-audit",
+                      Checklist: "staff/new-audit/:auditID",
+                      QuestionDetails: "staff/new-audit/details",
+                      AuditSubmit: "staff/new-audit/submit",
+                      Rectification: "staff/rectification/:auditID",
+                      RectificationDetails: "staff/rectification/details",
+                      StaffRectification: "staff/rectification/status",
+                    },
+                  },
+                  StaffDirectoryStack: {
+                    screens: {
+                      Directory: "staff/directory",
+                      TenantsDirectory:
+                        "staff/directory/institution/:institutionID",
+                      TenantInfo: "staff/directory/stall/:tenantID",
+                      Rectification: "staff/directory/stall/:auditID",
+                      RectificationDetails: "staff/directory/stall/details",
+                      StaffRectification: "staff/directory/stall/status",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          AddTenantStack: {
+            screens: {
+              ManageTenantAccounts: "staff/manage-tenants",
+              CreateTenant: "staff/manage-tenants/create",
+              // AddAccountDetails: "staff/manage-tenants/create/details",
+            },
+          },
+        },
+      },
+      TenantNavigator: {
+        screens: {
+          TenantModalStack: {
+            screens: {
+              TenantTabNavigator: {
+                screens: {
+                  TenantDashboardStack: {
+                    screens: {
+                      TenantDashboard: "tenant/dashboard",
+                      Rectification: "tenant/rectification/:auditID",
+                      RectificationDetails: "tenant/rectification/details",
+                      TenantRectification: "tenant/rectification/status",
+                    },
+                  },
+                  TenantRecordsStack: {
+                    screens: {
+                      TenantRecords: "tenant/records",
+                      Rectification: "tenant/records/rectification/:auditID",
+                      RectificationDetails:
+                        "tenant/records/rectification/:stallName/details",
+                      TenantRectification:
+                        "tenant/records/rectification/status",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      NotFound: "*",
+    },
+  };
+
   const linking = {
     prefixes: ["http://localhost:19006"],
-    enabled: true,
+    config,
   };
 
   const renderNavigator = () => {
@@ -50,7 +128,7 @@ const AppNavigator = () => {
   console.log(authStore);
 
   return (
-    <NavigationContainer linking={Platform.select({ web: linking })}>
+    <NavigationContainer linking={linking}>
       {authStore.userToken === null ? (
         <SafeAreaView style={styles.screen}>
           <Navigator headerMode="none">

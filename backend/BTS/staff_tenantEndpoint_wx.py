@@ -14,18 +14,15 @@ import datetime
 
 # For the staff to edit tenant info
 def change_tenant_info(app, mongo):
-    
+
     def find_tenant_by_id(tenantID):
         return find_and_return_one(mongo, "tenant", "_id", tenantID)
-    
-    @app.route("/tenant", methods = ["POST"])
+
+    @app.route("/tenant", methods=["POST"])
     # @login_required
     def add_tenant():
-        required_info = [ "name", "email", "pswd", "institutionID", 
-                         "stallName", "companyName", 
-                         "companyPOCName", "companyPOCEmail",
-                         "unitNo", "fnb",
-                         "staffID", "tenantDateStart", "tenantDateEnd"]
+        required_info = ["name", "email", "pswd", "institutionID",
+                         "stallName", "fnb", "staffID"]
 
         try:
             if request.method == "POST":
@@ -39,29 +36,17 @@ def change_tenant_info(app, mongo):
 
             if validated and not duplicate:
                 data = {
-                        "_id": str(ObjectId()),
-                        "name":tenant_info["name"],
-                        "email":tenant_info["email"].lower(),
-                        "pswd":tenant_info["pswd"],
-                        "institutionID":tenant_info["institutionID"],
-                        "stall":{
-                            "name":tenant_info["stallName"],
-                            "companyName":tenant_info["companyName"],
-                            "companyPOC":{
-                                "name":tenant_info["companyPOCName"],
-                                "email":tenant_info["companyPOCEmail"].lower()},
-                            "address":{
-                                "blk":tenant_info.get("blk", None),
-                                "street":tenant_info.get("street", None),
-                                "bldg":tenant_info.get("bldg", None),
-                                "unitNo":tenant_info["unitNo"],
-                                "zipCode": tenant_info.get("zipCode", None)},
-                            "fnb":tenant_info["fnb"]},
-                        "createdBy":tenant_info["staffID"],
-                        "dateCreated":datetime.datetime.now().isoformat(),
-                        "tenantDateStart": tenant_info.get("tenantDateStart", None),
-                        "tenantDateEnd": tenant_info.get("tenantDateEnd", None)
-                         }                
+                    "_id": str(ObjectId()),
+                    "name": tenant_info["name"],
+                    "stallName": tenant_info["stallName"],
+                    "email": tenant_info["email"].lower(),
+                    "pswd": tenant_info["pswd"],
+                    "institutionID": tenant_info["institutionID"],
+                    "fnb": tenant_info["fnb"],
+                    "createdBy": tenant_info["staffID"],
+                    "dateCreated": datetime.datetime.now().isoformat(),
+                    "expoToken": []
+                }
                 try:
                     mongo.db.tenant.insert_one(data)
                 except:
@@ -79,37 +64,38 @@ def change_tenant_info(app, mongo):
 
         return serverResponse(None, 201, "Tenant Added")
 
-    @app.route("/tenant/<tenantID>", methods=["GET"])
-    # @login_required
+    @ app.route("/tenant/<tenantID>", methods=["GET", "DELETE"])
+    # @ login_required
     def get_tenant(tenantID):
-        tenant_found, tenant_info = find_tenant_by_id(tenantID)
+        if request.method == "GET":
+            tenant_found, tenant_info = find_tenant_by_id(tenantID)
 
-        if tenant_found is not None:
-            if tenant_found:
-                tenant_info["_id"] = tenantID
-                return serverResponse(tenant_info, 200, "Success")
+            if tenant_found is not None:
+                if tenant_found:
+                    tenant_info["_id"] = tenantID
+                    return serverResponse(tenant_info, 200, "Success")
+                else:
+                    return serverResponse(None, 404, "No matching tenant ID found")
             else:
                 return serverResponse(None, 404, "No matching tenant ID found")
-        else:
-            return serverResponse(None, 404, "Error connecting to server")
+                
+        elif request.method == "DELETE":
+            tenant_found, tenant_info = find_tenant_by_id(tenantID)
 
-    @app.route("/tenant/<tenantID>", methods=["DELETE"])
-    # @login_required
-    def delete_tenant(tenantID):
-        tenant_found, tenant_info = find_tenant_by_id(tenantID)
+            if tenant_found is not None:
+                if tenant_found:
+                    try:
+                        mongo.db.tenant.delete_one({"_id": tenantID})
+                    except:
+                        return serverResponse(None, 404, "Error connecting to server")
 
-        if tenant_found is not None:
-            if tenant_found:
-                try:
-                    mongo.db.tenant.delete_one({"_id": tenantID})
-                except:
-                    return serverResponse(None, 404, "Error connecting to server")
+                    # check if tenant is still there after deleting
+                    tenant_found, tenant_info = find_tenant_by_id(tenantID)
 
-                # check if tenant is still there after deleting
-                tenant_found, tenant_info = find_tenant_by_id(tenantID)
-
-                if not tenant_found:
-                    return serverResponse(None, 200, "Tenant with ID " + tenantID + " deleted")
+                    if not tenant_found:
+                        return serverResponse(None, 200, "Tenant with ID " + tenantID + " deleted")
+                    else:
+                        return serverResponse(None, 404, "Error deleting the tenant")
                 else:
                     return serverResponse(None, 404, "No matching tenant ID found")
             else:

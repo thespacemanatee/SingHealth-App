@@ -93,7 +93,7 @@ const StaffNavigator = () => {
   return (
     <Navigator drawerContent={(props) => <DrawerContent {...props} />}>
       <Screen name="StaffModalStack" component={StaffModalStackNavigator} />
-      <Screen name="AddTenantNavigator" component={AddTenantStackNavigator} />
+      <Screen name="AddTenantStack" component={AddTenantStackNavigator} />
     </Navigator>
   );
 };
@@ -158,7 +158,7 @@ const AddTenantStackNavigator = () => {
           component={ManageTenantAccountsScreen}
         />
         <Screen name="CreateTenant" component={CreateTenantScreen} />
-        <Screen name="AddAccountDetails" component={AddAccountDetailsScreen} />
+        {/* <Screen name="AddAccountDetails" component={AddAccountDetailsScreen} /> */}
       </Navigator>
     </SafeAreaView>
   );

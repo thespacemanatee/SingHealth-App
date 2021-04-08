@@ -14,9 +14,10 @@ import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import * as Notifications from "expo-notifications";
 import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
-import Toast, { BaseToast } from "react-native-toast-message";
+import Toast from "react-native-toast-message";
+import { PersistGate } from "redux-persist/integration/react";
 
-import store from "./src/store/store";
+import { store, persistor } from "./src/store/store";
 import AppNavigator from "./src/navigation/AppNavigator";
 import theme from "./src/theme/theme.json";
 import alert from "./src/components/CustomAlert";
@@ -112,18 +113,20 @@ const App = () => {
     <>
       <IconRegistry icons={EvaIconsPack} />
       <Provider store={store}>
-        <PaperProvider theme={paperTheme}>
-          <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
-            <SafeAreaProvider style={styles.screen}>
-              {Platform.OS === "ios" && <StatusBar barStyle="dark-content" />}
-              <AppNavigator expoToken={expoToken} />
-              <Toast
-                topOffset={StatusBar.currentHeight}
-                ref={(ref) => Toast.setRef(ref)}
-              />
-            </SafeAreaProvider>
-          </ApplicationProvider>
-        </PaperProvider>
+        <PersistGate loading={null} persistor={persistor}>
+          <PaperProvider theme={paperTheme}>
+            <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
+              <SafeAreaProvider style={styles.screen}>
+                {Platform.OS === "ios" && <StatusBar barStyle="dark-content" />}
+                <AppNavigator expoToken={expoToken} />
+                <Toast
+                  topOffset={StatusBar.currentHeight}
+                  ref={(ref) => Toast.setRef(ref)}
+                />
+              </SafeAreaProvider>
+            </ApplicationProvider>
+          </PaperProvider>
+        </PersistGate>
       </Provider>
     </>
   );
