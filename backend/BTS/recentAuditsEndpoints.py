@@ -25,7 +25,7 @@ def addRecentAuditsEndpoints(app, mongo):
                 audit["date"] = audit["date"]
                 tenant = mongo.db.tenant.find_one({"_id": audit["tenantID"]})
                 if tenant:
-                    auditObject["stallName"] = tenant["stall"]["name"]
+                    auditObject["stallName"] = tenant["stallName"]
 
                 auditsList.append(auditObject)
 
@@ -59,7 +59,7 @@ def addRecentAuditsEndpoints(app, mongo):
                     tenant = mongo.db.tenant.find_one({"_id": tenantID})
                     auditMetadataObject["stallName"] = ""
                     if tenant:
-                        tenantStallName = tenant["stall"]["name"]
+                        tenantStallName = tenant["stallName"]
                         auditMetadataObject["stallName"] = tenantStallName
                     auditsList.append(auditMetadataObject)
 

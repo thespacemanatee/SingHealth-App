@@ -379,12 +379,10 @@ def addAuditsEndpoint(app, mongo):
                 tenant = mongo.db.tenant.find_one(
                     {"_id": tenantID},
                     {
-                        "stall": {
-                            "name": 1
-                        }
+                        "stallName": 1
                     }
                 )
-                stallName = tenant["stall"]["name"]
+                stallName = tenant["stallName"]
 
                 auditsList.append(
                     {
@@ -458,7 +456,7 @@ def addAuditsEndpoint(app, mongo):
             tenant = mongo.db.tenant.find_one(
                 {"_id": selectedAudit["tenantID"]}
             )
-            tenantStallName = tenant["stall"]["name"]
+            tenantStallName = tenant["stallName"]
             staffExpoTokens = staff.get("expoToken")
 
             auditChecklists = selectedAudit["auditChecklists"]

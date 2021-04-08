@@ -112,7 +112,7 @@ const AddTenantCredScreen = ({ navigation }) => {
       />
       <Divider />
       <CenteredLoading loading={loading} />
-      <KeyboardAwareScrollView contentContainerStyle={styles.screen}>
+      <KeyboardAwareScrollView>
         <Layout style={styles.layout}>
           <Formik
             initialValues={{
