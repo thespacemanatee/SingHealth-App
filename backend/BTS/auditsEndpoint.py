@@ -78,9 +78,6 @@ def validateFilledAuditForms(filledAuditForms):
         answers = filledAuditForm["questions"]
         for category, answerList in answers.items():
             for index, answer in enumerate(answerList):
-                if not "answer" in answer.keys():
-                    return False, category, index + 1, "Please fill in the 'answer' field."
-
                 if "images" in answer.keys():
                     if (numImages := len(answer.get("images", []))) > MAX_NUM_IMAGES_PER_NC:
                         return False, category, index + 1, f"Max allowed is {MAX_NUM_IMAGES_PER_NC} images but {numImages} provided."
@@ -146,7 +143,7 @@ def postProcessLineItem(lineItem):
     if "question" in lineItem.keys():
         lineItem.pop("question")
 
-    if not lineItem["answer"]:
+    if lineItem["answer"] == False:
         lineItem["rectified"] = False
         lineItem["deadline"] = iso8601.parse_date(lineItem["deadline"])
     elif lineItem["answer"] and "rectified" in lineItem.keys():
