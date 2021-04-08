@@ -15,8 +15,7 @@ def addRecentAuditsEndpoints(app, mongo):
             queryDict["rectificationProgress"] = {"$lt": 1}
             if daysBefore > 0:
                 queryDict["date"] = {"$gt": datetime.utcnow(
-                ) - datetime.timedelta(days=daysBefore)
-                }
+                ) - datetime.timedelta(days=daysBefore)}
 
             audits = mongo.db.audits.find(queryDict)
 
@@ -24,7 +23,8 @@ def addRecentAuditsEndpoints(app, mongo):
             for audit in audits:
                 auditObject = {"auditMetadata": audit}
                 audit["date"] = audit["date"]
-                tenant = mongo.db.tenant.find_one({"_id": audit["tenantID"]})
+                tenant = mongo.db.tenant.find_one(
+                    {"_id": audit["tenantID"]})
                 if tenant:
                     auditObject["stallName"] = tenant["stallName"]
 

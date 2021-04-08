@@ -143,6 +143,7 @@ const StaffDashboardScreen = ({ navigation }) => {
 
     const unsubscribe = navigation.addListener("focus", () => {
       getListData();
+      getGraphData();
     });
 
     return () => {

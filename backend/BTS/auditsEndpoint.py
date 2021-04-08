@@ -78,9 +78,6 @@ def validateFilledAuditForms(filledAuditForms):
         answers = filledAuditForm["questions"]
         for category, answerList in answers.items():
             for index, answer in enumerate(answerList):
-                if not "answer" in answer.keys():
-                    return False, category, index + 1, "Please fill in the 'answer' field."
-
                 if "images" in answer.keys():
                     if (numImages := len(answer.get("images", []))) > MAX_NUM_IMAGES_PER_NC:
                         return False, category, index + 1, f"Max allowed is {MAX_NUM_IMAGES_PER_NC} images but {numImages} provided."
@@ -146,7 +143,7 @@ def postProcessLineItem(lineItem):
     if "question" in lineItem.keys():
         lineItem.pop("question")
 
-    if not lineItem["answer"]:
+    if lineItem["answer"] == False:
         lineItem["rectified"] = False
         lineItem["deadline"] = iso8601.parse_date(lineItem["deadline"])
     elif lineItem["answer"] and "rectified" in lineItem.keys():
@@ -278,7 +275,7 @@ def mongoUpdateGivenFields(mongo, patches, fields, auditChecklists):
 
 def addAuditsEndpoint(app, mongo):
     @app.route("/audits", methods=['POST', 'GET'])
-    @login_required
+    # @login_required
     def audits():
         if request.method == 'POST':
             auditData = request.json
@@ -398,7 +395,7 @@ def addAuditsEndpoint(app, mongo):
             return serverResponse(auditsList, 200, msg)
 
     @app.route("/audits/<auditID>", methods=['GET'])
-    @login_required
+    # @login_required
     def get_audit(auditID):
         if request.method == "GET":
             responseJson = {}
@@ -436,7 +433,7 @@ def addAuditsEndpoint(app, mongo):
                 return serverResponse(None, 404, "Form not found in our database")
 
     @app.route("/audits/<auditID>/tenant", methods=['PATCH'])
-    @login_required
+    # @login_required
     def patch_audit_tenant(auditID):
         if request.method == "PATCH":
             patches = request.json
@@ -501,7 +498,7 @@ def addAuditsEndpoint(app, mongo):
             return serverResponse(patchResults, 200, "Changes sent to the database.")
 
     @app.route("/audits/<auditID>/staff", methods=['PATCH'])
-    @login_required
+    # @login_required
     def patch_audit_staff(auditID):
         if request.method == "PATCH":
             patches = request.json
