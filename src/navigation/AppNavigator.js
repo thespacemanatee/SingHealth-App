@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Platform } from "react-native";
+import { View } from "react-native";
 import { useSelector } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -29,16 +29,25 @@ const AppNavigator = () => {
                 screens: {
                   StaffDashboardStack: {
                     screens: {
-                      StaffDashboard: "staff-dashboard",
-                      ChooseTenant: "new-audit",
-                      Checklist: "new-audit/:auditID",
+                      StaffDashboard: "staff/dashboard",
+                      ChooseTenant: "staff/new-audit",
+                      Checklist: "staff/new-audit/:auditID",
+                      QuestionDetails: "staff/new-audit/details",
+                      AuditSubmit: "staff/new-audit/submit",
+                      Rectification: "staff/rectification/:auditID",
+                      RectificationDetails: "staff/rectification/details",
+                      StaffRectification: "staff/rectification/status",
                     },
                   },
                   StaffDirectoryStack: {
                     screens: {
-                      Directory: "directory",
-                      TenantsDirectory: "directory/institution/:institutionID",
-                      TenantInfo: "directory/stall/:tenantID",
+                      Directory: "staff/directory",
+                      TenantsDirectory:
+                        "staff/directory/institution/:institutionID",
+                      TenantInfo: "staff/directory/stall/:tenantID",
+                      Rectification: "staff/directory/stall/:auditID",
+                      RectificationDetails: "staff/directory/stall/details",
+                      StaffRectification: "staff/directory/stall/status",
                     },
                   },
                 },
@@ -47,14 +56,44 @@ const AppNavigator = () => {
           },
           AddTenantStack: {
             screens: {
-              ManageTenantAccounts: "manage-tenants",
-              CreateTenant: "manage-tenants/create",
-              AddAccountDetails: "manage-tenants/create/details",
+              ManageTenantAccounts: "staff/manage-tenants",
+              CreateTenant: "staff/manage-tenants/create",
+              AddAccountDetails: "staff/manage-tenants/create/details",
             },
           },
         },
       },
-      TenantNavigator: "tenant-dashboard",
+      TenantNavigator: {
+        screens: {
+          TenantModalStack: {
+            screens: {
+              TenantTabNavigator: {
+                screens: {
+                  TenantDashboardStack: {
+                    screens: {
+                      TenantDashboard: "tenant/dashboard",
+                      Rectification: "tenant/rectification/:auditID",
+                      RectificationDetails: "tenant/rectification/details",
+                      TenantRectification: "tenant/rectification/status",
+                    },
+                  },
+                  TenantRecordsStack: {
+                    screens: {
+                      TenantRecords: "tenant/records",
+                      Rectification: "tenant/records/rectification/:auditID",
+                      RectificationDetails:
+                        "tenant/records/rectification/:stallName/details",
+                      TenantRectification:
+                        "tenant/records/rectification/status",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      NotFound: "*",
     },
   };
 
