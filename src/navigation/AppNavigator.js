@@ -19,9 +19,48 @@ const { Navigator, Screen } = createStackNavigator();
 const AppNavigator = () => {
   const authStore = useSelector((state) => state.auth);
 
+  const config = {
+    screens: {
+      StaffNavigator: {
+        screens: {
+          StaffModalStack: {
+            screens: {
+              StaffTabNavigator: {
+                screens: {
+                  StaffDashboardStack: {
+                    screens: {
+                      StaffDashboard: "staff-dashboard",
+                      ChooseTenant: "new-audit",
+                      Checklist: "new-audit/:auditID",
+                    },
+                  },
+                  StaffDirectoryStack: {
+                    screens: {
+                      Directory: "directory",
+                      TenantsDirectory: "directory/institution/:institutionID",
+                      TenantInfo: "directory/stall/:tenantID",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          AddTenantStack: {
+            screens: {
+              ManageTenantAccounts: "manage-tenants",
+              CreateTenant: "manage-tenants/create",
+              AddAccountDetails: "manage-tenants/create/details",
+            },
+          },
+        },
+      },
+      TenantNavigator: "tenant-dashboard",
+    },
+  };
+
   const linking = {
     prefixes: ["http://localhost:19006"],
-    enabled: true,
+    config,
   };
 
   const renderNavigator = () => {
@@ -50,7 +89,7 @@ const AppNavigator = () => {
   console.log(authStore);
 
   return (
-    <NavigationContainer linking={Platform.select({ web: linking })}>
+    <NavigationContainer linking={linking}>
       {authStore.userToken === null ? (
         <SafeAreaView style={styles.screen}>
           <Navigator headerMode="none">
