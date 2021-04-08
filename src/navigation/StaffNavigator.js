@@ -93,7 +93,7 @@ const StaffNavigator = () => {
   return (
     <Navigator drawerContent={(props) => <DrawerContent {...props} />}>
       <Screen name="StaffModalStack" component={StaffModalStackNavigator} />
-      <Screen name="AddTenantNavigator" component={AddTenantStackNavigator} />
+      <Screen name="AddTenantStack" component={AddTenantStackNavigator} />
     </Navigator>
   );
 };
