@@ -1,22 +1,37 @@
 from selenium import webdriver
+from selenium.webdriver.common.alert import Alert
 from random import choice, randint
+import win32com.client as comclt
+import win32gui
+import win32con
 import time
+
+def handle_upload_file_dialog(file_path):
+    sleep = 1
+    windowsShell = comclt.Dispatch("WScript.Shell")
+    time.sleep(sleep)
+    windowsShell.SendKeys(file_path)
+    time.sleep(sleep)
+    windowsShell.SendKeys("{TAB}{TAB}")
+    time.sleep(sleep)
+    windowsShell.SendKeys("{ENTER}{ENTER}")
 
 if __name__ == "__main__":
     driver = webdriver.Chrome()
     driver.get('http://localhost:19006/Auth')
     driver.find_element_by_xpath('//div[text()="Login"]').click()
     time.sleep(1)
-    driver.find_element_by_xpath("//input[@type='email']").send_keys("caocao@gmail.com")
+    driver.find_element_by_xpath("//input[@type='email']").send_keys("cheekit.chong98@gmail.com")
     time.sleep(1)
     driver.find_element_by_xpath("//input[@type='password']").send_keys("bts")
     time.sleep(1)
-    links = driver.find_elements_by_xpath('//div[text()="Login"]')
+    driver.find_element_by_xpath('//div[text()="Login as Tenant"]').click()
+    time.sleep(1)
+    links = driver.find_elements_by_xpath('//div[text()="LOGIN"]')
     links[-1].click()
-    driver.get('http://localhost:19006/StaffNavigator/AddTenantNavigator/ManageTenantAccounts')
+    time.sleep(10)
+    driver.get('http://localhost:19006/manage-tenants/create')
     time.sleep(3)
-    driver.find_element_by_xpath('//div[text()="Create Tenant Account"]').click()
-    time.sleep(2)
     driver.find_element_by_xpath("//input[@type='text']").send_keys("Test")
     driver.find_element_by_xpath("//input[@type='email']").send_keys("Test@test.com")
     driver.find_element_by_xpath("//input[@type='password']").send_keys("testtest")
@@ -33,4 +48,3 @@ if __name__ == "__main__":
     driver.find_element_by_xpath('//div[text()="SUBMIT"]').click()
     # todo: add successfully;
     driver.get('http://localhost:19006/StaffNavigator/StaffModalStack/StaffTabNavigator/StaffDashboardStack/StaffDashboard')
-        

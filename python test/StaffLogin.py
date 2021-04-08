@@ -1,7 +1,20 @@
 from selenium import webdriver
 from selenium.webdriver.common.alert import Alert
 from random import choice, randint
+import win32com.client as comclt
+import win32gui
+import win32con
 import time
+
+def handle_upload_file_dialog(file_path):
+    sleep = 1
+    windowsShell = comclt.Dispatch("WScript.Shell")
+    time.sleep(sleep)
+    windowsShell.SendKeys(file_path)
+    time.sleep(sleep)
+    windowsShell.SendKeys("{TAB}{TAB}")
+    time.sleep(sleep)
+    windowsShell.SendKeys("{ENTER}{ENTER}")
 
 if __name__ == "__main__":
     driver = webdriver.Chrome()
@@ -17,13 +30,13 @@ if __name__ == "__main__":
     links = driver.find_elements_by_xpath('//div[text()="LOGIN"]')
     links[-1].click()
     time.sleep(10)
-    #class="css-cursor-18t94o4 css-view-1dbjc4n r-borderRadius-a1yn9n r-cursor-1loqt21 r-overflow-1udh08x r-position-bnwqim"
+    # ban mian test
+    #class="css-cursor-18t94o4 css-view-1dbjc4n r-borderRadius-a1yn9n r-cursor-1loqt21 r-overflow-1udh08x r-position-bnwqim""
     links = driver.find_elements_by_xpath("//div[contains(@class, 'css-cursor-18t94o4') and contains(@class, 'css-view-1dbjc4n') and contains(@class, 'r-borderRadius-a1yn9n') and contains(@class, 'r-cursor-1loqt21') and contains(@class, 'r-overflow-1udh08x') and contains(@class, 'r-position-bnwqim')]")
-    links[2].click()
+    links[0].click()
     time.sleep(1)
-    links[1].click()
-    time.sleep(1)
-    driver.find_element_by_xpath('//div[text()="BAN MAIN FISH SOUP"]').click()
+    links = driver.find_elements_by_xpath('//div[text()="BAN MAIN FISH SOUP"]')
+    links[-1].click()
     time.sleep(1)
     #class="css-view-1dbjc4n r-alignItems-1awozwy r-cursor-1loqt21 r-flexDirection-18u37iz r-outlineWidth-10paoce r-touchAction-1otgn73 r-transitionProperty-1i6wzkk r-userSelect-lrvibr"
     links = driver.find_elements_by_xpath("//div[contains(@class, 'css-view-1dbjc4n') and contains(@class, 'r-alignItems-1awozwy') and contains(@class, 'r-cursor-1loqt21') and contains(@class, 'r-flexDirection-18u37iz') and contains(@class, 'r-outlineWidth-10paoce') and contains(@class, 'r-touchAction-1otgn73') and contains(@class, 'r-transitionProperty-1i6wzkk') and contains(@class, 'r-userSelect-lrvibr')]")
@@ -33,39 +46,36 @@ if __name__ == "__main__":
     time.sleep(1)
     Alert(driver).accept()
     time.sleep(5)
-    driver.find_element_by_xpath('//div[text()="GO HOME"]').click()
-    time.sleep(1)
-    driver.find_element_by_xpath('//div[text()="DIRECTORY"]').click()
-    time.sleep(1)
-    driver.find_element_by_xpath('//div[text()="Changi General Hospital"]').click()
-    time.sleep(3)
-    driver.find_element_by_xpath('//div[text()="DASHBOARD"]').click()
-    time.sleep(1)
-    driver.find_element_by_xpath('''//div[text()="Cao Zei's Hardware Store"]''').click()
-    time.sleep(5)
-    driver.get('http://localhost:19006/StaffNavigator/AddTenantNavigator/ManageTenantAccounts')
-    time.sleep(3)
-    driver.find_element_by_xpath('//div[text()="Create Tenant Account"]').click()
-    time.sleep(2)
-    driver.find_element_by_xpath("//input[@type='text']").send_keys("Test")
-    driver.find_element_by_xpath("//input[@type='email']").send_keys("Test@test.com")
-    driver.find_element_by_xpath("//input[@type='password']").send_keys("testtest")
-    driver.find_element_by_xpath('//div[text()="Next"]').click()
-    time.sleep(2)
-    links = driver.find_elements_by_xpath("//input[@type='text']")
-    links[-4].send_keys("Beautiful Food")
-    links[-3].send_keys("SUTD CO")
-    links[-2].send_keys("SUTD")
-    links[-1].send_keys("55")
-    links = driver.find_elements_by_xpath("//input[@type='email']")
-    links[-1].send_keys("beautifulfood@gmail.com")
-    time.sleep(1)
-    driver.find_element_by_xpath('//div[text()="Add Account Details"]').click()
-    # todo: add successfully;
-    links = driver.find_elements_by_xpath('//*[name()="svg"]/*[name()="g"]')
-    links[-1].click()
-    time.sleep(1)
-    links = driver.find_elements_by_xpath('//*[name()="svg"]/*[name()="g"]')
-    links[-2].click()
-    time.sleep(1)
+    # end of ban main test
     driver.get('http://localhost:19006/StaffNavigator/StaffModalStack/StaffTabNavigator/StaffDashboardStack/StaffDashboard')
+    links = driver.find_elements_by_xpath("//div[contains(@class, 'css-cursor-18t94o4') and contains(@class, 'css-view-1dbjc4n') and contains(@class, 'r-borderRadius-a1yn9n') and contains(@class, 'r-cursor-1loqt21') and contains(@class, 'r-overflow-1udh08x') and contains(@class, 'r-position-bnwqim')]")
+    links[0].click()
+    time.sleep(2)
+    links = driver.find_elements_by_xpath('//div[text()="BAN MAIN FISH SOUP"]')
+    links[-1].click()
+    time.sleep(2)
+    #class="css-view-1dbjc4n r-alignItems-1awozwy r-cursor-1loqt21 r-flexDirection-18u37iz r-outlineWidth-10paoce r-touchAction-1otgn73 r-transitionProperty-1i6wzkk r-userSelect-lrvibr"
+    links = driver.find_elements_by_xpath("//div[contains(@class, 'css-view-1dbjc4n') and contains(@class, 'r-alignItems-1awozwy') and contains(@class, 'r-cursor-1loqt21') and contains(@class, 'r-flexDirection-18u37iz') and contains(@class, 'r-outlineWidth-10paoce') and contains(@class, 'r-touchAction-1otgn73') and contains(@class, 'r-transitionProperty-1i6wzkk') and contains(@class, 'r-userSelect-lrvibr')]")
+    links[-5].click()
+    time.sleep(3)
+    links[0].click()
+    url = driver.current_url
+    driver.find_element_by_xpath('//div[text()="Food is stored in appropriate conditions and at an appropriate temperature."]').click()
+    # css-view-1dbjc4n r-cursor-1loqt21 r-outlineWidth-10paoce r-touchAction-1otgn73 r-transitionProperty-1i6wzkk r-userSelect-lrvibr
+    links2 = driver.find_elements_by_xpath("//div[contains(@class, 'css-view-1dbjc4n') and contains(@class, 'r-cursor-1loqt21') and contains(@class, 'r-outlineWidth-10paoce') and contains(@class, ' r-touchAction-1otgn73') and contains(@class, 'r-transitionProperty-1i6wzkk') and contains(@class, 'r-userSelect-lrvibr')]")
+    links2[-6].click()
+    handle_upload_file_dialog("test.bmp")
+    time.sleep(5)
+    driver.find_element_by_xpath("//textarea").send_keys("test")
+    #css-view-1dbjc4n r-cursor-1loqt21 r-outlineWidth-10paoce r-touchAction-1otgn73 r-transitionProperty-1i6wzkk r-userSelect-lrvibr
+    time.sleep(2)
+    driver.find_element_by_xpath('//div[text()="Details"]').click()
+    time.sleep(3)
+    driver.get(url)
+    time.sleep(3)
+    driver.find_element_by_xpath('//div[text()="SUBMIT"]').click()
+    time.sleep(1)
+    Alert(driver).accept()
+    time.sleep(10)
+    #end of second test
+
