@@ -14,56 +14,59 @@ import datetime
 
 # For the staff to edit tenant info
 def change_tenant_info(app, mongo):
-    
+
     def find_tenant_by_id(tenantID):
         return find_and_return_one(mongo, "tenant", "_id", tenantID)
-    
-    @app.route("/tenant", methods = ["POST"])
+
+    @app.route("/tenant", methods=["POST"])
     @login_required
     def add_tenant():
-        required_info = [ "name", "email", "pswd", "institutionID", 
-                         "stallName","companyPOCName", "companyPOCEmail",
-                         "unitNo", "fnb","staffID"]
-        
+        required_info = ["name", "email", "pswd", "institutionID",
+                         "stallName", "fnb", "staffID"]
+
         try:
             if request.method == "POST":
                 tenant_info = request.json
-            
-            #validate and check duplicate email
-            validated, message = validate_required_info(tenant_info, required_info)
-            duplicate = check_duplicate(mongo, "tenant", "email", tenant_info["email"])
-            
+
+            # validate and check duplicate email
+            validated, message = validate_required_info(
+                tenant_info, required_info)
+            duplicate = check_duplicate(
+                mongo, "tenant", "email", tenant_info["email"])
+
             if validated and not duplicate:
                 data = {
-                        "_id": str(ObjectId()),
-                        "name":tenant_info["name"],
-                        "email":tenant_info["email"].lower(),
-                        "pswd":tenant_info["pswd"],
-                        "institutionID":tenant_info["institutionID"],
-                        "stall":{
-                            "name":tenant_info["stallName"],
-                            "companyName":tenant_info["companyName"],
-                            "companyPOC":{
-                                "name":tenant_info["companyPOCName"],
-                                "email":tenant_info["companyPOCEmail"].lower()},
-                            "address":{
-                                "blk":tenant_info.get("blk", None),
-                                "street":tenant_info.get("street", None),
-                                "bldg":tenant_info.get("bldg", None),
-                                "unitNo":tenant_info["unitNo"],
-                                "zipCode": tenant_info.get("zipCode", None)},
-                            "fnb":tenant_info["fnb"]},
-                        "createdBy":tenant_info["staffID"],
-                        "dateCreated":datetime.datetime.now().isoformat(),
-                        "tenantDateStart": tenant_info.get("tenantDateStart", None),
-                        "tenantDateEnd": tenant_info.get("tenantDateEnd", None)
-                         }                
+                    "_id": str(ObjectId()),
+                    "name": tenant_info["name"],
+                    "stallName": tenant_info["stallName"],
+                    "email": tenant_info["email"].lower(),
+                    "pswd": tenant_info["pswd"],
+                    "institutionID": tenant_info["institutionID"],
+                    "fnb": tenant_info["fnb"]},
+                    # "stall": {
+                    #     "name": tenant_info["stallName"],
+                    #     "companyName": tenant_info["companyName"],
+                    #     "companyPOC": {
+                    #         "name": tenant_info["companyPOCName"],
+                    #         "email": tenant_info["companyPOCEmail"].lower()},
+                    #     "address": {
+                    #         "blk": tenant_info.get("blk", None),
+                    #         "street": tenant_info.get("street", None),
+                    #         "bldg": tenant_info.get("bldg", None),
+                    #         "unitNo": tenant_info["unitNo"],
+                    #         "zipCode": tenant_info.get("zipCode", None)},
+                    #     "fnb": tenant_info["fnb"]},
+                    "createdBy": tenant_info["staffID"],
+                    "dateCreated": datetime.datetime.now().isoformat(),
+                    # "tenantDateStart": tenant_info.get("tenantDateStart", None),
+                    # "tenantDateEnd": tenant_info.get("tenantDateEnd", None)
+                }
                 try:
                     mongo.db.tenant.insert_one(data)
                 except:
                     return serverResponse(None, 400, "Cannot upload data to server")
             else:
-                #send appropriate error messages
+                # send appropriate error messages
                 if not validated and not duplicate:
                     return serverResponse(message, 400, "Insufficient/Error in data to add new tenant")
                 elif validated and duplicate:
@@ -72,15 +75,15 @@ def change_tenant_info(app, mongo):
                     return serverResponse(message, 400, "Duplicate email and insufficient/error in data to add new tenant")
         except:
             return serverResponse(None, 404, "No response received")
-        
+
         return serverResponse(None, 201, "Tenant Added")
-    
-    @app.route("/tenant/<tenantID>" , methods = ["GET", "DELETE"])
-    @login_required
+
+    @ app.route("/tenant/<tenantID>", methods=["GET", "DELETE"])
+    @ login_required
     def get_tenant(tenantID):
         if request.method == "GET":
             tenant_found, tenant_info = find_tenant_by_id(tenantID)
-            
+
             if tenant_found is not None:
                 if tenant_found:
                     tenant_info["_id"] = tenantID
@@ -92,17 +95,17 @@ def change_tenant_info(app, mongo):
 
         elif request.method == "DELETE":
             tenant_found, tenant_info = find_tenant_by_id(tenantID)
-        
+
             if tenant_found is not None:
                 if tenant_found:
                     try:
-                        mongo.db.tenant.delete_one( {"_id": tenantID})
+                        mongo.db.tenant.delete_one({"_id": tenantID})
                     except:
                         return serverResponse(None, 404, "Error connecting to server")
-                    
-                    #check if tenant is still there after deleting
+
+                    # check if tenant is still there after deleting
                     tenant_found, tenant_info = find_tenant_by_id(tenantID)
-                    
+
                     if not tenant_found:
                         return serverResponse(None, 200, "Tenant with ID " + tenantID + " deleted")
                     else:

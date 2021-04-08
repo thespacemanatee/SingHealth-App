@@ -14,7 +14,7 @@ import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import * as Notifications from "expo-notifications";
 import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
-import Toast, { BaseToast } from "react-native-toast-message";
+import Toast from "react-native-toast-message";
 import { PersistGate } from "redux-persist/integration/react";
 
 import { store, persistor } from "./src/store/store";

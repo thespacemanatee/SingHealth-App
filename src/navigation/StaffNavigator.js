@@ -158,7 +158,7 @@ const AddTenantStackNavigator = () => {
           component={ManageTenantAccountsScreen}
         />
         <Screen name="CreateTenant" component={CreateTenantScreen} />
-        <Screen name="AddAccountDetails" component={AddAccountDetailsScreen} />
+        {/* <Screen name="AddAccountDetails" component={AddAccountDetailsScreen} /> */}
       </Navigator>
     </SafeAreaView>
   );

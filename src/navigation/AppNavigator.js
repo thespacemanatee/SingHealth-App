@@ -58,7 +58,7 @@ const AppNavigator = () => {
             screens: {
               ManageTenantAccounts: "staff/manage-tenants",
               CreateTenant: "staff/manage-tenants/create",
-              AddAccountDetails: "staff/manage-tenants/create/details",
+              // AddAccountDetails: "staff/manage-tenants/create/details",
             },
           },
         },
