@@ -46,21 +46,6 @@ def change_tenant_info(app, mongo):
                     "createdBy": tenant_info["staffID"],
                     "dateCreated": datetime.datetime.now().isoformat(),
                     "expoToken": []
-                    # "stall": {
-                    #     "name": tenant_info["stallName"],
-                    #     "companyName": tenant_info["companyName"],
-                    #     "companyPOC": {
-                    #         "name": tenant_info["companyPOCName"],
-                    #         "email": tenant_info["companyPOCEmail"].lower()},
-                    #     "address": {
-                    #         "blk": tenant_info.get("blk", None),
-                    #         "street": tenant_info.get("street", None),
-                    #         "bldg": tenant_info.get("bldg", None),
-                    #         "unitNo": tenant_info["unitNo"],
-                    #         "zipCode": tenant_info.get("zipCode", None)},
-                    #     "fnb": tenant_info["fnb"]},
-                    # "tenantDateStart": tenant_info.get("tenantDateStart", None),
-                    # "tenantDateEnd": tenant_info.get("tenantDateEnd", None)
                 }
                 try:
                     mongo.db.tenant.insert_one(data)
