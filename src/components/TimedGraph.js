@@ -127,6 +127,7 @@ const styles = StyleSheet.create({
   timeFrameContainer: {
     flexDirection: "row",
     justifyContent: "space-evenly",
+    marginVertical: 10,
   },
   timeFrameButton: {
     borderRadius: 5,
