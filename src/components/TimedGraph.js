@@ -67,7 +67,9 @@ const TimedGraph = ({ label }) => {
       temp = databaseStore.graphData.oneYear;
     }
 
-    setGraphData(temp.map((p) => [new Date(p.x).getTime(), p.y]));
+    if (temp) {
+      setGraphData(temp.map((p) => [new Date(p.x).getTime(), p.y]));
+    }
   }, [buttonPressed, databaseStore.graphData]);
 
   const getGraphData = async () => {
