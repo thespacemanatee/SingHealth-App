@@ -145,7 +145,7 @@ const TenantRecordsStackNavigator = () => {
         component={TenantInfoScreen}
         initialParams={{
           tenantID: authStore._id,
-          stallName: authStore.stall.name,
+          stallName: authStore.stallName,
         }}
       />
       <Screen name="Rectification" component={RectificationScreen} />

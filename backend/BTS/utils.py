@@ -225,7 +225,7 @@ def from_audit_to_excel(workbook, page_name, data):
     # Value fields from dict
     staff_field = ["name", "email"]
     inst_field = ["name", "_id"]
-    tenant_field = ["name", "email", "stall.name", "stall.companyName"]
+    tenant_field = ["name", "email", "stallName"]
     audit_field = ["score", "rectificationProgress"]
 
     # get and enter field
