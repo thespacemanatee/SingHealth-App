@@ -2,12 +2,12 @@ import React from "react";
 import { View, StyleSheet, Platform } from "react-native";
 import Animated, { useDerivedValue } from "react-native-reanimated";
 import { ReText, round } from "react-native-redash";
-import { Card } from "@ui-kitten/components";
+import { StyleService, useStyleSheet } from "@ui-kitten/components";
 
 import StyleGuide from "../../StyleGuide";
 import CustomText from "../CustomText";
 
-const styles = StyleSheet.create({
+const themedStyles = StyleService.create({
   date: {
     ...StyleGuide.typography.body,
     textAlign: Platform.OS !== "web" ? "right" : null,
@@ -20,16 +20,22 @@ const styles = StyleSheet.create({
   },
   labelContainer: {
     flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "white",
     width: 150,
-    // backgroundColor: "red",
+    padding: 10,
+    borderRadius: 3,
+    opacity: 0.8,
+    borderWidth: 1,
+    borderColor: "color-primary-400",
   },
   dateContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    // flexDirection: "row",
+    // justifyContent: "space-between",
   },
   contentContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    alignItems: "flex-start",
   },
 });
 
@@ -49,27 +55,31 @@ interface LabelProps {
 }
 
 const Label = ({ point }: LabelProps) => {
+  const styles = useStyleSheet(themedStyles);
+
   const date = useDerivedValue(() => {
     const d = new Date(point.value.data.x);
-    return d.toDateString().replace(/^\S+\s/, "");
+    return d.toDateString().split(" ").slice(1, 3).join(" ");
+  });
+  const year = useDerivedValue(() => {
+    return new Date(point.value.data.x).getFullYear().toString();
+    // return d.toDateString().replace(/^\S+\s/, "");
   });
   const points = useDerivedValue(() => {
     const p = point.value.data.y;
     return `${round(p, 1)}`;
   });
   return (
-    <Card>
-      <View style={styles.labelContainer}>
-        <View style={styles.dateContainer}>
-          <CustomText>Date: </CustomText>
-          <ReText style={styles.date} text={date} />
-        </View>
-        <View style={styles.contentContainer}>
-          <CustomText>Average: </CustomText>
-          <ReText style={styles.score} text={points} />
-        </View>
+    <View style={styles.labelContainer}>
+      <View style={styles.contentContainer}>
+        <CustomText>Average</CustomText>
+        <ReText style={styles.score} text={points} />
       </View>
-    </Card>
+      <View style={styles.dateContainer}>
+        <ReText style={styles.date} text={date} />
+        <ReText style={styles.date} text={year} />
+      </View>
+    </View>
   );
 };
 

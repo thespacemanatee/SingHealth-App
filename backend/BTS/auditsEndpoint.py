@@ -490,7 +490,7 @@ def addAuditsEndpoint(app, mongo):
                 staff["email"],
                 "Audit Results",
                 f"""Dear {staff['name']},
-                    Your tenant, {tenant['stall']['name']}, has submitted a review for one of his NCs for the audit dated {date.strftime('%d %B %Y, %I:%M %p')}. 
+                    Your tenant, {tenant["stallName"]}, has submitted a review for one of his NCs for the audit dated {date.strftime('%d %B %Y, %I:%M %p')}. 
                     Please check your app for details.
                     This email is auto generated. No signature is required.
                     You do not have to reply to this email."""
@@ -577,7 +577,7 @@ def addAuditsEndpoint(app, mongo):
                     app,
                     tenant["email"],
                     "Audit Results",
-                    f"""Dear {tenant['stall']['name']},
+                    f"""Dear {tenant["stallName"]},
                         {institution} has submitted a review for your rectifications for your audit dated {date.strftime('%d %B %Y, %I:%M %p')}. 
                         Please check your app for details.
                         This email is auto generated. No signature is required.

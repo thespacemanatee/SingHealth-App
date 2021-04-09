@@ -8,11 +8,10 @@ import {
   StyleService,
   TopNavigation,
   TopNavigationAction,
+  useStyleSheet,
 } from "@ui-kitten/components";
 import { FAB } from "react-native-paper";
-import moment from "moment";
 
-import Graph from "../../components/ui/graph/Graph.tsx";
 import * as databaseActions from "../../store/actions/databaseActions";
 import * as checklistActions from "../../store/actions/checklistActions";
 import ActiveAuditCard from "../../components/ActiveAuditCard";
@@ -21,6 +20,7 @@ import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
 import SkeletonLoading from "../../components/ui/loading/SkeletonLoading";
 import useHandleScroll from "../../helpers/hooks/useHandleScroll";
+import TimedGraph from "../../components/TimedGraph";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
@@ -29,12 +29,12 @@ const StaffDashboardScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
-  const [graphLoading, setGraphLoading] = useState(true);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
-  const [graphData, setGraphData] = useState();
 
   const { handleScroll, showButton } = useHandleScroll();
+
+  const styles = useStyleSheet(themedStyles);
 
   const dispatch = useDispatch();
 
@@ -84,6 +84,7 @@ const StaffDashboardScreen = ({ navigation }) => {
         </View>
       );
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [authStore.userType, handleOpenAudit]
   );
 
@@ -114,36 +115,12 @@ const StaffDashboardScreen = ({ navigation }) => {
     }
   }, [authStore.institutionID, dispatch]);
 
-  const getGraphData = useCallback(async () => {
-    try {
-      setGraphLoading(true);
-      const fromDate = new Date(2021, 3).getTime();
-      const toDate = new Date(2021, 4).getTime();
-      const res = await dispatch(
-        databaseActions.getGraphData(fromDate, toDate)
-      );
-      console.log(res.data.data);
-      const temp = res.data.data.map((e) => ({
-        x: moment(e.date).toDate(),
-        y: Number.parseFloat(e.avgScore) * 100,
-      }));
-      console.log(temp.map((p) => [p.x.getTime(), p.y]));
-      setGraphData(temp.map((p) => [p.x.getTime(), p.y]));
-    } catch (err) {
-      handleErrorResponse(err);
-    } finally {
-      setGraphLoading(false);
-    }
-  }, [dispatch]);
-
   useEffect(() => {
     // Subscribe for the focus Listener
     getListData();
-    getGraphData();
 
     const unsubscribe = navigation.addListener("focus", () => {
       getListData();
-      getGraphData();
     });
 
     return () => {
@@ -151,7 +128,7 @@ const StaffDashboardScreen = ({ navigation }) => {
       // eslint-disable-next-line no-unused-expressions
       unsubscribe;
     };
-  }, [getGraphData, getListData, navigation]);
+  }, [getListData, navigation]);
 
   return (
     <View style={styles.screen}>
@@ -163,12 +140,7 @@ const StaffDashboardScreen = ({ navigation }) => {
       />
       <Divider />
       <Layout style={styles.layout}>
-        <Graph
-          label="Average Scores (All Institutions)"
-          data={graphData}
-          loading={graphLoading}
-        />
-        {/* <Divider /> */}
+        <TimedGraph label="Average Scores (All Institutions)" />
         <CenteredLoading loading={loading} />
         <FlatList
           contentContainerStyle={styles.contentContainer}
@@ -203,7 +175,7 @@ const StaffDashboardScreen = ({ navigation }) => {
 
 export default StaffDashboardScreen;
 
-const styles = StyleService.create({
+const themedStyles = StyleService.create({
   screen: {
     flex: 1,
   },
