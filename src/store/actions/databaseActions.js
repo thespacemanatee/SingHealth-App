@@ -5,6 +5,7 @@ export const GET_INSTITUTIONS = "GET_INSTITUTIONS";
 export const GET_TENANT_ACTIVE_AUDITS = "GET_TENANT_ACTIVE_AUDITS";
 export const GET_STAFF_ACTIVE_AUDITS = "GET_STAFF_ACTIVE_AUDITS";
 export const GET_GRAPH_DATA = "GET_GRAPH_DATA";
+export const STORE_GRAPH_DATA = "STORE_GRAPH_DATA";
 
 export const getInstitutions = () => {
   return async (dispatch) => {
@@ -173,4 +174,8 @@ export const getGraphData = (
 
     return res;
   };
+};
+
+export const storeGraphData = (graphData) => {
+  return { type: STORE_GRAPH_DATA, graphData };
 };

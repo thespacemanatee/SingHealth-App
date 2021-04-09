@@ -35,7 +35,11 @@ const ExpandImagesScreen = ({ route, navigation }) => {
   const { width, height } = Dimensions.get("window");
 
   const handleClose = () => {
-    navigation.goBack();
+    if (Platform.OS === "web") {
+      window.history.back();
+    } else {
+      navigation.goBack();
+    }
   };
 
   useEffect(() => {

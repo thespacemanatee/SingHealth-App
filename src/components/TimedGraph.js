@@ -2,7 +2,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { StyleSheet, Pressable, View } from "react-native";
 import { useTheme } from "@ui-kitten/components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 
 import * as databaseActions from "../store/actions/databaseActions";
@@ -42,6 +42,7 @@ const TimedButton = ({ id, pressed, onPress, children, ...props }) => {
 };
 
 const TimedGraph = ({ label }) => {
+  const databaseStore = useSelector((state) => state.database);
   const [buttonPressed, setButtonPressed] = useState(0);
   const [graphLoading, setGraphLoading] = useState(true);
   const [graphData, setGraphData] = useState();
@@ -52,50 +53,108 @@ const TimedGraph = ({ label }) => {
     setButtonPressed(index);
   };
 
-  const getGraphData = useCallback(async () => {
-    try {
-      setGraphLoading(true);
+  const renderGraph = useCallback(() => {
+    let temp;
+    if (buttonPressed === 0) {
+      temp = databaseStore.graphData.oneMonth;
+    } else if (buttonPressed === 1) {
+      temp = databaseStore.graphData.threeMonths;
+    } else if (buttonPressed === 2) {
+      temp = databaseStore.graphData.sixMonths;
+    } else if (buttonPressed === 3) {
+      temp = databaseStore.graphData.ytd;
+    } else if (buttonPressed === 4) {
+      temp = databaseStore.graphData.oneYear;
+    }
 
-      let fromDate;
+    setGraphData(temp.map((p) => [new Date(p.x).getTime(), p.y]));
+  }, [buttonPressed, databaseStore.graphData]);
+
+  const getGraphData = async () => {
+    try {
       const toDate = new Date().getTime();
 
-      if (buttonPressed === 0) {
-        fromDate = moment().subtract(1, "months").toDate().getTime();
-      } else if (buttonPressed === 1) {
-        fromDate = moment().subtract(3, "months").toDate().getTime();
-      } else if (buttonPressed === 2) {
-        fromDate = moment().subtract(6, "months").toDate().getTime();
-      } else if (buttonPressed === 3) {
-        fromDate = moment().startOf("year").toDate().getTime();
-      } else if (buttonPressed === 4) {
-        fromDate = moment().subtract(12, "months").toDate().getTime();
-      }
+      const res = await Promise.all([
+        dispatch(
+          databaseActions.getGraphData(
+            moment().subtract(1, "months").toDate().getTime(),
+            toDate
+          )
+        ),
+        dispatch(
+          databaseActions.getGraphData(
+            moment().subtract(3, "months").toDate().getTime(),
+            toDate
+          )
+        ),
+        dispatch(
+          databaseActions.getGraphData(
+            moment().subtract(6, "months").toDate().getTime(),
+            toDate
+          )
+        ),
+        dispatch(
+          databaseActions.getGraphData(
+            moment().startOf("year").toDate().getTime(),
+            toDate
+          )
+        ),
+        dispatch(
+          databaseActions.getGraphData(
+            moment().subtract(12, "months").toDate().getTime(),
+            toDate
+          )
+        ),
+      ]);
 
-      const res = await dispatch(
-        databaseActions.getGraphData(fromDate, toDate)
-      );
-      res.data.data.sort((a, b) => {
-        console.log("a:", a, "b", b);
-        return (
-          moment(a.date).toDate().getTime() - moment(b.date).toDate().getTime()
-        );
+      res.forEach((e) => {
+        e.data.data.sort((a, b) => {
+          return (
+            moment(a.date).toDate().getTime() -
+            moment(b.date).toDate().getTime()
+          );
+        });
       });
-      const temp = res.data.data.map((e) => ({
-        x: moment(e.date).toDate(),
-        y: Number.parseFloat(e.avgScore) * 100,
-      }));
-      console.log(temp.map((p) => [p.x.getTime(), p.y]));
-      setGraphData(temp.map((p) => [p.x.getTime(), p.y]));
+
+      const dataObject = {
+        oneMonth: res[0].data.data.map((e) => ({
+          x: moment(e.date).toDate(),
+          y: Number.parseFloat(e.avgScore) * 100,
+        })),
+        threeMonths: res[1].data.data.map((e) => ({
+          x: moment(e.date).toDate(),
+          y: Number.parseFloat(e.avgScore) * 100,
+        })),
+        sixMonths: res[2].data.data.map((e) => ({
+          x: moment(e.date).toDate(),
+          y: Number.parseFloat(e.avgScore) * 100,
+        })),
+        ytd: res[3].data.data.map((e) => ({
+          x: moment(e.date).toDate(),
+          y: Number.parseFloat(e.avgScore) * 100,
+        })),
+        oneYear: res[4].data.data.map((e) => ({
+          x: moment(e.date).toDate(),
+          y: Number.parseFloat(e.avgScore) * 100,
+        })),
+      };
+
+      dispatch(databaseActions.storeGraphData(dataObject));
     } catch (err) {
       handleErrorResponse(err);
     } finally {
       setGraphLoading(false);
     }
-  }, [buttonPressed, dispatch]);
+  };
+
+  useEffect(() => {
+    renderGraph();
+  }, [renderGraph]);
 
   useEffect(() => {
     getGraphData();
-  }, [getGraphData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
