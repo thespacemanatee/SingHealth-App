@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     height: CURSOR,
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 1,
+    // zIndex: 1,
     // backgroundColor: "rgba(100, 200, 300, 0.4)",
   },
   lineContainer: {
@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
     height: CURSOR,
     justifyContent: "center",
     alignItems: "center",
+    zIndex: -1,
     // backgroundColor: "red",
   },
   cursor: {
@@ -172,7 +173,10 @@ const Cursor = ({ path, length, point }: CursorProps) => {
     return {
       transform: [
         {
-          translateX: (coord.x > width / 2 ? -150 : 100) + translateX,
+          translateX:
+            coord.x > width / 2
+              ? 100 + translateX - width / 2
+              : 100 - CURSOR / 2,
         },
       ],
     };

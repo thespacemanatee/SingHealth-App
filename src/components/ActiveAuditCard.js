@@ -17,8 +17,6 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
 
   const theme = useTheme();
 
-  console.log(auditMetadata.date);
-
   const handleOnPress = () => {
     onPress(auditMetadata._id, stallName);
   };

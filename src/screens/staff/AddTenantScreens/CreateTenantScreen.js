@@ -223,7 +223,7 @@ const AddTenantCredScreen = ({ navigation }) => {
                 </View>
                 <View style={styles.buttonContainer}>
                   <Button onPress={handleSubmit} style={styles.button}>
-                    NEXT
+                    CREATE ACCOUNT
                   </Button>
                 </View>
               </View>

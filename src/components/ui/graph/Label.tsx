@@ -58,7 +58,7 @@ const Label = ({ point }: LabelProps) => {
     return `${round(p, 1)}`;
   });
   return (
-    <Card>
+    <Card style={{ opacity: 0.8 }}>
       <View style={styles.labelContainer}>
         <View style={styles.dateContainer}>
           <CustomText>Date: </CustomText>
