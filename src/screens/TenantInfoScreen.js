@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, Platform, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -35,7 +35,11 @@ const TenantInfoScreen = ({ route, navigation }) => {
     <TopNavigationAction
       icon={BackIcon}
       onPress={() => {
-        navigation.goBack();
+        if (Platform.OS === "web") {
+          window.history.back();
+        } else {
+          navigation.goBack();
+        }
       }}
     />
   );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, SectionList } from "react-native";
+import { View, SectionList, Platform } from "react-native";
 import { useSelector } from "react-redux";
 import {
   Button,
@@ -91,7 +91,11 @@ const ChecklistScreen = ({ route, navigation }) => {
             {
               text: "Confirm",
               onPress: () => {
-                navigation.goBack();
+                if (Platform.OS === "web") {
+                  window.history.back();
+                } else {
+                  navigation.goBack();
+                }
               },
               style: "destructive",
             },

@@ -40,6 +40,7 @@ const ExpandImagesScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     scrollToActiveIndex(activeIndex);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const scrollToActiveIndex = useCallback(

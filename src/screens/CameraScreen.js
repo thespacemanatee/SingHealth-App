@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  ImageBackground,
-  TouchableOpacity,
-  Dimensions,
-} from "react-native";
+import { View, ImageBackground, TouchableOpacity, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Camera } from "expo-camera";
 import {
@@ -14,6 +9,8 @@ import {
   TopNavigation,
   TopNavigationAction,
 } from "@ui-kitten/components";
+
+import { SCREEN_WIDTH } from "../helpers/config";
 
 let camera;
 const BackIcon = (props) => <Icon {...props} name="arrow-back" fill="white" />;
@@ -27,14 +24,17 @@ const CameraScreen = ({ route, navigation }) => {
   const [flashMode, setFlashMode] = useState("off");
   const [cameraType, setCameraType] = useState("back");
 
-  const WINDOW_WIDTH = Dimensions.get("window").width;
-  const CAMERA_VIEW_HEIGHT = (WINDOW_WIDTH / 3) * 4;
+  const CAMERA_VIEW_HEIGHT = (SCREEN_WIDTH / 3) * 4;
 
   const BackAction = () => (
     <TopNavigationAction
       icon={BackIcon}
       onPress={() => {
-        navigation.goBack();
+        if (Platform.OS === "web") {
+          window.history.back();
+        } else {
+          navigation.goBack();
+        }
       }}
     />
   );
@@ -49,7 +49,11 @@ const CameraScreen = ({ route, navigation }) => {
   };
   const savePhoto = () => {
     route.params.onSave(capturedImage);
-    navigation.goBack();
+    if (Platform.OS === "web") {
+      window.history.back();
+    } else {
+      navigation.goBack();
+    }
   };
   const retakePicture = () => {
     setCapturedImage(null);
@@ -116,7 +120,7 @@ const CameraScreen = ({ route, navigation }) => {
           </View>
         ) : (
           <View style={styles.buttonContainer}>
-            <View style={{ width: WINDOW_WIDTH / 3 }}>
+            <View style={{ width: SCREEN_WIDTH / 3 }}>
               <Button
                 //   style={styles.button}
                 appearance="ghost"
@@ -144,7 +148,7 @@ const CameraScreen = ({ route, navigation }) => {
               style={styles.takePictureButton}
             />
 
-            <View style={{ width: WINDOW_WIDTH / 3 }}>
+            <View style={{ width: SCREEN_WIDTH / 3 }}>
               <Button
                 //   style={styles.button}
                 appearance="ghost"
