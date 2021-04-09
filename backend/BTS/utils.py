@@ -214,7 +214,6 @@ def from_audit_to_excel(workbook, page_name, data):
     worksheet.write('F4', "Name :")
     worksheet.write('F5', "Email :")
     worksheet.write('F6', "Stall name :")
-    worksheet.write('F7', "Company name :")
 
     worksheet.write('A9', "Date", bold)
     worksheet.write('A11', "Forms", bold)
