@@ -1,11 +1,13 @@
 import React from "react";
-import { View, StyleSheet, Platform } from "react-native";
+import { View, Platform } from "react-native";
 import Animated, { useDerivedValue } from "react-native-reanimated";
 import { ReText, round } from "react-native-redash";
 import { StyleService, useStyleSheet } from "@ui-kitten/components";
 
 import StyleGuide from "../../StyleGuide";
 import CustomText from "../CustomText";
+
+export const LABEL_SIZE = 150;
 
 const themedStyles = StyleService.create({
   date: {
@@ -19,11 +21,11 @@ const themedStyles = StyleService.create({
     // backgroundColor: "red",
   },
   labelContainer: {
-    flex: 1,
+    // flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     backgroundColor: "white",
-    width: 150,
+    width: LABEL_SIZE,
     padding: 10,
     borderRadius: 3,
     opacity: 0.8,
@@ -31,10 +33,10 @@ const themedStyles = StyleService.create({
     borderColor: "color-primary-400",
   },
   dateContainer: {
-    // flexDirection: "row",
-    // justifyContent: "space-between",
+    flex: 0.5,
   },
   contentContainer: {
+    flex: 0.5,
     alignItems: "flex-start",
   },
 });

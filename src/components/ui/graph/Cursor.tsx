@@ -13,18 +13,11 @@ import Animated, {
   runOnJS,
   EasingNode,
 } from "react-native-reanimated";
+import useForceUpdate from "../../../helpers/hooks/useForceUpdate";
 
 import { Path } from "../../AnimatedHelpers";
 
-import Label, { DataPoint } from "./Label";
-
-function useForceUpdate() {
-  const [, forceUpdate] = React.useState();
-
-  return React.useCallback(() => {
-    forceUpdate((s) => !s);
-  }, []);
-}
+import Label, { DataPoint, LABEL_SIZE } from "./Label";
 
 const { width } = Dimensions.get("window");
 const height = width / 3;
@@ -170,13 +163,14 @@ const Cursor = ({ path, length, point }: CursorProps) => {
   const labelStyle = useAnimatedStyle(() => {
     const { coord } = point.value;
     const translateX = coord.x - CURSOR / 2;
+    const MARGIN = 100;
     return {
       transform: [
         {
           translateX:
-            coord.x > width / 2
-              ? 100 + translateX - width / 2
-              : 100 - CURSOR / 2,
+            coord.x > LABEL_SIZE + MARGIN * 2 - CURSOR
+              ? translateX - LABEL_SIZE + MARGIN / 2
+              : MARGIN - CURSOR / 2,
         },
       ],
     };
