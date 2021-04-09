@@ -577,7 +577,7 @@ def addAuditsEndpoint(app, mongo):
                     app,
                     tenant["email"],
                     "Audit Results",
-                    f"""Dear {tenant{"stallName"}},
+                    f"""Dear {tenant["stallName"]},
                         {institution} has submitted a review for your rectifications for your audit dated {date.strftime('%d %B %Y, %I:%M %p')}. 
                         Please check your app for details.
                         This email is auto generated. No signature is required.
