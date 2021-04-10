@@ -161,6 +161,7 @@ const TimedGraph = ({ label }) => {
   return (
     <>
       <Graph label={label} data={graphData} loading={graphLoading} />
+      {/* TODO: Add axis labels */}
       <View style={styles.timeFrameContainer}>
         <TimedButton id={0} pressed={buttonPressed} onPress={handlePress}>
           1M
