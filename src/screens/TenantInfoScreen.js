@@ -18,6 +18,7 @@ import CenteredLoading from "../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../helpers/utils";
 import CustomText from "../components/ui/CustomText";
 import SkeletonLoading from "../components/ui/loading/SkeletonLoading";
+import TimedGraph from "../components/TimedGraph";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -127,11 +128,8 @@ const TenantInfoScreen = ({ route, navigation }) => {
       />
       <Divider />
       <Layout style={styles.layout}>
-        <Graph label="Average Scores" />
         <Divider />
-        <View style={styles.textContainer}>
-          <CustomText style={styles.text}>All Audits</CustomText>
-        </View>
+
         <CenteredLoading loading={loading} />
         <FlatList
           contentContainerStyle={styles.contentContainer}
@@ -141,6 +139,14 @@ const TenantInfoScreen = ({ route, navigation }) => {
           onRefresh={getListData}
           refreshing={listLoading}
           ListEmptyComponent={renderEmptyComponent}
+          ListHeaderComponent={
+            <>
+              <TimedGraph label="Average Scores" />
+              <View style={styles.textContainer}>
+                <CustomText style={styles.text}>All Audits</CustomText>
+              </View>
+            </>
+          }
         />
       </Layout>
     </View>

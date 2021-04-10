@@ -140,7 +140,6 @@ const StaffDashboardScreen = ({ navigation }) => {
       />
       <Divider />
       <Layout style={styles.layout}>
-        <TimedGraph label="Average Scores (All Institutions)" />
         <CenteredLoading loading={loading} />
         <FlatList
           contentContainerStyle={styles.contentContainer}
@@ -151,13 +150,16 @@ const StaffDashboardScreen = ({ navigation }) => {
           refreshing={listLoading}
           onScroll={handleScroll}
           ListEmptyComponent={renderEmptyComponent}
-          ListHeaderComponent={() => (
-            <View style={styles.textContainer}>
-              <CustomText style={styles.text}>
-                Rectification Progress
-              </CustomText>
-            </View>
-          )}
+          ListHeaderComponent={
+            <>
+              <TimedGraph label="Average Scores (All Institutions)" />
+              <View style={styles.textContainer}>
+                <CustomText style={styles.text}>
+                  Rectification Progress
+                </CustomText>
+              </View>
+            </>
+          }
         />
 
         <FAB

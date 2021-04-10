@@ -11,6 +11,24 @@ import { handleErrorResponse } from "../helpers/utils";
 import CustomText from "./ui/CustomText";
 import Graph from "./ui/graph";
 
+const Axis = ({ startX, endX }) => {
+  console.log(moment.months(startX), moment.months(endX));
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        paddingHorizontal: 10,
+        paddingTop: 10,
+        opacity: 0.75,
+      }}
+    >
+      <CustomText>{moment.months(startX)}</CustomText>
+      <CustomText>{moment.months(endX)}</CustomText>
+    </View>
+  );
+};
+
 const TimedButton = ({ id, pressed, onPress, children, ...props }) => {
   const theme = useTheme();
 
@@ -40,12 +58,14 @@ const TimedButton = ({ id, pressed, onPress, children, ...props }) => {
     </Pressable>
   );
 };
-
+// TODO: Make TimedGraph receive props that determine what data to retrieve from API
 const TimedGraph = ({ label }) => {
   const databaseStore = useSelector((state) => state.database);
   const [buttonPressed, setButtonPressed] = useState(0);
   const [graphLoading, setGraphLoading] = useState(true);
   const [graphData, setGraphData] = useState();
+  const [startX, setStartX] = useState(new Date());
+  const [endX, setEndX] = useState(new Date());
 
   const dispatch = useDispatch();
 
@@ -68,11 +88,13 @@ const TimedGraph = ({ label }) => {
     }
 
     if (temp) {
+      setStartX(new Date(temp[0].x).getMonth());
+      setEndX(new Date(temp[temp.length - 1].x).getMonth());
       setGraphData(temp.map((p) => [new Date(p.x).getTime(), p.y]));
     }
   }, [buttonPressed, databaseStore.graphData]);
 
-  const getGraphData = async () => {
+  const getGraphData = useCallback(async () => {
     try {
       const toDate = new Date().getTime();
 
@@ -147,7 +169,7 @@ const TimedGraph = ({ label }) => {
     } finally {
       setGraphLoading(false);
     }
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     renderGraph();
@@ -155,13 +177,13 @@ const TimedGraph = ({ label }) => {
 
   useEffect(() => {
     getGraphData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [getGraphData]);
 
   return (
     <>
       <Graph label={label} data={graphData} loading={graphLoading} />
       {/* TODO: Add axis labels */}
+      <Axis startX={startX} endX={endX} />
       <View style={styles.timeFrameContainer}>
         <TimedButton id={0} pressed={buttonPressed} onPress={handlePress}>
           1M
@@ -189,7 +211,6 @@ const styles = StyleSheet.create({
   timeFrameContainer: {
     flexDirection: "row",
     justifyContent: "space-evenly",
-    marginVertical: 10,
   },
   timeFrameButton: {
     borderRadius: 5,

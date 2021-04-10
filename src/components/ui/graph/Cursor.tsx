@@ -36,8 +36,6 @@ const styles = StyleSheet.create({
     height: CURSOR,
     justifyContent: "center",
     alignItems: "center",
-    zIndex: -1,
-    // backgroundColor: "red",
   },
   cursor: {
     width: 15,
@@ -179,9 +177,6 @@ const Cursor = ({ path, length, point }: CursorProps) => {
     <View style={StyleSheet.absoluteFill}>
       <PanGestureHandler onGestureEvent={onGestureEvent}>
         <Animated.View>
-          <Animated.View style={[styles.cursorContainer, cursorStyle]}>
-            <View style={styles.cursor} />
-          </Animated.View>
           <Animated.View
             style={[
               [
@@ -192,6 +187,9 @@ const Cursor = ({ path, length, point }: CursorProps) => {
             ]}
           >
             <View style={styles.line} />
+          </Animated.View>
+          <Animated.View style={[styles.cursorContainer, cursorStyle]}>
+            <View style={styles.cursor} />
           </Animated.View>
           <Animated.View
             style={[
