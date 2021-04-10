@@ -51,7 +51,7 @@ export const signIn = (user, pswd, userType, expoToken = "") => {
     const res = await httpClient(loginOptions);
 
     const userToken = "dummy-auth-token";
-    const { _id, email, institutionID, name, stall } = res.data.data;
+    const { _id, email, institutionID, name, stallName } = res.data.data;
 
     const userData = {
       userType,
@@ -60,7 +60,7 @@ export const signIn = (user, pswd, userType, expoToken = "") => {
       email,
       institutionID,
       name,
-      stall,
+      stallName,
     };
 
     dispatch({ type: SIGN_IN, userData, expoToken });
