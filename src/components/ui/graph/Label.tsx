@@ -32,12 +32,18 @@ const themedStyles = StyleService.create({
     borderWidth: 1,
     borderColor: "color-primary-400",
   },
+  averageText: {
+    fontSize: 16,
+    lineHeight: 25,
+  },
   dateContainer: {
     flex: 0.5,
+    justifyContent: "space-between",
   },
   contentContainer: {
     flex: 0.5,
     alignItems: "flex-start",
+    justifyContent: "space-between",
   },
 });
 
@@ -74,7 +80,9 @@ const Label = ({ point }: LabelProps) => {
   return (
     <View style={styles.labelContainer}>
       <View style={styles.contentContainer}>
-        <CustomText>Average</CustomText>
+        <CustomText style={styles.averageText} bold={false}>
+          Average
+        </CustomText>
         <ReText style={styles.score} text={points} />
       </View>
       <View style={styles.dateContainer}>
