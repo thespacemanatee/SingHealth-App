@@ -7,6 +7,7 @@ from BTS.staff_tenantEndpoint import change_tenant_info
 from BTS.recentAuditsEndpoints import addRecentAuditsEndpoints
 from BTS.auditEmailEndpoint import addAuditEmailEndpoints
 from BTS.institutionEndpoint import institution_info
+from BTS.auditTimeframeEndpoint import audit_timeframe_endpoint
 from BTS.utils import serverResponse
 from flask import Flask
 from BTS.database import mongo
@@ -58,6 +59,7 @@ addRecentAuditsEndpoints(app, mongo)
 addAuditEmailEndpoints(app, mongo)
 institution_info(app, mongo)
 change_tenant_info(app, mongo)
+audit_timeframe_endpoint(app, mongo)
 
 port = int(os.getenv('PORT', 5000))
 if __name__ == '__main__':

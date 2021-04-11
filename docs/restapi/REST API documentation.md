@@ -39,7 +39,7 @@
 - [x] [`PATCH /audits/<auditID>/tenant`](#`PATCH-/audits/auditID/tenant`)
 - [x] [`PATCH /audits/<auditID>/staff`](#`PATCH-/audits/auditID/staff`)
 - [x] [`GET /audits`](#`GET-/audits`)
-- [x] [`GET /auditTimeframe/fromDate=<fromDate>&toDate=<toDate>`](#`GET-/auditTimeframe/fromDate=<fromDate>&toDate=<toDate>`)
+- [x] [`GET /auditTimeframe/fromDate=<fromDate>&toDate=<toDate>&dataType=<dataType>&dataID=<dataID>`](#`GET-/auditTimeframe/fromDate=<fromDate>&toDate=<toDate>&dataType=<dataType>&dataID=<dataID>`)
 
 ### Audit Email
 
@@ -1334,7 +1334,7 @@ localhost:5000/institutions
 }
 ```
 
-## `GET /auditTimeframe/fromDate=<fromDate>&toDate=<toDate>`
+## `GET /auditTimeframe/fromDate=<fromDate>&toDate=<toDate>&dataType=<dataType>&dataID=<dataID>`
 
 ### Description of use case
 
@@ -1344,13 +1344,15 @@ The staff to get all audit data within a timeframe.
 
 | JSON param | Description                                                                       |
 | ---------- | --------------------------------------------------------------------------------- |
-| `fromDate` | DateTime string in YYYY:MM:DD format with the start date of audit data to extract |
-| `toDate`   | DateTime string in YYYY:MM:DD format with the end date of audit data to extract   |
+| `fromDate` | DateTime string in milli format with the start date of audit data to extract |
+| `toDate`   | DateTime string in milli format with the end date of audit data to extract   |
+| `dataType`   | Type of graph to extract, 'institution', 'tenant' or None   |
+| `dataID`   | Unique identifier for the tenant or institution, None value if dataType = None  |
 
 ### Sample request
 
 ```js
-127.0.0.1:5000/auditTimeframe?fromDate=1610096007965&toDate=1617796007965
+127.0.0.1:5000/auditTimeframe?fromDate=1510096007965&toDate=1618163047328&dataType=institution&dataID=SKH
 ```
 
 ### Sample responses
@@ -1386,16 +1388,21 @@ The staff to get all audit data within a timeframe.
 
 #### Partial Failures
 
-##### Missing or empty input JSON
+##### Wrong date format
 
 ```js
-"status": 404,
+"status": 200,
 "data": {
-    "description": "No audit data found within the timeframe",
-    "data": {
-        "missing_keys":[field1, ...]
-        "key_value_error": [field2, ...]
-    }
+    "description": "Wrong date format"
+}
+```
+
+##### Wrong data format
+
+```js
+"status": 200,
+"data": {
+    "description": "Insufficient data or wrong data format"
 }
 ```
 
@@ -1404,7 +1411,7 @@ The staff to get all audit data within a timeframe.
 ##### No audit data found
 
 ```js
-"status": 404,
+"status": 200,
 "data": {
     "description": "No audit data found within the timeframe"
 }
