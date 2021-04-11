@@ -2,8 +2,8 @@ from gevent import monkey; monkey.patch_all()
 from BTS.auditsEndpoint import addAuditsEndpoint
 from BTS.loginEndpoints import addLoginEndpointsForTenantAndStaff
 from BTS.imagesEndpoint import addImagesEndpoint
-from BTS.auditsEndpoint_wx import addWenXinEndpoints
-from BTS.staff_tenantEndpoint_wx import change_tenant_info
+from BTS.auditsGetFormEndpoint import addGetFormEndpoints
+from BTS.staff_tenantEndpoint import change_tenant_info
 from BTS.recentAuditsEndpoints import addRecentAuditsEndpoints
 from BTS.auditEmailEndpoint import addAuditEmailEndpoints
 from BTS.institutionEndpoint import institution_info
@@ -50,7 +50,7 @@ def hello_world0():
 #     return serverResponse(None, 200, f"Yes. Num endpoint received: {year}, {month}, {title}")
 
 
-addWenXinEndpoints(app, mongo)
+addGetFormEndpoints(app, mongo)
 addAuditsEndpoint(app, mongo)
 addImagesEndpoint(app)
 addLoginEndpointsForTenantAndStaff(app, mongo)
