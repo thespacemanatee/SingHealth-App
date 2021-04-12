@@ -12,7 +12,6 @@ import CustomText from "./ui/CustomText";
 import Graph from "./ui/graph";
 
 const Axis = ({ startX, endX }) => {
-  console.log(moment.months(startX), moment.months(endX));
   return (
     <View
       style={{
@@ -182,7 +181,6 @@ const TimedGraph = ({ label }) => {
   return (
     <>
       <Graph label={label} data={graphData} loading={graphLoading} />
-      {/* TODO: Add axis labels */}
       <Axis startX={startX} endX={endX} />
       <View style={styles.timeFrameContainer}>
         <TimedButton id={0} pressed={buttonPressed} onPress={handlePress}>

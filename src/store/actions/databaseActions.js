@@ -23,11 +23,11 @@ export const getInstitutions = () => {
 export const getRelevantTenants = (institutionID) => {
   return async (dispatch) => {
     const options = {
-      url: `${endpoint}tenants/${institutionID}`,
+      url: `${endpoint}tenants`,
       method: "get",
-      // withCredentials: true,
+      params: { institutionID },
     };
-    console.log(institutionID);
+
     const res = await httpClient(options);
     dispatch({ type: GET_RELEVANT_TENANTS, relevantTenants: res.data.data });
     return res;
