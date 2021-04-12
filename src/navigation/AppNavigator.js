@@ -21,6 +21,10 @@ const AppNavigator = () => {
 
   const config = {
     screens: {
+      Auth: "",
+      Login: "login",
+      Register: "register",
+      ForgotPassword: "forgot-password",
       StaffNavigator: {
         screens: {
           StaffModalStack: {
