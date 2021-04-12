@@ -19,7 +19,7 @@ def change_tenant_info(app, mongo):
         return find_and_return_one(mongo, "tenant", "_id", tenantID)
 
     @app.route("/tenant", methods=["POST"])
-    @login_required
+    # @login_required
     def add_tenant():
         required_info = ["name", "email", "pswd", "institutionID",
                          "stallName", "fnb", "staffID"]
@@ -65,7 +65,7 @@ def change_tenant_info(app, mongo):
         return serverResponse(None, 201, "Tenant Added")
 
     @app.route("/tenant", methods=["GET", "DELETE"])
-    @login_required
+    # @login_required
     def edit_tenant():
         try:
             tenantID = request.args.get("tenantID", None)

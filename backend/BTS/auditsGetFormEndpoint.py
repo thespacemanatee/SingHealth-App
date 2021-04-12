@@ -15,7 +15,7 @@ def addGetFormEndpoints(app, mongo):
     # Able to retrieve tenant and audit form information and return as json string
 
     @app.route("/tenants", methods=["GET"])
-    @login_required
+    # @login_required
     def get_tenants_from_institution():
         if request.method == "GET":
             try:
@@ -40,7 +40,7 @@ def addGetFormEndpoints(app, mongo):
             return output
 
     @app.route("/auditForms", methods=["GET"])
-    @login_required
+    # @login_required
     def get_audit_form():
         if request.method == "GET":
             try:
