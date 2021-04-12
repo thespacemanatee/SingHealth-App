@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { View, ImageBackground, TouchableOpacity, Platform } from "react-native";
+import {
+  View,
+  ImageBackground,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Camera } from "expo-camera";
 import {
@@ -99,22 +104,10 @@ const CameraScreen = ({ route, navigation }) => {
       <View style={styles.bottomContainer}>
         {previewVisible && capturedImage ? (
           <View style={styles.buttonContainer}>
-            <Button
-              //   style={styles.button}
-              appearance="ghost"
-              status="control"
-              onPress={retakePicture}
-              //   accessoryLeft={StarIcon}
-            >
+            <Button appearance="ghost" status="control" onPress={retakePicture}>
               RETAKE
             </Button>
-            <Button
-              //   style={styles.button}
-              appearance="ghost"
-              status="control"
-              onPress={savePhoto}
-              //   accessoryLeft={StarIcon}
-            >
+            <Button appearance="ghost" status="control" onPress={savePhoto}>
               SAVE
             </Button>
           </View>
@@ -150,7 +143,6 @@ const CameraScreen = ({ route, navigation }) => {
 
             <View style={{ width: SCREEN_WIDTH / 3 }}>
               <Button
-                //   style={styles.button}
                 appearance="ghost"
                 status="control"
                 onPress={switchCamera}

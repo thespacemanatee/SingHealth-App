@@ -58,7 +58,7 @@ const TimedButton = ({ id, pressed, onPress, children, ...props }) => {
     </Pressable>
   );
 };
-// TODO: Make TimedGraph receive props that determine what data to retrieve from API
+
 const TimedGraph = ({ label, type, id }) => {
   const databaseStore = useSelector((state) => state.database);
   const [buttonPressed, setButtonPressed] = useState(0);

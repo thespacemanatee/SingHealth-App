@@ -163,7 +163,6 @@ export const getAuditData = (auditID) => {
     const options = {
       url: `${endpoint}audits/${auditID}`,
       method: "get",
-      // withCredentials: true,
     };
     const res = await httpClient(options);
     const { auditMetadata, auditForms } = res.data.data;

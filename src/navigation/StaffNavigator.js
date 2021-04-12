@@ -29,7 +29,6 @@ import TenantsDirectoryScreen from "../screens/staff/DirectoryScreens/TenantsDir
 import * as authActions from "../store/actions/authActions";
 import ManageTenantAccountsScreen from "../screens/staff/AddTenantScreens/ManageTenantAccountsScreen";
 import CreateTenantScreen from "../screens/staff/AddTenantScreens/CreateTenantScreen";
-import AddAccountDetailsScreen from "../screens/staff/AddTenantScreens/AddAccountDetailsScreen";
 import ExpandImagesScreen from "../screens/ExpandImagesScreen";
 import TenantInfoScreen from "../screens/TenantInfoScreen";
 

@@ -74,7 +74,6 @@ const App = () => {
     }
 
     if (token) {
-      console.log("EXPO TOKEN:", token);
       store.dispatch(authActions.saveExpoToken(token));
     }
 

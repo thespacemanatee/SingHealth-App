@@ -10,7 +10,6 @@ import {
   TopNavigationAction,
 } from "@ui-kitten/components";
 
-import Graph from "../components/ui/graph/Graph.tsx";
 import * as databaseActions from "../store/actions/databaseActions";
 import * as checklistActions from "../store/actions/checklistActions";
 import ActiveAuditCard from "../components/ActiveAuditCard";
