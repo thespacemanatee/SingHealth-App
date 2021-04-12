@@ -13,8 +13,8 @@
 ### Tenant Management
 
 - [x] [`POST /tenant`](#POST-/tenant`)
-- [x] [`DELETE /tenant/<tenantID>`](#POST-/tenant{tenantID}`)
-- [x] [`GET /tenant/<tenantID>`](#GET-/tenant{tenantID}`)
+- [x] [`DELETE /tenant/<tenantID>`](#DELETE-/tenant{tenantID}`)
+- [x] [`GET /tenant/<tenantID>`](#GET-/tenant/{tenantID}`)
 
 ### Institution Management
 
@@ -64,27 +64,52 @@
 ### Sample request
 
 ```
-localhost:5000/tenants/{institutionId}
+http://127.0.0.1:5000/tenants?institutionID=SKH
 ```
 
-### Sample success response
-
+### Sample responses
+#### Success
 ```
 "status": 200,
 "data": {
     "description": "success",
-    "data": [
-        {
-          "tenantID": "rtweafcwred",
-          "stallName": "Mr Bean"
-        },
-        {
-          "tenantID": "vefvefas",
-          "stallName": "Jollibean"
-        }
-    ]
+    "data": [{
+        "fnb": false,
+        "stallName": "Continental Electronics",
+        "tenantID": "6065de0ec8b7adbe23debd90"
+    }, {
+        "fnb": true,
+        "stallName": "BAN MAIN FISH SOUP",
+        "tenantID": "6065de9ac8b7adbe23debd91"
+    }]
 }
 ```
+#### Partial Failure
+##### Missing Information
+```
+"status": 200,
+"data": {
+    "description": "Missing institutionID"}
+}
+```
+
+##### No tenant found
+```
+"status": 200,
+"data": {
+    "description": "No tenant with the institution ID found"}
+}
+```
+
+#### Failure
+##### 
+```
+"status": 404,
+"data": {
+    "description": "Internal Error",
+}
+```
+
 
 ### Response definitions
 
@@ -92,6 +117,7 @@ localhost:5000/tenants/{institutionId}
 | ----------- | ------------------------------------ |
 | `tenantID`  | Unique identifier for tenant         |
 | `stallName` | Name of the stall the tenant is from |
+| `fnb`       | If the stall is an F&B outlet        |
 
 <br>
 
@@ -106,11 +132,11 @@ localhost:5000/tenants/{institutionId}
 ### Sample Request
 
 ```
-localhost:5000/auditForms/fnb
+http://127.0.0.1:5000/auditForms?formType=covid19
 ```
 
 ### Sample Response
-
+#### Success
 ```js
 "status": 200,
 "data": {
@@ -143,8 +169,31 @@ localhost:5000/auditForms/fnb
     }
 }
 ```
+#### Partial Failure
+##### Missing Information
+```
+"status": 200,
+"data": {
+    "description": "Missing form type"}
+}
+```
 
-<br>
+##### No tenant found
+```
+"status": 200,
+"data": {
+    "description": "No matching form"}
+}
+```
+
+#### Failure
+##### 
+```
+"status": 404,
+"data": {
+    "description": "Internal Error",
+}
+```
 
 ## `GET /audits`
 
@@ -1098,30 +1147,49 @@ localhost: 5000 / audits / unrectified / recent / tenant / grwrbgbgbewvw / 0;
 The staff to add new tenant.
 
 ### Compulsory JSON Query string parameters
-
 | JSON param      | Description                                    |
 | --------------- | ---------------------------------------------- |
 | `name`          | Tenant's full name in upper case.              |
 | `stall_name`    | Name of the stall.                             |
-| `email`         | The user email of a tenant.                    |
+| `email`         | The user email of a tenant. Unique email for each tenant                   |
 | `pswd`          | The password credentials for a tenant.         |
 | `fnb`           | Whether the stall is an F&B stall.             |
 | `institutionID` | The institution where a tenant operates under. |
 | `staffID`       | ID of staff who created this account.          |
 
+
+### Optional JSON Query string parameters
+| JSON param        | Description                                    |
+| ---------------   | ---------------------------------------------- |
+| `tenantDateStart` | Time when tenant starts, in MM/YYYY format     |
+| `tenantDateEnd`   | Time when tenant ends, in MM/YYYY format       |
+
 ### Sample request
-
-<!-- #### With only compulsory data -->
-
+#### With only compulsory data
 ```js
 {
     "name": "myname",
-    "stall_name": "mystall",
+    "stallName": "mystall",
+    "email": "myemail.gg.com",
+    "pswd": "mypassword",
+    "institutionID": "myinstitution",
+    "fnb": true,
+    "staffID": "000111"
+}
+```
+
+#### With all compulsory data
+```js
+{
+    "name": "myname",
+    "stallName": "mystall",
     "email": "myemail.gg.com",
     "pswd": "mypassword",
     "institutionID": "myinstitution",
     "fnb": true,
     "staffID": "000111",
+    "tenantDateStart": "01/2021",
+    "tenantDateEnd": "12/2025"
 }
 ```
 
@@ -1137,7 +1205,6 @@ The staff to add new tenant.
 ```
 
 #### Partial Success
-
 ##### Missing keys, null or empty value received for compulsory data fields
 
 ```js
@@ -1152,11 +1219,31 @@ The staff to add new tenant.
     ]
 }
 ```
+##### Duplicate email found
+```js
+"status": 200,
+"data": {
+    "description": "Duplicate email found"
+}
+```
+
+##### Missing keys, null or empty value received for compulsory data fields and duplicate email found
+
+```js
+"status": 200,
+"data": {
+    "description": "Duplicate email and insufficient/error in data to add new tenant",
+    "data": [
+      {
+      "missing_keys": ["key1", "key2", ...]
+      "key_value_error": ["key3", "key4", ...]
+      }
+    ]
+}
+```
 
 #### Failure
-
 ##### No response received
-
 ```js
 "status": 404,
 "data": {
@@ -1188,7 +1275,7 @@ The staff to delete existing tenant.
 ### Sample request
 
 ```
-localhost:5000/tenant/0ta2b2kjq
+http://127.0.0.1:5000/tenant?tenantID=6074222a576f86e1952e8be1
 ```
 
 ### Sample responses
@@ -1198,23 +1285,100 @@ localhost:5000/tenant/0ta2b2kjq
 ```js
 "status": 200,
 "data": {
-  "description": "Tenant with ID 0ta2b2kjq deleted"
+  "description": "Tenant with ID 6074222a576f86e1952e8be1 deleted"
 }
 ```
 
-#### Failure
+#### Partial Failure
+##### Missing TenantID
+```js
+"status": 200,
+"data": {
+  "description": "Missing tenantID"
+}
+```
 
 ##### TenantID not found
-
 ```js
-"status": 404,
+"status": 200,
 "data": {
   "description": "No matching tenant ID found"
 }
 ```
 
+#### Failure
 ##### Server Error
+```js
+"status": 404,
+"data": {
+  "description": "Error connecting to server"
+}
+```
 
+##### Error in deleting data
+```js
+"status": 404,
+"data": {
+  "description": "Error deleting the tenant"
+}
+```
+
+## `GET /tenant/<tenantID>`
+### URL Query Parameters
+| URL Param  | Description                      |
+| ---------- | -------------------------------- |
+| `tenantID` | The unique identifier for tenant |
+
+### Sample request
+
+```
+http://127.0.0.1:5000/tenant?tenantID=6074222a576f86e1952e8be1
+```
+
+### Sample responses
+
+#### Success
+
+```js
+"status": 200,
+"data": {
+  "description": "Success",
+  "data": {
+        "_id": "6074222a576f86e1952e8be1",
+        "createdBy": "000111",
+        "dateCreated": "2021-04-12T18:34:18.955069",
+        "email": "myemail.gg.com",
+        "expoToken": [],
+        "fnb": true,
+        "institutionID": "myinstitution",
+        "name": "myname",
+        "pswd": "mypassword",
+        "stallName": "mystall",
+        "tenantDateEnd": "12/2025",
+        "tenantDateStart": "01/2021"
+    }
+}
+```
+
+#### Partial Failure
+##### Missing TenantID
+```js
+"status": 200,
+"data": {
+  "description": "Missing tenantID"
+}
+```
+
+##### TenantID not found
+```js
+"status": 200,
+"data": {
+  "description": "No matching tenant ID found"
+}
+```
+
+#### Failure
+##### Server Error
 ```js
 "status": 404,
 "data": {
@@ -1319,7 +1483,7 @@ localhost:5000/institutions
 ##### No institution found
 
 ```js
-"status": 404,
+"status": 200,
 "data": {
     "description": "No institution found"
 }
