@@ -37,7 +37,11 @@ const ForgotPasswordScreen = ({ navigation }) => {
     <TopNavigationAction
       icon={BackIcon}
       onPress={() => {
-        navigation.goBack();
+        if (Platform.OS === "web") {
+          window.history.back();
+        } else {
+          navigation.goBack();
+        }
       }}
     />
   );

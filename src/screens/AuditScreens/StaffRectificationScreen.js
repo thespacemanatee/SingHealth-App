@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -243,7 +243,11 @@ const StaffRectificationScreen = ({ route, navigation }) => {
     <TopNavigationAction
       icon={BackIcon}
       onPress={() => {
-        navigation.goBack();
+        if (Platform.OS === "web") {
+          window.history.back();
+        } else {
+          navigation.goBack();
+        }
       }}
     />
   );

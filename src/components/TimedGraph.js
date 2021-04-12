@@ -2,7 +2,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { StyleSheet, Pressable, View } from "react-native";
 import { useTheme } from "@ui-kitten/components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 
 import * as databaseActions from "../store/actions/databaseActions";
@@ -10,6 +10,23 @@ import { handleErrorResponse } from "../helpers/utils";
 
 import CustomText from "./ui/CustomText";
 import Graph from "./ui/graph";
+
+const Axis = ({ startX, endX }) => {
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        paddingHorizontal: 10,
+        paddingTop: 10,
+        opacity: 0.75,
+      }}
+    >
+      <CustomText>{moment.months(startX)}</CustomText>
+      <CustomText>{moment.months(endX)}</CustomText>
+    </View>
+  );
+};
 
 const TimedButton = ({ id, pressed, onPress, children, ...props }) => {
   const theme = useTheme();
@@ -40,11 +57,14 @@ const TimedButton = ({ id, pressed, onPress, children, ...props }) => {
     </Pressable>
   );
 };
-
+// TODO: Make TimedGraph receive props that determine what data to retrieve from API
 const TimedGraph = ({ label }) => {
+  const databaseStore = useSelector((state) => state.database);
   const [buttonPressed, setButtonPressed] = useState(0);
   const [graphLoading, setGraphLoading] = useState(true);
   const [graphData, setGraphData] = useState();
+  const [startX, setStartX] = useState(new Date());
+  const [endX, setEndX] = useState(new Date());
 
   const dispatch = useDispatch();
 
@@ -52,46 +72,107 @@ const TimedGraph = ({ label }) => {
     setButtonPressed(index);
   };
 
+  const renderGraph = useCallback(() => {
+    let temp;
+    if (buttonPressed === 0) {
+      temp = databaseStore.graphData.oneMonth;
+    } else if (buttonPressed === 1) {
+      temp = databaseStore.graphData.threeMonths;
+    } else if (buttonPressed === 2) {
+      temp = databaseStore.graphData.sixMonths;
+    } else if (buttonPressed === 3) {
+      temp = databaseStore.graphData.ytd;
+    } else if (buttonPressed === 4) {
+      temp = databaseStore.graphData.oneYear;
+    }
+
+    if (temp) {
+      setStartX(new Date(temp[0].x).getMonth());
+      setEndX(new Date(temp[temp.length - 1].x).getMonth());
+      setGraphData(temp.map((p) => [new Date(p.x).getTime(), p.y]));
+    }
+  }, [buttonPressed, databaseStore.graphData]);
+
   const getGraphData = useCallback(async () => {
     try {
-      setGraphLoading(true);
-
-      let fromDate;
       const toDate = new Date().getTime();
 
-      if (buttonPressed === 0) {
-        fromDate = moment().subtract(1, "months").toDate().getTime();
-      } else if (buttonPressed === 1) {
-        fromDate = moment().subtract(3, "months").toDate().getTime();
-      } else if (buttonPressed === 2) {
-        fromDate = moment().subtract(6, "months").toDate().getTime();
-      } else if (buttonPressed === 3) {
-        fromDate = moment().startOf("year").toDate().getTime();
-      } else if (buttonPressed === 4) {
-        fromDate = moment().subtract(12, "months").toDate().getTime();
-      }
+      const res = await Promise.all([
+        dispatch(
+          databaseActions.getGraphData(
+            moment().subtract(1, "months").toDate().getTime(),
+            toDate
+          )
+        ),
+        dispatch(
+          databaseActions.getGraphData(
+            moment().subtract(3, "months").toDate().getTime(),
+            toDate
+          )
+        ),
+        dispatch(
+          databaseActions.getGraphData(
+            moment().subtract(6, "months").toDate().getTime(),
+            toDate
+          )
+        ),
+        dispatch(
+          databaseActions.getGraphData(
+            moment().startOf("year").toDate().getTime(),
+            toDate
+          )
+        ),
+        dispatch(
+          databaseActions.getGraphData(
+            moment().subtract(12, "months").toDate().getTime(),
+            toDate
+          )
+        ),
+      ]);
 
-      const res = await dispatch(
-        databaseActions.getGraphData(fromDate, toDate)
-      );
-      res.data.data.sort((a, b) => {
-        console.log("a:", a, "b", b);
-        return (
-          moment(a.date).toDate().getTime() - moment(b.date).toDate().getTime()
-        );
+      res.forEach((e) => {
+        e.data.data.sort((a, b) => {
+          return (
+            moment(a.date).toDate().getTime() -
+            moment(b.date).toDate().getTime()
+          );
+        });
       });
-      const temp = res.data.data.map((e) => ({
-        x: moment(e.date).toDate(),
-        y: Number.parseFloat(e.avgScore) * 100,
-      }));
-      console.log(temp.map((p) => [p.x.getTime(), p.y]));
-      setGraphData(temp.map((p) => [p.x.getTime(), p.y]));
+
+      const dataObject = {
+        oneMonth: res[0].data.data.map((e) => ({
+          x: moment(e.date).toDate(),
+          y: Number.parseFloat(e.avgScore) * 100,
+        })),
+        threeMonths: res[1].data.data.map((e) => ({
+          x: moment(e.date).toDate(),
+          y: Number.parseFloat(e.avgScore) * 100,
+        })),
+        sixMonths: res[2].data.data.map((e) => ({
+          x: moment(e.date).toDate(),
+          y: Number.parseFloat(e.avgScore) * 100,
+        })),
+        ytd: res[3].data.data.map((e) => ({
+          x: moment(e.date).toDate(),
+          y: Number.parseFloat(e.avgScore) * 100,
+        })),
+        oneYear: res[4].data.data.map((e) => ({
+          x: moment(e.date).toDate(),
+          y: Number.parseFloat(e.avgScore) * 100,
+        })),
+      };
+
+      dispatch(databaseActions.storeGraphData(dataObject));
     } catch (err) {
       handleErrorResponse(err);
     } finally {
       setGraphLoading(false);
     }
-  }, [buttonPressed, dispatch]);
+  }, [dispatch]);
+
+  useEffect(() => {
+    renderGraph();
+  }, [renderGraph]);
 
   useEffect(() => {
     getGraphData();
@@ -100,6 +181,7 @@ const TimedGraph = ({ label }) => {
   return (
     <>
       <Graph label={label} data={graphData} loading={graphLoading} />
+      <Axis startX={startX} endX={endX} />
       <View style={styles.timeFrameContainer}>
         <TimedButton id={0} pressed={buttonPressed} onPress={handlePress}>
           1M
@@ -127,7 +209,6 @@ const styles = StyleSheet.create({
   timeFrameContainer: {
     flexDirection: "row",
     justifyContent: "space-evenly",
-    marginVertical: 10,
   },
   timeFrameButton: {
     borderRadius: 5,

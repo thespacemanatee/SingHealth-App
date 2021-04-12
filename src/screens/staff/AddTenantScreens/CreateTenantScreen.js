@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Platform } from "react-native";
 import {
   Button,
   Divider,
@@ -70,7 +70,11 @@ const AddTenantCredScreen = ({ navigation }) => {
     <TopNavigationAction
       icon={BackIcon}
       onPress={() => {
-        navigation.goBack();
+        if (Platform.OS === "web") {
+          window.history.back();
+        } else {
+          navigation.goBack();
+        }
       }}
     />
   );

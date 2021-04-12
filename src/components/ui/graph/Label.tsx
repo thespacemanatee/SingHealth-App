@@ -1,41 +1,44 @@
 import React from "react";
-import { View, StyleSheet, Platform } from "react-native";
-import Animated, { useDerivedValue } from "react-native-reanimated";
+import { View } from "react-native";
+import Animated, {
+  useDerivedValue,
+  useSharedValue,
+} from "react-native-reanimated";
 import { ReText, round } from "react-native-redash";
 import { StyleService, useStyleSheet } from "@ui-kitten/components";
 
 import StyleGuide from "../../StyleGuide";
-import CustomText from "../CustomText";
+
+export const LABEL_SIZE = 150;
 
 const themedStyles = StyleService.create({
   date: {
     ...StyleGuide.typography.body,
-    textAlign: Platform.OS !== "web" ? "right" : null,
-    // backgroundColor: "red",
+    textAlign: "right",
   },
   score: {
     ...StyleGuide.typography.body,
-    textAlign: Platform.OS !== "web" ? "right" : null,
-    // backgroundColor: "red",
+    textAlign: "left",
   },
   labelContainer: {
-    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     backgroundColor: "white",
-    width: 150,
+    width: LABEL_SIZE,
     padding: 10,
-    borderRadius: 3,
+    borderRadius: 5,
     opacity: 0.8,
     borderWidth: 1,
     borderColor: "color-primary-400",
   },
+
   dateContainer: {
-    // flexDirection: "row",
-    // justifyContent: "space-between",
+    flex: 0.5,
+    justifyContent: "space-between",
   },
   contentContainer: {
-    alignItems: "flex-start",
+    flex: 0.5,
+    justifyContent: "space-between",
   },
 });
 
@@ -56,6 +59,7 @@ interface LabelProps {
 
 const Label = ({ point }: LabelProps) => {
   const styles = useStyleSheet(themedStyles);
+  const averageText = useSharedValue("Average");
 
   const date = useDerivedValue(() => {
     const d = new Date(point.value.data.x);
@@ -63,7 +67,6 @@ const Label = ({ point }: LabelProps) => {
   });
   const year = useDerivedValue(() => {
     return new Date(point.value.data.x).getFullYear().toString();
-    // return d.toDateString().replace(/^\S+\s/, "");
   });
   const points = useDerivedValue(() => {
     const p = point.value.data.y;
@@ -72,7 +75,7 @@ const Label = ({ point }: LabelProps) => {
   return (
     <View style={styles.labelContainer}>
       <View style={styles.contentContainer}>
-        <CustomText>Average</CustomText>
+        <ReText style={styles.score} text={averageText} />
         <ReText style={styles.score} text={points} />
       </View>
       <View style={styles.dateContainer}>

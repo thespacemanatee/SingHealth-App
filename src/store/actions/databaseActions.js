@@ -5,6 +5,7 @@ export const GET_INSTITUTIONS = "GET_INSTITUTIONS";
 export const GET_TENANT_ACTIVE_AUDITS = "GET_TENANT_ACTIVE_AUDITS";
 export const GET_STAFF_ACTIVE_AUDITS = "GET_STAFF_ACTIVE_AUDITS";
 export const GET_GRAPH_DATA = "GET_GRAPH_DATA";
+export const STORE_GRAPH_DATA = "STORE_GRAPH_DATA";
 
 export const getInstitutions = () => {
   return async (dispatch) => {
@@ -22,11 +23,11 @@ export const getInstitutions = () => {
 export const getRelevantTenants = (institutionID) => {
   return async (dispatch) => {
     const options = {
-      url: `${endpoint}tenants/${institutionID}`,
+      url: `${endpoint}tenants`,
       method: "get",
-      // withCredentials: true,
+      params: { institutionID },
     };
-    console.log(institutionID);
+
     const res = await httpClient(options);
     dispatch({ type: GET_RELEVANT_TENANTS, relevantTenants: res.data.data });
     return res;
@@ -173,4 +174,8 @@ export const getGraphData = (
 
     return res;
   };
+};
+
+export const storeGraphData = (graphData) => {
+  return { type: STORE_GRAPH_DATA, graphData };
 };

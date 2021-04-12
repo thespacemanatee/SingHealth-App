@@ -1,5 +1,5 @@
 const StyleGuide = {
-  spacing: 8,
+  // spacing: 8,
   palette: {
     primary: "#3884ff",
     secondary: "#FF6584",
@@ -12,6 +12,7 @@ const StyleGuide = {
     body: {
       fontSize: 15,
       lineHeight: 20,
+      fontFamily: "SFProDisplay-Regular",
     },
     callout: {
       fontSize: 16,

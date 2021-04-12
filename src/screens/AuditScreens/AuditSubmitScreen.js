@@ -171,7 +171,11 @@ const AuditSubmitScreen = ({ navigation }) => {
   };
 
   const handleGoBack = useCallback(() => {
-    navigation.goBack();
+    if (Platform.OS === "web") {
+      window.history.back();
+    } else {
+      navigation.goBack();
+    }
   }, [navigation]);
 
   const handleRetry = () => {

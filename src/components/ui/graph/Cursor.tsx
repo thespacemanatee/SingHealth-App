@@ -13,18 +13,11 @@ import Animated, {
   runOnJS,
   EasingNode,
 } from "react-native-reanimated";
+import useForceUpdate from "../../../helpers/hooks/useForceUpdate";
 
 import { Path } from "../../AnimatedHelpers";
 
-import Label, { DataPoint } from "./Label";
-
-function useForceUpdate() {
-  const [, forceUpdate] = React.useState();
-
-  return React.useCallback(() => {
-    forceUpdate((s) => !s);
-  }, []);
-}
+import Label, { DataPoint, LABEL_SIZE } from "./Label";
 
 const { width } = Dimensions.get("window");
 const height = width / 3;
@@ -35,7 +28,6 @@ const styles = StyleSheet.create({
     height: CURSOR,
     justifyContent: "center",
     alignItems: "center",
-    // zIndex: 1,
     // backgroundColor: "rgba(100, 200, 300, 0.4)",
   },
   lineContainer: {
@@ -44,8 +36,6 @@ const styles = StyleSheet.create({
     height: CURSOR,
     justifyContent: "center",
     alignItems: "center",
-    zIndex: -1,
-    // backgroundColor: "red",
   },
   cursor: {
     width: 15,
@@ -170,13 +160,14 @@ const Cursor = ({ path, length, point }: CursorProps) => {
   const labelStyle = useAnimatedStyle(() => {
     const { coord } = point.value;
     const translateX = coord.x - CURSOR / 2;
+    const MARGIN = 100;
     return {
       transform: [
         {
           translateX:
-            coord.x > width / 2
-              ? 100 + translateX - width / 2
-              : 100 - CURSOR / 2,
+            coord.x > LABEL_SIZE + MARGIN * 2 - CURSOR
+              ? translateX - LABEL_SIZE + MARGIN / 2
+              : MARGIN - CURSOR / 2,
         },
       ],
     };
@@ -186,9 +177,6 @@ const Cursor = ({ path, length, point }: CursorProps) => {
     <View style={StyleSheet.absoluteFill}>
       <PanGestureHandler onGestureEvent={onGestureEvent}>
         <Animated.View>
-          <Animated.View style={[styles.cursorContainer, cursorStyle]}>
-            <View style={styles.cursor} />
-          </Animated.View>
           <Animated.View
             style={[
               [
@@ -199,6 +187,9 @@ const Cursor = ({ path, length, point }: CursorProps) => {
             ]}
           >
             <View style={styles.line} />
+          </Animated.View>
+          <Animated.View style={[styles.cursorContainer, cursorStyle]}>
+            <View style={styles.cursor} />
           </Animated.View>
           <Animated.View
             style={[
