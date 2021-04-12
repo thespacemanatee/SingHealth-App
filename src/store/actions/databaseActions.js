@@ -159,15 +159,12 @@ export const createNewTenant = (data) => {
   };
 };
 
-export const getGraphData = (
-  fromDate = Date.now(),
-  toDate = Date.now() + 2592000000
-) => {
+export const getGraphData = (fromDate, toDate, dataType, dataID) => {
   return async () => {
     const getAudit = {
       url: `${endpoint}auditTimeframe`,
       method: "get",
-      params: { fromDate, toDate },
+      params: { fromDate, toDate, dataType, dataID },
     };
 
     const res = await httpClient(getAudit);

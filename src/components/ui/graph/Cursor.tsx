@@ -144,30 +144,30 @@ const Cursor = ({ path, length, point }: CursorProps) => {
 
   const cursorStyle = useAnimatedStyle(() => {
     const { coord } = point.value;
-    const translateX = coord.x - CURSOR / 2;
-    const translateY = coord.y - CURSOR / 2;
+    const translateX = coord.x - CURSOR / 2 || 0;
+    const translateY = coord.y - CURSOR / 2 || 0;
     return {
       transform: [{ translateX }, { translateY }],
     };
   });
   const lineStyle = useAnimatedStyle(() => {
     const { coord } = point.value;
-    const translateX = coord.x - CURSOR / 2;
+    const translateX = coord.x - CURSOR / 2 || 0;
     return {
       transform: [{ translateX }],
     };
   });
   const labelStyle = useAnimatedStyle(() => {
     const { coord } = point.value;
-    const translateX = coord.x - CURSOR / 2;
+    const translateX = coord.x - CURSOR / 2 || 0;
     const MARGIN = 100;
     return {
       transform: [
         {
           translateX:
-            coord.x > LABEL_SIZE + MARGIN * 2 - CURSOR
+            (coord.x > LABEL_SIZE + MARGIN * 2 - CURSOR
               ? translateX - LABEL_SIZE + MARGIN / 2
-              : MARGIN - CURSOR / 2,
+              : MARGIN - CURSOR / 2) || 0,
         },
       ],
     };
