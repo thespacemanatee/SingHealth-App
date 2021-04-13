@@ -64,14 +64,19 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
 
   // TODO: Cleanup memory leak when user leaves screen before image is loaded
   useEffect(() => {
-    console.log("USEEFFECT");
+    let type;
+    if (checklistType === "covid19") {
+      type = "covid19";
+    } else {
+      type = "chosen_checklist";
+    }
     const source = axios.CancelToken.source();
     const getImages = async () => {
-      if (checklistStore.chosen_checklist.questions[section][index].image) {
+      if (checklistStore[type].questions[section][index].image) {
         setLoading(true);
         try {
           await Promise.all(
-            checklistStore.chosen_checklist.questions[section][index].image.map(
+            checklistStore[type].questions[section][index].image.map(
               async (fileName) => {
                 if (!fileName.name) {
                   const res = await dispatch(
@@ -109,29 +114,21 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
     return () => {
       source.cancel();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    let storeImages;
-    let storeRemarks;
-    let storeDeadline;
-    if (
-      Object.prototype.hasOwnProperty.call(
-        checklistStore.covid19.questions,
-        section
-      )
-    ) {
-      storeImages = checklistStore.covid19.questions[section][index].image;
-      storeRemarks = checklistStore.covid19.questions[section][index].remarks;
-      storeDeadline = checklistStore.covid19.questions[section][index].deadline;
+    let type;
+    if (checklistType === "covid19") {
+      type = "covid19";
     } else {
-      storeImages =
-        checklistStore.chosen_checklist.questions[section][index].image;
-      storeRemarks =
-        checklistStore.chosen_checklist.questions[section][index].remarks;
-      storeDeadline =
-        checklistStore.chosen_checklist.questions[section][index].deadline;
+      type = "chosen_checklist";
     }
+
+    const storeImages = checklistStore[type].questions[section][index].image;
+    const storeRemarks = checklistStore[type].questions[section][index].remarks;
+    const storeDeadline =
+      checklistStore[type].questions[section][index].deadline;
 
     if (storeImages) {
       const images = storeImages.map((e) => e.uri);
@@ -149,7 +146,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
           .join(" ")
       );
     }
-  }, [checklistStore, dispatch, index, section]);
+  }, [checklistStore, checklistType, dispatch, index, section]);
 
   const BackAction = () => (
     <TopNavigationAction
