@@ -15,13 +15,14 @@ import { handleErrorResponse } from "../../../helpers/utils";
 import EntityCard from "../../../components/EntityCard";
 import EntityLoading from "../../../components/ui/loading/EntityLoading";
 import CustomText from "../../../components/ui/CustomText";
+import TimedGraph from "../../../components/TimedGraph";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const TenantsDirectoryScreen = ({ route, navigation }) => {
   const [tenants, setTenants] = useState([]);
   const [listLoading, setListLoading] = useState(true);
-  const { institutionID } = route.params;
+  const { institutionID, displayName } = route.params;
 
   const dispatch = useDispatch();
 
@@ -78,14 +79,14 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
       <EntityLoading />
     ) : (
       <View style={styles.emptyComponent}>
-        <CustomText bold>NO OUTSTANDING AUDITS</CustomText>
+        <CustomText bold>NO TENANTS</CustomText>
       </View>
     );
 
   return (
     <View style={styles.screen}>
       <TopNavigation
-        title="Directory"
+        title={displayName}
         alignment="center"
         accessoryLeft={BackAction}
       />
@@ -98,6 +99,21 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
           keyExtractor={(item, index) => String(index)}
           refreshing={listLoading}
           ListEmptyComponent={renderEmptyComponent}
+          ListHeaderComponent={
+            <>
+              <TimedGraph
+                label={`Average Scores (${displayName
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")})`}
+                type="institution"
+                id={institutionID}
+              />
+              <View style={styles.textContainer}>
+                <CustomText style={styles.text}>Tenants</CustomText>
+              </View>
+            </>
+          }
         />
       </Layout>
     </View>
@@ -110,6 +126,13 @@ const styles = StyleService.create({
   },
   layout: {
     flex: 1,
+  },
+  textContainer: {
+    marginVertical: 10,
+  },
+  text: {
+    fontSize: 26,
+    fontFamily: "SFProDisplay-Bold",
   },
   contentContainer: {
     // flexGrow: 1,

@@ -53,7 +53,8 @@ def addImagesEndpoint(app):
 
                     imageFilenames = []
                     for image in requestData:
-                        imageFilenames.append(image["fileName"])
+                        if image.get("fileName", None) != None:
+                            imageFilenames.append()
 
                     detected_Duplicate_filenames = len(
                         imageFilenames) > len(set(imageFilenames))

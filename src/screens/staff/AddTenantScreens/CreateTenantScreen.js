@@ -116,7 +116,7 @@ const AddTenantCredScreen = ({ navigation }) => {
       />
       <Divider />
       <CenteredLoading loading={loading} />
-      <KeyboardAwareScrollView>
+      <KeyboardAwareScrollView contentContainerStyle={styles.scrollView}>
         <Layout style={styles.layout}>
           <Formik
             initialValues={{
@@ -242,6 +242,9 @@ const AddTenantCredScreen = ({ navigation }) => {
 const styles = StyleService.create({
   screen: {
     flex: 1,
+  },
+  scrollView: {
+    flexGrow: 1,
   },
   layout: {
     flex: 1,

@@ -32,3 +32,5 @@ backend/TestDeploy
 
 # jest
 .jest/cache
+backend/backend_wx.py
+backend/demo.docx

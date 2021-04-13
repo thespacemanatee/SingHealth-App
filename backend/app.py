@@ -1,5 +1,6 @@
 from gevent import monkey; monkey.patch_all()
 from BTS.auditsEndpoint import addAuditsEndpoint
+from BTS.rectificationEndpoints import addRectificationEndpts
 from BTS.loginEndpoints import addLoginEndpointsForTenantAndStaff
 from BTS.imagesEndpoint import addImagesEndpoint
 from BTS.auditsGetFormEndpoint import addGetFormEndpoints
@@ -53,6 +54,7 @@ def hello_world0():
 
 addGetFormEndpoints(app, mongo)
 addAuditsEndpoint(app, mongo)
+addRectificationEndpts(app, mongo)
 addImagesEndpoint(app)
 addLoginEndpointsForTenantAndStaff(app, mongo)
 addRecentAuditsEndpoints(app, mongo)
@@ -64,3 +66,5 @@ audit_timeframe_endpoint(app, mongo)
 port = int(os.getenv('PORT', 5000))
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port, debug=True, load_dotenv=".env")
+
+

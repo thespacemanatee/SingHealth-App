@@ -1,0 +1,38 @@
+{
+	"_id": "6065de0ec8b7adbe23debd90",
+	"name": "Zark Muckerberg",
+	"email": "whateverisgood577@gmail.com",
+	"pswd": "bts",
+	"institutionID": "SKH",
+	"stall": {
+		"name": "Continental Electronics",
+		"companyName": "CE PTE LTD",
+		"companyPOC": {
+			"name": "Ms Priscilla",
+			"email": "test_email@gmail.com"
+		},
+		"address": {
+			"blk": null,
+			"street": null,
+			"bldg": null,
+			"unitNo": "11-111",
+			"zipcode": null
+		},
+		"fnb": false
+	},
+	"createdBy": "x68765yt34rgTHYTJUI*&U^Y%T$R",
+	"dateCreated": "2021-04-01T22:51:58.875652",
+	"tenantDateStart": "03/2021",
+	"tenantDateEnd": "09/2021",
+	"expoToken": [
+        "ExponentPushToken[61HwA2IufZFetOn8QjgycH]", 
+        "", 
+        "", 
+        "ExponentPushToken[UkI3EPAICgWFqwsAr6VK5N]", 
+        "ExponentPushToken[UkI3EPAICgWFqwsAr6VK5N]", 
+        "",
+        "", 
+        "", 
+        "ExponentPushToken[UkI3EPAICgWFqwsAr6VK5N]"
+    ]
+}

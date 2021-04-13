@@ -4,6 +4,7 @@ import { StyleSheet, Pressable, View } from "react-native";
 import { useTheme } from "@ui-kitten/components";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
+import { useNavigation } from "@react-navigation/native";
 
 import * as databaseActions from "../store/actions/databaseActions";
 import { handleErrorResponse } from "../helpers/utils";
@@ -22,8 +23,8 @@ const Axis = ({ startX, endX }) => {
         opacity: 0.75,
       }}
     >
-      <CustomText>{moment.months(startX)}</CustomText>
-      <CustomText>{moment.months(endX)}</CustomText>
+      <CustomText>{moment.months(startX?.month())}</CustomText>
+      <CustomText>{moment.months(endX?.month())}</CustomText>
     </View>
   );
 };
@@ -57,14 +58,16 @@ const TimedButton = ({ id, pressed, onPress, children, ...props }) => {
     </Pressable>
   );
 };
-// TODO: Make TimedGraph receive props that determine what data to retrieve from API
-const TimedGraph = ({ label }) => {
+
+const TimedGraph = ({ label, type, id }) => {
   const databaseStore = useSelector((state) => state.database);
   const [buttonPressed, setButtonPressed] = useState(0);
   const [graphLoading, setGraphLoading] = useState(true);
   const [graphData, setGraphData] = useState();
-  const [startX, setStartX] = useState(new Date());
-  const [endX, setEndX] = useState(new Date());
+  const [startX, setStartX] = useState();
+  const [endX, setEndX] = useState();
+
+  const navigation = useNavigation();
 
   const dispatch = useDispatch();
 
@@ -87,48 +90,64 @@ const TimedGraph = ({ label }) => {
     }
 
     if (temp) {
-      setStartX(new Date(temp[0].x).getMonth());
-      setEndX(new Date(temp[temp.length - 1].x).getMonth());
+      setStartX(moment(temp[0].x));
+      setEndX(moment(temp[temp.length - 1].x));
       setGraphData(temp.map((p) => [new Date(p.x).getTime(), p.y]));
+    } else {
+      setStartX(moment());
+      setEndX(moment());
     }
   }, [buttonPressed, databaseStore.graphData]);
 
   const getGraphData = useCallback(async () => {
     try {
+      setGraphLoading(true);
+
       const toDate = new Date().getTime();
 
       const res = await Promise.all([
         dispatch(
           databaseActions.getGraphData(
             moment().subtract(1, "months").toDate().getTime(),
-            toDate
+            toDate,
+            type,
+            id
           )
         ),
         dispatch(
           databaseActions.getGraphData(
             moment().subtract(3, "months").toDate().getTime(),
-            toDate
+            toDate,
+            type,
+            id
           )
         ),
         dispatch(
           databaseActions.getGraphData(
             moment().subtract(6, "months").toDate().getTime(),
-            toDate
+            toDate,
+            type,
+            id
           )
         ),
         dispatch(
           databaseActions.getGraphData(
             moment().startOf("year").toDate().getTime(),
-            toDate
+            toDate,
+            type,
+            id
           )
         ),
         dispatch(
           databaseActions.getGraphData(
             moment().subtract(12, "months").toDate().getTime(),
-            toDate
+            toDate,
+            type,
+            id
           )
         ),
       ]);
+      console.log(res);
 
       res.forEach((e) => {
         e.data.data.sort((a, b) => {
@@ -164,11 +183,13 @@ const TimedGraph = ({ label }) => {
 
       dispatch(databaseActions.storeGraphData(dataObject));
     } catch (err) {
+      dispatch(databaseActions.storeGraphData({}));
+      setGraphData();
       handleErrorResponse(err);
     } finally {
       setGraphLoading(false);
     }
-  }, [dispatch]);
+  }, [dispatch, id, type]);
 
   useEffect(() => {
     renderGraph();
@@ -176,7 +197,15 @@ const TimedGraph = ({ label }) => {
 
   useEffect(() => {
     getGraphData();
-  }, [getGraphData]);
+    const unsubscribe = navigation.addListener("focus", () => {
+      getGraphData();
+      console.log("GETTING GRAPH DATA");
+    });
+    return () => {
+      // eslint-disable-next-line no-unused-expressions
+      unsubscribe;
+    };
+  }, [getGraphData, navigation]);
 
   return (
     <>

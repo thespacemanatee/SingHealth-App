@@ -39,8 +39,11 @@ const DirectoryScreen = ({ navigation }) => {
   );
 
   const handleNavigateTenants = useCallback(
-    (institutionID) => {
-      navigation.navigate("TenantsDirectory", { institutionID });
+    (institutionID, displayName) => {
+      navigation.navigate("TenantsDirectory", {
+        institutionID,
+        displayName,
+      });
     },
     [navigation]
   );

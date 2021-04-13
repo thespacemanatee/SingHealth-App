@@ -10,7 +10,6 @@ import {
   TopNavigationAction,
 } from "@ui-kitten/components";
 
-import Graph from "../components/ui/graph/Graph.tsx";
 import * as databaseActions from "../store/actions/databaseActions";
 import * as checklistActions from "../store/actions/checklistActions";
 import ActiveAuditCard from "../components/ActiveAuditCard";
@@ -141,7 +140,7 @@ const TenantInfoScreen = ({ route, navigation }) => {
           ListEmptyComponent={renderEmptyComponent}
           ListHeaderComponent={
             <>
-              <TimedGraph label="Average Scores" />
+              <TimedGraph label="Average Scores" type="tenant" id={tenantID} />
               <View style={styles.textContainer}>
                 <CustomText style={styles.text}>All Audits</CustomText>
               </View>

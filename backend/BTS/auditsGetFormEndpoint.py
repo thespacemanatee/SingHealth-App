@@ -20,6 +20,9 @@ def addGetFormEndpoints(app, mongo):
         if request.method == "GET":
             try:
                 institutionID = request.args.get("institutionID", None)
+                if institutionID is None:
+                    return serverResponse(None, 200, "Missing institutionID")
+                
                 tenants = mongo.db.tenant.find({"institutionID": institutionID})
     
                 result = [{
@@ -30,14 +33,12 @@ def addGetFormEndpoints(app, mongo):
                     for tenant in tenants]
     
                 if len(result) > 0:
-                    output = serverResponse(result, 200, "Success")
+                    return serverResponse(result, 200, "Success")
                 else:
-                    output = serverResponse(None, 200, "No tenant with the institution ID found")
+                    return serverResponse(None, 200, "No tenant with the institution ID found")
     
             except:
-                output = serverResponse(None, 404, "Internal Error")
-    
-            return output
+               return serverResponse(None, 404, "Error in connection")
 
     @app.route("/auditForms", methods=["GET"])
     # @login_required
