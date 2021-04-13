@@ -12,10 +12,6 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
 
     @app.route('/login/staff',  methods=["POST"])
     def login_for_staff():
-        """
-        TODO:
-        implement password hashing
-        """
         if request.method == "POST":
             credentials = request.json
             expoToken = credentials.get("expoToken", None)
@@ -25,8 +21,8 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
             user = mongo.db.staff.find_one({"email": userEmail})
             if user:
                 dbUserEmail = user['email'].lower()
-                # check_password_hash(user["pswd"], credentials["pswd"]):
-                if user["pswd"] == credentials["pswd"]:
+                if check_password_hash(user["pswd"], credentials["pswd"]):
+                # if user["pswd"] == credentials["pswd"]:
                     user_obj = User(userEmail=dbUserEmail)
                     login_user(user_obj, remember=True)
                     session['account_type'] = "staff"
@@ -83,8 +79,8 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
             user = mongo.db.tenant.find_one({"email": userEmail})
             if user:
                 dbUserEmail = user['email'].lower()
-                # check_password_hash(user["pswd"], credentials["pswd"]):
-                if user["pswd"] == credentials["pswd"]:
+                if check_password_hash(user["pswd"], credentials["pswd"]):
+                # if user["pswd"] == credentials["pswd"]:
                     user_obj = User(userEmail=dbUserEmail)
                     login_user(user_obj, remember=True)
                     session['account_type'] = "tenant"

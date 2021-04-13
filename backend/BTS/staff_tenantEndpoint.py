@@ -9,6 +9,7 @@ from flask import request
 from flask_login import login_required
 from flask_pymongo import ObjectId
 from .utils import serverResponse, validate_required_info, check_duplicate, find_and_return_one
+from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 
 
@@ -38,7 +39,7 @@ def change_tenant_info(app, mongo):
                         "name": tenant_info["name"],
                         "stallName": tenant_info["stallName"],
                         "email": tenant_info["email"].lower(),
-                        "pswd": tenant_info["pswd"],
+                        "pswd": generate_password_hash(tenant_info["pswd"]),
                         "institutionID": tenant_info["institutionID"],
                         "fnb": tenant_info["fnb"],
                         "createdBy": tenant_info["staffID"],
