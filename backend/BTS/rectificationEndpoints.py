@@ -99,7 +99,9 @@ def mongoUpdateGivenFields(mongo, patches, fields, auditChecklists):
                 patch["category"] + "." + str(patch["index"]) + "."
             patchStatuses = []
             for field in fields:
-                if field == allowedStaffPatchKeys[2]:
+                if patch.get(field, None) == None:
+                    continue
+                elif field == allowedStaffPatchKeys[2]:
                     newValue = iso8601.parse_date(patch[field])
                 else:
                     newValue = patch[field]
@@ -115,7 +117,16 @@ def mongoUpdateGivenFields(mongo, patches, fields, auditChecklists):
             patchResults.append(patchResult)
     return patchResults
 
+def percentageRectification(allQuestions):
+    numNCs = len(list(filter(
+        lambda x: x["answer"] == False,
+        allQuestions)))
+    numRectifiedNCs = len(list(filter(
+        lambda x: x["answer"] == False and x.get("rectified", None) == True,
+        allQuestions)))
+    percentRectification = numRectifiedNCs / numNCs
 
+    return percentRectification
 
 def addRectificationEndpts(app, mongo):
     @app.route("/audits/<auditID>/tenant", methods=['PATCH'])
@@ -139,7 +150,7 @@ def addRectificationEndpts(app, mongo):
             tenant = mongo.db.tenant.find_one(
                 {"_id": selectedAudit["tenantID"]}
             )
-            tenantStallName = tenant["stall"]["name"]
+            tenantStallName = tenant["stallName"]
             staffExpoTokens = staff.get("expoToken")
 
             auditChecklists = selectedAudit["auditChecklists"]
@@ -176,7 +187,7 @@ def addRectificationEndpts(app, mongo):
                 staff["email"], 
                 "Audit Results", 
                 f"""Dear {staff['name']},
-                    Your tenant, {tenant['stall']['name']}, has submitted a review for one of his NCs for the audit dated {date.strftime('%d %B %Y, %I:%M %p')}. 
+                    Your tenant, {tenant["stallName"]}, has submitted a review for one of his NCs for the audit dated {date.strftime('%d %B %Y, %I:%M %p')}. 
                     Please check your app for details.
                     This email is auto generated. No signature is required.
                     You do not have to reply to this email."""
@@ -225,13 +236,7 @@ def addRectificationEndpts(app, mongo):
                     for answerList in form["answers"].values():
                         allQuestions.extend(answerList)
 
-            numNCs = len(list(filter(
-                lambda x: x["answer"] == False,
-                allQuestions)))
-            numRectifiedNCs = len(list(filter(
-                lambda x: x["answer"] == False and x.get("rectified", None) == True,
-                allQuestions)))
-            percentRectification = numRectifiedNCs / numNCs
+            percentRectification = percentageRectification(allQuestions)
 
             # Update audit metadata
             percentRectDict = {"rectificationProgress": percentRectification}
@@ -264,7 +269,7 @@ def addRectificationEndpts(app, mongo):
                     app,
                     tenant["email"], 
                     "Audit Results", 
-                    f"""Dear {tenant['stall']['name']},
+                    f"""Dear {tenant["stallName"]},
                         {institution} has submitted a review for your rectifications for your audit dated {date.strftime('%d %B %Y, %I:%M %p')}. 
                         Please check your app for details.
                         This email is auto generated. No signature is required.

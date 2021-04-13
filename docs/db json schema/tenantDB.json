@@ -25,67 +25,7 @@
             "description": "The institution where a tenant operates under",
             "type": "string"
         },
-        "stall": {
-            "description": "All the info regarding their stall",
-            "type": "object",
-            "properties": {
-                "name": {
-                    "description": "Name of the stall",
-                    "type": "string"
-                },
-                "companyName": {
-                    "description": "Name of the company the stall is representing",
-                    "type": "string"
-                },
-                "companyPOC": {
-                    "description": "All the info regarding the company's point of contact",
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "description": "Name of the company POC",
-                            "type": "string"
-                        },
-                        "email": {
-                            "description": "Email of the company POC",
-                            "type": "string"
-                        }
-                    },
-                    "required": ["name", "email"]
-                },
-                "address": {
-                    "description": "All the info regarding the stall address",
-                    "type": "object",
-                    "properties": {
-                        "blk": {
-                            "description": "blk number. I.e. 243A",
-                            "type": "string"
-                        },
-                        "street": {
-                            "description": "Street name",
-                            "type": "string"
-                        },
-                        "bldg": {
-                            "description": "Name of the building",
-                            "type": "string"
-                        },
-                        "unitNo": {
-                            "description": "The unit number. I.e. 02-212 (without hashes)",
-                            "type": "string"
-                        },
-                        "zipcode": {
-                            "description": "The zipcode of the stall. I.e. 123456 (only numbers)",
-                            "type": "integer"
-                        }
-                    },
-                    "required": [ "unitNo" ]
-                },
-                "fnb": {
-                    "description": "Whether the stall is an F&B stall",
-                    "type": "boolean"
-                }
-            },
-            "required": ["name", "fnb"]
-        },
+        "stallName": {"type": "string"},
         "createdBy": {
             "description": "ID of staff who created this account",
             "type": "string"
@@ -109,7 +49,11 @@
             "items": {
                 "type":"string"
             }
+        },
+        "fnb": {
+            "description": "Whether the said stall is an FNB stall",
+            "type": "boolean"
         }
     },
-    "required": [ "_id", "name", "email", "pswd", "institutionId", "stall", "createdBy", "dateCreated"]
+    "required": [ "_id", "name", "email", "pswd", "institutionId", "stallName", "createdBy", "dateCreated", "fnb"]
   }

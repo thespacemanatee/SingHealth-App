@@ -1,0 +1,182 @@
+{
+  "_id": "non_fnb2021",
+  "type": "non_fnb",
+  "questions": {
+    "Professionalism and Staff Hygiene": [
+      {
+        "index": 1,
+        "question": "Shop is open and ready to service patients/visitors according to operating hours.",
+        "answer": false
+      },
+      {
+        "index": 2,
+        "question": "Staff Attendance: adequate staff for peak and non-peak hours.",
+        "answer": false
+      },
+      {
+        "index": 3,
+        "question": "At least one (1) clearly assigned person in-charge on site.",
+        "answer": false
+      },
+      {
+        "index": 4,
+        "question": "Staff uniform/attire is not soiled.",
+        "answer": false
+      },
+      {
+        "index": 5,
+        "question": "Staff who are unfit for work due to illness should not report to work).",
+        "answer": false
+      },
+      {
+        "index": 6,
+        "question": "Staff who are fit for work but suffering from the lingering effects of a cough and/or cold should cover their mouths with a surgical mask.",
+        "answer": false
+      }
+    ],
+    "Housekeeping and General Cleanliness": [
+      {
+        "index": 1,
+        "question": "Adequate and regular pest control. Pest control record.",
+        "answer": false
+      },
+      {
+        "index": 2,
+        "question": "Goods and equipment are within shop boundary.",
+        "answer": false
+      },
+      {
+        "index": 3,
+        "question": "Store display/ Shop front is neat and tidy.",
+        "answer": false
+      },
+      {
+        "index": 4,
+        "question": "Work/ serving area is neat, clean and free of spillage.",
+        "answer": false
+      },
+      {
+        "index": 5,
+        "question": "Uncluttered circulation space free of refuse/ furniture.",
+        "answer": false
+      },
+      {
+        "index": 6,
+        "question": "Fixtures and fittings including shelves, cupboards and drawers are clean and dry and in a good state.",
+        "answer": false
+      },
+      {
+        "index": 7,
+        "question": "Ceiling/ ceiling boards are free from stains/ dust with no gaps.",
+        "answer": false
+      },
+      {
+        "index": 8,
+        "question": "Fans and air-con units are in proper working order and clean and free from dust. Proper maintenance and routine cleaning are carried out regularly.",
+        "answer": false
+      },
+      {
+        "index": 9,
+        "question": "Equipment is clean, in good condition and serviced.",
+        "answer": false
+      },
+      {
+        "index": 10,
+        "question": "Surfaces, walls and ceilings within customer areas are dry and clean.",
+        "answer": false
+      },
+      {
+        "index": 11,
+        "question": "Floor within customer areas is clean and dry.",
+        "answer": false
+      },
+      {
+        "index": 12,
+        "question": "Waste is properly managed and disposed. Waste bins are not over-filled. Waste Management: Proper disposal of general waste. ",
+        "answer": false
+      }
+    ],
+    "Workplace Safety and Health": [
+      {
+        "index": 1,
+        "question": "MSDS for all industrial chemicals are available and up to date.",
+        "answer": false
+      },
+      {
+        "index": 2,
+        "question": "Proper chemicals storage.",
+        "answer": false
+      },
+      {
+        "index": 3,
+        "question": "All detergent and bottles containing liquids are labelled appropriately.",
+        "answer": false
+      },
+      {
+        "index": 4,
+        "question": "All personnel to wear safety shoes and safety attire where necessary.",
+        "answer": false
+      },
+      {
+        "index": 5,
+        "question": "Knives and sharp objects are kept at a safe place.",
+        "answer": false
+      },
+      {
+        "index": 6,
+        "question": "Area under the sink should not be cluttered with items other than washing agents.",
+        "answer": false
+      },
+      {
+        "index": 7,
+        "question": "Delivery personnel do not stack goods above the shoulder level.",
+        "answer": false
+      },
+      {
+        "index": 8,
+        "question": "Stacking of goods does not exceed 600mm from the ceiling and heavy items at the bottom, light items on top.",
+        "answer": false
+      },
+      {
+        "index": 9,
+        "question": "Proper signage/ label (fire, hazards, warnings, food stuff) and Exit signs in working order.",
+        "answer": false
+      },
+      {
+        "index": 10,
+        "question": "Fire extinguishers access is unobstructed; Fire extinguishers are not expired and employees know how to use them.",
+        "answer": false
+      },
+      {
+        "index": 11,
+        "question": "Escape route and exits are unobstructed.",
+        "answer": false
+      },
+      {
+        "index": 12,
+        "question": "First aid box is available and well-equipped.",
+        "answer": false
+      },
+      {
+        "index": 13,
+        "question": "Electrical sockets are not overloaded – one plug to one socket.",
+        "answer": false
+      },
+      {
+        "index": 14,
+        "question": "Plugs and cords are intact and free from exposure/ tension with PSB safety mark.",
+        "answer": false
+      },
+      {
+        "index": 15,
+        "question": "Power points that are in close proximity to flammable and/or water sources are installed with a plastic cover.",
+        "answer": false
+      },
+      {
+        "index": 16,
+        "question": "Electrical panels / DBs are covered.",
+        "answer": false
+      }
+    ]
+  }
+}
