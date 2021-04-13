@@ -289,7 +289,7 @@ def addAuditsEndpoint(app, mongo):
                     auditsList.append(
                         {
                             "auditMetadata": audit,
-                            "stallName": stallName
+                            "stallName": tenant["stallName"]
                         }
                     )
 
