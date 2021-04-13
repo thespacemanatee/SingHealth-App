@@ -131,7 +131,7 @@ export const postAuditImagesWeb = (data) => {
 export const exportAndEmail = (auditID) => {
   return async () => {
     const options = {
-      url: `${endpoint}email/${auditID}`,
+      url: `${endpoint}email/word/${auditID}`,
       method: "post",
     };
 
