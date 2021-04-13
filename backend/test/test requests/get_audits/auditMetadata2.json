@@ -3,10 +3,10 @@
 	"staffID": "x68765yt34kmujnyhbtgR",
 	"tenantID": "6065de0ec8b7adbe23debd90",
 	"institutionID": "SKH",
-	"date": "2021-04-06T10:49:18+0000",
+	"date": "2021-04-01T10:49:18+0000",
 	"auditChecklists": {
-		"non_fnb": "2021-04-04T18:42:31.460Z606969818e6e53b0f4e6ab4fnon_fnb",
-		"covid19": "2021-04-04T18:42:31.460Z606969818e6e53b0f4e6ab4fcovid19"
+		"non_fnb": "2021-04-01T18:42:31.460Z606969818e6e53b0f4e6ab4fnon_fnb",
+		"covid19": "2021-04-01T18:42:31.460Z606969818e6e53b0f4e6ab4fcovid19"
 	},
 	"score": 0.9,
 	"rectificationProgress": 0.3333333333333333

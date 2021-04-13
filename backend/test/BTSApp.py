@@ -6,6 +6,7 @@ from flask_testing import TestCase
 from BTS.auditsEndpoint import addAuditsEndpoint
 from BTS.loginEndpoints import addLoginEndpointsForTenantAndStaff
 from BTS.imagesEndpoint import addImagesEndpoint
+from BTS.rectificationEndpoints import addRectificationEndpts
 from BTS.auditsEndpoint_wx import addWenXinEndpoints
 from BTS.staff_tenantEndpoint_wx import change_tenant_info
 from BTS.recentAuditsEndpoints import addRecentAuditsEndpoints
@@ -46,6 +47,7 @@ class BTSAppTestCase(TestCase):
         addImagesEndpoint(app)
         institution_info(app, mockMongo)
         addAuditsEndpoint(app, mockMongo)
+        addRectificationEndpts(app, mockMongo)
         addLoginEndpointsForTenantAndStaff(app, mockMongo)
         addWenXinEndpoints(app, mockMongo)
         addRecentAuditsEndpoints(app, mockMongo)

@@ -74,8 +74,10 @@ class TestPostAuditsEndpt(BTSAppTestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_valid_request(self):
-        auditMetadata = json.load(open("test requests\\post_audits\\auditMetadata.json", "r"))
-        filledAuditForm = json.load(open("test requests\\post_audits\\filledAuditForm.json","r"))
+        with open("test requests\\post_audits\\auditMetadata.json", "r") as am:
+            auditMetadata = json.load(am)
+        with open("test requests\\post_audits\\filledAuditForm.json", "r") as faf:
+            filledAuditForm = json.load(faf)
         test_request = {
             "auditMetadata":auditMetadata, 
             "auditForms": {
@@ -90,8 +92,10 @@ class TestPostAuditsEndpt(BTSAppTestCase):
         self.mongo.db.audits.insert_one.assert_called()
 
     def test_no_ans_field(self):
-        auditMetadata = json.load(open("test requests\\post_audits\\auditMetadata.json", "r"))
-        filledAuditForm = json.load(open("test requests\\post_audits\\noAnsField.json","r"))
+        with open("test requests\\post_audits\\auditMetadata.json", "r") as am:
+            auditMetadata = json.load(am)
+        with open("test requests\\post_audits\\noAnsField.json","r") as faf:
+            filledAuditForm = json.load(faf)
         test_request = {
             "auditMetadata":auditMetadata, 
             "auditForms": {
@@ -106,8 +110,10 @@ class TestPostAuditsEndpt(BTSAppTestCase):
         assert not self.mongo.db.audits.insert_one.called
 
     def test_too_many_images(self):
-        auditMetadata = json.load(open("test requests\\post_audits\\auditMetadata.json", "r"))
-        filledAuditForm = json.load(open("test requests\\post_audits\\tooManyImages.json","r"))
+        with open("test requests\\post_audits\\auditMetadata.json", "r") as am:
+            auditMetadata = json.load(am)
+        with open("test requests\\post_audits\\tooManyImages.json","r") as faf:
+            filledAuditForm = json.load(faf)
         test_request = {
             "auditMetadata":auditMetadata, 
             "auditForms": {
@@ -122,8 +128,10 @@ class TestPostAuditsEndpt(BTSAppTestCase):
         assert not self.mongo.db.audits.insert_one.called
 
     def test_duplicate_images(self):
-        auditMetadata = json.load(open("test requests\\post_audits\\auditMetadata.json", "r"))
-        filledAuditForm = json.load(open("test requests\\post_audits\\duplicateImages.json","r"))
+        with open("test requests\\post_audits\\auditMetadata.json", "r") as am:
+            auditMetadata = json.load(am)
+        with open("test requests\\post_audits\\duplicateImages.json","r") as faf:
+            filledAuditForm = json.load(faf)
         test_request = {
             "auditMetadata":auditMetadata, 
             "auditForms": {
@@ -138,8 +146,10 @@ class TestPostAuditsEndpt(BTSAppTestCase):
         assert not self.mongo.db.audits.insert_one.called
 
     def test_false_but_no_remarks(self):
-        auditMetadata = json.load(open("test requests\\post_audits\\auditMetadata.json", "r"))
-        filledAuditForm = json.load(open("test requests\\post_audits\\falseButNoRemarks.json","r"))
+        with open("test requests\\post_audits\\auditMetadata.json", "r") as am:
+            auditMetadata = json.load(am)
+        with open("test requests\\post_audits\\falseButNoRemarks.json","r") as faf:
+            filledAuditForm = json.load(faf)
         test_request = {
             "auditMetadata":auditMetadata, 
             "auditForms": {
@@ -154,8 +164,10 @@ class TestPostAuditsEndpt(BTSAppTestCase):
         assert not self.mongo.db.audits.insert_one.called
 
     def test_false_but_no_deadline(self):
-        auditMetadata = json.load(open("test requests\\post_audits\\auditMetadata.json", "r"))
-        filledAuditForm = json.load(open("test requests\\post_audits\\falseButNoDeadline.json","r"))
+        with open("test requests\\post_audits\\auditMetadata.json", "r") as am:
+            auditMetadata = json.load(am)
+        with open("test requests\\post_audits\\falseButNoDeadline.json","r") as faf:
+            filledAuditForm = json.load(faf)
         test_request = {
             "auditMetadata":auditMetadata, 
             "auditForms": {
@@ -170,8 +182,10 @@ class TestPostAuditsEndpt(BTSAppTestCase):
         assert not self.mongo.db.audits.insert_one.called
 
     def test_non_iso_date_filledAuditForms(self):
-        auditMetadata = json.load(open("test requests\\post_audits\\auditMetadata.json", "r"))
-        filledAuditForm = json.load(open("test requests\\post_audits\\noISODateFilledAuditForms.json","r"))
+        with open("test requests\\post_audits\\auditMetadata.json", "r") as am:
+            auditMetadata = json.load(am)
+        with open("test requests\\post_audits\\noISODateFilledAuditForms.json","r") as faf:
+            filledAuditForm = json.load(faf)
         test_request = {
             "auditMetadata":auditMetadata, 
             "auditForms": {
@@ -186,9 +200,12 @@ class TestPostAuditsEndpt(BTSAppTestCase):
         assert not self.mongo.db.audits.insert_one.called
 
     def test_conflicting_form_types(self):
-        auditMetadata = json.load(open("test requests\\post_audits\\auditMetadata.json", "r"))
-        filledAuditFormFNB = json.load(open("test requests\\post_audits\\filledAuditFormsFNB.json","r"))
-        filledAuditForm = json.load(open("test requests\\post_audits\\noISODateFilledAuditForms.json","r"))
+        with open("test requests\\post_audits\\auditMetadata.json", "r") as am:
+            auditMetadata = json.load(am)
+        with open("test requests\\post_audits\\filledAuditForm.json","r") as faf:
+            filledAuditForm = json.load(faf)
+        with open("test requests\\post_audits\\filledAuditFormsFNB.json","r") as fnbfaf:
+            filledAuditFormFNB = json.load(fnbfaf)
         test_request = {
             "auditMetadata":auditMetadata, 
             "auditForms": {
@@ -204,9 +221,12 @@ class TestPostAuditsEndpt(BTSAppTestCase):
         assert not self.mongo.db.audits.insert_one.called
 
     def test_unknown_form_types(self):
-        auditMetadata = json.load(open("test requests\\post_audits\\auditMetadata.json", "r"))
-        filledAuditForm = json.load(open("test requests\\post_audits\\filledAuditForm.json","r"))
-        filledAuditForm_unknownFormType = json.load(open("test requests\\post_audits\\filledAuditForm_unknownFormType.json","r"))
+        with open("test requests\\post_audits\\auditMetadata.json", "r") as am:
+            auditMetadata = json.load(am)
+        with open("test requests\\post_audits\\filledAuditForm.json","r") as faf:
+            filledAuditForm = json.load(faf)
+        with open("test requests\\post_audits\\filledAuditForm_unknownFormType.json","r") as fnbfaf:
+            filledAuditForm_unknownFormType = json.load(fnbfaf)
         test_request = {
             "auditMetadata":auditMetadata, 
             "auditForms": {
@@ -222,8 +242,10 @@ class TestPostAuditsEndpt(BTSAppTestCase):
         assert not self.mongo.db.audits.insert_one.called
 
     def test_non_iso_date_auditmetadata(self):
-        auditMetadata = json.load(open("test requests\\post_audits\\auditMetadata_nonISODate.json", "r"))
-        filledAuditForm = json.load(open("test requests\\post_audits\\filledAuditForm.json","r"))
+        with open("test requests\\post_audits\\auditMetadata_nonISODate.json", "r") as am:
+            auditMetadata = json.load(am)
+        with open("test requests\\post_audits\\filledAuditForm.json","r") as faf:
+            filledAuditForm = json.load(faf)
         test_request = {
             "auditMetadata":auditMetadata, 
             "auditForms": {
@@ -238,8 +260,10 @@ class TestPostAuditsEndpt(BTSAppTestCase):
         assert not self.mongo.db.audits.insert_one.called
 
     def test_database_no_ack_auditMetadata(self):
-        auditMetadata = json.load(open("test requests\\post_audits\\auditMetadata.json", "r"))
-        filledAuditForm = json.load(open("test requests\\post_audits\\filledAuditForm.json","r"))
+        with open("test requests\\post_audits\\auditMetadata.json", "r") as am:
+            auditMetadata = json.load(am)
+        with open("test requests\\post_audits\\filledAuditForm.json","r") as faf:
+            filledAuditForm = json.load(faf)
         test_request = {
             "auditMetadata":auditMetadata, 
             "auditForms": {
@@ -255,22 +279,71 @@ class TestPostAuditsEndpt(BTSAppTestCase):
         self.mongo.db.filledAuditForms.insert_one.called
 
     def test_database_no_ack_filledAuditForms(self):
-            auditMetadata = json.load(open("test requests\\post_audits\\auditMetadata.json", "r"))
-            filledAuditForm = json.load(open("test requests\\post_audits\\filledAuditForm.json","r"))
-            test_request = {
-                "auditMetadata":auditMetadata, 
-                "auditForms": {
-                    "non_fnb": filledAuditForm
-                }
+        with open("test requests\\post_audits\\auditMetadata.json", "r") as am:
+            auditMetadata = json.load(am)
+        with open("test requests\\post_audits\\filledAuditForm.json","r") as faf:
+            filledAuditForm = json.load(faf)
+        test_request = {
+            "auditMetadata":auditMetadata, 
+            "auditForms": {
+                "non_fnb": filledAuditForm
             }
-            self.mongo.db.audits.insert_one.return_value.acknowledged = True
-            self.mongo.db.filledAuditForms.insert_one.return_value.acknowledged = False
+        }
+        self.mongo.db.audits.insert_one.return_value.acknowledged = True
+        self.mongo.db.filledAuditForms.insert_one.return_value.acknowledged = False
 
-            response = self.client.post("/audits",json=test_request)
-            self.assertEqual(response.status_code, 503)
-            self.mongo.db.audits.insert_one.called
-            self.mongo.db.filledAuditForms.insert_one.called
+        response = self.client.post("/audits",json=test_request)
+        self.assertEqual(response.status_code, 503)
+        self.mongo.db.audits.insert_one.called
+        self.mongo.db.filledAuditForms.insert_one.called
     
+class TestGetAuditsEndpt(BTSAppTestCase):
+    def setUp(self):
+        with open("test requests\\post_audits\\auditMetadata.json", "r") as f1:
+            auditMetadata = json.load(f1)
+        with open("test requests\\get_audits\\auditMetadata2.json", "r") as f2:
+            auditMetadata2 = json.load(f2)
+        with open("test requests\\get_audits\\auditMetadata2.json", "r") as t:
+            tenant = json.load(t)
+        self.mongo.db.audits.find.return_value = [auditMetadata, auditMetadata2]
+        self.mongo.db.tenant.find_one.return_value = tenant
+    
+    def test_valid_tenantID_get_all_audits(self):
+        response = self.client.get(
+            "/audits?tenantID=6065de0ec8b7adbe23debd90&daysBefore=0"
+            )
+        self.assertEqual(response.status_code, 200)
+
+    def test_invalid_tenantID(self):
+        response = self.client.get(
+            "/audits?tenantID=0&daysBefore=0"
+            )
+        self.assertEqual(response.status_code, 400)
+    def test_no_tenantID(self):
+        response = self.client.get(
+            "/audits?daysBefore=0"
+            )
+        self.assertEqual(response.status_code, 400)
+    def test_get_some_audits(self):
+        self.mongo.db.tenant.find_one.return_value.__getitem__.side_effect = {"stall":{"name":"Continental Electronics"}}
+        response = self.client.get(
+            "/audits?tenantID=6065de0ec8b7adbe23debd90daysBefore=3"
+            )
+        self.assertEqual(response.status_code, 200)    
+    def test_invalid_date_range(self):
+        daysBefore = -3
+        response = self.client.get(
+            f"/audits?tenantID=6065de0ec8b7adbe23debd90daysBefore={daysBefore}"
+            )
+        self.assertEqual(response.status_code, 400)  
+    def test_valid_no_matching_audits(self):
+        self.mongo.db.audits.find.return_value = None
+        self.mongo.db.tenant.find_one.return_value = None
+        response = self.client.get(
+            f"/audits?tenantID=6065de0ec8b7adbe23debd90daysBefore=0"
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["data"]["description"], "No audits found")
 
 
 
