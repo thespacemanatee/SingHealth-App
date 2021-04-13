@@ -79,7 +79,7 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
       <EntityLoading />
     ) : (
       <View style={styles.emptyComponent}>
-        <CustomText bold>NO OUTSTANDING AUDITS</CustomText>
+        <CustomText bold>NO TENANTS</CustomText>
       </View>
     );
 
