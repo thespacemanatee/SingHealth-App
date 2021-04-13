@@ -31,6 +31,8 @@ import ManageTenantAccountsScreen from "../screens/staff/AddTenantScreens/Manage
 import CreateTenantScreen from "../screens/staff/AddTenantScreens/CreateTenantScreen";
 import ExpandImagesScreen from "../screens/ExpandImagesScreen";
 import TenantInfoScreen from "../screens/TenantInfoScreen";
+import DeleteTenantScreen from "../screens/staff/AddTenantScreens/DeleteTenantScreen";
+import SelectDeleteScreen from "../screens/staff/AddTenantScreens/SelectDeleteScreen";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
 
@@ -157,7 +159,8 @@ const AddTenantStackNavigator = () => {
           component={ManageTenantAccountsScreen}
         />
         <Screen name="CreateTenant" component={CreateTenantScreen} />
-        {/* <Screen name="AddAccountDetails" component={AddAccountDetailsScreen} /> */}
+        <Screen name="DeleteTenant" component={DeleteTenantScreen} />
+        <Screen name="SelectDelete" component={SelectDeleteScreen} />
       </Navigator>
     </SafeAreaView>
   );

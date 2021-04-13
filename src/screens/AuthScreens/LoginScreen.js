@@ -114,7 +114,6 @@ const LoginScreen = ({ navigation }) => {
         />
         <Divider />
         <Layout style={styles.layout}>
-          {/* {!loading ? ( */}
           <>
             <Formik
               initialValues={{ email: "", password: "" }}
@@ -186,9 +185,6 @@ const LoginScreen = ({ navigation }) => {
               </TouchableOpacity>
             </View>
           </>
-          {/* ) : (
-            <CenteredLoading />
-          )} */}
         </Layout>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
@@ -218,8 +214,7 @@ const styles = StyleService.create({
     alignItems: "center",
     justifyContent: "flex-end",
     width: "100%",
-    paddingLeft: 20,
-    paddingRight: 20,
+    paddingHorizontal: 20,
   },
   row: {
     flexDirection: "row",
