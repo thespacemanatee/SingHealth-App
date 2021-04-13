@@ -79,19 +79,17 @@ def databaseAcceptsChanges(patches, mongo, auditChecklists, allowUpdateOfRectifi
 
 
 def mongoUpdateGivenFields(mongo, patches, fields, auditChecklists):
-    def mongoUpdateOne(mongo, formID, lineItem, patch, field):
-        if patch.get(field, None) != None:
-            result = mongo.db.filledAuditForms.update_one(
-                {"_id": formID},
-                {
-                    "$set": {
-                        lineItem + field: patch[field]
-                    }
-
+    def mongoUpdateOne(mongo, formID, lineItem, newValue, field):
+        result = mongo.db.filledAuditForms.update_one(
+            {"_id": formID},
+            {
+                "$set": {
+                    lineItem + field: newValue
                 }
-            )
-            return result
-        return None
+
+            }
+        )
+        return result
 
     patchResults = []
     for formType, patchList in patches.items():
@@ -101,7 +99,12 @@ def mongoUpdateGivenFields(mongo, patches, fields, auditChecklists):
                 patch["category"] + "." + str(patch["index"]) + "."
             patchStatuses = []
             for field in fields:
-                result = mongoUpdateOne(mongo, formID, lineItem, patch, field)
+                if field == allowedStaffPatchKeys[2]:
+                    newValue = iso8601.parse_date(patch[field])
+                else:
+                    newValue = patch[field]
+
+                result = mongoUpdateOne(mongo, formID, lineItem, newValue, field)
 
                 try:
                     patchStatuses.append(result.acknowledged)
@@ -218,14 +221,15 @@ def addRectificationEndpts(app, mongo):
             allQuestions = []
             for formType, formID in auditChecklists.items():
                 form = mongo.db.filledAuditForms.find_one({"_id": formID})
-                for answerList in form["answers"].values():
-                    allQuestions.extend(answerList)
+                if form:
+                    for answerList in form["answers"].values():
+                        allQuestions.extend(answerList)
 
             numNCs = len(list(filter(
                 lambda x: x["answer"] == False,
                 allQuestions)))
             numRectifiedNCs = len(list(filter(
-                lambda x: x["answer"] == False and x["rectified"] == True,
+                lambda x: x["answer"] == False and x.get("rectified", None) == True,
                 allQuestions)))
             percentRectification = numRectifiedNCs / numNCs
 
