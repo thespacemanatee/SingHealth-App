@@ -1,0 +1,75 @@
+{
+  "_id": "covid192021",
+  "type": "covid19",
+  "questions": {
+    "Safe Management Measures for Front-of-house": [
+      {
+        "index": 1,
+        "question": "SafeEntry has been implemented for dine-in customers.",
+        "answer": false
+      },
+      {
+        "index": 2,
+        "question": "Temperature screening is conducted for customers of outlets that are located outside of institution’s temperature screening zone.",
+        "answer": false
+      },
+      {
+        "index": 3,
+        "question": "Table and seating arrangement adheres to the one-metre spacing between tables or groups. Where tables/seats are fixed, tables/seats should be marked out, ensuring at least one-metre spacing.",
+        "answer": false
+      },
+      {
+        "index": 4,
+        "question": "Queue is demarcated to ensure at least one-metre spacing between customers such as entrances and cashier counters (e.g. through floor markers).",
+        "answer": false
+      },
+      {
+        "index": 5,
+        "question": "Staff to ensure customers maintain safe distance of one-metre when queuing and seated.",
+        "answer": false
+      },
+      {
+        "index": 6,
+        "question": "Staff to ensure customers wear a mask at all times, unless eating or drinking.",
+        "answer": false
+      },
+      {
+        "index": 7,
+        "question": "Hand sanitizers are placed at high touch areas (i.e. tray return, collection point, outlet entrance/exit).",
+        "answer": false
+      },
+      {
+        "index": 8,
+        "question": "Outlet promotes use of cashless payment modes.",
+        "answer": false
+      }
+    ],
+    "Staff Hygiene and Safe Management Measures": [
+      {
+        "index": 1,
+        "question": "All staff to wear a mask at all times, unless eating or drinking.",
+        "answer": false
+      },
+      {
+        "index": 2,
+        "question": "Mask worn by staff is in the correct manner (i.e. cover nose and mouth, no hanging of mask under the chin/neck).",
+        "answer": false
+      },
+      {
+        "index": 3,
+        "question": "All staff to record their temperature daily.",
+        "answer": false
+      },
+      {
+        "index": 4,
+        "question": "Staff to maintain safe distance of one-metre (where possible) and not congregate, including at common areas, and during break/meal times.",
+        "answer": false
+      },
+      {
+        "index": 5,
+        "question": "Check with supervisor that all staff record SafeEntry check-in and check-out (Note: Supervisor is accountable for adherence)",
+        "answer": false
+      }
+    ]
+  }
+}

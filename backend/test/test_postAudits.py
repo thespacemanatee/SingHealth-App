@@ -314,11 +314,11 @@ class TestGetAuditsEndpt(BTSAppTestCase):
             )
         self.assertEqual(response.status_code, 200)
 
-    def test_invalid_tenantID(self):
-        response = self.client.get(
-            "/audits?tenantID=0&daysBefore=0"
-            )
-        self.assertEqual(response.status_code, 400)
+    # def test_invalid_tenantID(self):
+    #     response = self.client.get(
+    #         "/audits?tenantID=0&daysBefore=0"
+    #         )
+    #     self.assertEqual(response.status_code, 400)
     def test_no_tenantID(self):
         response = self.client.get(
             "/audits?daysBefore=0"

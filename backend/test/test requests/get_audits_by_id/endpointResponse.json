@@ -1,0 +1,276 @@
+{
+    "auditForms": {
+        "_id": "x68765yt34kmujnyhbtgR6065de0ec8b7adbe23debd90SKH2021-04-04T18:42:31.460Z",
+        "staffID": "x68765yt34kmujnyhbtgR",
+        "tenantID": "6065de0ec8b7adbe23debd90",
+        "institutionID": "SKH",
+        "date": "2021-04-04T18:42:31.460Z",
+        "auditChecklists": {
+            "non_fnb": "2021-04-04T18:42:31.460Z6065de0ec8b7adbe23debd90non_fnb",
+            "covid19": "2021-04-04T18:42:31.460Z6065de0ec8b7adbe23debd90covid19"
+        },
+        "score": 1,
+        "rectificationProgress": 0
+    },
+    "auditMetadata": {
+        "non_fnb": {
+            "_id": "2021-04-04T18:42:31.460Z6065de0ec8b7adbe23debd90non_fnb",
+            "type": "non_fnb2021",
+            "questions": {
+              "Professionalism and Staff Hygiene": [
+                {
+                  "index": 1,
+                  "question": "Shop is open and ready to service patients/visitors according to operating hours.",
+                  "answer": true
+                },
+                {
+                  "index": 2,
+                  "question": "Staff Attendance: adequate staff for peak and non-peak hours.",
+                  "answer": true
+                },
+                {
+                  "index": 3,
+                  "question": "At least one (1) clearly assigned person in-charge on site.",
+                  "answer": true
+                },
+                {
+                  "index": 4,
+                  "question": "Staff uniform/attire is not soiled.",
+                  "answer": true
+                },
+                {
+                  "index": 5,
+                  "question": "Staff who are unfit for work due to illness should not report to work).",
+                  "answer": true
+                },
+                {
+                  "index": 6,
+                  "question": "Staff who are fit for work but suffering from the lingering effects of a cough and/or cold should cover their mouths with a surgical mask.",
+                  "answer": true
+                }
+              ],
+              "Housekeeping and General Cleanliness": [
+                {
+                  "index": 1,
+                  "question": "Adequate and regular pest control. Pest control record.",
+                  "answer": true
+                },
+                {
+                  "index": 2,
+                  "question": "Goods and equipment are within shop boundary.",
+                  "answer": true
+                },
+                {
+                  "index": 3,
+                  "question": "Store display/ Shop front is neat and tidy.",
+                  "answer": true
+                },
+                {
+                  "index": 4,
+                  "question": "Work/ serving area is neat, clean and free of spillage.",
+                  "answer": true
+                },
+                {
+                  "index": 5,
+                  "question": "Uncluttered circulation space free of refuse/ furniture.",
+                  "answer": true
+                },
+                {
+                  "index": 6,
+                  "question": "Fixtures and fittings including shelves, cupboards and drawers are clean and dry and in a good state.",
+                  "answer": true
+                },
+                {
+                  "index": 7,
+                  "question": "Ceiling/ ceiling boards are free from stains/ dust with no gaps.",
+                  "answer": true
+                },
+                {
+                  "index": 8,
+                  "question": "Fans and air-con units are in proper working order and clean and free from dust. Proper maintenance and routine cleaning are carried out regularly.",
+                  "answer": true
+                },
+                {
+                  "index": 9,
+                  "question": "Equipment is clean, in good condition and serviced.",
+                  "answer": true
+                },
+                {
+                  "index": 10,
+                  "question": "Surfaces, walls and ceilings within customer areas are dry and clean.",
+                  "answer": true
+                },
+                {
+                  "index": 11,
+                  "question": "Floor within customer areas is clean and dry.",
+                  "answer": true
+                },
+                {
+                  "index": 12,
+                  "question": "Waste is properly managed and disposed. Waste bins are not over-filled. Waste Management: Proper disposal of general waste. ",
+                  "answer": true
+                }
+              ],
+              "Workplace Safety and Health": [
+                {
+                  "index": 1,
+                  "question": "MSDS for all industrial chemicals are available and up to date.",
+                  "answer": true
+                },
+                {
+                  "index": 2,
+                  "question": "Proper chemicals storage.",
+                  "answer": true
+                },
+                {
+                  "index": 3,
+                  "question": "All detergent and bottles containing liquids are labelled appropriately.",
+                  "answer": true
+                },
+                {
+                  "index": 4,
+                  "question": "All personnel to wear safety shoes and safety attire where necessary.",
+                  "answer": true
+                },
+                {
+                  "index": 5,
+                  "question": "Knives and sharp objects are kept at a safe place.",
+                  "answer": true
+                },
+                {
+                  "index": 6,
+                  "question": "Area under the sink should not be cluttered with items other than washing agents.",
+                  "answer": true
+                },
+                {
+                  "index": 7,
+                  "question": "Delivery personnel do not stack goods above the shoulder level.",
+                  "answer": true
+                },
+                {
+                  "index": 8,
+                  "question": "Stacking of goods does not exceed 600mm from the ceiling and heavy items at the bottom, light items on top.",
+                  "answer": true
+                },
+                {
+                  "index": 9,
+                  "question": "Proper signage/ label (fire, hazards, warnings, food stuff) and Exit signs in working order.",
+                  "answer": true
+                },
+                {
+                  "index": 10,
+                  "question": "Fire extinguishers access is unobstructed; Fire extinguishers are not expired and employees know how to use them.",
+                  "answer": true
+                },
+                {
+                  "index": 11,
+                  "question": "Escape route and exits are unobstructed.",
+                  "answer": true
+                },
+                {
+                  "index": 12,
+                  "question": "First aid box is available and well-equipped.",
+                  "answer": true
+                },
+                {
+                  "index": 13,
+                  "question": "Electrical sockets are not overloaded – one plug to one socket.",
+                  "answer": true
+                },
+                {
+                  "index": 14,
+                  "question": "Plugs and cords are intact and free from exposure/ tension with PSB safety mark.",
+                  "answer": true
+                },
+                {
+                  "index": 15,
+                  "question": "Power points that are in close proximity to flammable and/or water sources are installed with a plastic cover.",
+                  "answer": true
+                },
+                {
+                  "index": 16,
+                  "question": "Electrical panels / DBs are covered.",
+                  "answer": true
+                }
+              ]
+            }
+        },
+        "covid19": {
+            "_id": "2021-04-04T18:42:31.460Z606969818e6e53b0f4e6ab4fcovid19",
+            "formTemplateID": "covid192021",
+            "type": "covid19",
+            "questions": {
+              "Safe Management Measures for Front-of-house": [
+                {
+                  "index": 1,
+                  "question": "SafeEntry has been implemented for dine-in customers.",
+                  "answer": true
+                },
+                {
+                  "index": 2,
+                  "question": "Temperature screening is conducted for customers of outlets that are located outside of institution’s temperature screening zone.",
+                  "answer": true
+                },
+                {
+                  "index": 3,
+                  "question": "Table and seating arrangement adheres to the one-metre spacing between tables or groups. Where tables/seats are fixed, tables/seats should be marked out, ensuring at least one-metre spacing.",
+                  "answer": true
+                },
+                {
+                  "index": 4,
+                  "question": "Queue is demarcated to ensure at least one-metre spacing between customers such as entrances and cashier counters (e.g. through floor markers).",
+                  "answer": true
+                },
+                {
+                  "index": 5,
+                  "question": "Staff to ensure customers maintain safe distance of one-metre when queuing and seated.",
+                  "answer": true
+                },
+                {
+                  "index": 6,
+                  "question": "Staff to ensure customers wear a mask at all times, unless eating or drinking.",
+                  "answer": true
+                },
+                {
+                  "index": 7,
+                  "question": "Hand sanitizers are placed at high touch areas (i.e. tray return, collection point, outlet entrance/exit).",
+                  "answer": true
+                },
+                {
+                  "index": 8,
+                  "question": "Outlet promotes use of cashless payment modes.",
+                  "answer": true
+                }
+              ],
+              "Staff Hygiene and Safe Management Measures": [
+                {
+                  "index": 1,
+                  "question": "All staff to wear a mask at all times, unless eating or drinking.",
+                  "answer": true
+                },
+                {
+                  "index": 2,
+                  "question": "Mask worn by staff is in the correct manner (i.e. cover nose and mouth, no hanging of mask under the chin/neck).",
+                  "answer": true
+                },
+                {
+                  "index": 3,
+                  "question": "All staff to record their temperature daily.",
+                  "answer": true
+                },
+                {
+                  "index": 4,
+                  "question": "Staff to maintain safe distance of one-metre (where possible) and not congregate, including at common areas, and during break/meal times.",
+                  "answer": true
+                },
+                {
+                  "index": 5,
+                  "question": "Check with supervisor that all staff record SafeEntry check-in and check-out (Note: Supervisor is accountable for adherence)",
+                  "answer": true
+                }
+              ]
+            }
+        }
+          
+    }
+}

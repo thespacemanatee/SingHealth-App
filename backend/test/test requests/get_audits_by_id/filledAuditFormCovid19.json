@@ -1,0 +1,149 @@
+{
+	"_id": "2021-04-04T18:42:31.460Z6065de0ec8b7adbe23debd90covid19",
+	"formTemplateID": "covid192021",
+	"type": "covid19",
+	"answers": {
+		"Professionalism and Staff Hygiene": [
+			{
+				"index": 1,
+				"answer": true
+			}, 
+			{
+				"index": 2,
+				"answer": true
+			}, 
+			{
+				"index": 3,
+				"answer": true
+			}, 
+			{
+				"index": 4,
+				"answer": true
+			}, 
+			{
+				"index": 5,
+				"answer": true
+			}, 
+			{
+				"index": 6,
+				"answer": true
+			}
+		],
+		"Housekeeping and General Cleanliness": [
+			{
+				"index": 1,
+				"answer": true
+			}, 
+			{
+				"index": 2,
+				"answer": true
+			}, 
+			{
+				"index": 3,
+				"answer": true
+			}, 
+			{
+				"index": 4,
+				"answer": true
+			}, 
+			{
+				"index": 5,
+				"answer": true
+			}, 
+			{
+				"index": 6,
+				"answer": true
+			}, 
+			{
+				"index": 7,
+				"answer": true
+			}, 
+			{
+				"index": 8,
+				"answer": true
+			}, 
+			{
+				"index": 9,
+				"answer": true
+			}, 
+			{
+				"index": 10,
+				"answer": true
+			}, 
+			{
+				"index": 11,
+				"answer": true
+			}, 
+			{
+				"index": 12,
+				"answer": true
+			}
+		],
+		"Workplace Safety and Health": [
+			{
+				"index": 1,
+				"answer": true
+			}, 
+			{
+				"index": 2,
+				"answer": true
+			}, 
+			{
+				"index": 3,
+				"answer": true
+			}, 
+			{
+				"index": 4,
+				"answer": true
+			}, 
+			{
+				"index": 5,
+				"answer": true
+			}, 
+			{
+				"index": 6,
+				"answer": true
+			}, 
+			{
+				"index": 7,
+				"answer": true
+			}, 
+			{
+				"index": 8,
+				"answer": true
+			}, 
+			{
+				"index": 9,
+				"answer": true
+			}, 
+			{
+				"index": 10,
+				"answer": true
+			}, 
+			{
+				"index": 11,
+				"answer": true
+			}, 
+			{
+				"index": 12,
+				"answer": true
+			}, 
+			{
+				"index": 13,
+				"answer": true
+			}, 
+			{
+				"index": 14,
+				"answer": true
+			}, 
+			{
+				"index": 15,
+				"answer": true
+			}, 
+			{
+				"index": 16,
+				"answer": true
+			}
+		]
+	}
+}

@@ -1,5 +1,7 @@
 import os
+import io
 import json
+import boto3
 from flask import make_response, jsonify
 from bson import json_util
 from .constants import BTS_EMAIL, BTS_APP_CONFIG_EMAIL
@@ -28,6 +30,36 @@ def parse_json(data):
 def printJ(data):
     print(json.dumps(data, indent=4, sort_keys=False))
 
+def upload_image(file_obj, bucket, file_name):
+    """
+    Function to upload a file to an S3 bucket
+    """
+    s3_client = boto3.client('s3')
+    response = s3_client.upload_fileobj(file_obj, bucket, file_name)
+    return response
+
+
+def download_image(file_name, bucket):
+    """
+    Function to download a given file from an S3 bucket
+    """
+    s3 = boto3.client('s3')
+    file_stream = io.BytesIO()
+    s3.download_fileobj(bucket, file_name, file_stream)
+
+    return file_stream
+
+
+def list_images(bucket):
+    """
+    Function to list files in a given S3 bucket
+    """
+    s3 = boto3.client('s3')
+    contents = []
+    for item in s3.list_objects(Bucket=bucket)['Contents']:
+        contents.append(item)
+
+    return contents
 
 def serverResponse(data, status_code, msg):
     packet = {

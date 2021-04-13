@@ -7,10 +7,8 @@ from BTS.auditsEndpoint import addAuditsEndpoint
 from BTS.loginEndpoints import addLoginEndpointsForTenantAndStaff
 from BTS.imagesEndpoint import addImagesEndpoint
 from BTS.rectificationEndpoints import addRectificationEndpts
-from BTS.auditsEndpoint_wx import addWenXinEndpoints
-from BTS.staff_tenantEndpoint_wx import change_tenant_info
-from BTS.auditsGetFormEndpoint import addGetFormEndpoints
 from BTS.staff_tenantEndpoint import change_tenant_info
+from BTS.auditsGetFormEndpoint import addGetFormEndpoints
 from BTS.recentAuditsEndpoints import addRecentAuditsEndpoints
 from BTS.auditEmailEndpoint import addAuditEmailEndpoints
 from BTS.institutionEndpoint import institution_info
@@ -47,12 +45,12 @@ class BTSAppTestCase(TestCase):
             )
         self.mongo = mockMongo
         addImagesEndpoint(app)
-        institution_info(app, mockMongo)
-        addAuditsEndpoint(app, mockMongo)
-        addRectificationEndpts(app, mockMongo)
-        addLoginEndpointsForTenantAndStaff(app, mockMongo)
-        addGetFormEndpoints(app, mockMongo)
-        addRecentAuditsEndpoints(app, mockMongo)
-        addAuditEmailEndpoints(app, mockMongo)
-        change_tenant_info(app, mockMongo)
+        institution_info(app, self.mongo)
+        addAuditsEndpoint(app, self.mongo)
+        addRectificationEndpts(app, self.mongo)
+        addLoginEndpointsForTenantAndStaff(app, self.mongo)
+        addGetFormEndpoints(app, self.mongo)
+        addRecentAuditsEndpoints(app, self.mongo)
+        addAuditEmailEndpoints(app, self.mongo)
+        change_tenant_info(app, self.mongo)
         return app
