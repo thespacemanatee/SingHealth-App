@@ -1150,7 +1150,7 @@ The staff to add new tenant.
 | JSON param      | Description                                    |
 | --------------- | ---------------------------------------------- |
 | `name`          | Tenant's full name in upper case.              |
-| `stall_name`    | Name of the stall.                             |
+| `stallName`    | Name of the stall.                             |
 | `email`         | The user email of a tenant. Unique email for each tenant                   |
 | `pswd`          | The password credentials for a tenant.         |
 | `fnb`           | Whether the stall is an F&B stall.             |
