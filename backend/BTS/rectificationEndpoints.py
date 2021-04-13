@@ -150,7 +150,7 @@ def addRectificationEndpts(app, mongo):
             tenant = mongo.db.tenant.find_one(
                 {"_id": selectedAudit["tenantID"]}
             )
-            tenantStallName = tenant["stall"]["name"]
+            tenantStallName = tenant["stallName"]
             staffExpoTokens = staff.get("expoToken")
 
             auditChecklists = selectedAudit["auditChecklists"]
