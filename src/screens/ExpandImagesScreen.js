@@ -151,7 +151,7 @@ const styles = StyleService.create({
     borderRadius: CROSS_SIZE / 2,
     backgroundColor: "white",
     marginLeft: CROSS_SIZE / 2,
-    marginTop: Platform.OS === "ios" ? CROSS_SIZE : CROSS_SIZE / 2,
+    marginTop: CROSS_SIZE,
   },
   topContainer: {
     backgroundColor: "black",
