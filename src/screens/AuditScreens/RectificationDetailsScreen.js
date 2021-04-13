@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -14,6 +14,7 @@ import {
 } from "@ui-kitten/components";
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import moment from "moment";
 
 import * as checklistActions from "../../store/actions/checklistActions";
 import CustomDatepicker from "../../components/CustomDatePicker";
@@ -139,7 +140,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
       setValue(storeRemarks);
     }
     if (storeDeadline) {
-      setDeadline(storeDeadline.$date);
+      setDeadline(moment(storeDeadline.$date || storeDeadline));
     }
   }, [checklistStore, dispatch, index, section]);
 
@@ -147,7 +148,11 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
     <TopNavigationAction
       icon={BackIcon}
       onPress={() => {
-        navigation.goBack();
+        if (Platform.OS === "web") {
+          window.history.back();
+        } else {
+          navigation.goBack();
+        }
       }}
     />
   );
@@ -194,7 +199,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
       >
         <CustomText bold>{question}</CustomText>
       </View>
-      <Button onPress={handleGoToTenantRectifications}>
+      <Button style={styles.button} onPress={handleGoToTenantRectifications}>
         {authStore.userType === "staff" ? "CHECK STATUS" : "RECTIFY NOW"}
       </Button>
       <Layout style={styles.layout}>
@@ -246,10 +251,12 @@ const styles = StyleService.create({
   },
   datePickerContainer: {
     marginTop: 20,
-    marginBottom: 10,
   },
   inputContainer: {
     // margin: 20,
+  },
+  button: {
+    borderRadius: 0,
   },
   input: {
     minHeight: 64,

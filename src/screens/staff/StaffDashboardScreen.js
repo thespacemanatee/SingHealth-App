@@ -8,35 +8,35 @@ import {
   StyleService,
   TopNavigation,
   TopNavigationAction,
+  useStyleSheet,
 } from "@ui-kitten/components";
 import { FAB } from "react-native-paper";
 
-import Graph from "../../components/ui/graph/Graph.tsx";
 import * as databaseActions from "../../store/actions/databaseActions";
 import * as checklistActions from "../../store/actions/checklistActions";
 import ActiveAuditCard from "../../components/ActiveAuditCard";
 import CenteredLoading from "../../components/ui/CenteredLoading";
-// import SkeletonLoading from "../../components/ui/SkeletonLoading";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
+import SkeletonLoading from "../../components/ui/loading/SkeletonLoading";
+import useHandleScroll from "../../helpers/hooks/useHandleScroll";
+import TimedGraph from "../../components/TimedGraph";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
-const AddIcon = (props) => <Icon {...props} name="file-add-outline" />;
 
 const StaffDashboardScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
-  const [state, setState] = useState({ open: false });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
 
+  const { handleScroll, showButton } = useHandleScroll();
+
+  const styles = useStyleSheet(themedStyles);
+
   const dispatch = useDispatch();
-
-  const onStateChange = ({ open }) => setState({ open });
-
-  const { open } = state;
 
   const DrawerAction = () => (
     <TopNavigationAction
@@ -84,20 +84,18 @@ const StaffDashboardScreen = ({ navigation }) => {
         </View>
       );
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [authStore.userType, handleOpenAudit]
   );
 
-  const renderEmptyComponent = () => (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <AddIcon style={{ width: 200, height: 300 }} fill="gray" />
-    </View>
-  );
+  const renderEmptyComponent = () =>
+    listLoading ? (
+      <SkeletonLoading />
+    ) : (
+      <View style={styles.emptyComponent}>
+        <CustomText bold>NO OUTSTANDING AUDITS</CustomText>
+      </View>
+    );
 
   const getListData = useCallback(async () => {
     try {
@@ -108,7 +106,6 @@ const StaffDashboardScreen = ({ navigation }) => {
       await dispatch(
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
-      console.log(res.data.data);
       setListData(res.data.data);
     } catch (err) {
       handleErrorResponse(err);
@@ -143,8 +140,6 @@ const StaffDashboardScreen = ({ navigation }) => {
       />
       <Divider />
       <Layout style={styles.layout}>
-        <Graph label="Average Scores (All Institutions)" />
-        <Divider />
         <CenteredLoading loading={loading} />
         <FlatList
           contentContainerStyle={styles.contentContainer}
@@ -153,39 +148,26 @@ const StaffDashboardScreen = ({ navigation }) => {
           renderItem={renderActiveAudits}
           onRefresh={getListData}
           refreshing={listLoading}
+          onScroll={handleScroll}
           ListEmptyComponent={renderEmptyComponent}
-          ListHeaderComponent={() => (
-            <View style={styles.textContainer}>
-              <CustomText style={styles.text}>
-                Rectification Progress
-              </CustomText>
-            </View>
-          )}
+          ListHeaderComponent={
+            <>
+              <TimedGraph label="Average Scores (All Institutions)" />
+              <View style={styles.textContainer}>
+                <CustomText style={styles.text}>
+                  Rectification Progress
+                </CustomText>
+              </View>
+            </>
+          }
         />
 
-        <FAB.Group
-          open={open}
+        <FAB
           icon="plus"
-          actions={[
-            {
-              icon: "pencil-plus",
-              label: "Create new checklist",
-              onPress: () => console.log("Pressed new checklist"),
-            },
-            {
-              icon: "file-plus",
-              label: "New Audit",
-              onPress: () => {
-                navigation.navigate("ChooseTenant");
-              },
-              small: false,
-            },
-          ]}
-          onStateChange={onStateChange}
+          label={showButton ? "New Audit" : null}
+          style={styles.fab}
           onPress={() => {
-            if (open) {
-              // do something if the speed dial is open
-            }
+            navigation.navigate("ChooseTenant");
           }}
         />
       </Layout>
@@ -195,7 +177,7 @@ const StaffDashboardScreen = ({ navigation }) => {
 
 export default StaffDashboardScreen;
 
-const styles = StyleService.create({
+const themedStyles = StyleService.create({
   screen: {
     flex: 1,
   },
@@ -210,11 +192,22 @@ const styles = StyleService.create({
     fontFamily: "SFProDisplay-Bold",
   },
   contentContainer: {
-    // flexGrow: 1,
+    flexGrow: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
   },
   item: {
     paddingVertical: 4,
+  },
+  fab: {
+    position: "absolute",
+    margin: 16,
+    right: 0,
+    bottom: 0,
+  },
+  emptyComponent: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexGrow: 1,
   },
 });

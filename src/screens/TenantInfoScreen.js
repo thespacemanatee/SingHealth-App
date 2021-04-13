@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, Platform, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -10,20 +10,20 @@ import {
   TopNavigationAction,
 } from "@ui-kitten/components";
 
-import Graph from "../components/ui/graph/Graph.tsx";
 import * as databaseActions from "../store/actions/databaseActions";
 import * as checklistActions from "../store/actions/checklistActions";
 import ActiveAuditCard from "../components/ActiveAuditCard";
 import CenteredLoading from "../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../helpers/utils";
 import CustomText from "../components/ui/CustomText";
+import SkeletonLoading from "../components/ui/loading/SkeletonLoading";
+import TimedGraph from "../components/TimedGraph";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
-const AddIcon = (props) => <Icon {...props} name="file-add-outline" />;
 
 const TenantInfoScreen = ({ route, navigation }) => {
   const authStore = useSelector((state) => state.auth);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
@@ -35,7 +35,11 @@ const TenantInfoScreen = ({ route, navigation }) => {
     <TopNavigationAction
       icon={BackIcon}
       onPress={() => {
-        navigation.goBack();
+        if (Platform.OS === "web") {
+          window.history.back();
+        } else {
+          navigation.goBack();
+        }
       }}
     />
   );
@@ -76,17 +80,14 @@ const TenantInfoScreen = ({ route, navigation }) => {
     [authStore.userType, handleOpenAudit]
   );
 
-  const renderEmptyComponent = () => (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <AddIcon style={{ width: 200, height: 300 }} fill="gray" />
-    </View>
-  );
+  const renderEmptyComponent = () =>
+    listLoading ? (
+      <SkeletonLoading />
+    ) : (
+      <View style={styles.emptyComponent}>
+        <CustomText bold>NO OUTSTANDING AUDITS</CustomText>
+      </View>
+    );
 
   const getListData = useCallback(async () => {
     try {
@@ -126,11 +127,8 @@ const TenantInfoScreen = ({ route, navigation }) => {
       />
       <Divider />
       <Layout style={styles.layout}>
-        <Graph label="Average Scores" />
         <Divider />
-        <View style={styles.textContainer}>
-          <CustomText style={styles.text}>All Audits</CustomText>
-        </View>
+
         <CenteredLoading loading={loading} />
         <FlatList
           contentContainerStyle={styles.contentContainer}
@@ -140,6 +138,14 @@ const TenantInfoScreen = ({ route, navigation }) => {
           onRefresh={getListData}
           refreshing={listLoading}
           ListEmptyComponent={renderEmptyComponent}
+          ListHeaderComponent={
+            <>
+              <TimedGraph label="Average Scores" type="tenant" id={tenantID} />
+              <View style={styles.textContainer}>
+                <CustomText style={styles.text}>All Audits</CustomText>
+              </View>
+            </>
+          }
         />
       </Layout>
     </View>
@@ -163,11 +169,16 @@ const styles = StyleService.create({
     fontFamily: "SFProDisplay-Bold",
   },
   contentContainer: {
-    // flexGrow: 1,
+    flexGrow: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
   },
   item: {
     paddingVertical: 4,
+  },
+  emptyComponent: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexGrow: 1,
   },
 });

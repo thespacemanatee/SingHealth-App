@@ -74,7 +74,7 @@ def addAuditEmailEndpoints(app, mongo):
         if validate:  
             date_underscore = data["audit_info"]["date"].strftime('%Y_%m_%d')
             date_slash = data["audit_info"]["date"].strftime('%Y/%m/%d')
-            stall_name = data["tenant_info"]["stall"]["name"]
+            stall_name = data["tenant_info"]["stallName"]
             
             
             to_email = data["staff_info"]["email"]
@@ -104,7 +104,7 @@ def addAuditEmailEndpoints(app, mongo):
         if validate:  
             date_underscore = data["audit_info"]["date"].strftime('%Y_%m_%d')
             date_slash = data["audit_info"]["date"].strftime('%Y/%m/%d')
-            stall_name = data["tenant_info"]["stall"]["name"]
+            stall_name = data["tenant_info"]["stallName"]
             
             
             to_email = data["staff_info"]["email"]

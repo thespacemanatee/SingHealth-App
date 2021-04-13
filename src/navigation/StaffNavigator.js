@@ -29,7 +29,6 @@ import TenantsDirectoryScreen from "../screens/staff/DirectoryScreens/TenantsDir
 import * as authActions from "../store/actions/authActions";
 import ManageTenantAccountsScreen from "../screens/staff/AddTenantScreens/ManageTenantAccountsScreen";
 import CreateTenantScreen from "../screens/staff/AddTenantScreens/CreateTenantScreen";
-import AddAccountDetailsScreen from "../screens/staff/AddTenantScreens/AddAccountDetailsScreen";
 import ExpandImagesScreen from "../screens/ExpandImagesScreen";
 import TenantInfoScreen from "../screens/TenantInfoScreen";
 
@@ -93,7 +92,7 @@ const StaffNavigator = () => {
   return (
     <Navigator drawerContent={(props) => <DrawerContent {...props} />}>
       <Screen name="StaffModalStack" component={StaffModalStackNavigator} />
-      <Screen name="AddTenantNavigator" component={AddTenantStackNavigator} />
+      <Screen name="AddTenantStack" component={AddTenantStackNavigator} />
     </Navigator>
   );
 };
@@ -158,7 +157,7 @@ const AddTenantStackNavigator = () => {
           component={ManageTenantAccountsScreen}
         />
         <Screen name="CreateTenant" component={CreateTenantScreen} />
-        <Screen name="AddAccountDetails" component={AddAccountDetailsScreen} />
+        {/* <Screen name="AddAccountDetails" component={AddAccountDetailsScreen} /> */}
       </Navigator>
     </SafeAreaView>
   );

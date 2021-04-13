@@ -1,4 +1,4 @@
-import store from "../store/store";
+import { store } from "../store/store";
 
 import * as authActions from "../store/actions/authActions";
 import alert from "../components/CustomAlert";

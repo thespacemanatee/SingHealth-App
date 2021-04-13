@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -17,6 +17,7 @@ import Toast from "react-native-toast-message";
 import axios from "axios";
 import { StackActions } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import moment from "moment";
 
 import alert from "../../components/CustomAlert";
 import * as checklistActions from "../../store/actions/checklistActions";
@@ -26,6 +27,7 @@ import { SCREEN_HEIGHT } from "../../helpers/config";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
+import CustomDatepicker from "../../components/CustomDatePicker";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -39,8 +41,11 @@ const StaffRectificationScreen = ({ route, navigation }) => {
   const [error, setError] = useState(false);
   const [toggle, setToggle] = useState(false);
   const [isRectified, setIsRectified] = useState(false);
+  const [deadline, setDeadline] = useState();
 
   const { index, checklistType, question, section, rectified } = route.params;
+
+  console.log(checklistStore);
 
   const theme = useTheme();
 
@@ -86,14 +91,59 @@ const StaffRectificationScreen = ({ route, navigation }) => {
     }
   };
 
+  const handleDateChange = async (date) => {
+    console.log(date);
+    setLoadDialog(true);
+    setDeadline(date);
+    const data = {
+      [checklistType]: [
+        {
+          category: section,
+          index,
+          deadline: date,
+        },
+      ],
+    };
+
+    try {
+      const res = await dispatch(
+        checklistActions.submitRectification(
+          checklistStore.auditMetadata._id,
+          data,
+          authStore.userType,
+          checklistType,
+          section,
+          index
+        )
+      );
+      console.log(res);
+    } catch (err) {
+      handleErrorResponse(err);
+    } finally {
+      setLoadDialog(false);
+    }
+
+    dispatch(
+      checklistActions.changeDeadline(checklistType, section, index, {
+        $date: date,
+      })
+    );
+  };
+
   const handleSubmitApproval = () => {
-    alert("Are you sure?", "You can only do this once.", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Confirm",
-        onPress: submitApproval,
-      },
-    ]);
+    alert(
+      "Are you sure?",
+      isRectified
+        ? "Mark rectification as incomplete."
+        : "Mark rectification as complete.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Confirm",
+          onPress: submitApproval,
+        },
+      ]
+    );
   };
 
   // TODO: Cleanup memory leak when user leaves screen before image is loaded
@@ -152,16 +202,19 @@ const StaffRectificationScreen = ({ route, navigation }) => {
     return () => {
       source.cancel();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     let storeImages;
     let storeRemarks;
+    let storeDeadline;
     if (checklistType === "covid19") {
       storeImages =
         checklistStore.covid19.questions[section][index].rectificationImages;
       storeRemarks =
         checklistStore.covid19.questions[section][index].rectificationRemarks;
+      storeDeadline = checklistStore.covid19.questions[section][index].deadline;
     } else {
       storeImages =
         checklistStore.chosen_checklist.questions[section][index]
@@ -169,6 +222,8 @@ const StaffRectificationScreen = ({ route, navigation }) => {
       storeRemarks =
         checklistStore.chosen_checklist.questions[section][index]
           .rectificationRemarks;
+      storeDeadline =
+        checklistStore.chosen_checklist.questions[section][index].deadline;
     }
 
     if (storeImages) {
@@ -178,13 +233,21 @@ const StaffRectificationScreen = ({ route, navigation }) => {
     if (storeRemarks) {
       setValue(storeRemarks);
     }
+    if (storeDeadline) {
+      console.log("DEADLINE:", storeDeadline);
+      setDeadline(moment(storeDeadline.$date || storeDeadline));
+    }
   }, [checklistStore, checklistType, dispatch, index, section]);
 
   const BackAction = () => (
     <TopNavigationAction
       icon={BackIcon}
       onPress={() => {
-        navigation.goBack();
+        if (Platform.OS === "web") {
+          window.history.back();
+        } else {
+          navigation.goBack();
+        }
       }}
     />
   );
@@ -231,7 +294,7 @@ const StaffRectificationScreen = ({ route, navigation }) => {
       >
         <CustomText bold>{question}</CustomText>
       </View>
-      <Button onPress={handleSubmitApproval}>
+      <Button style={styles.button} onPress={handleSubmitApproval}>
         {isRectified ? "REVOKE APPROVAL" : "APPROVE"}
       </Button>
       <CenteredLoading loading={loadDialog} />
@@ -246,6 +309,17 @@ const StaffRectificationScreen = ({ route, navigation }) => {
               {`Tenant has ${toggle ? "" : "not"} requested for extension`}
             </Toggle>
           </View>
+          {toggle && (
+            <View style={styles.datePickerContainer}>
+              <CustomText bold category="h6">
+                Extend Deadline:
+              </CustomText>
+              <CustomDatepicker
+                deadline={deadline}
+                onSelect={handleDateChange}
+              />
+            </View>
+          )}
           <View style={styles.inputContainer}>
             <CustomText bold category="h6">
               Tenant&apos;s Remarks:{" "}
@@ -286,8 +360,14 @@ const styles = StyleService.create({
     alignItems: "flex-start",
     marginVertical: 20,
   },
+  datePickerContainer: {
+    marginTop: 20,
+  },
   inputContainer: {
     // marginVertical: 20,
+  },
+  button: {
+    borderRadius: 0,
   },
   input: {
     minHeight: 64,

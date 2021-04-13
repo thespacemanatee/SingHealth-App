@@ -3,12 +3,14 @@ import {
   GET_TENANT_ACTIVE_AUDITS,
   GET_STAFF_ACTIVE_AUDITS,
   GET_INSTITUTIONS,
+  STORE_GRAPH_DATA,
 } from "../actions/databaseActions";
 
 const initialState = {
   institutions: [],
   relevantTenants: [],
   activeAudits: [],
+  graphData: {},
 };
 
 const equals = (a, b) => {
@@ -61,6 +63,12 @@ const databaseReducer = (state = initialState, action) => {
       return {
         ...state,
         activeAudits: action.activeAudits,
+      };
+    }
+    case STORE_GRAPH_DATA: {
+      return {
+        ...state,
+        graphData: { ...action.graphData },
       };
     }
 

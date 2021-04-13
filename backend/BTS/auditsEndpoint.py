@@ -74,29 +74,26 @@ def validateFilledAuditForms(filledAuditForms):
         answers = filledAuditForm["questions"]
         for category, answerList in answers.items():
             for index, answer in enumerate(answerList):
-                if not "answer" in answer.keys():
-                    return False, category, index, "Please fill in the 'answer' field."
-
                 if "images" in answer.keys():
                     if (numImages := len(answer.get("images", []))) > MAX_NUM_IMAGES_PER_NC:
-                        return False, category, index, f"Max allowed is {MAX_NUM_IMAGES_PER_NC} images but {numImages} provided."
+                        return False, category, index + 1, f"Max allowed is {MAX_NUM_IMAGES_PER_NC} images but {numImages} provided."
 
                     numUniqueFilenames = len(set(answer["images"]))
                     numFilenames = len(answer["images"])
                     if numFilenames > numUniqueFilenames:
-                        return False, category, index, f"Duplicate filenames found."
+                        return False, category, index + 1, f"Duplicate filenames found."
 
-                if not answer["answer"]:
+                if answer["answer"] == False:
                     if len(answer.get("remarks", [])) == 0:
-                        return False, category, index, "Please fill in the remarks section"
+                        return False, category, index + 1, "Please fill in the remarks section"
 
                     if "deadline" not in answer.keys():
-                        return False, category, index, "Please provide the deadline for the rectification"
+                        return False, category, index + 1, "Please provide the deadline for the rectification"
                     else:
                         try:
                             date = iso8601.parse_date(answer["deadline"])
                         except:
-                            return False, category, index, "Please provide an ISO format for the deadline"
+                            return False, category, index + 1, "Please provide an ISO format for the deadline"
 
         return True, "Form is valid and ready for uploading"
 
@@ -142,7 +139,7 @@ def postProcessLineItem(lineItem):
     if "question" in lineItem.keys():
         lineItem.pop("question")
 
-    if not lineItem["answer"]:
+    if lineItem["answer"] == False:
         lineItem["rectified"] = False
         lineItem["deadline"] = iso8601.parse_date(lineItem["deadline"])
     elif lineItem["answer"] and "rectified" in lineItem.keys():
@@ -234,23 +231,24 @@ def addAuditsEndpoint(app, mongo):
                 if (expoTokens := tenant.get("expoToken")) != None:
                     for token in expoTokens:
                         try:
-                            send_push_message(token, "SingHealth Audits", "Recent audit results ready for viewing")
+                            send_push_message(
+                                token, "SingHealth Audits", "Recent audit results ready for viewing")
                         except:
                             continue
-                
+
                 date = auditMetaData_ID_processed['date']
                 if date.tzinfo is None or date.tzinfo.utcoffset(date) is None:
                     date = timezone(SGT_TIMEZONE).localize(date)
-                
+
                 send_email_notif(
                     app,
-                    tenant["email"], 
-                    "Audit Results", 
+                    tenant["email"],
+                    "Audit Results",
                     f"""Dear {tenant["name"]},
                         Your recent audit results dated {date.strftime('%d %B %Y, %I:%M %p')} are ready for reviewing. Please check your app for details.
                         This email is auto generated. No signature is required.
                         You do not have to reply to this email."""
-                    )
+                )
             return serverResponse(None, 200, "Forms have been submitted successfully!")
         elif request.method == "GET":
             daysBefore = int(request.args.get("daysBefore", 0))
@@ -264,38 +262,36 @@ def addAuditsEndpoint(app, mongo):
                 queryDict = {"tenantID": tenantID}
             else:
                 queryDict = {
-                        "tenantID": tenantID,
-                        "date": {
-                            "$gt": datetime.utcnow() - datetime.timedelta(days=daysBefore)
-                            }
+                    "tenantID": tenantID,
+                    "date": {
+                        "$gt": datetime.utcnow() - datetime.timedelta(days=daysBefore)
                     }
-                
+                }
+
             audits = mongo.db.audits.find(queryDict)
             auditsList = []
             for audit in audits:
                 tenant = mongo.db.tenant.find_one(
-                    {"_id": tenantID }, 
+                    {"_id": tenantID},
                     {
-                        "stall": {
-                            "name": 1
-                        }
+                        "stallName": 1
                     }
                 )
-                stallName = tenant["stall"]["name"]
-                
+                stallName = tenant["stallName"]
+
                 auditsList.append(
                     {
-                        "auditMetadata": audit, 
+                        "auditMetadata": audit,
                         "stallName": stallName
                     }
                 )
-                
+
             if len(auditsList) == 0:
                 msg = "No audits found"
             else:
                 msg = "Audits retrieved successfully"
             return serverResponse(auditsList, 200, msg)
-                
+
     @app.route("/audits/<auditID>", methods=['GET'])
     @login_required
     def get_audit(auditID):
@@ -325,9 +321,6 @@ def addAuditsEndpoint(app, mongo):
                     filledAuditForm["questions"] = questions
                     auditForms[formType] = filledAuditForm
 
-                date = audit["date"]
-                if isinstance(date, datetime):
-                    audit["date"] = date.isoformat()
                 responseJson["auditMetadata"] = audit
                 responseJson["auditForms"] = auditForms
 
@@ -336,5 +329,3 @@ def addAuditsEndpoint(app, mongo):
             else:
 
                 return serverResponse(None, 404, "Form not found in our database")
-
-   

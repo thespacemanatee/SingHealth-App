@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, SectionList } from "react-native";
+import { View, SectionList, Platform } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -47,6 +47,8 @@ const RectificationScreen = ({ route, navigation }) => {
 
   const theme = useTheme();
 
+  console.log(checklistStore.auditMetadata);
+
   const dispatch = useDispatch();
 
   const handleCompliantFilter = () => {
@@ -71,12 +73,18 @@ const RectificationScreen = ({ route, navigation }) => {
           {
             text: "Confirm",
             onPress: () => {
-              navigation.goBack();
+              if (Platform.OS === "web") {
+                window.history.back();
+              } else {
+                navigation.goBack();
+              }
             },
             style: "destructive",
           },
         ]
       );
+    } else if (Platform.OS === "web") {
+      window.history.back();
     } else {
       navigation.goBack();
     }

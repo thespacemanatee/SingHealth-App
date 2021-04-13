@@ -1,3 +1,7 @@
-/* eslint-disable global-require */
-// eslint-disable-next-line import/prefer-default-export
-export const LottieView = require("lottie-react-native");
+export { default as LottieView } from "lottie-react-native";
+export {
+  default as ContentLoader,
+  Rect,
+  Circle,
+  List,
+} from "react-content-loader/native";

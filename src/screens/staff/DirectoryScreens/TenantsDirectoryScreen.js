@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, Platform, View } from "react-native";
 import { useDispatch } from "react-redux";
 import {
   Divider,
@@ -7,19 +7,22 @@ import {
   Layout,
   TopNavigation,
   TopNavigationAction,
-  List,
   StyleService,
 } from "@ui-kitten/components";
 
 import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
 import EntityCard from "../../../components/EntityCard";
+import EntityLoading from "../../../components/ui/loading/EntityLoading";
+import CustomText from "../../../components/ui/CustomText";
+import TimedGraph from "../../../components/TimedGraph";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const TenantsDirectoryScreen = ({ route, navigation }) => {
   const [tenants, setTenants] = useState([]);
-  const { institutionID } = route.params;
+  const [listLoading, setListLoading] = useState(true);
+  const { institutionID, displayName } = route.params;
 
   const dispatch = useDispatch();
 
@@ -27,7 +30,11 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
     <TopNavigationAction
       icon={BackIcon}
       onPress={() => {
-        navigation.goBack();
+        if (Platform.OS === "web") {
+          window.history.back();
+        } else {
+          navigation.goBack();
+        }
       }}
     />
   );
@@ -67,10 +74,19 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
     getTenants();
   }, [getTenants]);
 
+  const renderEmptyComponent = () =>
+    listLoading ? (
+      <EntityLoading />
+    ) : (
+      <View style={styles.emptyComponent}>
+        <CustomText bold>NO OUTSTANDING AUDITS</CustomText>
+      </View>
+    );
+
   return (
     <View style={styles.screen}>
       <TopNavigation
-        title="Directory"
+        title={displayName}
         alignment="center"
         accessoryLeft={BackAction}
       />
@@ -81,6 +97,23 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
           renderItem={renderTenants}
           contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
+          refreshing={listLoading}
+          ListEmptyComponent={renderEmptyComponent}
+          ListHeaderComponent={
+            <>
+              <TimedGraph
+                label={`Average Scores (${displayName
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")})`}
+                type="institution"
+                id={institutionID}
+              />
+              <View style={styles.textContainer}>
+                <CustomText style={styles.text}>Tenants</CustomText>
+              </View>
+            </>
+          }
         />
       </Layout>
     </View>
@@ -93,6 +126,13 @@ const styles = StyleService.create({
   },
   layout: {
     flex: 1,
+  },
+  textContainer: {
+    marginVertical: 10,
+  },
+  text: {
+    fontSize: 26,
+    fontFamily: "SFProDisplay-Bold",
   },
   contentContainer: {
     // flexGrow: 1,

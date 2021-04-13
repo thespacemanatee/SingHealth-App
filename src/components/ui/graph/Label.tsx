@@ -1,34 +1,43 @@
 import React from "react";
-import { View, StyleSheet, Platform } from "react-native";
-import Animated, { useDerivedValue } from "react-native-reanimated";
+import { View } from "react-native";
+import Animated, {
+  useDerivedValue,
+  useSharedValue,
+} from "react-native-reanimated";
 import { ReText, round } from "react-native-redash";
-import { Card } from "@ui-kitten/components";
+import { StyleService, useStyleSheet } from "@ui-kitten/components";
 
 import StyleGuide from "../../StyleGuide";
-import CustomText from "../CustomText";
 
-const styles = StyleSheet.create({
+export const LABEL_SIZE = 150;
+
+const themedStyles = StyleService.create({
   date: {
     ...StyleGuide.typography.body,
-    textAlign: Platform.OS !== "web" ? "right" : null,
-    // backgroundColor: "red",
+    textAlign: "right",
   },
   score: {
     ...StyleGuide.typography.body,
-    textAlign: Platform.OS !== "web" ? "right" : null,
-    // backgroundColor: "red",
+    textAlign: "left",
   },
   labelContainer: {
-    flex: 1,
-    width: 150,
-    // backgroundColor: "red",
-  },
-  dateContainer: {
     flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "white",
+    width: LABEL_SIZE,
+    padding: 10,
+    borderRadius: 5,
+    opacity: 0.8,
+    borderWidth: 1,
+    borderColor: "color-primary-400",
+  },
+
+  dateContainer: {
+    flex: 0.5,
     justifyContent: "space-between",
   },
   contentContainer: {
-    flexDirection: "row",
+    flex: 0.5,
     justifyContent: "space-between",
   },
 });
@@ -49,27 +58,31 @@ interface LabelProps {
 }
 
 const Label = ({ point }: LabelProps) => {
+  const styles = useStyleSheet(themedStyles);
+  const averageText = useSharedValue("Average");
+
   const date = useDerivedValue(() => {
     const d = new Date(point.value.data.x);
-    return d.toDateString().replace(/^\S+\s/, "");
+    return d.toDateString().split(" ").slice(1, 3).join(" ");
+  });
+  const year = useDerivedValue(() => {
+    return new Date(point.value.data.x).getFullYear().toString();
   });
   const points = useDerivedValue(() => {
     const p = point.value.data.y;
-    return `${round(p, 0)}`;
+    return `${round(p, 1)}`;
   });
   return (
-    <Card>
-      <View style={styles.labelContainer}>
-        <View style={styles.dateContainer}>
-          <CustomText>Date: </CustomText>
-          <ReText style={styles.date} text={date} />
-        </View>
-        <View style={styles.contentContainer}>
-          <CustomText>Average: </CustomText>
-          <ReText style={styles.score} text={points} />
-        </View>
+    <View style={styles.labelContainer}>
+      <View style={styles.contentContainer}>
+        <ReText style={styles.score} text={averageText} />
+        <ReText style={styles.score} text={points} />
       </View>
-    </Card>
+      <View style={styles.dateContainer}>
+        <ReText style={styles.date} text={date} />
+        <ReText style={styles.date} text={year} />
+      </View>
+    </View>
   );
 };
 

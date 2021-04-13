@@ -15,6 +15,7 @@ import { Camera } from "expo-camera";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import moment from "moment";
 
 import alert from "../../components/CustomAlert";
 import * as checklistActions from "../../store/actions/checklistActions";
@@ -35,7 +36,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   const [deadline, setDeadline] = useState();
   const [min] = useState(new Date());
   const [max] = useState(
-    new Date(min.getFullYear(), min.getMonth(), min.getDate() + 31)
+    moment(new Date(min.getFullYear(), min.getMonth(), min.getDate() + 31))
   );
 
   const { index, checklistType, question, section } = route.params;
@@ -54,7 +55,10 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   const changeTextHandler = (val) => {
     setValue(val);
     console.log(val);
-    dispatch(checklistActions.addRemarks(checklistType, section, index, val));
+  };
+
+  const onBlurHandler = () => {
+    dispatch(checklistActions.addRemarks(checklistType, section, index, value));
   };
 
   useEffect(() => {
@@ -90,7 +94,18 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
       setDeadline(storeDeadline);
     } else {
       dispatch(
-        checklistActions.changeDeadline(checklistType, section, index, max)
+        checklistActions.changeDeadline(
+          checklistType,
+          section,
+          index,
+          moment(
+            new Date(
+              new Date().getFullYear(),
+              new Date().getMonth(),
+              new Date().getDate() + 7
+            )
+          )
+        )
       );
     }
   }, [checklistStore, checklistType, dispatch, index, max, section]);
@@ -152,7 +167,11 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     <TopNavigationAction
       icon={BackIcon}
       onPress={() => {
-        navigation.goBack();
+        if (Platform.OS === "web") {
+          window.history.back();
+        } else {
+          navigation.goBack();
+        }
       }}
     />
   );
@@ -282,6 +301,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
               placeholder="Enter your remarks here"
               value={value}
               onChangeText={changeTextHandler}
+              onBlur={onBlurHandler}
             />
           </View>
         </KeyboardAwareScrollView>
@@ -308,7 +328,6 @@ const styles = StyleService.create({
   },
   datePickerContainer: {
     marginTop: 20,
-    marginBottom: 10,
   },
   inputContainer: {
     // margin: 20,

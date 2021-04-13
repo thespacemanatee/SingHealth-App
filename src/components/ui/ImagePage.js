@@ -62,9 +62,7 @@ const ImagePage = (props) => {
             }}
           >
             {!loading ? (
-              <CustomText style={styles.text}>
-                No Images. Start adding some!
-              </CustomText>
+              <CustomText style={styles.text}>No Images!</CustomText>
             ) : (
               <ActivityIndicator
                 size="large"

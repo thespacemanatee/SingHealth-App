@@ -127,7 +127,7 @@ const AuditSubmitScreen = ({ navigation }) => {
         let imageRes;
         if (imageAdded) {
           if (Platform.OS === "web") {
-            imageRes = dispatch(
+            imageRes = await dispatch(
               databaseActions.postAuditImagesWeb(base64images)
             );
           } else {
@@ -171,7 +171,11 @@ const AuditSubmitScreen = ({ navigation }) => {
   };
 
   const handleGoBack = useCallback(() => {
-    navigation.goBack();
+    if (Platform.OS === "web") {
+      window.history.back();
+    } else {
+      navigation.goBack();
+    }
   }, [navigation]);
 
   const handleRetry = () => {

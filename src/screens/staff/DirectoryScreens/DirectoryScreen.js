@@ -7,13 +7,14 @@ import {
   Layout,
   TopNavigation,
   TopNavigationAction,
-  List,
   StyleService,
 } from "@ui-kitten/components";
 
 import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
 import EntityCard from "../../../components/EntityCard";
+import EntityLoading from "../../../components/ui/loading/EntityLoading";
+import CustomText from "../../../components/ui/CustomText";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
@@ -38,8 +39,11 @@ const DirectoryScreen = ({ navigation }) => {
   );
 
   const handleNavigateTenants = useCallback(
-    (institutionID) => {
-      navigation.navigate("TenantsDirectory", { institutionID });
+    (institutionID, displayName) => {
+      navigation.navigate("TenantsDirectory", {
+        institutionID,
+        displayName,
+      });
     },
     [navigation]
   );
@@ -82,6 +86,15 @@ const DirectoryScreen = ({ navigation }) => {
     };
   }, [getInstitutions, navigation]);
 
+  const renderEmptyComponent = () =>
+    listLoading ? (
+      <EntityLoading />
+    ) : (
+      <View style={styles.emptyComponent}>
+        <CustomText bold>NO OUTSTANDING AUDITS</CustomText>
+      </View>
+    );
+
   return (
     <View style={styles.screen}>
       <TopNavigation
@@ -99,6 +112,7 @@ const DirectoryScreen = ({ navigation }) => {
           renderItem={renderInstitutions}
           onRefresh={getInstitutions}
           refreshing={listLoading}
+          ListEmptyComponent={renderEmptyComponent}
         />
       </Layout>
     </View>

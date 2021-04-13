@@ -34,13 +34,14 @@ export const getChecklist = (checklistType, tenant) => async (dispatch) => {
 export const addAuditTenantSelection = (tenant) => {
   return { type: ADD_AUDIT_TENANT_SELECTION, tenant };
 };
+
 export const addChosenChecklist = (fnb = true) => {
   return async (dispatch) => {
     const checklistType = fnb ? "fnb" : "non_fnb";
     const options = {
-      url: `${endpoint}auditForms/${checklistType}`,
+      url: `${endpoint}auditForms`,
       method: "get",
-      // withCredentials: true,
+      params: { formType: checklistType },
     };
 
     const res = await httpClient(options);
@@ -54,9 +55,9 @@ export const addChosenChecklist = (fnb = true) => {
 export const addCovidChecklist = () => {
   return async (dispatch) => {
     const options = {
-      url: `${endpoint}auditForms/covid19`,
+      url: `${endpoint}auditForms`,
       method: "get",
-      // withCredentials: true,
+      params: { formType: "covid19" },
     };
 
     const res = await httpClient(options);
@@ -162,7 +163,6 @@ export const getAuditData = (auditID) => {
     const options = {
       url: `${endpoint}audits/${auditID}`,
       method: "get",
-      // withCredentials: true,
     };
     const res = await httpClient(options);
     const { auditMetadata, auditForms } = res.data.data;
