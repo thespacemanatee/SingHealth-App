@@ -22,6 +22,11 @@ from flask_mail import Mail, Message
 import tempfile
 import xlsxwriter
 
+from docx import Document
+from docx.shared import Inches
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.shared import Pt
+
 
 def parse_json(data):
     return json.loads(json_util.dumps(data))
@@ -184,8 +189,6 @@ def find_and_return_one(mongo, collection, key, value):
         return None, None
 
 # for excel operations
-
-
 def nested_dict_get(dictionary, dotted_key):
     keys = dotted_key.split('.')
     return functools.reduce(lambda d, key: d.get(key) if d else None, keys, dictionary)
@@ -273,8 +276,172 @@ def from_audit_to_excel(workbook, page_name, data):
 
     return workbook
 
+#for word operations
+def set_column_width(column, width):
+    for cell in column.cells:
+        cell.width = width
+        
+def set_cell_background(cell, fill):
+    """
+    @fill: Specifies the color to be used for the background
+    @color: Specifies the color to be used for any foreground
+    pattern specified with the val attribute
+    @val: Specifies the pattern to be used to lay the pattern
+    color over the background color.
+    """
+    from docx.oxml.shared import qn  # feel free to move these out
+    from docx.oxml.xmlchemy import OxmlElement
+    cell_properties = cell._element.tcPr
+    try:
+        cell_shading = cell_properties.xpath('w:shd')[0]  # in case there's already shading
+    except IndexError:
+        cell_shading = OxmlElement('w:shd') # add new w:shd element to it
+    if fill:
+        cell_shading.set(qn('w:fill'), fill)  # set fill property, respecting namespace
+    cell_properties.append(cell_shading)  # finally extend cell props with shading element
+    
+def insert_list_by_col(table, start_row, col_num, data_list):
+    for i in range(len(data_list)):
+        table.cell(start_row+i, col_num).text = data_list[i]
+        
+def insert_dict_by_col(table, start_row, col_num, data_list, data_dict):
+    for i in range(len(data_list)):
+        table.cell(start_row+i, col_num).text = data_dict[data_list[i]]
+        
+def make_rows_underline(*rows):
+    for row in rows:
+        for cell in row.cells:
+            for paragraph in cell.paragraphs:
+                for run in paragraph.runs:
+                    run.font.underline = True
 
-def send_audit_email(app, to_email, subject, message,
+def table_center_align(*columns):
+    for col in columns:
+        for cell in col.cells:
+            cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+def add_form_to_docs(document, form_with_ans):
+    document.add_page_break()
+    header3= document.add_paragraph()
+    runner = header3.add_run(form_with_ans["type"])
+    runner.underline = True
+    
+    hex_color = form_with_ans["color"]
+    
+    for checklist_name in form_with_ans["questions"].keys():    
+        checklist = document.add_table(rows=1, cols=2)
+        checklist.style = 'TableGrid'
+        
+        hdr_cells = checklist.rows[0].cells
+        hdr_cells[0].text = checklist_name
+        set_cell_background(hdr_cells[0], hex_color)
+        hdr_cells[1].text = 'Point(s) \nAwarded'
+        set_cell_background(hdr_cells[1], hex_color)
+        
+        for question in form_with_ans["questions"][checklist_name]:
+            row_cells = checklist.add_row().cells
+            row_cells[0].text = question["question"]
+            row_cells[1].text = str(int(bool(question["answer"])))
+            
+        set_column_width(checklist.columns[0], Inches(5.4))
+        set_column_width(checklist.columns[1], Inches(0.76))
+        table_center_align(checklist.columns[1])
+
+def from_audit_to_word(document, data):
+    audit_dict = data["audit_info"]
+    inst_dict = data["inst_info"]
+    staff_dict = data["staff_info"]
+    tenant_dict = data["tenant_info"]
+    all_checklist = audit_dict["auditForm"]
+    
+    #unpack data 
+    score = round(audit_dict["score"] * 100,2)
+    date = audit_dict["date"]
+    
+    #def fields
+    staff_data = ["name", "email"]
+    inst_data = ["name", "_id"]
+    tenant_data = ["name", "email", "stallName"]
+    
+    # Define font style
+    style = document.styles['Normal']
+    font = style.font
+    font.name = 'Arial'
+    font.size = Pt(11)
+    
+    ### Default fields
+    title = document.add_paragraph()
+    title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    runner = title.add_run('SINGHEALTH RETAIL - AUDIT REPORT')
+    runner.bold = True
+    runner.underline = True
+    
+    #Audit information
+    header1 = document.add_paragraph()
+    runner = header1.add_run("Audit Information")
+    runner.bold = True
+    runner.underline = True
+    
+    #def value
+    info = document.add_table(rows=13, cols = 2)
+    def_info = ["Staff", "Name:", "Email:", "Institution name:", "Institution acronym:", "",
+            "Tenant", "Name :", "Email:", "Stall name:", "",
+            "Audit date:", "Total score:"]
+    insert_list_by_col(info, 0, 0, def_info)
+    set_column_width(info.columns[0], Inches(1.6))
+    make_rows_underline(info.rows[0], info.rows[6])
+    
+    #insert data 
+    insert_dict_by_col(info, 1, 1, staff_data, staff_dict)
+    insert_dict_by_col(info, 3, 1, inst_data, inst_dict)
+    insert_dict_by_col(info, 7, 1, tenant_data, tenant_dict)
+    info.cell(11, 1).text = date.strftime('%Y/%m/%d %I:%M %p')
+    info.cell(12, 1).text = str(score)+"%"
+    
+    #Add checklists
+    for form in all_checklist.values():
+        add_form_to_docs(document, form)
+
+def send_audit_email_word(app, to_email, subject, message,
+                     word_name, data):
+
+    # for mailing
+    app.config.update(BTS_APP_CONFIG_EMAIL)
+    mail = Mail(app)
+
+    try:
+        msg = Message(sender=BTS_EMAIL,
+                      recipients=[to_email],
+                      subject=subject,
+                      body=message)
+
+        # make temp file
+        fd, path = tempfile.mkstemp(suffix=".docx")
+
+        # make word
+        document = Document()
+        from_audit_to_word(document, data)
+        
+        document.save(path)
+
+        with open(path, 'rb') as f:
+            file_data = f.read()
+
+        # add as email attachment
+        msg.attach(word_name+".docx",
+                   "application/vnd.openxmlformats-officedocument.wordprocessingml.document", file_data)
+
+        mail.send(msg)
+
+        # close temp file after email sent to delete temp file
+        os.close(fd)
+
+    except:
+        return False
+
+    return True
+
+def send_audit_email_excel(app, to_email, subject, message,
                      excel_name, page_name, data):
 
     # for mailing

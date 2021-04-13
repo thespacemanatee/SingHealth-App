@@ -42,6 +42,7 @@ flask-testing = "*"
 faker = "*"
 coverage = "*"
 mongomock = "*"
+python-docx = "*"
 
 [dev-packages]
 
