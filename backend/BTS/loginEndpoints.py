@@ -33,7 +33,7 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
 
                     # Append the token to the DB
                     if expoToken is not None and expoToken != "" and \
-                        expoToken not in user["expoToken"]:
+                        expoToken not in user.get("expoToken", []):
                         mongo.db.staff.update_one(
                             {"email": userEmail},
                             [
@@ -93,7 +93,7 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
 
                     # TODO: Append the token to the DB
                     if expoToken is not None and expoToken != "" and  \
-                        expoToken not in user["expoToken"]:
+                        expoToken not in user.get("expoToken",[]):
                             mongo.db.tenant.update_one(
                                 {"email": userEmail},
                                 [
@@ -141,50 +141,60 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                     200,
                     "You are now logged out"
                     )
+            
+            try:
 
-            #TODO：Remove the token from the DB
-            userEmail = current_user.get_id()
-            userExpoToken = data["expoToken"]
-            if session["account_type"] == "tenant":
-                mongo.db.tenant.update_one(
-                    {"email": userEmail},
-                    {
-                        "$pull": {
-                            "expoToken": {
-                                "$in": [userExpoToken]
+                #TODO：Remove the token from the DB
+                userEmail = current_user.get_id()
+                userExpoToken = data["expoToken"]
+                if session["account_type"] == "tenant":
+                    mongo.db.tenant.update_one(
+                        {"email": userEmail},
+                        {
+                            "$pull": {
+                                "expoToken": {
+                                    "$in": [userExpoToken]
+                                }
                             }
-                        }
 
-                    }
-                )
-            elif session["account_type"] == "staff":
-                mongo.db.staff.update_one(
-                    {"email": userEmail},
-                    {
-                        "$pull": {
-                            "expoToken": {
-                                "$in": [userExpoToken]
+                        }
+                    )
+                elif session["account_type"] == "staff":
+                    mongo.db.staff.update_one(
+                        {"email": userEmail},
+                        {
+                            "$pull": {
+                                "expoToken": {
+                                    "$in": [userExpoToken]
+                                }
                             }
-                        }
 
-                    }
+                        }
+                    )
+                session.pop('account_type')
+
+            except KeyError:
+                print("Session lost. Forcefully logging out the user")
+            
+            finally:
+                logout_user()
+                return serverResponse(
+                    None,
+                    200,
+                    "You are now logged out"
                 )
-            session.pop('account_type')
-            logout_user()
-            return serverResponse(
-                None,
-                200,
-                "You are now logged out"
-            )
 
     @login_manager.user_loader
     def load_user(user_email):
         caps_userEmail = user_email.lower()
-        if session["account_type"] == "tenant":
-            exists = mongo.db.tenant.find_one({"email": caps_userEmail})
-        elif session["account_type"] == "staff":
-            exists = mongo.db.staff.find_one({"email": caps_userEmail})
-        if not exists:
+        try:
+            if session["account_type"] == "tenant":
+                exists = mongo.db.tenant.find_one({"email": caps_userEmail})
+            elif session["account_type"] == "staff":
+                exists = mongo.db.staff.find_one({"email": caps_userEmail})
+            if not exists:
+                return None
+        except KeyError:
             return None
         return User(userEmail=exists["email"].lower())
 
