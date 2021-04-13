@@ -106,6 +106,7 @@ const StaffDashboardScreen = ({ navigation }) => {
       await dispatch(
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
+      await dispatch(databaseActions.getInstitutions());
       setListData(res.data.data);
     } catch (err) {
       handleErrorResponse(err);
