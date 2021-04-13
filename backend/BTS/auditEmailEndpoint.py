@@ -68,34 +68,37 @@ def addAuditEmailEndpoints(app, mongo):
     
     @app.route("/email/excel/<auditID>", methods=["POST"])
     @login_required
-    def export_excel_to_email(auditID):  
-        validate, data = validate_audit_info_excel(auditID)
+    def export_excel_to_email(auditID):
+        try:        
+            validate, data = validate_audit_info_excel(auditID)
+            
+            if validate:  
+                date_underscore = data["audit_info"]["date"].strftime('%Y_%m_%d')
+                date_slash = data["audit_info"]["date"].strftime('%Y/%m/%d')
+                stall_name = data["tenant_info"]["stallName"]
+                
+                
+                to_email = data["staff_info"]["email"]
+                subject = "Audit Data - " + stall_name + " (" + date_slash + ")"
+                message= ""
+                page_name = "Info"
+                
+                stall_name = stall_name.replace(" ", "_")
+                stall_name = stall_name.upper()
+                excel_name = "audit_"+ date_underscore + "_" + stall_name
         
-        if validate:  
-            date_underscore = data["audit_info"]["date"].strftime('%Y_%m_%d')
-            date_slash = data["audit_info"]["date"].strftime('%Y/%m/%d')
-            stall_name = data["tenant_info"]["stallName"]
+                sent = send_audit_email_excel(app, to_email, subject, message,
+                           excel_name, page_name, data)
+              
+                if sent:
+                    return serverResponse(None, 200, "Audit email sent")
+                else:
+                    return serverResponse(None, 404, "Error in sending email")
             
-            
-            to_email = data["staff_info"]["email"]
-            subject = "Audit Data - " + stall_name + " (" + date_slash + ")"
-            message= ""
-            page_name = "Info"
-            
-            stall_name = stall_name.replace(" ", "_")
-            stall_name = stall_name.upper()
-            excel_name = "audit_"+ date_underscore + "_" + stall_name
-    
-            sent = send_audit_email_excel(app, to_email, subject, message,
-                       excel_name, page_name, data)
-          
-            if sent:
-                return serverResponse(None, 200, "Audit email sent")
             else:
-                return serverResponse(None, 404, "Error in sending email")
-        
-        else:
-            return serverResponse(data, 404, "Missing/Error in information")
+                return serverResponse(data, 404, "Missing/Error in information")
+        except:
+            return serverResponse(data, 404, "Internal Error")
         
     #FOR WORD DOCS
     def check_valid_param(data):
@@ -223,31 +226,34 @@ def addAuditEmailEndpoints(app, mongo):
     @app.route("/email/word/<auditID>", methods=["POST"])
     @login_required
     def export_word_to_email(auditID):
-        validate, data = validate_and_pack_audit_info_word(auditID)
-        
-        if validate:  
-            date_underscore = data["audit_info"]["date"].strftime('%Y_%m_%d')
-            date_slash = data["audit_info"]["date"].strftime('%Y/%m/%d')
-            stall_name = data["tenant_info"]["stallName"]
+        try:
+            validate, data = validate_and_pack_audit_info_word(auditID)
             
+            if validate:  
+                date_underscore = data["audit_info"]["date"].strftime('%Y_%m_%d')
+                date_slash = data["audit_info"]["date"].strftime('%Y/%m/%d')
+                stall_name = data["tenant_info"]["stallName"]
+                
+                
+                to_email = data["staff_info"]["email"]
+                
+                subject = "Audit Data - " + stall_name + " (" + date_slash + ")"
+                message= ""
+                
+                stall_name = stall_name.replace(" ", "_")
+                stall_name = stall_name.upper()
+                word_name = "audit_"+ date_underscore + "_" + stall_name
+                
+                
+                sent = send_audit_email_word(app, to_email, subject, message,
+                           word_name, data)
+              
+                if sent:
+                    return serverResponse(None, 200, "Audit email sent")
+                else:
+                    return serverResponse(None, 404, "Error in sending email")
             
-            to_email = data["staff_info"]["email"]
-            
-            subject = "Audit Data - " + stall_name + " (" + date_slash + ")"
-            message= ""
-            
-            stall_name = stall_name.replace(" ", "_")
-            stall_name = stall_name.upper()
-            word_name = "audit_"+ date_underscore + "_" + stall_name
-            
-            
-            sent = send_audit_email_word(app, to_email, subject, message,
-                       word_name, data)
-          
-            if sent:
-                return serverResponse(None, 200, "Audit email sent")
             else:
-                return serverResponse(None, 404, "Error in sending email")
-        
-        else:
-            return serverResponse(data, 404, "Missing/Error in information")
+                return serverResponse(data, 404, "Missing/Error in information")
+        except:
+            return serverResponse(data, 404, "Internal Error")
