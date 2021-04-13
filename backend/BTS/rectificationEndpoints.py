@@ -119,7 +119,7 @@ def mongoUpdateGivenFields(mongo, patches, fields, auditChecklists):
 
 def addRectificationEndpts(app, mongo):
     @app.route("/audits/<auditID>/tenant", methods=['PATCH'])
-    @login_required
+    # @login_required
     def patch_audit_tenant(auditID):
         if request.method == "PATCH":
             patches = request.json
@@ -184,7 +184,7 @@ def addRectificationEndpts(app, mongo):
             return serverResponse(patchResults, 200, "Changes sent to the database.")
 
     @app.route("/audits/<auditID>/staff", methods=['PATCH'])
-    @login_required
+    # @login_required
     def patch_audit_staff(auditID):
         if request.method == "PATCH":
             patches = request.json
