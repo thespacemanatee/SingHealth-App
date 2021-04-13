@@ -1,6 +1,7 @@
 from .utils import serverResponse, send_push_message, send_email_notif
 from .constants import MAX_NUM_IMAGES_PER_NC, SGT_TIMEZONE
 from flask import request, make_response, jsonify
+from .rectificationEndpoints import percentageRectification
 from flask_login import login_required
 from pymongo.errors import DuplicateKeyError
 from datetime import datetime
@@ -40,8 +41,8 @@ def calculateAuditScore(filledAuditForms) -> float:
                 compliant, filledAuditForm["answers"]["Professionalism and Staff Hygiene"]))) * 0.1
             c2 = percentageCompliant(list(map(
                 compliant, filledAuditForm["answers"]["Housekeeping and General Cleanliness"]))) * 0.2
-            c3 = percentageCompliant(
-                list(map(compliant, filledAuditForm["answers"]["Food Hygiene"]))) * 0.35
+            c3 = percentageCompliant(list(map(
+                compliant, filledAuditForm["answers"]["Food Hygiene"]))) * 0.35
             c4 = percentageCompliant(list(map(
                 compliant, filledAuditForm["answers"]["Healthier Choice in line with HPB's Healthy Eating's Initiative"]))) * 0.15
             c5 = percentageCompliant(list(
@@ -206,7 +207,14 @@ def addAuditsEndpoint(app, mongo):
             auditScore = calculateAuditScore(filledAuditForms_ID_processed)
             auditMetaData_ID_processed["score"] = auditScore
 
-            if auditScore < 1:
+            allAnswers = []
+            for filledAuditForm in filledAuditForms_ID_processed.values():
+                for answerList in filledAuditForm["answers"].values():
+                    allAnswers.extend(answerList)
+            percentRect = percentageRectification(allAnswers)
+
+
+            if percentRect < 1:
                 auditMetaData_ID_processed['rectificationProgress'] = 0
 
             try:
@@ -277,21 +285,20 @@ def addAuditsEndpoint(app, mongo):
                         "stallName": 1
                     }
                 )
-                stallName = tenant["stallName"]
-
-                auditsList.append(
-                    {
-                        "auditMetadata": audit,
-                        "stallName": stallName
-                    }
-                )
+                if tenant:
+                    auditsList.append(
+                        {
+                            "auditMetadata": audit,
+                            "stallName": stallName
+                        }
+                    )
 
             if len(auditsList) == 0:
                 msg = "No audits found"
             else:
                 msg = "Audits retrieved successfully"
             return serverResponse(auditsList, 200, msg)
-
+ 
     @app.route("/audits/<auditID>", methods=['GET'])
     @login_required
     def get_audit(auditID):

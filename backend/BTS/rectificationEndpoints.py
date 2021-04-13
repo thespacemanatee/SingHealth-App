@@ -99,7 +99,9 @@ def mongoUpdateGivenFields(mongo, patches, fields, auditChecklists):
                 patch["category"] + "." + str(patch["index"]) + "."
             patchStatuses = []
             for field in fields:
-                if field == allowedStaffPatchKeys[2]:
+                if patch.get(field, None) == None:
+                    continue
+                elif field == allowedStaffPatchKeys[2]:
                     newValue = iso8601.parse_date(patch[field])
                 else:
                     newValue = patch[field]
@@ -115,7 +117,16 @@ def mongoUpdateGivenFields(mongo, patches, fields, auditChecklists):
             patchResults.append(patchResult)
     return patchResults
 
+def percentageRectification(allQuestions):
+    numNCs = len(list(filter(
+        lambda x: x["answer"] == False,
+        allQuestions)))
+    numRectifiedNCs = len(list(filter(
+        lambda x: x["answer"] == False and x.get("rectified", None) == True,
+        allQuestions)))
+    percentRectification = numRectifiedNCs / numNCs
 
+    return percentRectification
 
 def addRectificationEndpts(app, mongo):
     @app.route("/audits/<auditID>/tenant", methods=['PATCH'])
@@ -225,13 +236,7 @@ def addRectificationEndpts(app, mongo):
                     for answerList in form["answers"].values():
                         allQuestions.extend(answerList)
 
-            numNCs = len(list(filter(
-                lambda x: x["answer"] == False,
-                allQuestions)))
-            numRectifiedNCs = len(list(filter(
-                lambda x: x["answer"] == False and x.get("rectified", None) == True,
-                allQuestions)))
-            percentRectification = numRectifiedNCs / numNCs
+            percentRectification = percentageRectification(allQuestions)
 
             # Update audit metadata
             percentRectDict = {"rectificationProgress": percentRectification}
