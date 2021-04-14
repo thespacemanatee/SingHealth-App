@@ -9,6 +9,7 @@ import {
   TopNavigationAction,
   StyleService,
 } from "@ui-kitten/components";
+import { RefreshControl } from "react-native-web-refresh-control";
 
 import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
@@ -61,12 +62,15 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
 
   const getTenants = useCallback(async () => {
     try {
+      setListLoading(true);
       const res = await dispatch(
         databaseActions.getRelevantTenants(institutionID)
       );
       setTenants(res.data.data);
     } catch (err) {
       handleErrorResponse(err);
+    } finally {
+      setListLoading(false);
     }
   }, [dispatch, institutionID]);
 
@@ -98,6 +102,10 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
           contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
           refreshing={listLoading}
+          onRefresh={getTenants}
+          refreshControl={
+            <RefreshControl refreshing={listLoading} onRefresh={getTenants} />
+          }
           ListEmptyComponent={renderEmptyComponent}
           ListHeaderComponent={
             <>

@@ -9605,6 +9605,11 @@ react-native-web-lottie@^1.4.4:
   dependencies:
     lottie-web "^5.7.1"
 
+react-native-web-refresh-control@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-web-refresh-control/-/react-native-web-refresh-control-1.0.3.tgz#3ffc5dbe12506088a9ee64ab53a682a421cf88eb"
+  integrity sha512-o1qWewp6ZFmw4aYF5bPIh4zDJJXrfCl5FDoV0Cw8Bh33PSlnl9zpsn7wXl6RVA4l0leUTqUeI/OhmT3XIuvLcw==
+
 react-native-web@^0.15.6:
   version "0.15.6"
   resolved "https://registry.yarnpkg.com/react-native-web/-/react-native-web-0.15.6.tgz#f549e1fb692f2401c0262293b3eb11b95a29a1d3"

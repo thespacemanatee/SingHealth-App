@@ -9,6 +9,7 @@ import {
   TopNavigation,
   TopNavigationAction,
 } from "@ui-kitten/components";
+import { RefreshControl } from "react-native-web-refresh-control";
 
 import * as databaseActions from "../store/actions/databaseActions";
 import * as checklistActions from "../store/actions/checklistActions";
@@ -135,8 +136,11 @@ const TenantInfoScreen = ({ route, navigation }) => {
           keyExtractor={(item, index) => String(index)}
           data={listData}
           renderItem={renderAudits}
-          onRefresh={getListData}
           refreshing={listLoading}
+          onRefresh={getListData}
+          refreshControl={
+            <RefreshControl refreshing={listLoading} onRefresh={getListData} />
+          }
           ListEmptyComponent={renderEmptyComponent}
           ListHeaderComponent={
             <>
