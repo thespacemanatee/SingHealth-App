@@ -75,7 +75,7 @@
     "@types/react": "^17.0.3",
     "@types/react-native": "^0.64.2",
     "@types/react-redux": "^7.1.16",
-    "@typescript-eslint/eslint-plugin": "^4.21.0",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.21.0",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "eslint": "^7.24.0",
