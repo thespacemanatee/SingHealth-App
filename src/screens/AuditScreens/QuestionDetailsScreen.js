@@ -46,7 +46,6 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
 
   const handleDateChange = (date) => {
-    console.log(date);
     dispatch(
       checklistActions.changeDeadline(checklistType, section, index, date)
     );
@@ -54,7 +53,6 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
 
   const changeTextHandler = (val) => {
     setValue(val);
-    console.log(val);
   };
 
   const onBlurHandler = () => {
@@ -123,7 +121,6 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
         destination = imageData.uri;
       } else {
         destination = FileSystem.cacheDirectory + fileName.replace(/\s+/g, "");
-        // console.log(destination);
         await FileSystem.copyAsync({
           from: imageData.uri,
           to: destination,

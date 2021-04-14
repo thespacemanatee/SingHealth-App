@@ -48,7 +48,6 @@ const LoginScreen = ({ navigation }) => {
   });
 
   const handleSubmitForm = async (values) => {
-    console.log(values);
     try {
       setLoading(true);
       await dispatch(

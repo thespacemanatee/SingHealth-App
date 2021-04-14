@@ -71,7 +71,6 @@ const AuditSubmitScreen = ({ navigation }) => {
         }
       });
     });
-    // console.log(tempChosenChecklist);
 
     const covid19Keys = Object.keys(checklistStore.covid19.questions);
     covid19Keys.forEach((section) => {
@@ -137,13 +136,8 @@ const AuditSubmitScreen = ({ navigation }) => {
           }
         }
 
-        console.log(imageRes);
+        await dispatch(databaseActions.postAuditForm(auditData));
 
-        const formRes = await dispatch(
-          databaseActions.postAuditForm(auditData)
-        );
-
-        console.log(formRes);
         Toast.show({
           text1: "Success",
           text2: `Audit submitted on: ${moment(new Date())

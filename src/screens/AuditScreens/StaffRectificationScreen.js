@@ -46,8 +46,6 @@ const StaffRectificationScreen = ({ route, navigation }) => {
 
   const { index, checklistType, question, section, rectified } = route.params;
 
-  console.log(checklistStore);
-
   const theme = useTheme();
 
   const dispatch = useDispatch();
@@ -77,7 +75,6 @@ const StaffRectificationScreen = ({ route, navigation }) => {
         )
       );
 
-      console.log(res);
       Toast.show({
         text1: "Success",
         text2: `Your ${
@@ -93,7 +90,6 @@ const StaffRectificationScreen = ({ route, navigation }) => {
   };
 
   const handleDateChange = async (date) => {
-    console.log(date);
     setLoadDialog(true);
     setDeadline(date);
     const data = {
@@ -117,7 +113,6 @@ const StaffRectificationScreen = ({ route, navigation }) => {
           index
         )
       );
-      console.log(res);
     } catch (err) {
       handleErrorResponse(err);
     } finally {
@@ -226,7 +221,6 @@ const StaffRectificationScreen = ({ route, navigation }) => {
       setValue(storeRemarks);
     }
     if (storeDeadline) {
-      console.log("DEADLINE:", storeDeadline);
       setDeadline(moment(storeDeadline.$date || storeDeadline));
     }
   }, [checklistStore, checklistType, dispatch, index, section]);

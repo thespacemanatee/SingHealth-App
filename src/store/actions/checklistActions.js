@@ -22,8 +22,6 @@ export const TYPE_NON_FNB = "non_fnb";
 export const TYPE_COVID = "covid19";
 
 export const getChecklist = (checklistType, tenant) => async (dispatch) => {
-  console.log(checklistType);
-
   await Promise.all([
     dispatch(addChosenChecklist(checklistType)),
     dispatch(addCovidChecklist()),
@@ -47,7 +45,7 @@ export const addChosenChecklist = (fnb = true) => {
     const res = await httpClient(options);
 
     const checklist = res.data.data;
-    // console.log(`Done fetching ${checklistType} checklist`, checklist);
+
     return dispatch({ type: ADD_CHOSEN_CHECKLIST, checklistType, checklist });
   };
 };
@@ -63,7 +61,7 @@ export const addCovidChecklist = () => {
     const res = await httpClient(options);
 
     const checklist = res.data.data;
-    // console.log("Done fetching covid checklist", checklist);
+
     return dispatch({ type: ADD_COVID_CHECKLIST, checklist });
   };
 };
@@ -188,7 +186,6 @@ export const getAuditData = (auditID) => {
 
 export const getImage = (fileName, source) => {
   return async () => {
-    console.log(fileName);
     const options = {
       url: `${endpoint}images`,
       method: "get",

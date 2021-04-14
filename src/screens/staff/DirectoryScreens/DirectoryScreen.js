@@ -9,6 +9,7 @@ import {
   TopNavigationAction,
   StyleService,
 } from "@ui-kitten/components";
+import useMountedState from "react-use/lib/useMountedState";
 
 import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
@@ -22,6 +23,8 @@ const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 const DirectoryScreen = ({ navigation }) => {
   const [institutions, setInstitutions] = useState([]);
   const [listLoading, setListLoading] = useState(true);
+
+  const isMounted = useMountedState();
 
   const dispatch = useDispatch();
 
@@ -63,15 +66,21 @@ const DirectoryScreen = ({ navigation }) => {
 
   const getInstitutions = useCallback(async () => {
     try {
-      setListLoading(true);
+      if (isMounted()) {
+        setListLoading(true);
+      }
       const res = await dispatch(databaseActions.getInstitutions());
-      setInstitutions(res.data.data);
+      if (isMounted()) {
+        setInstitutions(res.data.data);
+      }
     } catch (err) {
       handleErrorResponse(err);
     } finally {
-      setListLoading(false);
+      if (isMounted()) {
+        setListLoading(false);
+      }
     }
-  }, [dispatch]);
+  }, [dispatch, isMounted]);
 
   useEffect(() => {
     getInstitutions();

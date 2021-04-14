@@ -10,6 +10,7 @@ import {
   StyleService,
   Button,
 } from "@ui-kitten/components";
+import useMountedState from "react-use/lib/useMountedState";
 
 import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
@@ -27,6 +28,8 @@ const SelectDeleteScreen = ({ route, navigation }) => {
   const [listLoading, setListLoading] = useState(true);
   const [selectedTenant, setSelectedTenant] = useState(false);
   const { institutionID, displayName } = route.params;
+
+  const isMounted = useMountedState();
 
   const dispatch = useDispatch();
 
@@ -52,16 +55,17 @@ const SelectDeleteScreen = ({ route, navigation }) => {
         onPress: async () => {
           setLoading(true);
           try {
-            const res = await dispatch(
+            await dispatch(
               databaseActions.deleteTenant(selectedTenant.tenantID)
             );
-            console.log(res);
+            getTenants();
           } catch (err) {
             handleErrorResponse(err);
           } finally {
-            setLoading(false);
-            setListLoading(true);
-            getTenants();
+            if (isMounted()) {
+              setLoading(false);
+              setListLoading(true);
+            }
           }
         },
       },
@@ -87,17 +91,23 @@ const SelectDeleteScreen = ({ route, navigation }) => {
 
   const getTenants = useCallback(async () => {
     try {
-      setListLoading(true);
+      if (isMounted()) {
+        setListLoading(true);
+      }
       const res = await dispatch(
         databaseActions.getRelevantTenants(institutionID)
       );
-      setTenants(res.data.data);
+      if (isMounted()) {
+        setTenants(res.data.data);
+      }
     } catch (err) {
       handleErrorResponse(err);
     } finally {
-      setListLoading(false);
+      if (isMounted()) {
+        setListLoading(false);
+      }
     }
-  }, [dispatch, institutionID]);
+  }, [dispatch, institutionID, isMounted]);
 
   useEffect(() => {
     getTenants();

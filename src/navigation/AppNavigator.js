@@ -130,7 +130,6 @@ const AppNavigator = () => {
       </View>
     );
   };
-  console.log(authStore);
 
   return (
     <NavigationContainer linking={linking}>

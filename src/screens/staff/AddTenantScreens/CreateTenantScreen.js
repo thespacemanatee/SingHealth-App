@@ -48,10 +48,8 @@ const AddTenantCredScreen = ({ navigation }) => {
         institutionID: authStore.institutionID,
         staffID: authStore._id,
       };
-      console.log(data);
-      const res = await dispatch(databaseActions.createNewTenant(data));
 
-      console.log(res);
+      await dispatch(databaseActions.createNewTenant(data));
 
       Toast.show({
         text1: "Success",

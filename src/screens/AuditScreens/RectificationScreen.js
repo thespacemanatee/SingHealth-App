@@ -250,7 +250,6 @@ const RectificationScreen = ({ route, navigation }) => {
     setCovid19Keys(Object.keys(checklistStore.covid19.questions));
     setLoading(false);
     const unsubscribe = navigation.addListener("focus", () => {
-      console.log("UNSUBSCRIBING!!");
       createNewSections();
     });
 

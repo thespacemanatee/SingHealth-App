@@ -91,8 +91,6 @@ const checklistReducer = (state = initialState, action) => {
         (e) => e !== action.fileName
       );
 
-      // console.log(newChecklist.questions);
-
       if (action.checklistType === "covid19") {
         return {
           ...state,
@@ -123,7 +121,6 @@ const checklistReducer = (state = initialState, action) => {
         1
       );
 
-      // console.log(newChecklist.questions[action.index].image.uri);
       if (action.checklistType === "covid19") {
         return {
           ...state,

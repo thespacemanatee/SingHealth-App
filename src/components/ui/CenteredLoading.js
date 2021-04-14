@@ -13,7 +13,6 @@ const CenteredLoading = ({ loading }) => {
   const theme = useTheme();
 
   useEffect(() => {
-    console.log("LOADING:", loading);
     if (!loading) {
       hideDialog();
     } else {

@@ -11,6 +11,7 @@ import {
   useStyleSheet,
 } from "@ui-kitten/components";
 import { FAB } from "react-native-paper";
+import useMountedState from "react-use/lib/useMountedState";
 
 import * as databaseActions from "../../store/actions/databaseActions";
 import * as checklistActions from "../../store/actions/checklistActions";
@@ -34,6 +35,8 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   const { handleScroll, showButton } = useHandleScroll();
 
+  const isMounted = useMountedState();
+
   const styles = useStyleSheet(themedStyles);
 
   const dispatch = useDispatch();
@@ -55,8 +58,6 @@ const StaffDashboardScreen = ({ navigation }) => {
     async (auditID, stallName) => {
       try {
         setLoading(true);
-
-        console.log("AuditID:", auditID);
 
         await dispatch(checklistActions.getAuditData(auditID));
 
@@ -99,7 +100,9 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   const getListData = useCallback(async () => {
     try {
-      setListLoading(true);
+      if (isMounted()) {
+        setListLoading(true);
+      }
       const res = await dispatch(
         databaseActions.getStaffActiveAudits(authStore.institutionID)
       );
@@ -107,14 +110,18 @@ const StaffDashboardScreen = ({ navigation }) => {
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
       await dispatch(databaseActions.getInstitutions());
-      setListData(res.data.data);
+      if (isMounted()) {
+        setListData(res.data.data);
+      }
     } catch (err) {
       handleErrorResponse(err);
     } finally {
-      setListLoading(false);
-      setLoading(false);
+      if (isMounted()) {
+        setListLoading(false);
+        setLoading(false);
+      }
     }
-  }, [authStore.institutionID, dispatch]);
+  }, [authStore.institutionID, dispatch, isMounted]);
 
   useEffect(() => {
     // Subscribe for the focus Listener

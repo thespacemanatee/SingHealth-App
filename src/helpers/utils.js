@@ -44,6 +44,7 @@ export const handleErrorResponse = (err, action) => {
     // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
     // http.ClientRequest in node.js
     console.error(err.request);
+    alert("Request timeout", "Check your internet connection.");
   } else {
     // Something happened in setting up the request that triggered an Error
     console.error("Error", err.message);

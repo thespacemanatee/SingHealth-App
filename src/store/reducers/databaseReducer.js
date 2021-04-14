@@ -56,10 +56,8 @@ const databaseReducer = (state = initialState, action) => {
     }
     case GET_STAFF_ACTIVE_AUDITS: {
       if (equals(state.activeAudits, action.activeAudits)) {
-        console.log("Equal");
         return state;
       }
-      console.log("Not equal");
       return {
         ...state,
         activeAudits: action.activeAudits,

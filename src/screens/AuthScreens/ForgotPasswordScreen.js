@@ -69,10 +69,6 @@ const ForgotPasswordScreen = ({ navigation }) => {
           <Formik
             initialValues={{ email: "" }}
             onSubmit={(values) => {
-              console.log(values);
-              // dispatch(
-              //   authActions.signIn(values.email, values.password, "staff")
-              // );
               navigation.navigate("Login");
             }}
             validationSchema={ForgotSchema}

@@ -42,7 +42,6 @@ const ChecklistScreen = ({ route, navigation }) => {
   const theme = useTheme();
 
   const onGroupCheckedChange = (checked) => {
-    // console.log(completeChecklist);
     completeChecklist.map((e) => {
       if (e.data.length > 0) {
         const inner = e.data.map((i) => {
@@ -54,7 +53,6 @@ const ChecklistScreen = ({ route, navigation }) => {
       }
       return e;
     });
-    // console.log(temp);
     setAllChecked(checked);
     updateGroup();
   };
@@ -214,7 +212,6 @@ const ChecklistScreen = ({ route, navigation }) => {
       });
     });
 
-    // console.log(checklist);
     setCompleteChecklist(checklist);
   }, [
     checklistStore.chosen_checklist.questions,

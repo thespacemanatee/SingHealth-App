@@ -47,7 +47,6 @@ const App = () => {
   const [ready, setReady] = useState(false);
   const [expoToken, setExpoToken] = useState("");
 
-  console.log(expoToken);
   const registerForPushNotificationsAsync = async () => {
     let token;
     if (Constants.isDevice) {
@@ -98,7 +97,9 @@ const App = () => {
       registerForPushNotificationsAsync().then((token) => setExpoToken(token));
     }
     loadFonts().then();
-    store.dispatch(authActions.restoreToken());
+    try {
+      store.dispatch(authActions.restoreToken());
+    } catch (err) {}
   };
 
   if (!ready) {
@@ -106,7 +107,7 @@ const App = () => {
       <AppLoading
         startAsync={loadAppAssets}
         onFinish={() => setReady(true)}
-        onError={console.warn}
+        onError={console.error}
       />
     );
   }

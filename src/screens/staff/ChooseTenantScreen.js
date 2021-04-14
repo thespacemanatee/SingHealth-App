@@ -12,6 +12,7 @@ import {
 } from "@ui-kitten/components";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import useMountedState from "react-use/lib/useMountedState";
 
 import * as checklistActions from "../../store/actions/checklistActions";
 import * as databaseActions from "../../store/actions/databaseActions";
@@ -32,6 +33,7 @@ const ChooseTenantScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
   const { Navigator, Screen } = createMaterialTopTabNavigator();
+  const isMounted = useMountedState();
 
   const theme = useTheme();
 
@@ -87,15 +89,14 @@ const ChooseTenantScreen = ({ navigation }) => {
 
   const getListData = useCallback(async () => {
     try {
-      setListLoading(true);
+      if (isMounted()) {
+        setListLoading(true);
+      }
       const res = await dispatch(
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
 
-      // console.log(res.data.data);
       const tempTenants = res.data.data;
-
-      setTenants(tempTenants);
 
       let tempSaved = [];
 
@@ -115,14 +116,19 @@ const ChooseTenantScreen = ({ navigation }) => {
           }
         }
       }
-      setSaved(tempSaved);
+      if (isMounted()) {
+        setTenants(tempTenants);
+        setSaved(tempSaved);
+      }
     } catch (err) {
       handleErrorResponse(err);
     } finally {
-      setListLoading(false);
-      setLoading(false);
+      if (isMounted()) {
+        setListLoading(false);
+        setLoading(false);
+      }
     }
-  }, [authStore.institutionID, dispatch]);
+  }, [authStore.institutionID, dispatch, isMounted]);
 
   useEffect(() => {
     // Subscribe for the focus Listener

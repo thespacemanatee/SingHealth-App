@@ -68,7 +68,6 @@ const Cursor = ({ path, length, point }: CursorProps) => {
 
   const fadeIn = () => {
     if (Platform.OS === "web") {
-      console.log("fading in");
       setWebOpacity(1);
     } else {
       Animated.timing(opacity, {
@@ -81,7 +80,6 @@ const Cursor = ({ path, length, point }: CursorProps) => {
 
   const fadeOut = () => {
     if (Platform.OS === "web") {
-      console.log("fading out");
       setWebOpacity(0);
     } else {
       Animated.timing(opacity, {

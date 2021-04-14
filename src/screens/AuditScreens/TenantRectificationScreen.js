@@ -48,8 +48,6 @@ const TenantRectificationScreen = ({ route, navigation }) => {
 
   const { index, checklistType, question, section, rectified } = route.params;
 
-  console.log("RECTIFIED:", rectified);
-
   const theme = useTheme();
 
   const dispatch = useDispatch();
@@ -121,8 +119,6 @@ const TenantRectificationScreen = ({ route, navigation }) => {
         });
       });
 
-      console.log(base64images);
-
       // let res;
       if (base64images.images.length > 0) {
         await dispatch(databaseActions.postAuditImagesWeb(base64images));
@@ -149,7 +145,6 @@ const TenantRectificationScreen = ({ route, navigation }) => {
         );
       }
 
-      // console.log("RESPONSE:", res);
       Toast.show({
         text1: "Success",
         text2: "Your rectification has been submitted.",
@@ -164,7 +159,6 @@ const TenantRectificationScreen = ({ route, navigation }) => {
 
   const changeTextHandler = (val) => {
     setValue(val);
-    // console.log(val);
   };
 
   const onBlurHandler = () => {
@@ -303,8 +297,6 @@ const TenantRectificationScreen = ({ route, navigation }) => {
       quality: 0.5,
       base64: true,
     });
-
-    console.log(result);
 
     if (!result.cancelled) {
       onSave(result);
