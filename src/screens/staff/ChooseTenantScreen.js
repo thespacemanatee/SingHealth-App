@@ -89,9 +89,8 @@ const ChooseTenantScreen = ({ navigation }) => {
 
   const getListData = useCallback(async () => {
     try {
-      if (isMounted()) {
-        setListLoading(true);
-      }
+      setListLoading(true);
+
       const res = await dispatch(
         databaseActions.getRelevantTenants(authStore.institutionID)
       );

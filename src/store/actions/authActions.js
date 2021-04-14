@@ -77,9 +77,10 @@ export const signOut = (expoToken) => {
   };
 };
 
-export const saveExpoToken = (expoToken) => {
-  return { type: SAVE_EXPO_TOKEN, expoToken };
-};
+export const saveExpoToken = (expoToken) => ({
+  type: SAVE_EXPO_TOKEN,
+  expoToken,
+});
 
 const saveUserDataToStorage = async (userData) => {
   await AsyncStorage.setItem("userData", JSON.stringify(userData));

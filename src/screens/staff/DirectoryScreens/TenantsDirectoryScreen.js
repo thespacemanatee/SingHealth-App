@@ -64,9 +64,8 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
 
   const getTenants = useCallback(async () => {
     try {
-      if (isMounted()) {
-        setListLoading(true);
-      }
+      setListLoading(true);
+
       const res = await dispatch(
         databaseActions.getRelevantTenants(institutionID)
       );

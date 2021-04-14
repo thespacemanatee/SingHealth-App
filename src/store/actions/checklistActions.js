@@ -66,16 +66,15 @@ export const addCovidChecklist = () => {
   };
 };
 
-export const createAuditMetadata = (auditMetadata) => {
-  return { type: CREATE_AUDIT_METADATA, auditMetadata };
-};
+export const createAuditMetadata = (auditMetadata) => ({
+  type: CREATE_AUDIT_METADATA,
+  auditMetadata,
+});
 
-export const addSavedChecklist = (data) => {
-  return {
-    type: ADD_SAVED_CHECKLIST,
-    data,
-  };
-};
+export const addSavedChecklist = (data) => ({
+  type: ADD_SAVED_CHECKLIST,
+  data,
+});
 
 export const addImage = (
   checklistType,
@@ -84,77 +83,63 @@ export const addImage = (
   fileName,
   imageUri,
   rectify = false
-) => {
-  return {
-    type: ADD_IMAGE,
-    checklistType,
-    section,
-    index,
-    fileName,
-    imageUri,
-    rectify,
-  };
-};
+) => ({
+  type: ADD_IMAGE,
+  checklistType,
+  section,
+  index,
+  fileName,
+  imageUri,
+  rectify,
+});
+
 export const deleteImage = (
   checklistType,
   section,
   index,
   selectedIndex,
   rectify = false
-) => {
-  return {
-    checklistType,
-    type: DELETE_IMAGE,
-    section,
-    index,
-    selectedIndex,
-    rectify,
-  };
-};
+) => ({
+  checklistType,
+  type: DELETE_IMAGE,
+  section,
+  index,
+  selectedIndex,
+  rectify,
+});
+
 export const addRemarks = (
   checklistType,
   section,
   index,
   remarks,
   rectify = false
-) => {
-  return {
-    checklistType,
-    type: ADD_REMARKS,
-    section,
-    index,
-    remarks,
-    rectify,
-  };
-};
+) => ({
+  checklistType,
+  type: ADD_REMARKS,
+  section,
+  index,
+  remarks,
+  rectify,
+});
+
 export const changeAnswer = (
   checklistType,
   section,
   index,
   deleted,
   checked
-) => {
-  return {
-    type: CHANGE_ANSWER,
-    checklistType,
-    section,
-    index,
-    deleted,
-    checked,
-  };
-};
-export const changeDeadline = (checklistType, section, index, date) => {
-  return {
-    type: CHANGE_DEADLINE,
-    checklistType,
-    section,
-    index,
-    date,
-  };
-};
-export const resetChecklistStore = () => {
-  return { type: RESET_CHECKLIST_STORE };
-};
+) => ({ type: CHANGE_ANSWER, checklistType, section, index, deleted, checked });
+
+export const changeDeadline = (checklistType, section, index, date) => ({
+  type: CHANGE_DEADLINE,
+  checklistType,
+  section,
+  index,
+  date,
+});
+
+export const resetChecklistStore = () => ({ type: RESET_CHECKLIST_STORE });
 
 export const getAuditData = (auditID) => {
   return async (dispatch) => {

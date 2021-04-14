@@ -106,9 +106,7 @@ const TimedGraph = ({ label, type, id }) => {
 
   const getGraphData = useCallback(async () => {
     try {
-      if (isMounted()) {
-        setGraphLoading(true);
-      }
+      setGraphLoading(true);
 
       const toDate = new Date().getTime();
 

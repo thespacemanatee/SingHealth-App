@@ -65,12 +65,16 @@ const StaffDashboardScreen = ({ navigation }) => {
         navigation.navigate("Rectification", { stallName });
       } catch (err) {
         handleErrorResponse(err);
-        setError(err.message);
+        if (isMounted()) {
+          setError(err.message);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted()) {
+          setLoading(false);
+        }
       }
     },
-    [dispatch, navigation]
+    [dispatch, isMounted, navigation]
   );
 
   const renderActiveAudits = useCallback(
@@ -100,9 +104,8 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   const getListData = useCallback(async () => {
     try {
-      if (isMounted()) {
-        setListLoading(true);
-      }
+      setListLoading(true);
+
       const res = await dispatch(
         databaseActions.getStaffActiveAudits(authStore.institutionID)
       );

@@ -8,7 +8,6 @@ import {
   TopNavigationAction,
   Icon,
   StyleService,
-  Input,
   useTheme,
   Button,
   Toggle,
@@ -19,12 +18,12 @@ import axios from "axios";
 import { StackActions } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import moment from "moment";
+import useMountedState from "react-use/lib/useMountedState";
 
 import alert from "../../components/CustomAlert";
 import * as checklistActions from "../../store/actions/checklistActions";
 import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
-import { SCREEN_HEIGHT } from "../../helpers/config";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
@@ -46,6 +45,8 @@ const StaffRectificationScreen = ({ route, navigation }) => {
 
   const { index, checklistType, question, section, rectified } = route.params;
 
+  const isMounted = useMountedState();
+
   const theme = useTheme();
 
   const dispatch = useDispatch();
@@ -63,7 +64,7 @@ const StaffRectificationScreen = ({ route, navigation }) => {
         ],
       };
 
-      const res = await dispatch(
+      await dispatch(
         checklistActions.submitRectification(
           checklistStore.auditMetadata._id,
           data,
@@ -85,7 +86,9 @@ const StaffRectificationScreen = ({ route, navigation }) => {
     } catch (err) {
       handleErrorResponse(err);
     } finally {
-      setLoadDialog(false);
+      if (isMounted()) {
+        setLoadDialog(false);
+      }
     }
   };
 
@@ -103,7 +106,7 @@ const StaffRectificationScreen = ({ route, navigation }) => {
     };
 
     try {
-      const res = await dispatch(
+      await dispatch(
         checklistActions.submitRectification(
           checklistStore.auditMetadata._id,
           data,
@@ -116,7 +119,9 @@ const StaffRectificationScreen = ({ route, navigation }) => {
     } catch (err) {
       handleErrorResponse(err);
     } finally {
-      setLoadDialog(false);
+      if (isMounted()) {
+        setLoadDialog(false);
+      }
     }
 
     dispatch(
@@ -178,10 +183,14 @@ const StaffRectificationScreen = ({ route, navigation }) => {
             })
           );
         } catch (err) {
-          setError(err);
+          if (isMounted()) {
+            setError(err);
+          }
           handleErrorResponse(err);
         } finally {
-          setLoading(false);
+          if (isMounted()) {
+            setLoading(false);
+          }
         }
       }
     };
@@ -215,15 +224,21 @@ const StaffRectificationScreen = ({ route, navigation }) => {
 
     if (storeImages) {
       const images = storeImages.map((e) => e.uri);
-      setImageArray(images);
+      if (isMounted()) {
+        setImageArray(images);
+      }
     }
     if (storeRemarks) {
-      setValue(storeRemarks);
+      if (isMounted()) {
+        setValue(storeRemarks);
+      }
     }
     if (storeDeadline) {
-      setDeadline(moment(storeDeadline.$date || storeDeadline));
+      if (isMounted()) {
+        setDeadline(moment(storeDeadline.$date || storeDeadline));
+      }
     }
-  }, [checklistStore, checklistType, dispatch, index, section]);
+  }, [checklistStore, checklistType, dispatch, index, isMounted, section]);
 
   const BackAction = () => (
     <TopNavigationAction

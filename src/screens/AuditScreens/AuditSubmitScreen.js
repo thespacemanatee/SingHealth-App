@@ -123,16 +123,11 @@ const AuditSubmitScreen = ({ navigation }) => {
   const uploadAuditData = useCallback(
     async (imageAdded, auditData, base64images, formData) => {
       try {
-        let imageRes;
         if (imageAdded) {
           if (Platform.OS === "web") {
-            imageRes = await dispatch(
-              databaseActions.postAuditImagesWeb(base64images)
-            );
+            await dispatch(databaseActions.postAuditImagesWeb(base64images));
           } else {
-            imageRes = await dispatch(
-              databaseActions.postAuditImages(formData)
-            );
+            await dispatch(databaseActions.postAuditImages(formData));
           }
         }
 

@@ -49,37 +49,31 @@ const ExpandImagesScreen = ({ route, navigation }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const scrollToActiveIndex = useCallback(
-    (index) => {
-      setActiveIndex(index);
-      topRef?.current?.scrollToOffset({
-        offset: index * width,
+  const scrollToActiveIndex = useCallback((index) => {
+    setActiveIndex(index);
+    topRef?.current?.scrollToOffset({
+      offset: index * width,
+      animated: true,
+    });
+    if (index * (THUMBNAIL_SIZE + SPACING) - THUMBNAIL_SIZE / 2 > width / 2) {
+      thumbRef?.current?.scrollToOffset({
+        offset:
+          index * (THUMBNAIL_SIZE + SPACING) - width / 2 + THUMBNAIL_SIZE / 2,
         animated: true,
       });
-      if (index * (THUMBNAIL_SIZE + SPACING) - THUMBNAIL_SIZE / 2 > width / 2) {
-        thumbRef?.current?.scrollToOffset({
-          offset:
-            index * (THUMBNAIL_SIZE + SPACING) - width / 2 + THUMBNAIL_SIZE / 2,
-          animated: true,
-        });
-      }
-    },
-    [width]
-  );
+    }
+  }, []);
 
-  const renderImages = useCallback(
-    (itemData) => {
-      return (
-        <View style={{ width, height }}>
-          <Image
-            source={{ uri: itemData.item }}
-            style={StyleSheet.absoluteFillObject}
-          />
-        </View>
-      );
-    },
-    [height, width]
-  );
+  const renderImages = useCallback((itemData) => {
+    return (
+      <View style={{ width, height }}>
+        <Image
+          source={{ uri: itemData.item }}
+          style={StyleSheet.absoluteFillObject}
+        />
+      </View>
+    );
+  }, []);
 
   const renderThumbnail = useCallback(
     (itemData) => {

@@ -92,9 +92,8 @@ const TenantInfoScreen = ({ route, navigation }) => {
 
   const getListData = useCallback(async () => {
     try {
-      if (isMounted()) {
-        setListLoading(true);
-      }
+      setListLoading(true);
+
       const res = await dispatch(databaseActions.getTenantAudits(tenantID));
 
       if (isMounted()) {

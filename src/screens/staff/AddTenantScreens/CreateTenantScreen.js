@@ -17,6 +17,7 @@ import * as Yup from "yup";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Toast from "react-native-toast-message";
 import { StackActions } from "@react-navigation/routers";
+import useMountedState from "react-use/lib/useMountedState";
 
 import CustomTextInput from "../../../components/CustomTextInput";
 import Logo from "../../../components/ui/Logo";
@@ -31,6 +32,8 @@ const AddTenantCredScreen = ({ navigation }) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const isMounted = useMountedState();
 
   const theme = useTheme();
 
@@ -60,7 +63,9 @@ const AddTenantCredScreen = ({ navigation }) => {
     } catch (err) {
       handleErrorResponse(err);
     } finally {
-      setLoading(false);
+      if (isMounted()) {
+        setLoading(false);
+      }
     }
   };
 

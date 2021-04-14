@@ -65,9 +65,8 @@ const DeleteTenantScreen = ({ navigation }) => {
 
   const getInstitutions = useCallback(async () => {
     try {
-      if (isMounted()) {
-        setListLoading(true);
-      }
+      setListLoading(true);
+
       const res = await dispatch(databaseActions.getInstitutions());
       if (isMounted()) {
         setInstitutions(res.data.data);

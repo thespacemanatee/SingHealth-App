@@ -8,7 +8,6 @@ import {
   useTheme,
 } from "@ui-kitten/components";
 
-import { SCREEN_WIDTH } from "../../helpers/config";
 import CustomText from "./CustomText";
 
 const ICON_SIZE = 30;

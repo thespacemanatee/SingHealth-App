@@ -19,6 +19,7 @@ import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { StackActions } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
+import useMountedState from "react-use/lib/useMountedState";
 
 import alert from "../../components/CustomAlert";
 import * as checklistActions from "../../store/actions/checklistActions";
@@ -47,6 +48,8 @@ const TenantRectificationScreen = ({ route, navigation }) => {
   const [disableToggle, setDisableToggle] = useState(false);
 
   const { index, checklistType, question, section, rectified } = route.params;
+
+  const isMounted = useMountedState();
 
   const theme = useTheme();
 
@@ -153,7 +156,9 @@ const TenantRectificationScreen = ({ route, navigation }) => {
     } catch (err) {
       handleErrorResponse(err);
     } finally {
-      setLoadDialog(false);
+      if (isMounted()) {
+        setLoadDialog(false);
+      }
     }
   };
 
