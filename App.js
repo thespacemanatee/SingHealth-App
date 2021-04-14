@@ -99,7 +99,9 @@ const App = () => {
     loadFonts().then();
     try {
       store.dispatch(authActions.restoreToken());
-    } catch (err) {}
+    } catch (err) {
+      break;
+    }
   };
 
   if (!ready) {
@@ -107,7 +109,7 @@ const App = () => {
       <AppLoading
         startAsync={loadAppAssets}
         onFinish={() => setReady(true)}
-        onError={console.error}
+        onError={() => {}}
       />
     );
   }
