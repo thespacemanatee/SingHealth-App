@@ -3,12 +3,9 @@ import { Platform, View, FlatList } from "react-native";
 import { StyleService } from "@ui-kitten/components";
 
 import ImagePage from "./ui/ImagePage";
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../helpers/config";
+import { IMAGE_WIDTH, SCREEN_WIDTH } from "../helpers/config";
 
 const ImageViewPager = (props) => {
-  const IMAGE_HEIGHT = SCREEN_HEIGHT * 0.5;
-  const IMAGE_WIDTH = (IMAGE_HEIGHT / 4) * 3;
-
   const { imageArray, renderListItems } = props;
 
   return imageArray.length > 0 ? (
