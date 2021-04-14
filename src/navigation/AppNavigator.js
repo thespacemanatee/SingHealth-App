@@ -13,6 +13,7 @@ import LoginScreen from "../screens/AuthScreens/LoginScreen";
 import RegisterScreen from "../screens/AuthScreens/RegisterScreen";
 import ForgotPasswordScreen from "../screens/AuthScreens/ForgotPasswordScreen";
 import CustomText from "../components/ui/CustomText";
+import { stackTransition } from "../helpers/config";
 
 const { Navigator, Screen } = createStackNavigator();
 
@@ -109,14 +110,14 @@ const AppNavigator = () => {
   const renderNavigator = () => {
     if (authStore.userType === "staff") {
       return (
-        <Navigator headerMode="none">
+        <Navigator headerMode="none" screenOptions={stackTransition}>
           <Screen name="StaffNavigator" component={StaffNavigator} />
         </Navigator>
       );
     }
     if (authStore.userType === "tenant") {
       return (
-        <Navigator headerMode="none">
+        <Navigator headerMode="none" screenOptions={stackTransition}>
           <Screen name="TenantNavigator" component={TenantNavigator} />
         </Navigator>
       );

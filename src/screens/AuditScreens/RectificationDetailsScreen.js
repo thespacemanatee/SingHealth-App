@@ -11,6 +11,7 @@ import {
   Input,
   useTheme,
   Button,
+  Card,
 } from "@ui-kitten/components";
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -140,7 +141,13 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
       setValue(storeRemarks);
     }
     if (storeDeadline) {
-      setDeadline(moment(storeDeadline.$date || storeDeadline));
+      setDeadline(
+        moment(storeDeadline.$date || storeDeadline)
+          .toLocaleString()
+          .split(" ")
+          .slice(0, 4)
+          .join(" ")
+      );
     }
   }, [checklistStore, dispatch, index, section]);
 
@@ -208,24 +215,19 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
             imageArray={imageArray}
             renderListItems={renderListItems}
           />
-          <View style={styles.datePickerContainer}>
+          <View style={styles.bottomContainer}>
             <CustomText bold category="h6">
               Deadline:{" "}
             </CustomText>
-            <CustomDatepicker deadline={deadline} disabled />
-          </View>
-          <View style={styles.inputContainer}>
+            <Card style={styles.card}>
+              <CustomText>{deadline}</CustomText>
+            </Card>
             <CustomText bold category="h6">
               Remarks:{" "}
             </CustomText>
-            <Input
-              height={SCREEN_HEIGHT * 0.1}
-              multiline
-              textStyle={styles.input}
-              placeholder="Enter your remarks here"
-              value={value}
-              disabled
-            />
+            <Card style={styles.card}>
+              <CustomText>{value}</CustomText>
+            </Card>
           </View>
         </KeyboardAwareScrollView>
       </Layout>
@@ -249,16 +251,13 @@ const styles = StyleService.create({
   contentContainer: {
     paddingBottom: 25,
   },
-  datePickerContainer: {
-    marginTop: 20,
-  },
-  inputContainer: {
-    // margin: 20,
+  bottomContainer: {
+    paddingVertical: 10,
   },
   button: {
     borderRadius: 0,
   },
-  input: {
-    minHeight: 64,
+  card: {
+    marginVertical: 10,
   },
 });
