@@ -10,7 +10,6 @@ import {
   StyleService,
   Button,
 } from "@ui-kitten/components";
-import { RefreshControl } from "react-native-web-refresh-control";
 
 import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
@@ -130,9 +129,6 @@ const SelectDeleteScreen = ({ route, navigation }) => {
           keyExtractor={(item, index) => String(index)}
           refreshing={listLoading}
           onRefresh={getTenants}
-          refreshControl={
-            <RefreshControl refreshing={listLoading} onRefresh={getTenants} />
-          }
           ListEmptyComponent={renderEmptyComponent}
           ListHeaderComponent={
             <View style={styles.textContainer}>

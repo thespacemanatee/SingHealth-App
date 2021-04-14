@@ -11,7 +11,6 @@ import {
   useStyleSheet,
 } from "@ui-kitten/components";
 import { FAB } from "react-native-paper";
-import { RefreshControl } from "react-native-web-refresh-control";
 
 import * as databaseActions from "../../store/actions/databaseActions";
 import * as checklistActions from "../../store/actions/checklistActions";
@@ -151,9 +150,6 @@ const StaffDashboardScreen = ({ navigation }) => {
           onScroll={handleScroll}
           refreshing={listLoading}
           onRefresh={getListData}
-          refreshControl={
-            <RefreshControl refreshing={listLoading} onRefresh={getListData} />
-          }
           ListEmptyComponent={renderEmptyComponent}
           ListHeaderComponent={
             <>

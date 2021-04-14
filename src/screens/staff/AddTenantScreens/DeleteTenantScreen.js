@@ -9,7 +9,6 @@ import {
   TopNavigationAction,
   StyleService,
 } from "@ui-kitten/components";
-import { RefreshControl } from "react-native-web-refresh-control";
 
 import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
@@ -111,12 +110,6 @@ const DeleteTenantScreen = ({ navigation }) => {
           renderItem={renderInstitutions}
           refreshing={listLoading}
           onRefresh={getInstitutions}
-          refreshControl={
-            <RefreshControl
-              refreshing={listLoading}
-              onRefresh={getInstitutions}
-            />
-          }
           ListEmptyComponent={renderEmptyComponent}
         />
       </Layout>
