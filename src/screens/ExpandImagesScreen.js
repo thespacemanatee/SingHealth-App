@@ -4,11 +4,15 @@ import {
   View,
   FlatList,
   Image,
-  Dimensions,
   Platform,
   TouchableOpacity,
 } from "react-native";
 import { Icon, StyleService } from "@ui-kitten/components";
+
+import {
+  SCREEN_WIDTH as width,
+  SCREEN_HEIGHT as height,
+} from "../helpers/config";
 
 const THUMBNAIL_SIZE = 80;
 const SPACING = 10;
@@ -31,8 +35,6 @@ const ExpandImagesScreen = ({ route, navigation }) => {
   const [activeIndex, setActiveIndex] = useState(selectedIndex);
   const topRef = useRef(null);
   const thumbRef = useRef(null);
-
-  const { width, height } = Dimensions.get("window");
 
   const handleClose = () => {
     if (Platform.OS === "web") {

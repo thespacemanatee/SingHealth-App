@@ -12,6 +12,7 @@ import {
   useTheme,
   Button,
   Toggle,
+  Card,
 } from "@ui-kitten/components";
 import Toast from "react-native-toast-message";
 import axios from "axios";
@@ -34,7 +35,7 @@ const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const StaffRectificationScreen = ({ route, navigation }) => {
   const authStore = useSelector((state) => state.auth);
   const checklistStore = useSelector((state) => state.checklist);
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState();
   const [imageArray, setImageArray] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadDialog, setLoadDialog] = useState(false);
@@ -300,29 +301,26 @@ const StaffRectificationScreen = ({ route, navigation }) => {
               {`Tenant has ${toggle ? "" : "not"} requested for extension`}
             </Toggle>
           </View>
-          {toggle && (
-            <View style={styles.datePickerContainer}>
-              <CustomText bold category="h6">
-                Extend Deadline:
-              </CustomText>
-              <CustomDatepicker
-                deadline={deadline}
-                onSelect={handleDateChange}
-              />
-            </View>
-          )}
-          <View style={styles.inputContainer}>
+          <View style={styles.bottomContainer}>
+            {toggle && (
+              <>
+                <CustomText bold category="h6">
+                  Extend Deadline:
+                </CustomText>
+                <CustomDatepicker
+                  deadline={deadline}
+                  onSelect={handleDateChange}
+                />
+              </>
+            )}
             <CustomText bold category="h6">
               Tenant&apos;s Remarks:{" "}
             </CustomText>
-            <Input
-              height={SCREEN_HEIGHT * 0.1}
-              multiline
-              textStyle={styles.input}
-              placeholder="Tenant has yet to give remarks"
-              value={value}
-              disabled
-            />
+            <Card style={styles.card}>
+              <CustomText>
+                {value || "Tenant has yet to give remarks"}
+              </CustomText>
+            </Card>
           </View>
         </KeyboardAwareScrollView>
       </Layout>
@@ -351,16 +349,13 @@ const styles = StyleService.create({
     alignItems: "flex-start",
     marginVertical: 20,
   },
-  datePickerContainer: {
-    marginTop: 20,
-  },
-  inputContainer: {
-    // marginVertical: 20,
+  bottomContainer: {
+    paddingVertical: 10,
   },
   button: {
     borderRadius: 0,
   },
-  input: {
-    minHeight: 64,
+  card: {
+    marginVertical: 10,
   },
 });
