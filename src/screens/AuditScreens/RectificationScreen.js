@@ -47,8 +47,6 @@ const RectificationScreen = ({ route, navigation }) => {
 
   const theme = useTheme();
 
-  console.log(checklistStore.auditMetadata);
-
   const dispatch = useDispatch();
 
   const handleCompliantFilter = () => {
@@ -279,7 +277,9 @@ const RectificationScreen = ({ route, navigation }) => {
             { backgroundColor: theme["color-primary-400"] },
           ]}
         >
-          <CustomText style={styles.title}>Audit: {stallName}</CustomText>
+          <CustomText bold style={styles.title}>
+            {stallName}
+          </CustomText>
           <CustomText>
             {moment(checklistStore.auditMetadata.date.$date)
               .toLocaleString()

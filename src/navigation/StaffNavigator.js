@@ -31,6 +31,9 @@ import ManageTenantAccountsScreen from "../screens/staff/AddTenantScreens/Manage
 import CreateTenantScreen from "../screens/staff/AddTenantScreens/CreateTenantScreen";
 import ExpandImagesScreen from "../screens/ExpandImagesScreen";
 import TenantInfoScreen from "../screens/TenantInfoScreen";
+import DeleteTenantScreen from "../screens/staff/AddTenantScreens/DeleteTenantScreen";
+import SelectDeleteScreen from "../screens/staff/AddTenantScreens/SelectDeleteScreen";
+import { stackTransition, modalTransition } from "../helpers/config";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
 
@@ -100,7 +103,7 @@ const StaffNavigator = () => {
 const StaffModalStackNavigator = () => {
   const { Navigator, Screen } = createStackNavigator();
   return (
-    <Navigator headerMode="none" mode="modal">
+    <Navigator headerMode="none" mode="modal" screenOptions={modalTransition}>
       <Screen name="StaffTabNavigator" component={StaffTabNavigator} />
       <Screen name="CameraModal" component={CameraScreen} />
       <Screen name="ExpandImages" component={ExpandImagesScreen} />
@@ -131,7 +134,7 @@ const StaffTabNavigator = () => {
 const StaffDashboardStackNavigator = () => {
   const { Navigator, Screen } = createStackNavigator();
   return (
-    <Navigator headerMode="none">
+    <Navigator headerMode="none" screenOptions={stackTransition}>
       <Screen name="StaffDashboard" component={StaffDashboardScreen} />
       <Screen name="ChooseTenant" component={ChooseTenantScreen} />
       <Screen name="Checklist" component={ChecklistScreen} />
@@ -151,13 +154,14 @@ const AddTenantStackNavigator = () => {
   const { Navigator, Screen } = createStackNavigator();
   return (
     <SafeAreaView style={styles.screen}>
-      <Navigator headerMode="none">
+      <Navigator headerMode="none" screenOptions={stackTransition}>
         <Screen
           name="ManageTenantAccounts"
           component={ManageTenantAccountsScreen}
         />
         <Screen name="CreateTenant" component={CreateTenantScreen} />
-        {/* <Screen name="AddAccountDetails" component={AddAccountDetailsScreen} /> */}
+        <Screen name="DeleteTenant" component={DeleteTenantScreen} />
+        <Screen name="SelectDelete" component={SelectDeleteScreen} />
       </Navigator>
     </SafeAreaView>
   );
@@ -166,7 +170,7 @@ const AddTenantStackNavigator = () => {
 const StaffDirectoryStackNavigator = () => {
   const { Navigator, Screen } = createStackNavigator();
   return (
-    <Navigator headerMode="none">
+    <Navigator headerMode="none" screenOptions={stackTransition}>
       <Screen name="Directory" component={DirectoryScreen} />
       <Screen name="TenantsDirectory" component={TenantsDirectoryScreen} />
       <Screen name="TenantInfo" component={TenantInfoScreen} />

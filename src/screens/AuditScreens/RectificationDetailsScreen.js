@@ -8,19 +8,17 @@ import {
   TopNavigationAction,
   Icon,
   StyleService,
-  Input,
   useTheme,
   Button,
+  Card,
 } from "@ui-kitten/components";
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import moment from "moment";
 
 import * as checklistActions from "../../store/actions/checklistActions";
-import CustomDatepicker from "../../components/CustomDatePicker";
 import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
-import { SCREEN_HEIGHT } from "../../helpers/config";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
 
@@ -63,14 +61,19 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
 
   // TODO: Cleanup memory leak when user leaves screen before image is loaded
   useEffect(() => {
-    console.log("USEEFFECT");
+    let type;
+    if (checklistType === "covid19") {
+      type = "covid19";
+    } else {
+      type = "chosen_checklist";
+    }
     const source = axios.CancelToken.source();
     const getImages = async () => {
-      if (checklistStore.chosen_checklist.questions[section][index].image) {
+      if (checklistStore[type].questions[section][index].image) {
         setLoading(true);
         try {
           await Promise.all(
-            checklistStore.chosen_checklist.questions[section][index].image.map(
+            checklistStore[type].questions[section][index].image.map(
               async (fileName) => {
                 if (!fileName.name) {
                   const res = await dispatch(
@@ -108,29 +111,21 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
     return () => {
       source.cancel();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    let storeImages;
-    let storeRemarks;
-    let storeDeadline;
-    if (
-      Object.prototype.hasOwnProperty.call(
-        checklistStore.covid19.questions,
-        section
-      )
-    ) {
-      storeImages = checklistStore.covid19.questions[section][index].image;
-      storeRemarks = checklistStore.covid19.questions[section][index].remarks;
-      storeDeadline = checklistStore.covid19.questions[section][index].deadline;
+    let type;
+    if (checklistType === "covid19") {
+      type = "covid19";
     } else {
-      storeImages =
-        checklistStore.chosen_checklist.questions[section][index].image;
-      storeRemarks =
-        checklistStore.chosen_checklist.questions[section][index].remarks;
-      storeDeadline =
-        checklistStore.chosen_checklist.questions[section][index].deadline;
+      type = "chosen_checklist";
     }
+
+    const storeImages = checklistStore[type].questions[section][index].image;
+    const storeRemarks = checklistStore[type].questions[section][index].remarks;
+    const storeDeadline =
+      checklistStore[type].questions[section][index].deadline;
 
     if (storeImages) {
       const images = storeImages.map((e) => e.uri);
@@ -140,9 +135,15 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
       setValue(storeRemarks);
     }
     if (storeDeadline) {
-      setDeadline(moment(storeDeadline.$date || storeDeadline));
+      setDeadline(
+        moment(storeDeadline.$date || storeDeadline)
+          .toLocaleString()
+          .split(" ")
+          .slice(0, 4)
+          .join(" ")
+      );
     }
-  }, [checklistStore, dispatch, index, section]);
+  }, [checklistStore, checklistType, dispatch, index, section]);
 
   const BackAction = () => (
     <TopNavigationAction
@@ -208,24 +209,19 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
             imageArray={imageArray}
             renderListItems={renderListItems}
           />
-          <View style={styles.datePickerContainer}>
+          <View style={styles.bottomContainer}>
             <CustomText bold category="h6">
               Deadline:{" "}
             </CustomText>
-            <CustomDatepicker deadline={deadline} disabled />
-          </View>
-          <View style={styles.inputContainer}>
+            <Card style={styles.card}>
+              <CustomText>{deadline}</CustomText>
+            </Card>
             <CustomText bold category="h6">
               Remarks:{" "}
             </CustomText>
-            <Input
-              height={SCREEN_HEIGHT * 0.1}
-              multiline
-              textStyle={styles.input}
-              placeholder="Enter your remarks here"
-              value={value}
-              disabled
-            />
+            <Card style={styles.card}>
+              <CustomText>{value}</CustomText>
+            </Card>
           </View>
         </KeyboardAwareScrollView>
       </Layout>
@@ -249,16 +245,13 @@ const styles = StyleService.create({
   contentContainer: {
     paddingBottom: 25,
   },
-  datePickerContainer: {
-    marginTop: 20,
-  },
-  inputContainer: {
-    // margin: 20,
+  bottomContainer: {
+    paddingVertical: 10,
   },
   button: {
     borderRadius: 0,
   },
-  input: {
-    minHeight: 64,
+  card: {
+    marginVertical: 10,
   },
 });

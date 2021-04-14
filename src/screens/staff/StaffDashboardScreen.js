@@ -106,6 +106,7 @@ const StaffDashboardScreen = ({ navigation }) => {
       await dispatch(
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
+      await dispatch(databaseActions.getInstitutions());
       setListData(res.data.data);
     } catch (err) {
       handleErrorResponse(err);
@@ -146,9 +147,9 @@ const StaffDashboardScreen = ({ navigation }) => {
           keyExtractor={(item, index) => String(index)}
           data={listData}
           renderItem={renderActiveAudits}
-          onRefresh={getListData}
-          refreshing={listLoading}
           onScroll={handleScroll}
+          refreshing={listLoading}
+          onRefresh={getListData}
           ListEmptyComponent={renderEmptyComponent}
           ListHeaderComponent={
             <>

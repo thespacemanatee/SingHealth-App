@@ -131,7 +131,7 @@ export const postAuditImagesWeb = (data) => {
 export const exportAndEmail = (auditID) => {
   return async () => {
     const options = {
-      url: `${endpoint}email/${auditID}`,
+      url: `${endpoint}email/word/${auditID}`,
       method: "post",
     };
 
@@ -175,4 +175,18 @@ export const getGraphData = (fromDate, toDate, dataType, dataID) => {
 
 export const storeGraphData = (graphData) => {
   return { type: STORE_GRAPH_DATA, graphData };
+};
+
+export const deleteTenant = (tenantID) => {
+  return async () => {
+    const options = {
+      url: `${endpoint}tenant`,
+      method: "delete",
+      params: { tenantID },
+    };
+
+    const res = await httpClient(options);
+
+    return res;
+  };
 };

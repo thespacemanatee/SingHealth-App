@@ -23,6 +23,7 @@ import CameraScreen from "../screens/CameraScreen";
 import ExpandImagesScreen from "../screens/ExpandImagesScreen";
 import * as authActions from "../store/actions/authActions";
 import TenantInfoScreen from "../screens/TenantInfoScreen";
+import { stackTransition, modalTransition } from "../helpers/config";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
 const ArchiveIcon = (props) => <Icon {...props} name="archive-outline" />;
@@ -89,7 +90,7 @@ const TenantNavigator = () => {
 const TenantModalStackNavigator = () => {
   const { Navigator, Screen } = createStackNavigator();
   return (
-    <Navigator headerMode="none" mode="modal">
+    <Navigator headerMode="none" mode="modal" screenOptions={modalTransition}>
       <Screen name="TenantTabNavigator" component={TenantTabNavigator} />
       <Screen name="CameraModal" component={CameraScreen} />
       <Screen name="ExpandImages" component={ExpandImagesScreen} />
@@ -120,7 +121,7 @@ const TenantTabNavigator = () => {
 const TenantDashboardStackNavigator = () => {
   const { Navigator, Screen } = createStackNavigator();
   return (
-    <Navigator headerMode="none">
+    <Navigator headerMode="none" screenOptions={stackTransition}>
       <Screen name="TenantDashboard" component={TenantDashboardScreen} />
       <Screen name="Rectification" component={RectificationScreen} />
       <Screen
@@ -139,7 +140,7 @@ const TenantRecordsStackNavigator = () => {
   const authStore = useSelector((state) => state.auth);
   const { Navigator, Screen } = createStackNavigator();
   return (
-    <Navigator headerMode="none">
+    <Navigator headerMode="none" screenOptions={stackTransition}>
       <Screen
         name="TenantRecords"
         component={TenantInfoScreen}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
-import { FlatList, View } from "react-native";
+import { FlatList, Platform, View } from "react-native";
 import {
   Divider,
   Icon,
@@ -16,31 +16,30 @@ import EntityCard from "../../../components/EntityCard";
 import EntityLoading from "../../../components/ui/loading/EntityLoading";
 import CustomText from "../../../components/ui/CustomText";
 
-const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
-const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
+const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
-const DirectoryScreen = ({ navigation }) => {
+const DeleteTenantScreen = ({ navigation }) => {
   const [institutions, setInstitutions] = useState([]);
   const [listLoading, setListLoading] = useState(true);
 
   const dispatch = useDispatch();
 
-  const DrawerAction = () => (
+  const BackAction = () => (
     <TopNavigationAction
-      icon={DrawerIcon}
+      icon={BackIcon}
       onPress={() => {
-        navigation.openDrawer();
+        if (Platform.OS === "web") {
+          window.history.back();
+        } else {
+          navigation.goBack();
+        }
       }}
     />
   );
 
-  const NotificationAction = () => (
-    <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
-  );
-
   const handleNavigateTenants = useCallback(
     (institutionID, displayName) => {
-      navigation.navigate("TenantsDirectory", {
+      navigation.navigate("SelectDelete", {
         institutionID,
         displayName,
       });
@@ -98,10 +97,9 @@ const DirectoryScreen = ({ navigation }) => {
   return (
     <View style={styles.screen}>
       <TopNavigation
-        title="Directory"
+        title="Delete Tenant"
         alignment="center"
-        accessoryLeft={DrawerAction}
-        accessoryRight={NotificationAction}
+        accessoryLeft={BackAction}
       />
       <Divider />
       <Layout style={styles.layout}>
@@ -127,10 +125,9 @@ const styles = StyleService.create({
     flex: 1,
   },
   contentContainer: {
-    // flexGrow: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
   },
 });
 
-export default DirectoryScreen;
+export default DeleteTenantScreen;

@@ -12,6 +12,7 @@ import {
   useTheme,
   Button,
   Toggle,
+  Card,
 } from "@ui-kitten/components";
 import Toast from "react-native-toast-message";
 import axios from "axios";
@@ -34,7 +35,7 @@ const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const StaffRectificationScreen = ({ route, navigation }) => {
   const authStore = useSelector((state) => state.auth);
   const checklistStore = useSelector((state) => state.checklist);
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState();
   const [imageArray, setImageArray] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadDialog, setLoadDialog] = useState(false);
@@ -149,17 +150,19 @@ const StaffRectificationScreen = ({ route, navigation }) => {
   // TODO: Cleanup memory leak when user leaves screen before image is loaded
   useEffect(() => {
     setIsRectified(rectified);
-    console.log("USEEFFECT");
+    let type;
+    if (checklistType === "covid19") {
+      type = "covid19";
+    } else {
+      type = "chosen_checklist";
+    }
     const source = axios.CancelToken.source();
     const getImages = async () => {
-      if (
-        checklistStore.chosen_checklist.questions[section][index]
-          .rectificationImages
-      ) {
+      if (checklistStore[type].questions[section][index].rectificationImages) {
         setLoading(true);
         try {
           await Promise.all(
-            checklistStore.chosen_checklist.questions[section][
+            checklistStore[type].questions[section][
               index
             ].rectificationImages.map(async (fileName) => {
               if (!fileName.name) {
@@ -188,17 +191,12 @@ const StaffRectificationScreen = ({ route, navigation }) => {
       }
     };
     getImages();
-    if (checklistType === "covid") {
-      // eslint-disable-next-line no-unused-expressions
-      checklistStore.covid19.questions[section][index].requestForExt
-        ? setToggle(true)
-        : setToggle(false);
-    } else {
-      // eslint-disable-next-line no-unused-expressions
-      checklistStore.chosen_checklist.questions[section][index].requestForExt
-        ? setToggle(true)
-        : setToggle(false);
-    }
+
+    // eslint-disable-next-line no-unused-expressions
+    checklistStore[type].questions[section][index].requestForExt
+      ? setToggle(true)
+      : setToggle(false);
+
     return () => {
       source.cancel();
     };
@@ -206,25 +204,19 @@ const StaffRectificationScreen = ({ route, navigation }) => {
   }, []);
 
   useEffect(() => {
-    let storeImages;
-    let storeRemarks;
-    let storeDeadline;
+    let type;
     if (checklistType === "covid19") {
-      storeImages =
-        checklistStore.covid19.questions[section][index].rectificationImages;
-      storeRemarks =
-        checklistStore.covid19.questions[section][index].rectificationRemarks;
-      storeDeadline = checklistStore.covid19.questions[section][index].deadline;
+      type = "covid19";
     } else {
-      storeImages =
-        checklistStore.chosen_checklist.questions[section][index]
-          .rectificationImages;
-      storeRemarks =
-        checklistStore.chosen_checklist.questions[section][index]
-          .rectificationRemarks;
-      storeDeadline =
-        checklistStore.chosen_checklist.questions[section][index].deadline;
+      type = "chosen_checklist";
     }
+
+    const storeImages =
+      checklistStore[type].questions[section][index].rectificationImages;
+    const storeRemarks =
+      checklistStore[type].questions[section][index].rectificationRemarks;
+    const storeDeadline =
+      checklistStore[type].questions[section][index].deadline;
 
     if (storeImages) {
       const images = storeImages.map((e) => e.uri);
@@ -309,29 +301,26 @@ const StaffRectificationScreen = ({ route, navigation }) => {
               {`Tenant has ${toggle ? "" : "not"} requested for extension`}
             </Toggle>
           </View>
-          {toggle && (
-            <View style={styles.datePickerContainer}>
-              <CustomText bold category="h6">
-                Extend Deadline:
-              </CustomText>
-              <CustomDatepicker
-                deadline={deadline}
-                onSelect={handleDateChange}
-              />
-            </View>
-          )}
-          <View style={styles.inputContainer}>
+          <View style={styles.bottomContainer}>
+            {toggle && (
+              <>
+                <CustomText bold category="h6">
+                  Extend Deadline:
+                </CustomText>
+                <CustomDatepicker
+                  deadline={deadline}
+                  onSelect={handleDateChange}
+                />
+              </>
+            )}
             <CustomText bold category="h6">
               Tenant&apos;s Remarks:{" "}
             </CustomText>
-            <Input
-              height={SCREEN_HEIGHT * 0.1}
-              multiline
-              textStyle={styles.input}
-              placeholder="Tenant has yet to give remarks"
-              value={value}
-              disabled
-            />
+            <Card style={styles.card}>
+              <CustomText>
+                {value || "Tenant has yet to give remarks"}
+              </CustomText>
+            </Card>
           </View>
         </KeyboardAwareScrollView>
       </Layout>
@@ -360,16 +349,13 @@ const styles = StyleService.create({
     alignItems: "flex-start",
     marginVertical: 20,
   },
-  datePickerContainer: {
-    marginTop: 20,
-  },
-  inputContainer: {
-    // marginVertical: 20,
+  bottomContainer: {
+    paddingVertical: 10,
   },
   button: {
     borderRadius: 0,
   },
-  input: {
-    minHeight: 64,
+  card: {
+    marginVertical: 10,
   },
 });

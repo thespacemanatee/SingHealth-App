@@ -8,6 +8,7 @@ import {
   TopNavigation,
   TopNavigationAction,
   StyleService,
+  Button,
 } from "@ui-kitten/components";
 
 import * as databaseActions from "../../../store/actions/databaseActions";
@@ -15,13 +16,16 @@ import { handleErrorResponse } from "../../../helpers/utils";
 import EntityCard from "../../../components/EntityCard";
 import EntityLoading from "../../../components/ui/loading/EntityLoading";
 import CustomText from "../../../components/ui/CustomText";
-import TimedGraph from "../../../components/TimedGraph";
+import alert from "../../../components/CustomAlert";
+import CenteredLoading from "../../../components/ui/CenteredLoading";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
-const TenantsDirectoryScreen = ({ route, navigation }) => {
+const SelectDeleteScreen = ({ route, navigation }) => {
   const [tenants, setTenants] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
+  const [selectedTenant, setSelectedTenant] = useState(false);
   const { institutionID, displayName } = route.params;
 
   const dispatch = useDispatch();
@@ -39,24 +43,46 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
     />
   );
 
-  const handleOpenTenant = useCallback(
-    (tenantID, stallName) => {
-      navigation.navigate("TenantInfo", { tenantID, stallName });
-    },
-    [navigation]
-  );
+  const handleDeleteTenant = () => {
+    alert("Are you sure?", `Delete ${selectedTenant.name} from the database.`, [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Confirm",
+        style: "destructive",
+        onPress: async () => {
+          setLoading(true);
+          try {
+            const res = await dispatch(
+              databaseActions.deleteTenant(selectedTenant.tenantID)
+            );
+            console.log(res);
+          } catch (err) {
+            handleErrorResponse(err);
+          } finally {
+            setLoading(false);
+            setListLoading(true);
+            getTenants();
+          }
+        },
+      },
+    ]);
+  };
+
+  const handleSelectTenant = useCallback((tenantID, name) => {
+    setSelectedTenant({ tenantID, name });
+  }, []);
 
   const renderTenants = useCallback(
     (itemData) => {
       return (
         <EntityCard
-          onPress={handleOpenTenant}
+          onPress={handleSelectTenant}
           displayName={itemData.item.stallName}
           _id={itemData.item.tenantID}
         />
       );
     },
-    [handleOpenTenant]
+    [handleSelectTenant]
   );
 
   const getTenants = useCallback(async () => {
@@ -94,6 +120,7 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
         accessoryLeft={BackAction}
       />
       <Divider />
+      <CenteredLoading loading={loading} />
       <Layout style={styles.layout}>
         <FlatList
           data={tenants}
@@ -104,21 +131,16 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
           onRefresh={getTenants}
           ListEmptyComponent={renderEmptyComponent}
           ListHeaderComponent={
-            <>
-              <TimedGraph
-                label={`Average Scores (${displayName
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")})`}
-                type="institution"
-                id={institutionID}
-              />
-              <View style={styles.textContainer}>
-                <CustomText style={styles.text}>Tenants</CustomText>
-              </View>
-            </>
+            <View style={styles.textContainer}>
+              <CustomText style={styles.text}>Tenants</CustomText>
+            </View>
           }
         />
+        <View style={styles.buttonContainer}>
+          <Button disabled={!selectedTenant} onPress={handleDeleteTenant}>
+            DELETE TENANT
+          </Button>
+        </View>
       </Layout>
     </View>
   );
@@ -139,10 +161,13 @@ const styles = StyleService.create({
     fontFamily: "SFProDisplay-Bold",
   },
   contentContainer: {
-    // flexGrow: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
   },
+  buttonContainer: {
+    marginBottom: 20,
+    paddingHorizontal: 10,
+  },
 });
 
-export default TenantsDirectoryScreen;
+export default SelectDeleteScreen;

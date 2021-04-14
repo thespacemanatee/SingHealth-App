@@ -175,16 +175,19 @@ const TenantRectificationScreen = ({ route, navigation }) => {
 
   // TODO: Cleanup memory leak when user leaves screen before image is loaded
   useEffect(() => {
+    let type;
+    if (checklistType === "covid19") {
+      type = "covid19";
+    } else {
+      type = "chosen_checklist";
+    }
     const source = axios.CancelToken.source();
     const getImages = async () => {
-      if (
-        checklistStore.chosen_checklist.questions[section][index]
-          .rectificationImages
-      ) {
+      if (checklistStore[type].questions[section][index].rectificationImages) {
         setLoading(true);
         try {
           await Promise.all(
-            checklistStore.chosen_checklist.questions[section][
+            checklistStore[type].questions[section][
               index
             ].rectificationImages.map(async (fileName) => {
               if (!fileName.name) {
@@ -214,18 +217,11 @@ const TenantRectificationScreen = ({ route, navigation }) => {
     };
 
     getImages();
-    console.log("USEEFFECT");
-    if (checklistType === "covid") {
-      // eslint-disable-next-line no-unused-expressions
-      checklistStore.covid19.questions[section][index].requestForExt
-        ? (setToggle(true), setDisableToggle(true))
-        : (setToggle(false), setDisableToggle(false));
-    } else {
-      // eslint-disable-next-line no-unused-expressions
-      checklistStore.chosen_checklist.questions[section][index].requestForExt
-        ? (setToggle(true), setDisableToggle(true))
-        : (setToggle(false), setDisableToggle(false));
-    }
+
+    // eslint-disable-next-line no-unused-expressions
+    checklistStore[type].questions[section][index].requestForExt
+      ? (setToggle(true), setDisableToggle(true))
+      : (setToggle(false), setDisableToggle(false));
 
     return () => {
       source.cancel();
@@ -234,21 +230,17 @@ const TenantRectificationScreen = ({ route, navigation }) => {
   }, []);
 
   useEffect(() => {
-    let storeImages;
-    let storeRemarks;
+    let type;
     if (checklistType === "covid19") {
-      storeImages =
-        checklistStore.covid19.questions[section][index].rectificationImages;
-      storeRemarks =
-        checklistStore.covid19.questions[section][index].rectificationRemarks;
+      type = "covid19";
     } else {
-      storeImages =
-        checklistStore.chosen_checklist.questions[section][index]
-          .rectificationImages;
-      storeRemarks =
-        checklistStore.chosen_checklist.questions[section][index]
-          .rectificationRemarks;
+      type = "chosen_checklist";
     }
+
+    const storeImages =
+      checklistStore[type].questions[section][index].rectificationImages;
+    const storeRemarks =
+      checklistStore[type].questions[section][index].rectificationRemarks;
 
     if (storeImages) {
       const images = storeImages.map((e) => e.uri);

@@ -87,6 +87,7 @@ const ChooseTenantScreen = ({ navigation }) => {
 
   const getListData = useCallback(async () => {
     try {
+      setListLoading(true);
       const res = await dispatch(
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
@@ -164,6 +165,7 @@ const ChooseTenantScreen = ({ navigation }) => {
           keyExtractor={(item, index) => String(index)}
           renderItem={renderTenants}
           refreshing={listLoading}
+          onRefresh={getListData}
           ListEmptyComponent={renderEmptyComponent}
         />
       </Layout>
@@ -184,6 +186,7 @@ const ChooseTenantScreen = ({ navigation }) => {
           keyExtractor={(item, index) => String(index)}
           renderItem={renderSaved}
           refreshing={listLoading}
+          onRefresh={getListData}
           ListEmptyComponent={renderEmptyComponent}
         />
       </Layout>

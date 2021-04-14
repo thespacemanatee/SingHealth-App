@@ -139,8 +139,8 @@ const TenantDashboardScreen = ({ navigation }) => {
           keyExtractor={(item, index) => String(index)}
           data={listData}
           renderItem={renderActiveAudits}
-          onRefresh={handleRefreshList}
           refreshing={listLoading}
+          onRefresh={handleRefreshList}
           ListEmptyComponent={renderEmptyComponent}
           ListHeaderComponent={() => (
             <View style={styles.textContainer}>

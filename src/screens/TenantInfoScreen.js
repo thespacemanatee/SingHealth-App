@@ -135,8 +135,8 @@ const TenantInfoScreen = ({ route, navigation }) => {
           keyExtractor={(item, index) => String(index)}
           data={listData}
           renderItem={renderAudits}
-          onRefresh={getListData}
           refreshing={listLoading}
+          onRefresh={getListData}
           ListEmptyComponent={renderEmptyComponent}
           ListHeaderComponent={
             <>
