@@ -1,14 +1,12 @@
 from .utils import serverResponse, send_push_message, send_email_notif
 from .constants import MAX_NUM_IMAGES_PER_NC, SGT_TIMEZONE
-from flask import request, make_response, jsonify
+from flask import request
 from .rectificationEndpoints import percentageRectification
 from flask_login import login_required
 from pymongo.errors import DuplicateKeyError
 from datetime import datetime
 from pytz import timezone
 import iso8601
-
-
 
 
 def compliant(answer):
@@ -213,7 +211,6 @@ def addAuditsEndpoint(app, mongo):
                     allAnswers.extend(answerList)
             percentRect = percentageRectification(allAnswers)
 
-
             if percentRect < 1:
                 auditMetaData_ID_processed['rectificationProgress'] = 0
 
@@ -298,7 +295,7 @@ def addAuditsEndpoint(app, mongo):
             else:
                 msg = "Audits retrieved successfully"
             return serverResponse(auditsList, 200, msg)
- 
+
     @app.route("/audits/<auditID>", methods=['GET'])
     @login_required
     def get_audit(auditID):

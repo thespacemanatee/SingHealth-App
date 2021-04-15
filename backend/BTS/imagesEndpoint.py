@@ -1,12 +1,11 @@
 from flask_login import login_required
-from flask import request, make_response, jsonify
+from flask import request
 from .utils import serverResponse, upload_image, download_image
 from base64 import b64decode, b64encode
 from botocore.exceptions import ClientError
-import boto3
 import io
-import traceback
 import os
+
 
 def addImagesEndpoint(app):
     @app.route("/images", methods=["GET", 'POST'])

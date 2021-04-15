@@ -1,15 +1,13 @@
 from .utils import serverResponse, send_push_message, send_email_notif
-from .constants import MAX_NUM_IMAGES_PER_NC, SGT_TIMEZONE
-from flask import request, make_response, jsonify
+from .constants import SGT_TIMEZONE
+from flask import request
 from flask_login import login_required
-from pymongo.errors import DuplicateKeyError
-from datetime import datetime
 from pytz import timezone
 import iso8601
 
 requiredPatchKeys = ["category", "index"]
 allowedTenantPatchKeys = ["rectificationImages",
-                          "rectificationRemarks", 
+                          "rectificationRemarks",
                           "requestForExt"]
 
 allowedStaffPatchKeys = ["rectified", "acceptedRequest", "deadline"]
@@ -106,7 +104,8 @@ def mongoUpdateGivenFields(mongo, patches, fields, auditChecklists):
                 else:
                     newValue = patch[field]
 
-                result = mongoUpdateOne(mongo, formID, lineItem, newValue, field)
+                result = mongoUpdateOne(
+                    mongo, formID, lineItem, newValue, field)
 
                 try:
                     patchStatuses.append(result.acknowledged)
@@ -116,6 +115,7 @@ def mongoUpdateGivenFields(mongo, patches, fields, auditChecklists):
             patchResult = {"patch": patch, "status": all(patchStatuses)}
             patchResults.append(patchResult)
     return patchResults
+
 
 def percentageRectification(allQuestions):
     numNCs = len(list(filter(
@@ -127,6 +127,7 @@ def percentageRectification(allQuestions):
     percentRectification = numRectifiedNCs / numNCs
 
     return percentRectification
+
 
 def addRectificationEndpts(app, mongo):
     @app.route("/audits/<auditID>/tenant", methods=['PATCH'])
@@ -173,25 +174,25 @@ def addRectificationEndpts(app, mongo):
                 for device in staffExpoTokens:
                     try:
                         send_push_message(device, tenantStallName,
-                                        "has reviewed an audit form")
+                                          "has reviewed an audit form")
                     except:
                         print("Some error detected")
                         continue
-            
+
             date = selectedAudit['date']
             if date.tzinfo is None or date.tzinfo.utcoffset(date) is None:
-                date = timezone(SGT_TIMEZONE).localize(date)        
-            
+                date = timezone(SGT_TIMEZONE).localize(date)
+
             send_email_notif(
                 app,
-                staff["email"], 
-                "Audit Results", 
+                staff["email"],
+                "Audit Results",
                 f"""Dear {staff['name']},
                     Your tenant, {tenant['stallName']}, has submitted a review for one of his NCs for the audit dated {date.strftime('%d %B %Y, %I:%M %p')}. 
                     Please check your app for details.
                     This email is auto generated. No signature is required.
                     You do not have to reply to this email."""
-                )
+            )
             return serverResponse(patchResults, 200, "Changes sent to the database.")
 
     @app.route("/audits/<auditID>/staff", methods=['PATCH'])
@@ -261,24 +262,22 @@ def addRectificationEndpts(app, mongo):
                         except:
                             print("Some error detected")
                             continue
-                
+
                 date = selectedAudit['date']
                 if date.tzinfo is None or date.tzinfo.utcoffset(date) is None:
-                    date = timezone(SGT_TIMEZONE).localize(date)  
+                    date = timezone(SGT_TIMEZONE).localize(date)
                 send_email_notif(
                     app,
-                    tenant["email"], 
-                    "Audit Results", 
+                    tenant["email"],
+                    "Audit Results",
                     f"""Dear {tenant['stallName']},
                         {institution} has submitted a review for your rectifications for your audit dated {date.strftime('%d %B %Y, %I:%M %p')}. 
                         Please check your app for details.
                         This email is auto generated. No signature is required.
                         You do not have to reply to this email."""
-                    )
+                )
             return serverResponse(
                 ack,
                 200,
                 "Updates submitted successfully. "
             )
-
-           
