@@ -15,7 +15,7 @@ const ICON_SIZE = 30;
 const AlertIcon = (props) => (
   <Icon
     {...props}
-    name="alert-triangle-outline"
+    name="alert-circle-outline"
     style={{
       width: ICON_SIZE,
       height: ICON_SIZE,

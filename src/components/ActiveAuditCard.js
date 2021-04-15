@@ -1,10 +1,23 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
-import { useTheme, useStyleSheet, StyleService } from "@ui-kitten/components";
+import {
+  useTheme,
+  useStyleSheet,
+  StyleService,
+  Icon,
+} from "@ui-kitten/components";
 import moment from "moment";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import ShadowCard from "./ui/ShadowCard";
 import CustomText from "./ui/CustomText";
+
+const PassIcon = (props) => (
+  <Icon {...props} name="checkmark-circle-2-outline" width={20} height={20} />
+);
+
+const FailIcon = (props) => (
+  <Icon {...props} name="alert-circle-outline" width={20} height={20} />
+);
 
 const ActiveAuditCard = ({ userType, item, onPress }) => {
   const animation = useRef(null);
@@ -47,6 +60,24 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
     </View>
   );
 
+  const renderPassFailIcon = () => {
+    if (Number.parseFloat(auditMetadata.score) * 100 < 95) {
+      return (
+        <View style={styles.iconContainer}>
+          <CustomText style={styles.failed}>FAILED</CustomText>
+          <FailIcon fill="red" />
+        </View>
+      );
+    }
+
+    return (
+      <View style={styles.iconContainer}>
+        <CustomText style={styles.passed}>PASSED</CustomText>
+        <PassIcon fill="green" />
+      </View>
+    );
+  };
+
   return (
     <ShadowCard style={styles.cardContainer} onPress={handleOnPress}>
       <View style={styles.dateContainer}>
@@ -62,6 +93,7 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
             {stallName}
           </CustomText>
           <View>
+            {renderPassFailIcon()}
             <CustomText
               style={{ color: theme["color-basic-600"] }}
             >{`Time: ${dateInfo[4]}`}</CustomText>
@@ -116,6 +148,17 @@ const themedStyles = StyleService.create({
   month: {
     color: "color-primary-400",
     fontSize: 14,
+  },
+  iconContainer: {
+    flexDirection: "row",
+  },
+  failed: {
+    color: "red",
+    marginRight: 5,
+  },
+  passed: {
+    color: "green",
+    marginRight: 5,
   },
   infoContainer: {
     flex: 0.8,
