@@ -32,6 +32,21 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
     }
   }, [auditMetadata.rectificationProgress]);
 
+  const renderChildren = () => (
+    <View style={styles.progressContainer}>
+      <CustomText>
+        {`${
+          auditMetadata.rectificationProgress !== undefined
+            ? (
+                Number.parseFloat(auditMetadata.rectificationProgress) * 100
+              ).toFixed(1)
+            : 100
+        }%`}
+      </CustomText>
+      <CustomText>Progress</CustomText>
+    </View>
+  );
+
   return (
     <ShadowCard style={styles.cardContainer} onPress={handleOnPress}>
       <View style={styles.dateContainer}>
@@ -68,21 +83,7 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
           tintColor={theme["color-info-400"]}
           backgroundColor={theme["color-basic-400"]}
         >
-          {() => (
-            <View style={styles.progressContainer}>
-              <CustomText>
-                {`${
-                  auditMetadata.rectificationProgress !== undefined
-                    ? (
-                        Number.parseFloat(auditMetadata.rectificationProgress) *
-                        100
-                      ).toFixed(1)
-                    : 100
-                }%`}
-              </CustomText>
-              <CustomText>Progress</CustomText>
-            </View>
-          )}
+          {renderChildren}
         </AnimatedCircularProgress>
       </View>
     </ShadowCard>

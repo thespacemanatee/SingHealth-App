@@ -27,7 +27,7 @@ const equals = (a, b) => {
 
 const databaseReducer = (state = initialState, action) => {
   switch (action.type) {
-    case GET_RELEVANT_TENANTS: {
+    case GET_RELEVANT_TENANTS:
       if (equals(state.institutions, action.institutions)) {
         return state;
       }
@@ -35,8 +35,8 @@ const databaseReducer = (state = initialState, action) => {
         ...state,
         institutions: action.institutions,
       };
-    }
-    case GET_INSTITUTIONS: {
+
+    case GET_INSTITUTIONS:
       if (equals(state.relevantTenants, action.relevantTenants)) {
         return state;
       }
@@ -44,8 +44,8 @@ const databaseReducer = (state = initialState, action) => {
         ...state,
         relevantTenants: action.relevantTenants,
       };
-    }
-    case GET_TENANT_ACTIVE_AUDITS: {
+
+    case GET_TENANT_ACTIVE_AUDITS:
       if (equals(state.activeAudits, action.activeAudits)) {
         return state;
       }
@@ -53,8 +53,8 @@ const databaseReducer = (state = initialState, action) => {
         ...state,
         activeAudits: action.activeAudits,
       };
-    }
-    case GET_STAFF_ACTIVE_AUDITS: {
+
+    case GET_STAFF_ACTIVE_AUDITS:
       if (equals(state.activeAudits, action.activeAudits)) {
         return state;
       }
@@ -62,13 +62,12 @@ const databaseReducer = (state = initialState, action) => {
         ...state,
         activeAudits: action.activeAudits,
       };
-    }
-    case STORE_GRAPH_DATA: {
+
+    case STORE_GRAPH_DATA:
       return {
         ...state,
         graphData: { ...action.graphData },
       };
-    }
 
     default:
       return state;

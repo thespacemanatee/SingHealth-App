@@ -1,6 +1,11 @@
 /* eslint-disable no-nested-ternary */
 import React from "react";
-import { View, Dimensions, StyleSheet, ActivityIndicator } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ActivityIndicator,
+  useWindowDimensions,
+} from "react-native";
 import Svg, { Path, Defs, Stop, LinearGradient } from "react-native-svg";
 import * as shape from "d3-shape";
 import {
@@ -16,12 +21,9 @@ import { parsePath, getPointAtLength } from "../../AnimatedHelpers";
 import Cursor from "./Cursor";
 import CustomText from "../CustomText";
 
-const { width } = Dimensions.get("window");
-const height = width / 3;
-
 const styles = StyleSheet.create({
   container: {
-    height,
+    // height,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",
@@ -39,7 +41,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   thresholdLine: {
-    width,
+    // width,
     height: 0.75,
     backgroundColor: "gray",
   },
@@ -58,6 +60,10 @@ const Graph = ({
 }) => {
   const theme = useTheme();
   const length = useSharedValue(0);
+  const windowDimensions = useWindowDimensions();
+
+  const { width, height: windowHeight } = windowDimensions;
+  const height = windowHeight / 5;
 
   const minX = React.useMemo(() => Math.min(...data.map(([x]) => x)), [data]);
   const maxX = React.useMemo(() => Math.max(...data.map(([x]) => x)), [data]);
@@ -118,7 +124,7 @@ const Graph = ({
           {label}
         </CustomText>
       </View>
-      <View style={styles.container}>
+      <View style={[styles.container, { height }]}>
         {!loading ? (
           data.length > 2 ? (
             <>
@@ -163,7 +169,7 @@ const Graph = ({
                   <View style={styles.thresholdText}>
                     <CustomText bold={false}>95</CustomText>
                   </View>
-                  <View style={styles.thresholdLine} />
+                  <View style={[styles.thresholdLine, { width }]} />
                 </View>
                 <Cursor {...{ path, length, point }} />
               </View>

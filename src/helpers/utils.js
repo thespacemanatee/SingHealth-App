@@ -16,7 +16,7 @@ export const handleErrorResponse = (err, action) => {
       store.dispatch(authActions.signOut());
     } else {
       switch (Math.floor(err.response.status / 100)) {
-        case 4: {
+        case 4:
           alert(
             "Error",
             data.description,
@@ -28,15 +28,14 @@ export const handleErrorResponse = (err, action) => {
               : [{ text: "Okay" }]
           );
           break;
-        }
-        case 5: {
+
+        case 5:
           alert("Server Error", "Please contact your administrator.");
           break;
-        }
-        default: {
+
+        default:
           alert("Request timeout", "Check your internet connection.");
           break;
-        }
       }
     }
   } else if (err.request) {

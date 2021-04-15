@@ -100,7 +100,7 @@ const App = () => {
     try {
       store.dispatch(authActions.restoreToken());
     } catch (err) {
-      break;
+      // continue
     }
   };
 

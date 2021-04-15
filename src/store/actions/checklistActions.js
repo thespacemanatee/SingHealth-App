@@ -29,9 +29,10 @@ export const getChecklist = (checklistType, tenant) => async (dispatch) => {
   ]);
 };
 
-export const addAuditTenantSelection = (tenant) => {
-  return { type: ADD_AUDIT_TENANT_SELECTION, tenant };
-};
+export const addAuditTenantSelection = (tenant) => ({
+  type: ADD_AUDIT_TENANT_SELECTION,
+  tenant,
+});
 
 export const addChosenChecklist = (fnb = true) => {
   return async (dispatch) => {
