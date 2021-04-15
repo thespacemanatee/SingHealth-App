@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Mar 26 01:47:13 2021
-
-@author: angel
-"""
-
 from flask import request
 from flask_login import login_required
 from flask_pymongo import ObjectId

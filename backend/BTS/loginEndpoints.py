@@ -16,7 +16,6 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
             credentials = request.json
             expoToken = credentials.get("expoToken", None)
             userEmail = credentials["user"].lower()
-            userPswd = credentials["pswd"]
 
             user = mongo.db.staff.find_one({"email": userEmail})
             if user:
@@ -72,7 +71,6 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
             credentials = request.json
             expoToken = credentials.get("expoToken", None)
             userEmail = credentials["user"].lower()
-            userPswd = credentials["pswd"]
 
             user = mongo.db.tenant.find_one(
                 {"email": userEmail},

@@ -68,7 +68,7 @@ def addImagesEndpoint(app):
                 imageBase64 = b64encode(
                     imageObject.getvalue()).decode()
                 return serverResponse(imageBase64, 200, "Image found")
-            except ClientError as e:
+            except ClientError:
                 return serverResponse(None, 404, "Image not found")
             except:
                 return serverResponse(None, 500, "Unexpected error, pls try again.")

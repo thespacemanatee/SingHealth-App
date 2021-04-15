@@ -1,14 +1,7 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Apr 12 01:23:25 2021
-
-@author: angel
-"""
-
 import statistics
 from datetime import datetime, timedelta
 from flask import request
-from .utils import serverResponse, validate_required_info
+from .utils import serverResponse
 from flask_login import login_required
 
 

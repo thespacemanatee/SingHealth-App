@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Mar  5 02:46:03 2021
-
-@author:wx
-"""
-
 from .utils import serverResponse
 from flask_login import login_required
 from flask import request
