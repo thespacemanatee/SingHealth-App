@@ -141,7 +141,7 @@ const SelectDeleteScreen = ({ route, navigation }) => {
           ListEmptyComponent={renderEmptyComponent}
           ListHeaderComponent={
             <View style={styles.textContainer}>
-              <CustomText style={styles.text}>Tenants</CustomText>
+              <CustomText style={styles.text}>Delete Tenants</CustomText>
             </View>
           }
         />

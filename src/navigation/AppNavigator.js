@@ -63,7 +63,8 @@ const AppNavigator = () => {
             screens: {
               ManageTenantAccounts: "staff/manage-tenants",
               CreateTenant: "staff/manage-tenants/create",
-              // AddAccountDetails: "staff/manage-tenants/create/details",
+              DeleteTenant: "staff/manage-tenants/delete",
+              SelectDelete: "staff/manage-tenants/delete/:institutionID",
             },
           },
         },
