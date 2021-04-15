@@ -147,6 +147,7 @@ const RectificationScreen = ({ route, navigation }) => {
           question={itemData.item.question}
           answer={itemData.item.answer}
           rectified={itemData.item.rectified}
+          deadline={itemData.item.deadline}
           section={itemData.section.title}
           onPress={handleOpenRectificationCard}
         />

@@ -7,6 +7,7 @@ import {
   Icon,
   useTheme,
 } from "@ui-kitten/components";
+import moment from "moment";
 
 import CustomText from "./CustomText";
 
@@ -44,6 +45,7 @@ const CustomCard = (props) => {
     question,
     rectified,
     checkboxDisabled,
+    deadline,
   } = props;
 
   const windowDimensions = useWindowDimensions();
@@ -54,7 +56,16 @@ const CustomCard = (props) => {
     <View {...headerProps} style={styles.header}>
       <CustomText style={styles.font}>{index + 1}</CustomText>
       {!checked && !rectified && !deleted && (
-        <AlertIcon fill={theme["color-danger-600"]} />
+        <View style={styles.unrectifiedContainer}>
+          <CustomText style={styles.deadline}>
+            {`Deadline: ${moment(deadline?.$date || deadline)
+              .toLocaleString()
+              .split(" ")
+              .slice(0, 4)
+              .join(" ")}`}
+          </CustomText>
+          <AlertIcon fill={theme["color-danger-600"]} />
+        </View>
       )}
       {!checked && rectified && <CheckIcon fill={theme["color-success-600"]} />}
     </View>
@@ -102,6 +113,13 @@ const styles = StyleService.create({
   },
   font: {
     fontFamily: "SFProDisplay-Regular",
+  },
+  unrectifiedContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  deadline: {
+    marginHorizontal: 5,
   },
   questionContainer: {
     flexDirection: "row",
