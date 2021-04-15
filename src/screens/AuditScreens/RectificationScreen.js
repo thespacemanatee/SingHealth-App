@@ -261,6 +261,12 @@ const RectificationScreen = ({ route, navigation }) => {
     };
   }, [checklistStore.covid19.questions, createNewSections, navigation]);
 
+  const renderEmptyComponent = () => (
+    <View style={styles.emptyComponent}>
+      <CustomText bold>NO ENTRY</CustomText>
+    </View>
+  );
+
   return (
     <View style={styles.screen}>
       <TopNavigation
@@ -291,11 +297,13 @@ const RectificationScreen = ({ route, navigation }) => {
         <CenteredLoading loading={loading} />
         <SectionList
           sections={completeChecklist}
+          contentContainerStyle={styles.contentContainer}
           stickySectionHeadersEnabled
           keyExtractor={(item, index) => String(index)}
           renderItem={renderChosenChecklist}
           renderSectionHeader={renderSectionHeader}
           getItemLayout={getItemLayout}
+          ListEmptyComponent={renderEmptyComponent}
         />
         <View style={styles.bottomContainer}>
           <Chip
@@ -337,10 +345,13 @@ const styles = StyleService.create({
     fontSize: 20,
     fontWeight: "bold",
   },
-  radioGroup: {
-    paddingLeft: 20,
-    flexDirection: "row",
-    flexWrap: "wrap",
+  contentContainer: {
+    flexGrow: 1,
+  },
+  emptyComponent: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   errorContainer: {
     alignItems: "center",
