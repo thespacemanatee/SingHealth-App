@@ -55,7 +55,7 @@ const CustomCard = (props) => {
   const Header = (headerProps) => (
     <View {...headerProps} style={styles.header}>
       <CustomText style={styles.font}>{index + 1}</CustomText>
-      {!checked && !rectified && !deleted && (
+      {!checked && rectified === false && !deleted && (
         <View style={styles.unrectifiedContainer}>
           <CustomText style={styles.deadline}>
             {`Deadline: ${moment(deadline?.$date || deadline)
