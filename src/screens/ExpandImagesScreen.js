@@ -6,13 +6,9 @@ import {
   Image,
   Platform,
   TouchableOpacity,
+  useWindowDimensions,
 } from "react-native";
 import { Icon, StyleService } from "@ui-kitten/components";
-
-import {
-  SCREEN_WIDTH as width,
-  SCREEN_HEIGHT as height,
-} from "../helpers/config";
 
 const THUMBNAIL_SIZE = 80;
 const SPACING = 10;
@@ -36,6 +32,9 @@ const ExpandImagesScreen = ({ route, navigation }) => {
   const topRef = useRef(null);
   const thumbRef = useRef(null);
 
+  const windowDimensions = useWindowDimensions();
+  const { width, height } = windowDimensions;
+
   const handleClose = () => {
     if (Platform.OS === "web") {
       window.history.back();
@@ -49,31 +48,37 @@ const ExpandImagesScreen = ({ route, navigation }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const scrollToActiveIndex = useCallback((index) => {
-    setActiveIndex(index);
-    topRef?.current?.scrollToOffset({
-      offset: index * width,
-      animated: true,
-    });
-    if (index * (THUMBNAIL_SIZE + SPACING) - THUMBNAIL_SIZE / 2 > width / 2) {
-      thumbRef?.current?.scrollToOffset({
-        offset:
-          index * (THUMBNAIL_SIZE + SPACING) - width / 2 + THUMBNAIL_SIZE / 2,
+  const scrollToActiveIndex = useCallback(
+    (index) => {
+      setActiveIndex(index);
+      topRef?.current?.scrollToOffset({
+        offset: index * width,
         animated: true,
       });
-    }
-  }, []);
+      if (index * (THUMBNAIL_SIZE + SPACING) - THUMBNAIL_SIZE / 2 > width / 2) {
+        thumbRef?.current?.scrollToOffset({
+          offset:
+            index * (THUMBNAIL_SIZE + SPACING) - width / 2 + THUMBNAIL_SIZE / 2,
+          animated: true,
+        });
+      }
+    },
+    [width]
+  );
 
-  const renderImages = useCallback((itemData) => {
-    return (
-      <View style={{ width, height }}>
-        <Image
-          source={{ uri: itemData.item }}
-          style={StyleSheet.absoluteFillObject}
-        />
-      </View>
-    );
-  }, []);
+  const renderImages = useCallback(
+    (itemData) => {
+      return (
+        <View style={{ width, height }}>
+          <Image
+            source={{ uri: itemData.item }}
+            style={StyleSheet.absoluteFillObject}
+          />
+        </View>
+      );
+    },
+    [height, width]
+  );
 
   const renderThumbnail = useCallback(
     (itemData) => {

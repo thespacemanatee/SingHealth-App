@@ -151,6 +151,7 @@ const themedStyles = StyleService.create({
   },
   iconContainer: {
     flexDirection: "row",
+    alignItems: "center",
   },
   failed: {
     color: "red",
