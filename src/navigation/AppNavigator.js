@@ -35,7 +35,12 @@ const AppNavigator = () => {
                   StaffDashboardStack: {
                     screens: {
                       StaffDashboard: "staff/dashboard",
-                      ChooseTenant: "staff/new-audit",
+                      ChooseTenant: {
+                        screens: {
+                          Tenants: "staff/new-audit",
+                          Saved: "staff/new-audit/saved",
+                        },
+                      },
                       Checklist: "staff/new-audit/:auditID",
                       QuestionDetails: "staff/new-audit/details",
                       AuditSubmit: "staff/new-audit/submit",
