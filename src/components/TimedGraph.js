@@ -163,23 +163,23 @@ const TimedGraph = ({ label, type, id }) => {
       });
 
       const dataObject = {
-        oneMonth: res[0].data.data?.map((e) => ({
+        oneMonth: res[0]?.data.data.map((e) => ({
           x: moment(e.date).toDate(),
           y: Number.parseFloat(e.avgScore) * 100,
         })),
-        threeMonths: res[1].data.data?.map((e) => ({
+        threeMonths: res[1]?.data.data.map((e) => ({
           x: moment(e.date).toDate(),
           y: Number.parseFloat(e.avgScore) * 100,
         })),
-        sixMonths: res[2].data.data?.map((e) => ({
+        sixMonths: res[2]?.data.data.map((e) => ({
           x: moment(e.date).toDate(),
           y: Number.parseFloat(e.avgScore) * 100,
         })),
-        ytd: res[3].data.data?.map((e) => ({
+        ytd: res[3]?.data.data.map((e) => ({
           x: moment(e.date).toDate(),
           y: Number.parseFloat(e.avgScore) * 100,
         })),
-        oneYear: res[4].data.data?.map((e) => ({
+        oneYear: res[4]?.data.data.map((e) => ({
           x: moment(e.date).toDate(),
           y: Number.parseFloat(e.avgScore) * 100,
         })),
