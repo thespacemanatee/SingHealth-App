@@ -1,15 +1,11 @@
 from flask import request, session
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash
 from .login import User
 from .utils import serverResponse
 
 
-def addLoginEndpointsForTenantAndStaff(app, mongo):
-    login_manager = LoginManager()
-    login_manager.session_protection = None
-    login_manager.init_app(app)
-
+def addLoginEndpointsForTenantAndStaff(app, mongo, login_manager):
     @app.route('/login/staff',  methods=["POST"])
     def login_for_staff():
         if request.method == "POST":

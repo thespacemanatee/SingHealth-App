@@ -31,7 +31,6 @@ from docx.shared import Pt
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 
-
 def printJ(data):
     print(json.dumps(data, indent=4, sort_keys=False))
 
@@ -44,7 +43,6 @@ def upload_image(file_obj, bucket, file_name):
     response = s3_client.upload_fileobj(file_obj, bucket, file_name)
     return response
 
-
 def download_image(file_name, bucket):
     """
     Function to download a given file from an S3 bucket
@@ -54,7 +52,6 @@ def download_image(file_name, bucket):
     s3.download_fileobj(bucket, file_name, file_stream)
 
     return file_stream
-
 
 def list_images(bucket):
     """
@@ -76,7 +73,6 @@ def serverResponse(data, status_code, msg):
     r = make_response(jsonify(parse_json(packet)))
     r.status_code = status_code
     return r
-
 
 def send_push_message(token, title, message, extra=None):
     try:
@@ -154,7 +150,6 @@ def check_required_info(mydict, key_arr):
     else:
         return None
 
-
 def validate_required_info(mydict, key_arr):
     if check_required_info(mydict, key_arr) is not None:
         missing_keys, key_value_error = check_required_info(mydict, key_arr)
@@ -172,14 +167,12 @@ def validate_required_info(mydict, key_arr):
 
         return False, [error_message]
 
-
 def check_duplicate(mongo, collection, key, value):
     results = mongo.db[collection].find({key: value}).count()
     if(results != 0):
         return True
     else:
         return False
-
 
 def find_and_return_one(mongo, collection, key, value):
     try:
@@ -199,20 +192,17 @@ def nested_dict_get(dictionary, dotted_key):
     keys = dotted_key.split('.')
     return functools.reduce(lambda d, key: d.get(key) if d else None, keys, dictionary)
 
-
 def excel_enter_field_down(worksheet, start_pos, field, val_dict):
     for i in range(len(field)):
         worksheet.write(start_pos[0]+i,
                         start_pos[1],
                         nested_dict_get(val_dict, field[i]))
 
-
 def excel_enter_field_across(worksheet, start_pos, field, val_dict):
     for i in range(len(field)):
         worksheet.write(start_pos[0],
                         start_pos[1] + i,
                         nested_dict_get(val_dict, field[i]))
-
 
 def from_audit_to_excel(workbook, page_name, data):
     # unpack data
@@ -514,3 +504,28 @@ def send_email_notif(app, to_email, subject, message):
         mail.send(msg)
     except:
         print("Mail failed to send")
+
+'''
+Input: AuditFormTemplate with answers and images and stuff
+Output: Map: AuditLineItem --> Images used + Remarks
+'''
+
+def download_the_images(AuditFormTemplate_w_Ans, S3bucketName):
+    output = []
+    questions = AuditFormTemplate_w_Ans["questions"]
+    for question in questions:
+        imageFileList = []
+        imagesList = question["images"]
+        qn = question["question"]
+        for image in imagesList:
+            imageFile = download_image(image, S3bucketName)
+            imageFileList.append(imageFile)
+        
+        lineItem = dict()
+        lineItem["question"] = qn
+        lineItem["images"] = imagesList
+        output.append(lineItem)
+    
+    return output
+    
+        
