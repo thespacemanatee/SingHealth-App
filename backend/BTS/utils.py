@@ -351,11 +351,22 @@ def add_rectification_form(document, form_with_ans):
                     
                     if (item != "Non-compliance Images") and (item != "Rectification Images"):
                         row_cells[1].text = str(info[item])
+                    
+                    elif (item == "Non-compliance Images"):
+                        if info[item] is not None:
+                            for i in info[item]:
+                                add_image = row_cells[1].paragraphs[0]
+                                run = add_image.add_run()
+                                run.add_picture(i, width = 1400000)
+                        else:
+                            row_cells[1].text = "-"
+                            
                     else:
-                        for i in info[item]:
-                            add_image = row_cells[1].paragraphs[0]
-                            run = add_image.add_run()
-                            run.add_picture(i, width = 1400000)
+                        if info[item] is not None:
+                            for i in info[item]:
+                                add_image = row_cells[1].paragraphs[0]
+                                run = add_image.add_run()
+                                run.add_picture(i, width = 1400000)
                 
         set_column_width(rect.columns[0], Inches(1.57))
         set_column_width(rect.columns[1], Inches(4.6))
@@ -414,7 +425,7 @@ def add_form_to_docs(document, form_with_ans):
         for question in form_with_ans["form_with_ans"][checklist_name]:
             row_cells = checklist.add_row().cells
             row_cells[0].text = question["question"]
-            row_cells[1].text = str(int(bool(question["answer"])))
+            row_cells[1].text = question["answer"]
 
         set_column_width(checklist.columns[0], Inches(5.4))
         set_column_width(checklist.columns[1], Inches(0.76))

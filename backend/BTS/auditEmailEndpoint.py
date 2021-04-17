@@ -29,7 +29,10 @@ def get_rect(question_dict, ans_dict):
                 rect_form.setdefault(checklist_name,{})
                 
                 #get images from db
-                image_list = ["doggy_image.jpg"]
+                image_list = item.get("image", None)
+                if image_list is not None:
+                    image_list = ["doggy_image.jpg"]
+
                 remarks = item.get("remarks", "-")
                 rectified = item.get("rectified", False)
 
@@ -44,8 +47,10 @@ def get_rect(question_dict, ans_dict):
                     rectified = "No"
                 
                 #get rectification images from db
-                rect_image_list = ["doggy_image.jpg"]
                 rect_remarks = item.get("rectificationRemarks", None)
+                rect_image_list = item.get("rectificationImages", None)
+                if rect_remarks is not None:
+                    rect_image_list = ["doggy_rectified_image.jpg"]
                     
                 #required information
                 rect_form[checklist_name][question] = {
@@ -62,7 +67,7 @@ def get_rect(question_dict, ans_dict):
                     rect_form[checklist_name][question]["Rectification Remarks"] = rect_remarks
 
     return rect_form
-
+    
 def map_qna(question_dict, ans_dict):
     form_with_ans = {}
     summary_table = []
