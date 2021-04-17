@@ -139,7 +139,7 @@ const AppNavigator = () => {
 
   return (
     <NavigationContainer linking={linking}>
-      {authStore.userToken === null ? (
+      {authStore._id === null ? (
         <SafeAreaView style={styles.screen}>
           <Navigator headerMode="none">
             <Screen name="Auth" component={AuthScreen} />
