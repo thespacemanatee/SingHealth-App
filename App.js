@@ -92,13 +92,14 @@ const App = () => {
     });
   };
 
-  const loadAppAssets = () => {
-    if (Platform.OS !== "web") {
-      registerForPushNotificationsAsync().then((token) => setExpoToken(token));
-    }
-    loadFonts().then();
+  const loadAppAssets = async () => {
     try {
-      store.dispatch(authActions.restoreToken());
+      await loadFonts();
+      if (Platform.OS !== "web") {
+        const token = await registerForPushNotificationsAsync();
+        setExpoToken(token);
+      }
+      await store.dispatch(authActions.restoreToken());
     } catch (err) {
       // continue
     }

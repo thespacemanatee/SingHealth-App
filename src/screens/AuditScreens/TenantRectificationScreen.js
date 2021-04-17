@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Platform } from "react-native";
+import { View, Platform, useWindowDimensions } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -26,7 +26,6 @@ import * as checklistActions from "../../store/actions/checklistActions";
 import * as databaseActions from "../../store/actions/databaseActions";
 import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
-import { SCREEN_HEIGHT } from "../../helpers/config";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
@@ -50,6 +49,9 @@ const TenantRectificationScreen = ({ route, navigation }) => {
   const { index, checklistType, question, section, rectified } = route.params;
 
   const isMounted = useMountedState();
+
+  const windowDimensions = useWindowDimensions();
+  const { height } = windowDimensions;
 
   const theme = useTheme();
 
@@ -459,7 +461,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
           <View style={styles.inputContainer}>
             <CustomText bold>Remarks: </CustomText>
             <Input
-              height={SCREEN_HEIGHT * 0.1}
+              height={height * 0.1}
               multiline
               textStyle={styles.input}
               placeholder="Enter your remarks here"
