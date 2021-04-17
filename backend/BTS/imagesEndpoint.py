@@ -1,6 +1,7 @@
 from flask_login import login_required
 from flask import request
 from .utils import serverResponse, upload_image, download_image
+from .constants import IMAGE_FILETYPES
 from base64 import b64decode, b64encode
 from botocore.exceptions import ClientError
 import io
@@ -15,19 +16,24 @@ def addImagesEndpoint(app):
             if (requestJson := request.get_json(silent=True)) != None:
                 allImages = requestJson.get("images", [])
                 if len(allImages) > 0:
-                    requestData = allImages
-
                     imageFilenames = []
-                    for image in requestData:
+                    for image in allImages:
                         if (imageFilename := image.get("fileName", None)) != None:
-                            imageFilenames.append(imageFilename)
+                            if imageFilename.split(".")[-1] in IMAGE_FILETYPES:
+                                imageFilenames.append(imageFilename)
+                            else:
+                                return serverResponse(
+                                    None, 
+                                    400, 
+                                    f"Unknown image file extension used: {imageFilename.split('.')[-1]}"
+                                    )
 
                     detected_Duplicate_filenames = len(
                         imageFilenames) > len(set(imageFilenames))
                     if detected_Duplicate_filenames:
                         return serverResponse(None, 400, "Duplicate image names found")
 
-                    for image in requestData:
+                    for image in allImages:
                         try:
                             imageName = image["fileName"]
                             imageData = image["uri"]
