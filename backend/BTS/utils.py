@@ -500,7 +500,6 @@ def send_email_notif(app, to_email, subject, message):
 Input: AuditFormTemplate with answers and images and stuff
 Output: Map: AuditLineItem --> Images used + Remarks
 '''
-
 def download_the_images(AuditFormTemplate_w_Ans, S3bucketName):
     output = []
     questions = AuditFormTemplate_w_Ans["questions"]
