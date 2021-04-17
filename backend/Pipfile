@@ -43,6 +43,12 @@ faker = "*"
 coverage = "*"
 mongomock = "*"
 python-docx = "*"
+<<<<<<< Updated upstream
+=======
+redis = "*"
+flask-session = "*"
+multidict = "*"
+>>>>>>> Stashed changes
 
 [dev-packages]
 
