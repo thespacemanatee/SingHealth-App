@@ -126,8 +126,6 @@ def send_push_message(token, title, message, extra=None):
         pass
 
 # for checking data
-
-
 def check_required_info(mydict, key_arr):
     missing_keys = []
     key_value_error = []
@@ -185,8 +183,6 @@ def find_and_return_one(mongo, collection, key, value):
         return None, None
 
 # for excel operations
-
-
 def nested_dict_get(dictionary, dotted_key):
     keys = dotted_key.split('.')
     return functools.reduce(lambda d, key: d.get(key) if d else None, keys, dictionary)
@@ -272,8 +268,6 @@ def from_audit_to_excel(workbook, page_name, data):
     return workbook
 
 # for word operations
-
-
 def set_column_width(column, width):
     for cell in column.cells:
         cell.width = width
@@ -314,6 +308,13 @@ def make_rows_underline(*rows):
             for paragraph in cell.paragraphs:
                 for run in paragraph.runs:
                     run.font.underline = True
+
+def make_rows_bold(*rows):
+    for row in rows:
+        for cell in row.cells:
+            for paragraph in cell.paragraphs:
+                for run in paragraph.runs:
+                    run.font.bold = True
 
 def table_center_align(*columns):
     for col in columns:
@@ -501,21 +502,45 @@ Input: AuditFormTemplate with answers and images and stuff
 Output: Map: AuditLineItem --> Images used + Remarks
 '''
 def download_the_images(AuditFormTemplate_w_Ans, S3bucketName):
-    output = []
-    questions = AuditFormTemplate_w_Ans["questions"]
-    for question in questions:
-        imageFileList = []
-        imagesList = question["images"]
-        qn = question["question"]
-        for image in imagesList:
-            imageFile = download_image(image, S3bucketName)
-            imageFileList.append(imageFile)
-        
-        lineItem = dict()
-        lineItem["question"] = qn
-        lineItem["images"] = imagesList
-        output.append(lineItem)
+    rect_info = {}
     
-    return output
+    download_image("606969818e6e53b0f4e6ab4f325771996869.jpg",  S3bucketName)
+    
+    # Wen Xin: pls leave the bottom as it is!
+    for section in AuditFormTemplate_w_Ans:
+        print(section)
+        for question in AuditFormTemplate_w_Ans[section]:
+            print(question)
+            imageFileList = None
+            rec_imageFileList = None
+            
+            qn = question["question"]
+            
+            if not question["answer"]:
+                
+                if "images" in question["items"]:
+                    imageFileList = []
+                    imagesList = question["items"]["images"]
+                    for image in imagesList:
+                        imageFile = download_image(image, S3bucketName)
+                        imageFileList.append(imageFile)
+                    
+                if "rectificationImages" in question["items"]:
+                    rec_imageFileList = []
+                    rec_imagesList = question["items"]["rectificationImages"]
+                    for image in rec_imagesList:
+                        rec_imagesFile = download_image(image, S3bucketName)
+                        rec_imageFileList.append(rec_imagesFile)
+        
+                lineItem = dict()
+                lineItem["question"] = qn
+                lineItem["images"] = imagesList
+                lineItem["rectification images"] = rec_imagesList
+                rect_info[section] = {
+                    "question": qn,
+                    "images": imageFileList,
+                    "rectificationImages": rec_imageFileList}
+    
+    return rect_info
     
         
