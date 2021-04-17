@@ -10,6 +10,59 @@ def check_valid_param(data):
     else:
         return True
 
+def get_rect(question_dict, ans_dict):
+    rect_form = {}
+    
+    for checklist_name in question_dict.keys():        
+        for i in range(len(question_dict[checklist_name])): 
+            question = question_dict[checklist_name][i]['question']
+            answer_bool = ans_dict[checklist_name][i]['answer']
+            item = ans_dict[checklist_name][i]
+            
+            if answer_bool is None:
+                pass
+                
+            elif answer_bool:
+                pass
+                
+            else:
+                rect_form.setdefault(checklist_name,{})
+                
+                #get images from db
+                image_list = ["doggy_image.jpg"]
+                remarks = item.get("remarks", "-")
+                rectified = item.get("rectified", False)
+
+                deadline = item.get("deadline", None)
+                if deadline is not None:
+                    deadline =  deadline.strftime("%m/%d/%Y %H:%M:%S")
+                else:
+                    deadline = "-"
+                if rectified:
+                    rectified = "Yes"
+                else:
+                    rectified = "No"
+                
+                #get rectification images from db
+                rect_image_list = ["doggy_image.jpg"]
+                rect_remarks = item.get("rectificationRemarks", None)
+                    
+                #required information
+                rect_form[checklist_name][question] = {
+                    "Non-compliance Images": image_list,
+                    "Remarks": remarks,
+                    "Rectified": rectified,
+                    "deadline": deadline
+                    }
+                
+                if rect_image_list is not None:
+                    rect_form[checklist_name][question]["Rectification Images"] = rect_image_list
+                
+                if rect_remarks is not None:
+                    rect_form[checklist_name][question]["Rectification Remarks"] = rect_remarks
+
+    return rect_form
+
 def map_qna(question_dict, ans_dict):
     form_with_ans = {}
     summary_table = []
@@ -32,16 +85,22 @@ def map_qna(question_dict, ans_dict):
             elif answer_bool:
                 form_with_ans[checklist_name].append({
                     "question": question,
-                    "answer": True})
+                    "answer": "1"})
                 points += 1
                 max_points += 1
                 
             else:
-                form_with_ans[checklist_name].append({
-                    "question": question,
-                    "answer": False,
-                    "items": item})
-                max_points += 1
+                if item["rectified"]:
+                    form_with_ans[checklist_name].append({
+                        "question": question,
+                        "answer": "1*"})
+                    points += 1
+                    max_points += 1
+                else:
+                    form_with_ans[checklist_name].append({
+                        "question": question,
+                        "answer": "0"})
+                    max_points += 1 
                 
         summary_table.append({
             "section": checklist_name,
@@ -151,17 +210,19 @@ def validate_and_pack_audit_info_word(auditID, mongo):
         elif form == "covid19":
             color = "f786a0"
             form_name = "Covid-19"
-        
+
         #map info
         question_dict = audit_form["auditQues"][form]
         ans_dict = audit_form["auditAns"][form]
         form_with_ans, summary_form = map_qna(question_dict, ans_dict)
+        rect_form = get_rect(question_dict, ans_dict)
         
         audit_info["form_with_ans"][form] = {
             "type" : form_name,
             "color" : color,
             "form_with_ans": form_with_ans,
-            "summary_form": summary_form
+            "summary_form": summary_form,
+            "rect_form": rect_form
             }
          
     data = {}

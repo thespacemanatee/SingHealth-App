@@ -321,6 +321,45 @@ def table_center_align(*columns):
         for cell in col.cells:
             cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
 
+def add_rectification_form(document, form_with_ans):
+    hex_color = form_with_ans["color"]
+    rect_form = form_with_ans["rect_form"]
+    
+    if rect_form != {}:
+        header4 = document.add_paragraph()
+        runner = header4.add_run(form_with_ans["type"])
+        runner.underline = True
+        for section in rect_form.keys():
+            rect = document.add_table(rows=1, cols=2)
+            rect.style = 'TableGrid'
+            hdr_cells = rect.rows[0].cells
+            hdr_cells[0].text = section
+            set_cell_background(hdr_cells[0], hex_color)
+            hdr_cells[1].text = 'Description'
+            set_cell_background(hdr_cells[1], hex_color)
+
+            for question in rect_form[section].keys():
+                row_cells = rect.add_row().cells
+                row_cells[0].merge(row_cells[1])
+                row_cells[0].text = question
+                set_cell_background(row_cells[0], "FDFD96")
+                
+                info = rect_form[section][question]
+                for item in info:
+                    row_cells = rect.add_row().cells
+                    row_cells[0].text = item
+                    
+                    if (item != "Non-compliance Images") and (item != "Rectification Images"):
+                        row_cells[1].text = str(info[item])
+                    else:
+                        for i in info[item]:
+                            add_image = row_cells[1].paragraphs[0]
+                            run = add_image.add_run()
+                            run.add_picture(i, width = 1400000)
+                
+        set_column_width(rect.columns[0], Inches(1.57))
+        set_column_width(rect.columns[1], Inches(4.6))
+
 def add_summary_to_docs(document, form_with_ans):
     header4 = document.add_paragraph()
     runner = header4.add_run(form_with_ans["type"])
@@ -435,6 +474,15 @@ def from_audit_to_word(document, data):
      # Add checklists
     for form in all_checklist.values():
         add_form_to_docs(document, form)
+        
+    # Add rectification
+    document.add_page_break()
+    header4 = document.add_paragraph()
+    runner = header4.add_run("Rectification Information")
+    runner.underline = True
+    for form in all_checklist.values():
+        add_rectification_form(document, form)
+        document.add_paragraph("\n")
 
     #  summary
     document.add_page_break()
@@ -545,7 +593,7 @@ Output: Map: AuditLineItem --> Images used + Remarks
 def download_the_images(AuditFormTemplate_w_Ans, S3bucketName):
     rect_info = {}
     
-    download_image("606969818e6e53b0f4e6ab4f325771996869.jpg",  S3bucketName)
+    download_image("606969818e6e53b0f4e6ab4f325771996869.jpg",  "singhealth")
     
     # Wen Xin: pls leave the bottom as it is!
     for section in AuditFormTemplate_w_Ans:
