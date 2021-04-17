@@ -315,11 +315,44 @@ def make_rows_bold(*rows):
             for paragraph in cell.paragraphs:
                 for run in paragraph.runs:
                     run.font.bold = True
-
+                    
 def table_center_align(*columns):
     for col in columns:
         for cell in col.cells:
             cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+def add_summary_to_docs(document, form_with_ans):
+    header4 = document.add_paragraph()
+    runner = header4.add_run(form_with_ans["type"])
+    runner.underline = True
+
+    hex_color = form_with_ans["color"]
+    summary_form = form_with_ans["summary_form"]
+    total = summary_form["total"]
+    
+    summary = document.add_table(rows=1, cols=2)
+    hdr_cells = summary.rows[0].cells
+    hdr_cells[0].text = "Section"
+    set_cell_background(hdr_cells[0], hex_color)
+    hdr_cells[1].text = 'Points'
+    set_cell_background(hdr_cells[1], hex_color)
+
+    weighted_total_score = 0
+    for section in summary_form["table"]:
+        row_cells = summary.add_row().cells
+        row_cells[0].text = section["section"]
+        weighted_score = (section["points"]/total) * 100
+        weighted_max_score = (section["max_points"]/total) * 100
+        row_cells[1].text = "{:.2f}\t /{:.2f}%".format(weighted_score, weighted_max_score)
+        weighted_total_score += weighted_score
+    
+    summary_cells = summary.add_row().cells
+    summary_cells[0].text = "Total:"
+    summary_cells[1].text = "{:.2f}\t /100.0%".format(weighted_total_score)
+        
+    set_column_width(summary.columns[0], Inches(4.7))
+    set_column_width(summary.columns[1], Inches(1.7))
+    make_rows_bold(summary.rows[-1])
 
 def add_form_to_docs(document, form_with_ans):
     document.add_page_break()
@@ -339,15 +372,14 @@ def add_form_to_docs(document, form_with_ans):
         hdr_cells[1].text = 'Point(s) \nAwarded'
         set_cell_background(hdr_cells[1], hex_color)
 
-        for item in form_with_ans["form_with_ans"][checklist_name]:
+        for question in form_with_ans["form_with_ans"][checklist_name]:
             row_cells = checklist.add_row().cells
-            row_cells[0].text = item["question"]
-            row_cells[1].text = str(int(bool(item["answer"])))
+            row_cells[0].text = question["question"]
+            row_cells[1].text = str(int(bool(question["answer"])))
 
         set_column_width(checklist.columns[0], Inches(5.4))
         set_column_width(checklist.columns[1], Inches(0.76))
         table_center_align(checklist.columns[1])
-    return True
 
 def from_audit_to_word(document, data):
     audit_dict = data["audit_info"]
@@ -399,10 +431,19 @@ def from_audit_to_word(document, data):
     insert_dict_by_col(info, 7, 1, tenant_data, tenant_dict)
     info.cell(11, 1).text = date.strftime('%Y/%m/%d %I:%M %p')
     info.cell(12, 1).text = str(score)+"%"
-
-    # Add checklists
+    
+     # Add checklists
     for form in all_checklist.values():
         add_form_to_docs(document, form)
+
+    #  summary
+    document.add_page_break()
+    header4 = document.add_paragraph()
+    runner = header4.add_run("Summary")
+    runner.underline = True
+    for form in all_checklist.values():
+        add_summary_to_docs(document, form)
+        document.add_paragraph("\n")
 
 #For emails
 def send_audit_email_word(app, to_email, subject, message,
