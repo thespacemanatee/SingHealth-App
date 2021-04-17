@@ -23,9 +23,8 @@ import tempfile
 import xlsxwriter
 
 from docx import Document
-from docx.shared import Inches
+from docx.shared import Inches, Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.shared import Pt
 
 
 def parse_json(data):
@@ -289,7 +288,6 @@ def set_column_width(column, width):
     for cell in column.cells:
         cell.width = width
 
-
 def set_cell_background(cell, fill):
     """
     @fill: Specifies the color to be used for the background
@@ -312,16 +310,13 @@ def set_cell_background(cell, fill):
     # finally extend cell props with shading element
     cell_properties.append(cell_shading)
 
-
 def insert_list_by_col(table, start_row, col_num, data_list):
     for i in range(len(data_list)):
         table.cell(start_row+i, col_num).text = data_list[i]
 
-
 def insert_dict_by_col(table, start_row, col_num, data_list, data_dict):
     for i in range(len(data_list)):
         table.cell(start_row+i, col_num).text = data_dict[data_list[i]]
-
 
 def make_rows_underline(*rows):
     for row in rows:
@@ -330,12 +325,10 @@ def make_rows_underline(*rows):
                 for run in paragraph.runs:
                     run.font.underline = True
 
-
 def table_center_align(*columns):
     for col in columns:
         for cell in col.cells:
             cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
-
 
 def add_form_to_docs(document, form_with_ans):
     document.add_page_break()
@@ -345,7 +338,7 @@ def add_form_to_docs(document, form_with_ans):
 
     hex_color = form_with_ans["color"]
 
-    for checklist_name in form_with_ans["questions"].keys():
+    for checklist_name in form_with_ans["form_with_ans"].keys():
         checklist = document.add_table(rows=1, cols=2)
         checklist.style = 'TableGrid'
 
@@ -355,22 +348,22 @@ def add_form_to_docs(document, form_with_ans):
         hdr_cells[1].text = 'Point(s) \nAwarded'
         set_cell_background(hdr_cells[1], hex_color)
 
-        for question in form_with_ans["questions"][checklist_name]:
+        for item in form_with_ans["form_with_ans"][checklist_name]:
             row_cells = checklist.add_row().cells
-            row_cells[0].text = question["question"]
-            row_cells[1].text = str(int(bool(question["answer"])))
+            row_cells[0].text = item["question"]
+            row_cells[1].text = str(int(bool(item["answer"])))
 
         set_column_width(checklist.columns[0], Inches(5.4))
         set_column_width(checklist.columns[1], Inches(0.76))
         table_center_align(checklist.columns[1])
-
+    return True
 
 def from_audit_to_word(document, data):
     audit_dict = data["audit_info"]
     inst_dict = data["inst_info"]
     staff_dict = data["staff_info"]
     tenant_dict = data["tenant_info"]
-    all_checklist = audit_dict["auditForm"]
+    all_checklist = audit_dict["form_with_ans"]
 
     # unpack data
     score = round(audit_dict["score"] * 100, 2)
@@ -420,7 +413,7 @@ def from_audit_to_word(document, data):
     for form in all_checklist.values():
         add_form_to_docs(document, form)
 
-
+#For emails
 def send_audit_email_word(app, to_email, subject, message,
                           word_name, data):
 
@@ -460,7 +453,6 @@ def send_audit_email_word(app, to_email, subject, message,
 
     return True
 
-
 def send_audit_email_excel(app, to_email, subject, message,
                            excel_name, page_name, data):
 
@@ -496,7 +488,6 @@ def send_audit_email_excel(app, to_email, subject, message,
         return False
 
     return True
-
 
 def send_email_notif(app, to_email, subject, message):
     # for mailing
