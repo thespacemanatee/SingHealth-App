@@ -127,33 +127,35 @@ def addAuditEmailEndpoints(app, mongo):
     @login_required
     def export_word_to_email(auditID):
         try:
-            validate, data = validate_and_pack_audit_info_word(auditID)
-
+            validate, data = validate_and_pack_audit_info_word(auditID, mongo)
+    
             if validate:
                 date_underscore = data["audit_info"]["date"].strftime(
                     '%Y_%m_%d')
                 date_slash = data["audit_info"]["date"].strftime('%Y/%m/%d')
                 stall_name = data["tenant_info"]["stallName"]
-
+                
                 to_email = data["staff_info"]["email"]
-
+    
                 subject = "Audit Data - " + \
                     stall_name + " (" + date_slash + ")"
                 message = ""
-
+    
                 stall_name = stall_name.replace(" ", "_")
                 stall_name = stall_name.upper()
                 word_name = "audit_" + date_underscore + "_" + stall_name
-
+                
+                
                 sent = send_audit_email_word(app, to_email, subject, message,
                                              word_name, data)
-
+    
                 if sent:
                     return serverResponse(None, 200, "Audit email sent")
+                
                 else:
                     return serverResponse(None, 404, "Error in sending email")
-
+    
             else:
                 return serverResponse(data, 404, "Missing/Error in information")
         except:
-            return serverResponse(None, 404, "Internal Error")
+            return serverResponse(data, 404, "Internal Error")
