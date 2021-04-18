@@ -1,22 +1,17 @@
-from flask import Flask, request, session, jsonify, make_response
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import request, session
+from flask_login import login_user, login_required, logout_user, current_user
+from werkzeug.security import check_password_hash
 from .login import User
-from .utils import serverResponse, printJ
+from .utils import serverResponse
 
 
-def addLoginEndpointsForTenantAndStaff(app, mongo):
-    login_manager = LoginManager()
-    login_manager.session_protection = None
-    login_manager.init_app(app)
-
+def addLoginEndpointsForTenantAndStaff(app, mongo, login_manager):
     @app.route('/login/staff',  methods=["POST"])
     def login_for_staff():
         if request.method == "POST":
             credentials = request.json
             expoToken = credentials.get("expoToken", None)
             userEmail = credentials["user"].lower()
-            userPswd = credentials["pswd"]
 
             user = mongo.db.staff.find_one({"email": userEmail})
             if user:
@@ -28,7 +23,7 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
 
                     # Append the token to the DB
                     if expoToken is not None and expoToken != "" and \
-                        expoToken not in user.get("expoToken", []):
+                            expoToken not in user.get("expoToken", []):
                         mongo.db.staff.update_one(
                             {"email": userEmail},
                             [
@@ -44,7 +39,7 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                                 }
                             ]
                         )
-                    
+
                     user.pop("pswd", None)
                     user.pop("expoToken", None)
                     return serverResponse(
@@ -72,7 +67,6 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
             credentials = request.json
             expoToken = credentials.get("expoToken", None)
             userEmail = credentials["user"].lower()
-            userPswd = credentials["pswd"]
 
             user = mongo.db.tenant.find_one(
                 {"email": userEmail},
@@ -82,7 +76,7 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                     "dateCreated": 0,
                     "createdBy": 0
                 }
-                )
+            )
             if user:
                 dbUserEmail = user['email'].lower()
                 if check_password_hash(user["pswd"], credentials["pswd"]):
@@ -90,26 +84,24 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                     login_user(user_obj, remember=True)
                     session['account_type'] = "tenant"
 
-                    
-
                     # Append the token to the DB
                     if expoToken is not None and expoToken != "" and  \
-                        expoToken not in user.get("expoToken",[]):
-                            mongo.db.tenant.update_one(
-                                {"email": userEmail},
-                                [
-                                    {
-                                        "$set": {
-                                            "expoToken": {
-                                                "$concatArrays": [
-                                                    "$expoToken",
-                                                    [expoToken]
-                                                ]
-                                            }
+                            expoToken not in user.get("expoToken", []):
+                        mongo.db.tenant.update_one(
+                            {"email": userEmail},
+                            [
+                                {
+                                    "$set": {
+                                        "expoToken": {
+                                            "$concatArrays": [
+                                                "$expoToken",
+                                                [expoToken]
+                                            ]
                                         }
                                     }
-                                ]
-                            )
+                                }
+                            ]
+                        )
 
                     user.pop("pswd", None)
                     user.pop("expoToken", None)
@@ -143,11 +135,11 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
                     None,
                     200,
                     "You are now logged out"
-                    )
-            
+                )
+
             try:
 
-                #TODO：Remove the token from the DB
+                # TODO：Remove the token from the DB
                 userEmail = current_user.get_id()
                 userExpoToken = data["expoToken"]
                 if session["account_type"] == "tenant":
@@ -178,7 +170,7 @@ def addLoginEndpointsForTenantAndStaff(app, mongo):
 
             except KeyError:
                 print("Session lost. Forcefully logging out the user")
-            
+
             finally:
                 logout_user()
                 return serverResponse(

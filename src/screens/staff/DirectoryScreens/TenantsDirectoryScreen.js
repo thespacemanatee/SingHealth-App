@@ -9,6 +9,7 @@ import {
   TopNavigationAction,
   StyleService,
 } from "@ui-kitten/components";
+import useMountedState from "react-use/lib/useMountedState";
 
 import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
@@ -23,6 +24,8 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
   const [tenants, setTenants] = useState([]);
   const [listLoading, setListLoading] = useState(true);
   const { institutionID, displayName } = route.params;
+
+  const isMounted = useMountedState();
 
   const dispatch = useDispatch();
 
@@ -61,14 +64,22 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
 
   const getTenants = useCallback(async () => {
     try {
+      setListLoading(true);
+
       const res = await dispatch(
         databaseActions.getRelevantTenants(institutionID)
       );
-      setTenants(res.data.data);
+      if (isMounted()) {
+        setTenants(res.data.data);
+      }
     } catch (err) {
       handleErrorResponse(err);
+    } finally {
+      if (isMounted()) {
+        setListLoading(false);
+      }
     }
-  }, [dispatch, institutionID]);
+  }, [dispatch, institutionID, isMounted]);
 
   useEffect(() => {
     getTenants();
@@ -98,6 +109,7 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
           contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
           refreshing={listLoading}
+          onRefresh={getTenants}
           ListEmptyComponent={renderEmptyComponent}
           ListHeaderComponent={
             <>

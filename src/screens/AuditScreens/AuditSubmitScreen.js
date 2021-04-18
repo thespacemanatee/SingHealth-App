@@ -71,7 +71,6 @@ const AuditSubmitScreen = ({ navigation }) => {
         }
       });
     });
-    // console.log(tempChosenChecklist);
 
     const covid19Keys = Object.keys(checklistStore.covid19.questions);
     covid19Keys.forEach((section) => {
@@ -124,26 +123,16 @@ const AuditSubmitScreen = ({ navigation }) => {
   const uploadAuditData = useCallback(
     async (imageAdded, auditData, base64images, formData) => {
       try {
-        let imageRes;
         if (imageAdded) {
           if (Platform.OS === "web") {
-            imageRes = await dispatch(
-              databaseActions.postAuditImagesWeb(base64images)
-            );
+            await dispatch(databaseActions.postAuditImagesWeb(base64images));
           } else {
-            imageRes = await dispatch(
-              databaseActions.postAuditImages(formData)
-            );
+            await dispatch(databaseActions.postAuditImages(formData));
           }
         }
 
-        console.log(imageRes);
+        await dispatch(databaseActions.postAuditForm(auditData));
 
-        const formRes = await dispatch(
-          databaseActions.postAuditForm(auditData)
-        );
-
-        console.log(formRes);
         Toast.show({
           text1: "Success",
           text2: `Audit submitted on: ${moment(new Date())

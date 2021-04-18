@@ -12,6 +12,7 @@ const RectificationCard = (props) => {
     section,
     onPress,
     rectified,
+    deadline,
   } = props;
 
   useEffect(() => {
@@ -43,6 +44,7 @@ const RectificationCard = (props) => {
       checkboxDisabled
       question={question}
       rectified={rectified}
+      deadline={deadline}
     />
   );
 };

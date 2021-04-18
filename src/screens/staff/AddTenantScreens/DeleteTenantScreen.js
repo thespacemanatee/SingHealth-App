@@ -9,6 +9,7 @@ import {
   TopNavigationAction,
   StyleService,
 } from "@ui-kitten/components";
+import useMountedState from "react-use/lib/useMountedState";
 
 import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
@@ -21,6 +22,8 @@ const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const DeleteTenantScreen = ({ navigation }) => {
   const [institutions, setInstitutions] = useState([]);
   const [listLoading, setListLoading] = useState(true);
+
+  const isMounted = useMountedState();
 
   const dispatch = useDispatch();
 
@@ -63,14 +66,19 @@ const DeleteTenantScreen = ({ navigation }) => {
   const getInstitutions = useCallback(async () => {
     try {
       setListLoading(true);
+
       const res = await dispatch(databaseActions.getInstitutions());
-      setInstitutions(res.data.data);
+      if (isMounted()) {
+        setInstitutions(res.data.data);
+      }
     } catch (err) {
       handleErrorResponse(err);
     } finally {
-      setListLoading(false);
+      if (isMounted()) {
+        setListLoading(false);
+      }
     }
-  }, [dispatch]);
+  }, [dispatch, isMounted]);
 
   useEffect(() => {
     getInstitutions();
@@ -108,8 +116,8 @@ const DeleteTenantScreen = ({ navigation }) => {
           contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
           renderItem={renderInstitutions}
-          onRefresh={getInstitutions}
           refreshing={listLoading}
+          onRefresh={getInstitutions}
           ListEmptyComponent={renderEmptyComponent}
         />
       </Layout>

@@ -9,6 +9,7 @@ import {
   TopNavigation,
   TopNavigationAction,
 } from "@ui-kitten/components";
+import useMountedState from "react-use/lib/useMountedState";
 
 import * as databaseActions from "../../store/actions/databaseActions";
 import * as checklistActions from "../../store/actions/checklistActions";
@@ -27,6 +28,8 @@ const TenantDashboardScreen = ({ navigation }) => {
   const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
+
+  const isMounted = useMountedState();
 
   const dispatch = useDispatch();
 
@@ -52,19 +55,21 @@ const TenantDashboardScreen = ({ navigation }) => {
       try {
         setLoading(true);
 
-        console.log("AuditID:", auditID);
-
         await dispatch(checklistActions.getAuditData(auditID));
 
         navigation.navigate("Rectification", { stallName });
       } catch (err) {
         handleErrorResponse(err);
-        setError(err.message);
+        if (isMounted()) {
+          setError(err.message);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted()) {
+          setLoading(false);
+        }
       }
     },
-    [dispatch, navigation]
+    [dispatch, isMounted, navigation]
   );
 
   const renderActiveAudits = useCallback(
@@ -94,18 +99,22 @@ const TenantDashboardScreen = ({ navigation }) => {
   const getListData = useCallback(async () => {
     try {
       setListLoading(true);
+
       const res = await dispatch(
         databaseActions.getTenantActiveAudits(authStore._id)
       );
-      console.log(res.data.data);
-      setListData(res.data.data);
+      if (isMounted()) {
+        setListData(res.data.data);
+      }
     } catch (err) {
       handleErrorResponse(err);
     } finally {
-      setListLoading(false);
-      setLoading(false);
+      if (isMounted()) {
+        setListLoading(false);
+        setLoading(false);
+      }
     }
-  }, [authStore._id, dispatch]);
+  }, [authStore._id, dispatch, isMounted]);
 
   useEffect(() => {
     // Subscribe for the focus Listener
@@ -139,8 +148,8 @@ const TenantDashboardScreen = ({ navigation }) => {
           keyExtractor={(item, index) => String(index)}
           data={listData}
           renderItem={renderActiveAudits}
-          onRefresh={handleRefreshList}
           refreshing={listLoading}
+          onRefresh={handleRefreshList}
           ListEmptyComponent={renderEmptyComponent}
           ListHeaderComponent={() => (
             <View style={styles.textContainer}>

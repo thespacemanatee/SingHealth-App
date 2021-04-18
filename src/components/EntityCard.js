@@ -6,7 +6,6 @@ import ShadowCard from "./ui/ShadowCard";
 
 const EntityCard = ({ onPress, displayName, _id }) => {
   const handleOnPress = () => {
-    // console.log(_id);
     onPress(_id, displayName);
   };
 

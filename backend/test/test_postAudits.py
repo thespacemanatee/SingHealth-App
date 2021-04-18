@@ -4,6 +4,7 @@ import unittest
 from BTSApp import BTSAppTestCase
 import sys
 sys.path.append("..\\")
+import BTS.auditsEndpoint
 
 
 class TestPostAuditsEndpt(BTSAppTestCase):
@@ -108,6 +109,10 @@ class TestPostAuditsEndpt(BTSAppTestCase):
         response = self.client.post("/audits", json=test_request)
         self.assertEqual(response.status_code, 400)
         assert not self.mongo.db.audits.insert_one.called
+        self.assertEqual(
+            response.json["description"], 
+            "Item no. 1 in 'Housekeeping and General Cleanliness':\nAnswer not provided"
+            )
 
     def test_too_many_images(self):
         with open("test requests\\post_audits\\auditMetadata.json", "r") as am:
@@ -304,7 +309,7 @@ class TestGetAuditsEndpt(BTSAppTestCase):
             auditMetadata = json.load(f1)
         with open("test requests\\get_audits\\auditMetadata2.json", "r") as f2:
             auditMetadata2 = json.load(f2)
-        with open("test requests\\get_audits\\auditMetadata2.json", "r") as t:
+        with open("test requests\\get_audits\\tenant.json", "r") as t:
             tenant = json.load(t)
         self.mongo.db.audits.find.return_value = [
             auditMetadata, auditMetadata2]
@@ -328,29 +333,40 @@ class TestGetAuditsEndpt(BTSAppTestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_get_some_audits(self):
-        self.mongo.db.tenant.find_one.return_value.__getitem__.side_effect = {
-            "stallName": "Continental Electronics"}
-        response = self.client.get(
-            "/audits?tenantID=6065de0ec8b7adbe23debd90daysBefore=3"
-        )
-        self.assertEqual(response.status_code, 200)
+        with patch.object(BTS.auditsEndpoint,"datetime") as dt:
+            dt.utcnow.return_value = 0
+            dt.timedelta.return_value = 0
+            self.mongo.db.audits.find.return_value = [{}]
+            self.mongo.db.tenant.find_one.return_value = {
+                "stallName": "Continental Electronics"}
+            response = self.client.get(
+                "/audits?tenantID=6065de0ec8b7adbe23debd90&daysBefore=3"
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json["description"], "Audits retrieved successfully")
 
     def test_invalid_date_range(self):
         daysBefore = -3
         response = self.client.get(
-            f"/audits?tenantID=6065de0ec8b7adbe23debd90daysBefore={daysBefore}"
+            f"/audits?tenantID=6065de0ec8b7adbe23debd90&daysBefore={daysBefore}"
         )
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json["description"], 
+            "Invalid date range provided"
+            )
 
     def test_valid_no_matching_audits(self):
         self.mongo.db.audits.find.return_value = None
         self.mongo.db.tenant.find_one.return_value = None
         response = self.client.get(
-            f"/audits?tenantID=6065de0ec8b7adbe23debd90daysBefore=0"
+            f"/audits?tenantID=6065de0ec8b7adbe23debd90&daysBefore=0"
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["data"]
-                         ["description"], "No audits found")
+        self.assertEqual(
+            response.json["description"], 
+            "No audits found"
+            )
 
 
 if __name__ == "__main__":

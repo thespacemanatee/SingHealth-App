@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, View } from "react-native";
+import { Platform, View, useWindowDimensions } from "react-native";
 import {
   Card,
   StyleService,
@@ -7,8 +7,8 @@ import {
   Icon,
   useTheme,
 } from "@ui-kitten/components";
+import moment from "moment";
 
-import { SCREEN_WIDTH } from "../../helpers/config";
 import CustomText from "./CustomText";
 
 const ICON_SIZE = 30;
@@ -16,7 +16,7 @@ const ICON_SIZE = 30;
 const AlertIcon = (props) => (
   <Icon
     {...props}
-    name="alert-triangle-outline"
+    name="alert-circle-outline"
     style={{
       width: ICON_SIZE,
       height: ICON_SIZE,
@@ -45,15 +45,27 @@ const CustomCard = (props) => {
     question,
     rectified,
     checkboxDisabled,
+    deadline,
   } = props;
+
+  const windowDimensions = useWindowDimensions();
 
   const theme = useTheme();
 
   const Header = (headerProps) => (
     <View {...headerProps} style={styles.header}>
       <CustomText style={styles.font}>{index + 1}</CustomText>
-      {!checked && !rectified && !deleted && (
-        <AlertIcon fill={theme["color-danger-600"]} />
+      {!checked && rectified === false && !deleted && (
+        <View style={styles.unrectifiedContainer}>
+          <CustomText style={styles.deadline}>
+            {`Deadline: ${moment(deadline?.$date || deadline)
+              .toLocaleString()
+              .split(" ")
+              .slice(0, 4)
+              .join(" ")}`}
+          </CustomText>
+          <AlertIcon fill={theme["color-danger-600"]} />
+        </View>
       )}
       {!checked && rectified && <CheckIcon fill={theme["color-success-600"]} />}
     </View>
@@ -80,7 +92,7 @@ const CustomCard = (props) => {
             numberOfLines={2}
             // eslint-disable-next-line react-native/no-inline-styles
             style={{
-              width: Platform.OS === "web" ? SCREEN_WIDTH - 100 : null,
+              width: Platform.select({ web: windowDimensions.width }),
               textDecorationLine: deleted ? "line-through" : null,
               fontFamily: "SFProDisplay-Regular",
             }}
@@ -102,10 +114,18 @@ const styles = StyleService.create({
   font: {
     fontFamily: "SFProDisplay-Regular",
   },
+  unrectifiedContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  deadline: {
+    marginHorizontal: 5,
+  },
   questionContainer: {
     flexDirection: "row",
   },
   questionTextContainer: {
+    flex: 1,
     paddingLeft: 10,
   },
   deleteBox: {

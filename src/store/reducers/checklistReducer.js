@@ -31,33 +31,30 @@ const checklistReducer = (state = initialState, action) => {
         ...state,
         chosen_tenant: action.tenant,
       };
-    case ADD_CHOSEN_CHECKLIST: {
+
+    case ADD_CHOSEN_CHECKLIST:
       return {
         ...state,
         chosen_checklist_type: action.checklistType,
         chosen_checklist: action.checklist,
       };
-    }
 
-    case ADD_COVID_CHECKLIST: {
+    case ADD_COVID_CHECKLIST:
       return {
         ...state,
         covid19: action.checklist,
       };
-    }
 
-    case CREATE_AUDIT_METADATA: {
+    case CREATE_AUDIT_METADATA:
       return {
         ...state,
         auditMetadata: action.auditMetadata,
       };
-    }
 
-    case ADD_SAVED_CHECKLIST: {
+    case ADD_SAVED_CHECKLIST:
       return {
         ...action.data,
       };
-    }
 
     case ADD_IMAGE: {
       let newChecklist;
@@ -91,8 +88,6 @@ const checklistReducer = (state = initialState, action) => {
         (e) => e !== action.fileName
       );
 
-      // console.log(newChecklist.questions);
-
       if (action.checklistType === "covid19") {
         return {
           ...state,
@@ -104,6 +99,7 @@ const checklistReducer = (state = initialState, action) => {
         chosen_checklist: newChecklist,
       };
     }
+
     case DELETE_IMAGE: {
       let newChecklist;
       if (action.checklistType === "covid19") {
@@ -123,7 +119,6 @@ const checklistReducer = (state = initialState, action) => {
         1
       );
 
-      // console.log(newChecklist.questions[action.index].image.uri);
       if (action.checklistType === "covid19") {
         return {
           ...state,
@@ -136,6 +131,7 @@ const checklistReducer = (state = initialState, action) => {
         chosen_checklist: newChecklist,
       };
     }
+
     case ADD_REMARKS: {
       let newChecklist;
       if (action.checklistType === "covid19") {
@@ -197,6 +193,7 @@ const checklistReducer = (state = initialState, action) => {
         chosen_checklist: newChecklist,
       };
     }
+
     case CHANGE_DEADLINE: {
       let newChecklist;
       if (action.checklistType === "covid19") {

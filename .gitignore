@@ -21,6 +21,7 @@ backend/backend/**
 # Backend unittesting
 backend/test/htmlcov/*
 backend/test/.coverage
+backend/.coverage
 
 # wx test files
 backend/test_backend_wx.py

@@ -11,6 +11,7 @@ import {
   useStyleSheet,
 } from "@ui-kitten/components";
 import { FAB } from "react-native-paper";
+import useMountedState from "react-use/lib/useMountedState";
 
 import * as databaseActions from "../../store/actions/databaseActions";
 import * as checklistActions from "../../store/actions/checklistActions";
@@ -34,6 +35,8 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   const { handleScroll, showButton } = useHandleScroll();
 
+  const isMounted = useMountedState();
+
   const styles = useStyleSheet(themedStyles);
 
   const dispatch = useDispatch();
@@ -56,20 +59,22 @@ const StaffDashboardScreen = ({ navigation }) => {
       try {
         setLoading(true);
 
-        console.log("AuditID:", auditID);
-
         await dispatch(checklistActions.getAuditData(auditID));
 
         setLoading(false);
         navigation.navigate("Rectification", { stallName });
       } catch (err) {
         handleErrorResponse(err);
-        setError(err.message);
+        if (isMounted()) {
+          setError(err.message);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted()) {
+          setLoading(false);
+        }
       }
     },
-    [dispatch, navigation]
+    [dispatch, isMounted, navigation]
   );
 
   const renderActiveAudits = useCallback(
@@ -100,6 +105,7 @@ const StaffDashboardScreen = ({ navigation }) => {
   const getListData = useCallback(async () => {
     try {
       setListLoading(true);
+
       const res = await dispatch(
         databaseActions.getStaffActiveAudits(authStore.institutionID)
       );
@@ -107,14 +113,18 @@ const StaffDashboardScreen = ({ navigation }) => {
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
       await dispatch(databaseActions.getInstitutions());
-      setListData(res.data.data);
+      if (isMounted()) {
+        setListData(res.data.data);
+      }
     } catch (err) {
       handleErrorResponse(err);
     } finally {
-      setListLoading(false);
-      setLoading(false);
+      if (isMounted()) {
+        setListLoading(false);
+        setLoading(false);
+      }
     }
-  }, [authStore.institutionID, dispatch]);
+  }, [authStore.institutionID, dispatch, isMounted]);
 
   useEffect(() => {
     // Subscribe for the focus Listener
@@ -147,9 +157,9 @@ const StaffDashboardScreen = ({ navigation }) => {
           keyExtractor={(item, index) => String(index)}
           data={listData}
           renderItem={renderActiveAudits}
-          onRefresh={getListData}
-          refreshing={listLoading}
           onScroll={handleScroll}
+          refreshing={listLoading}
+          onRefresh={getListData}
           ListEmptyComponent={renderEmptyComponent}
           ListHeaderComponent={
             <>

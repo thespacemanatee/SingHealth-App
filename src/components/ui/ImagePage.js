@@ -2,25 +2,23 @@ import React from "react";
 import {
   View,
   Image,
-  Dimensions,
   Pressable,
   ActivityIndicator,
+  useWindowDimensions,
 } from "react-native";
 import { Button, StyleService, useTheme } from "@ui-kitten/components";
 import CustomText from "./CustomText";
 
 const ImagePage = (props) => {
-  const { height } = Dimensions.get("window");
-  const IMAGE_HEIGHT = height * 0.5;
-  const IMAGE_WIDTH = (IMAGE_HEIGHT / 4) * 3;
+  const { imageUri, selectedIndex, loading, onPress, onDelete } = props;
 
   const theme = useTheme();
 
-  const { imageUri } = props;
-  const { selectedIndex } = props;
-  const { loading } = props;
-  const { onPress } = props;
-  const { onDelete } = props;
+  const windowDimensions = useWindowDimensions();
+  const { height } = windowDimensions;
+
+  const IMAGE_HEIGHT = height * 0.6;
+  const IMAGE_WIDTH = (IMAGE_HEIGHT / 4) * 3;
 
   const handleDeleteImage = () => {
     onDelete(selectedIndex);

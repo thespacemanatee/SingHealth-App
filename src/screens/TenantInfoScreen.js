@@ -9,6 +9,7 @@ import {
   TopNavigation,
   TopNavigationAction,
 } from "@ui-kitten/components";
+import useMountedState from "react-use/lib/useMountedState";
 
 import * as databaseActions from "../store/actions/databaseActions";
 import * as checklistActions from "../store/actions/checklistActions";
@@ -29,6 +30,8 @@ const TenantInfoScreen = ({ route, navigation }) => {
   const [listData, setListData] = useState([]);
   const { tenantID, stallName } = route.params;
 
+  const isMounted = useMountedState();
+
   const dispatch = useDispatch();
 
   const BackAction = () => (
@@ -48,8 +51,6 @@ const TenantInfoScreen = ({ route, navigation }) => {
     async (auditID, name) => {
       try {
         setLoading(true);
-
-        console.log("AuditID:", auditID);
 
         await dispatch(checklistActions.getAuditData(auditID));
 
@@ -92,16 +93,21 @@ const TenantInfoScreen = ({ route, navigation }) => {
   const getListData = useCallback(async () => {
     try {
       setListLoading(true);
+
       const res = await dispatch(databaseActions.getTenantAudits(tenantID));
-      console.log(res);
-      setListData(res.data.data);
+
+      if (isMounted()) {
+        setListData(res.data.data);
+      }
     } catch (err) {
       handleErrorResponse(err);
     } finally {
-      setListLoading(false);
-      setLoading(false);
+      if (isMounted()) {
+        setListLoading(false);
+        setLoading(false);
+      }
     }
-  }, [dispatch, tenantID]);
+  }, [dispatch, isMounted, tenantID]);
 
   useEffect(() => {
     // Subscribe for the focus Listener
@@ -135,8 +141,8 @@ const TenantInfoScreen = ({ route, navigation }) => {
           keyExtractor={(item, index) => String(index)}
           data={listData}
           renderItem={renderAudits}
-          onRefresh={getListData}
           refreshing={listLoading}
+          onRefresh={getListData}
           ListEmptyComponent={renderEmptyComponent}
           ListHeaderComponent={
             <>

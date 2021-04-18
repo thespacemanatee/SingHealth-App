@@ -8,7 +8,6 @@ import {
   TopNavigationAction,
   Icon,
   StyleService,
-  Input,
   useTheme,
   Button,
   Card,
@@ -18,10 +17,8 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import moment from "moment";
 
 import * as checklistActions from "../../store/actions/checklistActions";
-import CustomDatepicker from "../../components/CustomDatePicker";
 import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
-import { SCREEN_HEIGHT } from "../../helpers/config";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
 

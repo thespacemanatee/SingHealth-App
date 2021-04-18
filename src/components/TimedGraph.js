@@ -5,6 +5,7 @@ import { useTheme } from "@ui-kitten/components";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { useNavigation } from "@react-navigation/native";
+import useMountedState from "react-use/lib/useMountedState";
 
 import * as databaseActions from "../store/actions/databaseActions";
 import { handleErrorResponse } from "../helpers/utils";
@@ -67,6 +68,8 @@ const TimedGraph = ({ label, type, id }) => {
   const [startX, setStartX] = useState();
   const [endX, setEndX] = useState();
 
+  const isMounted = useMountedState();
+
   const navigation = useNavigation();
 
   const dispatch = useDispatch();
@@ -89,15 +92,17 @@ const TimedGraph = ({ label, type, id }) => {
       temp = databaseStore.graphData.oneYear;
     }
 
-    if (temp) {
-      setStartX(moment(temp[0].x));
-      setEndX(moment(temp[temp.length - 1].x));
-      setGraphData(temp.map((p) => [new Date(p.x).getTime(), p.y]));
-    } else {
-      setStartX(moment());
-      setEndX(moment());
+    if (isMounted()) {
+      if (temp) {
+        setStartX(moment(temp[0].x));
+        setEndX(moment(temp[temp.length - 1].x));
+        setGraphData(temp.map((p) => [new Date(p.x).getTime(), p.y]));
+      } else {
+        setStartX(moment());
+        setEndX(moment());
+      }
     }
-  }, [buttonPressed, databaseStore.graphData]);
+  }, [buttonPressed, databaseStore.graphData, isMounted]);
 
   const getGraphData = useCallback(async () => {
     try {
@@ -147,10 +152,9 @@ const TimedGraph = ({ label, type, id }) => {
           )
         ),
       ]);
-      console.log(res);
 
       res.forEach((e) => {
-        e.data.data.sort((a, b) => {
+        e.data.data?.sort((a, b) => {
           return (
             moment(a.date).toDate().getTime() -
             moment(b.date).toDate().getTime()
@@ -159,23 +163,23 @@ const TimedGraph = ({ label, type, id }) => {
       });
 
       const dataObject = {
-        oneMonth: res[0].data.data.map((e) => ({
+        oneMonth: res[0]?.data.data.map((e) => ({
           x: moment(e.date).toDate(),
           y: Number.parseFloat(e.avgScore) * 100,
         })),
-        threeMonths: res[1].data.data.map((e) => ({
+        threeMonths: res[1]?.data.data.map((e) => ({
           x: moment(e.date).toDate(),
           y: Number.parseFloat(e.avgScore) * 100,
         })),
-        sixMonths: res[2].data.data.map((e) => ({
+        sixMonths: res[2]?.data.data.map((e) => ({
           x: moment(e.date).toDate(),
           y: Number.parseFloat(e.avgScore) * 100,
         })),
-        ytd: res[3].data.data.map((e) => ({
+        ytd: res[3]?.data.data.map((e) => ({
           x: moment(e.date).toDate(),
           y: Number.parseFloat(e.avgScore) * 100,
         })),
-        oneYear: res[4].data.data.map((e) => ({
+        oneYear: res[4]?.data.data.map((e) => ({
           x: moment(e.date).toDate(),
           y: Number.parseFloat(e.avgScore) * 100,
         })),
@@ -184,12 +188,16 @@ const TimedGraph = ({ label, type, id }) => {
       dispatch(databaseActions.storeGraphData(dataObject));
     } catch (err) {
       dispatch(databaseActions.storeGraphData({}));
-      setGraphData();
+      if (isMounted()) {
+        setGraphData();
+      }
       handleErrorResponse(err);
     } finally {
-      setGraphLoading(false);
+      if (isMounted()) {
+        setGraphLoading(false);
+      }
     }
-  }, [dispatch, id, type]);
+  }, [dispatch, id, isMounted, type]);
 
   useEffect(() => {
     renderGraph();
@@ -199,7 +207,6 @@ const TimedGraph = ({ label, type, id }) => {
     getGraphData();
     const unsubscribe = navigation.addListener("focus", () => {
       getGraphData();
-      console.log("GETTING GRAPH DATA");
     });
     return () => {
       // eslint-disable-next-line no-unused-expressions

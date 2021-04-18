@@ -7,6 +7,7 @@ import moment from "moment";
 import * as checklistActions from "../store/actions/checklistActions";
 import CustomText from "./ui/CustomText";
 import ShadowCard from "./ui/ShadowCard";
+import { handleErrorResponse } from "../helpers/utils";
 
 const NewChecklistCard = ({
   item,
@@ -32,8 +33,6 @@ const NewChecklistCard = ({
         date: now,
       };
 
-      console.log("AUDITMETADATA:", auditMetadata);
-
       dispatch(checklistActions.createAuditMetadata(auditMetadata));
 
       navigation.navigate("Checklist", {
@@ -41,7 +40,7 @@ const NewChecklistCard = ({
         stallName: item.stallName,
       });
     } catch (err) {
-      console.error(err);
+      handleErrorResponse(err);
       onError(err);
     } finally {
       onLoading(false);

@@ -22,8 +22,6 @@ export const TYPE_NON_FNB = "non_fnb";
 export const TYPE_COVID = "covid19";
 
 export const getChecklist = (checklistType, tenant) => async (dispatch) => {
-  console.log(checklistType);
-
   await Promise.all([
     dispatch(addChosenChecklist(checklistType)),
     dispatch(addCovidChecklist()),
@@ -31,9 +29,10 @@ export const getChecklist = (checklistType, tenant) => async (dispatch) => {
   ]);
 };
 
-export const addAuditTenantSelection = (tenant) => {
-  return { type: ADD_AUDIT_TENANT_SELECTION, tenant };
-};
+export const addAuditTenantSelection = (tenant) => ({
+  type: ADD_AUDIT_TENANT_SELECTION,
+  tenant,
+});
 
 export const addChosenChecklist = (fnb = true) => {
   return async (dispatch) => {
@@ -47,7 +46,7 @@ export const addChosenChecklist = (fnb = true) => {
     const res = await httpClient(options);
 
     const checklist = res.data.data;
-    // console.log(`Done fetching ${checklistType} checklist`, checklist);
+
     return dispatch({ type: ADD_CHOSEN_CHECKLIST, checklistType, checklist });
   };
 };
@@ -63,21 +62,20 @@ export const addCovidChecklist = () => {
     const res = await httpClient(options);
 
     const checklist = res.data.data;
-    // console.log("Done fetching covid checklist", checklist);
+
     return dispatch({ type: ADD_COVID_CHECKLIST, checklist });
   };
 };
 
-export const createAuditMetadata = (auditMetadata) => {
-  return { type: CREATE_AUDIT_METADATA, auditMetadata };
-};
+export const createAuditMetadata = (auditMetadata) => ({
+  type: CREATE_AUDIT_METADATA,
+  auditMetadata,
+});
 
-export const addSavedChecklist = (data) => {
-  return {
-    type: ADD_SAVED_CHECKLIST,
-    data,
-  };
-};
+export const addSavedChecklist = (data) => ({
+  type: ADD_SAVED_CHECKLIST,
+  data,
+});
 
 export const addImage = (
   checklistType,
@@ -86,77 +84,63 @@ export const addImage = (
   fileName,
   imageUri,
   rectify = false
-) => {
-  return {
-    type: ADD_IMAGE,
-    checklistType,
-    section,
-    index,
-    fileName,
-    imageUri,
-    rectify,
-  };
-};
+) => ({
+  type: ADD_IMAGE,
+  checklistType,
+  section,
+  index,
+  fileName,
+  imageUri,
+  rectify,
+});
+
 export const deleteImage = (
   checklistType,
   section,
   index,
   selectedIndex,
   rectify = false
-) => {
-  return {
-    checklistType,
-    type: DELETE_IMAGE,
-    section,
-    index,
-    selectedIndex,
-    rectify,
-  };
-};
+) => ({
+  checklistType,
+  type: DELETE_IMAGE,
+  section,
+  index,
+  selectedIndex,
+  rectify,
+});
+
 export const addRemarks = (
   checklistType,
   section,
   index,
   remarks,
   rectify = false
-) => {
-  return {
-    checklistType,
-    type: ADD_REMARKS,
-    section,
-    index,
-    remarks,
-    rectify,
-  };
-};
+) => ({
+  checklistType,
+  type: ADD_REMARKS,
+  section,
+  index,
+  remarks,
+  rectify,
+});
+
 export const changeAnswer = (
   checklistType,
   section,
   index,
   deleted,
   checked
-) => {
-  return {
-    type: CHANGE_ANSWER,
-    checklistType,
-    section,
-    index,
-    deleted,
-    checked,
-  };
-};
-export const changeDeadline = (checklistType, section, index, date) => {
-  return {
-    type: CHANGE_DEADLINE,
-    checklistType,
-    section,
-    index,
-    date,
-  };
-};
-export const resetChecklistStore = () => {
-  return { type: RESET_CHECKLIST_STORE };
-};
+) => ({ type: CHANGE_ANSWER, checklistType, section, index, deleted, checked });
+
+export const changeDeadline = (checklistType, section, index, date) => ({
+  type: CHANGE_DEADLINE,
+  checklistType,
+  section,
+  index,
+  date,
+});
+
+export const resetChecklistStore = () => ({ type: RESET_CHECKLIST_STORE });
 
 export const getAuditData = (auditID) => {
   return async (dispatch) => {
@@ -188,7 +172,6 @@ export const getAuditData = (auditID) => {
 
 export const getImage = (fileName, source) => {
   return async () => {
-    console.log(fileName);
     const options = {
       url: `${endpoint}images`,
       method: "get",

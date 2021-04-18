@@ -35,7 +35,12 @@ const AppNavigator = () => {
                   StaffDashboardStack: {
                     screens: {
                       StaffDashboard: "staff/dashboard",
-                      ChooseTenant: "staff/new-audit",
+                      ChooseTenant: {
+                        screens: {
+                          Tenants: "staff/new-audit",
+                          Saved: "staff/new-audit/saved",
+                        },
+                      },
                       Checklist: "staff/new-audit/:auditID",
                       QuestionDetails: "staff/new-audit/details",
                       AuditSubmit: "staff/new-audit/submit",
@@ -63,7 +68,8 @@ const AppNavigator = () => {
             screens: {
               ManageTenantAccounts: "staff/manage-tenants",
               CreateTenant: "staff/manage-tenants/create",
-              // AddAccountDetails: "staff/manage-tenants/create/details",
+              DeleteTenant: "staff/manage-tenants/delete",
+              SelectDelete: "staff/manage-tenants/delete/:institutionID",
             },
           },
         },
@@ -130,11 +136,10 @@ const AppNavigator = () => {
       </View>
     );
   };
-  console.log(authStore);
 
   return (
     <NavigationContainer linking={linking}>
-      {authStore.userToken === null ? (
+      {authStore._id === null ? (
         <SafeAreaView style={styles.screen}>
           <Navigator headerMode="none">
             <Screen name="Auth" component={AuthScreen} />

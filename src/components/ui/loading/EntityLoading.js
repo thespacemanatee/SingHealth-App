@@ -1,26 +1,28 @@
 import React from "react";
-import { Platform } from "react-native";
-import { SCREEN_WIDTH, SCREEN_HEIGHT } from "../../../helpers/config";
+import { Platform, useWindowDimensions } from "react-native";
 
 import { ContentLoader, Rect } from "../../../index";
 
 const EntityLoading = (props) => {
-  const SVG_HEIGHT = 100;
-  const len = new Array(Math.ceil(SCREEN_HEIGHT / SVG_HEIGHT)).fill();
+  const windowDimensions = useWindowDimensions();
+  const { width, height } = windowDimensions;
+
+  const SVG_HEIGHT = 75;
+  const len = new Array(Math.ceil(height / SVG_HEIGHT)).fill();
   if (Platform.OS === "web") {
     return len.map((item, index) => {
       return (
         <ContentLoader
           key={String(index)}
           speed={0.8}
-          width={SCREEN_WIDTH}
-          height={80}
-          viewBox="0 0 500 80"
+          width="100%"
+          height={SVG_HEIGHT}
+          viewBox={`0 0 ${width} ${SVG_HEIGHT}`}
           backgroundColor="#f3f3f3"
           foregroundColor="#ecebeb"
           {...props}
         >
-          <rect x="0" y="15" rx="10" ry="10" width="480" height="58" />
+          <rect x="0" y="15" rx="10" ry="10" width={`${width}`} height="60" />
         </ContentLoader>
       );
     });
@@ -31,14 +33,14 @@ const EntityLoading = (props) => {
       <ContentLoader
         key={String(index)}
         speed={0.8}
-        width={SCREEN_WIDTH}
-        height={80}
-        viewBox="0 0 500 80"
+        width="100%"
+        height={SVG_HEIGHT}
+        viewBox={`0 0 ${width} ${SVG_HEIGHT}`}
         backgroundColor="#f3f3f3"
         foregroundColor="#ecebeb"
         {...props}
       >
-        <Rect x="0" y="15" rx="10" ry="10" width="480" height="58" />
+        <Rect x="0" y="15" rx="10" ry="10" width={`${width}`} height="60" />
       </ContentLoader>
     );
   });

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { View, StyleSheet, Dimensions, Platform } from "react-native";
+import { View, StyleSheet, Platform, useWindowDimensions } from "react-native";
 import {
   PanGestureHandler,
   PanGestureHandlerGestureEvent,
@@ -19,8 +19,6 @@ import { Path } from "../../AnimatedHelpers";
 
 import Label, { DataPoint, LABEL_SIZE } from "./Label";
 
-const { width } = Dimensions.get("window");
-const height = width / 3;
 const CURSOR = 150;
 const styles = StyleSheet.create({
   cursorContainer: {
@@ -33,7 +31,6 @@ const styles = StyleSheet.create({
   lineContainer: {
     position: "absolute",
     width: CURSOR,
-    height: CURSOR,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -46,7 +43,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   line: {
-    height,
     width: 1,
     backgroundColor: "grey",
   },
@@ -66,9 +62,13 @@ const Cursor = ({ path, length, point }: CursorProps) => {
   const opacity = useState(new Animated.Value(0))[0];
   const [webOpacity, setWebOpacity] = useState(0);
 
+  const windowDimensions = useWindowDimensions();
+
+  const { width, height: windowHeight } = windowDimensions;
+  const height = windowHeight / 5;
+
   const fadeIn = () => {
     if (Platform.OS === "web") {
-      console.log("fading in");
       setWebOpacity(1);
     } else {
       Animated.timing(opacity, {
@@ -81,7 +81,6 @@ const Cursor = ({ path, length, point }: CursorProps) => {
 
   const fadeOut = () => {
     if (Platform.OS === "web") {
-      console.log("fading out");
       setWebOpacity(0);
     } else {
       Animated.timing(opacity, {
@@ -186,7 +185,7 @@ const Cursor = ({ path, length, point }: CursorProps) => {
               lineStyle,
             ]}
           >
-            <View style={styles.line} />
+            <View style={[styles.line, { height }]} />
           </Animated.View>
           <Animated.View style={[styles.cursorContainer, cursorStyle]}>
             <View style={styles.cursor} />

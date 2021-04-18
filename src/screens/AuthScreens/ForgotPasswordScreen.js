@@ -33,6 +33,8 @@ const ForgotPasswordScreen = ({ navigation }) => {
       .required("Please enter your email!"),
   });
 
+  const handleSubmitForm = () => {};
+
   const BackAction = () => (
     <TopNavigationAction
       icon={BackIcon}
@@ -68,13 +70,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
         <Layout style={styles.layout}>
           <Formik
             initialValues={{ email: "" }}
-            onSubmit={(values) => {
-              console.log(values);
-              // dispatch(
-              //   authActions.signIn(values.email, values.password, "staff")
-              // );
-              navigation.navigate("Login");
-            }}
+            onSubmit={handleSubmitForm}
             validationSchema={ForgotSchema}
           >
             {({ handleChange, handleBlur, handleSubmit, values, errors }) => (

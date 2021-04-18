@@ -43,6 +43,9 @@ faker = "*"
 coverage = "*"
 mongomock = "*"
 python-docx = "*"
+redis = "*"
+flask-session = "*"
+multidict = "*"
 
 [dev-packages]
 

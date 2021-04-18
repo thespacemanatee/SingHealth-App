@@ -8,7 +8,6 @@ import {
 const initialState = {
   isLoading: true,
   isSignOut: false,
-  userToken: null,
   userType: null,
   expoToken: null,
   _id: null,
@@ -22,7 +21,6 @@ const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case RESTORE_TOKEN: {
       const {
-        userToken,
         userType,
         _id,
         email,
@@ -33,7 +31,6 @@ const authReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        userToken,
         userType,
         _id,
         email,
@@ -45,7 +42,6 @@ const authReducer = (state = initialState, action) => {
     }
     case SIGN_IN: {
       const {
-        userToken,
         userType,
         _id,
         email,
@@ -56,7 +52,6 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         isSignOut: false,
-        userToken,
         userType,
         _id,
         email,
@@ -70,7 +65,6 @@ const authReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
         isSignOut: true,
-        userToken: null,
         userType: null,
         _id: null,
         email: null,

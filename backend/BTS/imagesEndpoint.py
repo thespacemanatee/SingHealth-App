@@ -1,12 +1,12 @@
 from flask_login import login_required
-from flask import request, make_response, jsonify
+from flask import request
 from .utils import serverResponse, upload_image, download_image
+from .constants import IMAGE_FILETYPES
 from base64 import b64decode, b64encode
 from botocore.exceptions import ClientError
-import boto3
 import io
-import traceback
 import os
+
 
 def addImagesEndpoint(app):
     @app.route("/images", methods=["GET", 'POST'])
@@ -16,19 +16,24 @@ def addImagesEndpoint(app):
             if (requestJson := request.get_json(silent=True)) != None:
                 allImages = requestJson.get("images", [])
                 if len(allImages) > 0:
-                    requestData = allImages
-
                     imageFilenames = []
-                    for image in requestData:
+                    for image in allImages:
                         if (imageFilename := image.get("fileName", None)) != None:
-                            imageFilenames.append(imageFilename)
+                            if imageFilename.split(".")[-1] in IMAGE_FILETYPES:
+                                imageFilenames.append(imageFilename)
+                            else:
+                                return serverResponse(
+                                    None, 
+                                    400, 
+                                    f"Unknown image file extension used: {imageFilename.split('.')[-1]}"
+                                    )
 
                     detected_Duplicate_filenames = len(
                         imageFilenames) > len(set(imageFilenames))
                     if detected_Duplicate_filenames:
                         return serverResponse(None, 400, "Duplicate image names found")
 
-                    for image in requestData:
+                    for image in allImages:
                         try:
                             imageName = image["fileName"]
                             imageData = image["uri"]
@@ -69,7 +74,7 @@ def addImagesEndpoint(app):
                 imageBase64 = b64encode(
                     imageObject.getvalue()).decode()
                 return serverResponse(imageBase64, 200, "Image found")
-            except ClientError as e:
+            except ClientError:
                 return serverResponse(None, 404, "Image not found")
             except:
                 return serverResponse(None, 500, "Unexpected error, pls try again.")

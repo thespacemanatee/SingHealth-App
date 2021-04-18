@@ -4,6 +4,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   Platform,
+  useWindowDimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Camera } from "expo-camera";
@@ -14,8 +15,6 @@ import {
   TopNavigation,
   TopNavigationAction,
 } from "@ui-kitten/components";
-
-import { SCREEN_WIDTH } from "../helpers/config";
 
 let camera;
 const BackIcon = (props) => <Icon {...props} name="arrow-back" fill="white" />;
@@ -29,7 +28,10 @@ const CameraScreen = ({ route, navigation }) => {
   const [flashMode, setFlashMode] = useState("off");
   const [cameraType, setCameraType] = useState("back");
 
-  const CAMERA_VIEW_HEIGHT = (SCREEN_WIDTH / 3) * 4;
+  const windowDimensions = useWindowDimensions();
+  const { width, height } = windowDimensions;
+
+  const CAMERA_VIEW_HEIGHT = height * 0.75;
 
   const BackAction = () => (
     <TopNavigationAction
@@ -113,7 +115,7 @@ const CameraScreen = ({ route, navigation }) => {
           </View>
         ) : (
           <View style={styles.buttonContainer}>
-            <View style={{ width: SCREEN_WIDTH / 3 }}>
+            <View style={{ width: width / 3 }}>
               <Button
                 //   style={styles.button}
                 appearance="ghost"
@@ -141,7 +143,7 @@ const CameraScreen = ({ route, navigation }) => {
               style={styles.takePictureButton}
             />
 
-            <View style={{ width: SCREEN_WIDTH / 3 }}>
+            <View style={{ width: width / 3 }}>
               <Button
                 appearance="ghost"
                 status="control"

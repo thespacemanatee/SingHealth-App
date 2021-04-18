@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Platform } from "react-native";
+import { View, Platform, useWindowDimensions } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -19,13 +19,13 @@ import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { StackActions } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
+import useMountedState from "react-use/lib/useMountedState";
 
 import alert from "../../components/CustomAlert";
 import * as checklistActions from "../../store/actions/checklistActions";
 import * as databaseActions from "../../store/actions/databaseActions";
 import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
-import { SCREEN_HEIGHT } from "../../helpers/config";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
@@ -48,7 +48,10 @@ const TenantRectificationScreen = ({ route, navigation }) => {
 
   const { index, checklistType, question, section, rectified } = route.params;
 
-  console.log("RECTIFIED:", rectified);
+  const isMounted = useMountedState();
+
+  const windowDimensions = useWindowDimensions();
+  const { height } = windowDimensions;
 
   const theme = useTheme();
 
@@ -121,8 +124,6 @@ const TenantRectificationScreen = ({ route, navigation }) => {
         });
       });
 
-      console.log(base64images);
-
       // let res;
       if (base64images.images.length > 0) {
         await dispatch(databaseActions.postAuditImagesWeb(base64images));
@@ -149,7 +150,6 @@ const TenantRectificationScreen = ({ route, navigation }) => {
         );
       }
 
-      // console.log("RESPONSE:", res);
       Toast.show({
         text1: "Success",
         text2: "Your rectification has been submitted.",
@@ -158,13 +158,14 @@ const TenantRectificationScreen = ({ route, navigation }) => {
     } catch (err) {
       handleErrorResponse(err);
     } finally {
-      setLoadDialog(false);
+      if (isMounted()) {
+        setLoadDialog(false);
+      }
     }
   };
 
   const changeTextHandler = (val) => {
     setValue(val);
-    // console.log(val);
   };
 
   const onBlurHandler = () => {
@@ -303,8 +304,6 @@ const TenantRectificationScreen = ({ route, navigation }) => {
       quality: 0.5,
       base64: true,
     });
-
-    console.log(result);
 
     if (!result.cancelled) {
       onSave(result);
@@ -462,7 +461,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
           <View style={styles.inputContainer}>
             <CustomText bold>Remarks: </CustomText>
             <Input
-              height={SCREEN_HEIGHT * 0.1}
+              height={height * 0.1}
               multiline
               textStyle={styles.input}
               placeholder="Enter your remarks here"

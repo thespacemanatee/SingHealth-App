@@ -1,24 +1,26 @@
 import React from "react";
-import { Platform, View, FlatList } from "react-native";
+import { Platform, View, FlatList, useWindowDimensions } from "react-native";
 import { StyleService } from "@ui-kitten/components";
 
 import ImagePage from "./ui/ImagePage";
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../helpers/config";
 
 const ImageViewPager = (props) => {
-  const IMAGE_HEIGHT = SCREEN_HEIGHT * 0.5;
-  const IMAGE_WIDTH = (IMAGE_HEIGHT / 4) * 3;
-
   const { imageArray, renderListItems } = props;
 
+  const windowDimensions = useWindowDimensions();
+  const { width, height } = windowDimensions;
+
+  const IMAGE_HEIGHT = height * 0.6;
+  const IMAGE_WIDTH = (IMAGE_HEIGHT / 4) * 3;
+
   return imageArray.length > 0 ? (
-    <View style={SCREEN_WIDTH}>
+    <View style={width}>
       <FlatList
         horizontal
         snapToInterval={IMAGE_WIDTH + 20}
         contentContainerStyle={[
           styles.contentContainer,
-          { paddingRight: SCREEN_WIDTH - IMAGE_WIDTH - 20 * 3 },
+          { paddingRight: width - IMAGE_WIDTH - 20 * 3 },
         ]}
         decelerationRate="fast"
         keyExtractor={(item, index) => String(index)}

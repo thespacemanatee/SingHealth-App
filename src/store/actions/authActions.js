@@ -9,30 +9,19 @@ export const SAVE_EXPO_TOKEN = "SAVE_EXPO_TOKEN";
 
 export const restoreToken = () => {
   return async (dispatch) => {
-    try {
-      const cache = await AsyncStorage.getItem("userData");
-      const userData = JSON.parse(cache);
-      console.log("RESTORING TOKEN: ", userData);
+    const cache = await AsyncStorage.getItem("userData");
+    const userData = JSON.parse(cache);
 
-      // After restoring token, we may need to validate it in production apps
+    // After restoring token, we may need to validate it in production apps
 
-      // This will switch to the App screen or Auth screen and this loading
-      // screen will be unmounted and thrown away.
-      dispatch({ type: RESTORE_TOKEN, userData });
-    } catch (err) {
-      // Restoring token failed
-      console.error("RESTORE_TOKEN: no token found in local storage");
-    }
+    // This will switch to the App screen or Auth screen and this loading
+    // screen will be unmounted and thrown away.
+    dispatch({ type: RESTORE_TOKEN, userData });
   };
 };
 
 export const signIn = (user, pswd, userType, expoToken = "") => {
   return async (dispatch) => {
-    console.log({
-      user,
-      pswd,
-      expoToken,
-    });
     const loginOptions = {
       url: `${endpoint}login/${userType}`,
       method: "post",
@@ -50,12 +39,10 @@ export const signIn = (user, pswd, userType, expoToken = "") => {
 
     const res = await httpClient(loginOptions);
 
-    const userToken = "dummy-auth-token";
     const { _id, email, institutionID, name, stallName } = res.data.data;
 
     const userData = {
       userType,
-      userToken,
       _id,
       email,
       institutionID,
@@ -73,7 +60,6 @@ export const signOut = (expoToken) => {
     // dispatch({ action: SIGN_OUT, token: token ? token : null });
     removeTokenFromStorage();
     dispatch({ type: SIGN_OUT });
-    console.log("Signing out!");
     const signOutOptions = {
       url: `${endpoint}logout`,
       method: "post",
@@ -89,9 +75,10 @@ export const signOut = (expoToken) => {
   };
 };
 
-export const saveExpoToken = (expoToken) => {
-  return { type: SAVE_EXPO_TOKEN, expoToken };
-};
+export const saveExpoToken = (expoToken) => ({
+  type: SAVE_EXPO_TOKEN,
+  expoToken,
+});
 
 const saveUserDataToStorage = async (userData) => {
   await AsyncStorage.setItem("userData", JSON.stringify(userData));

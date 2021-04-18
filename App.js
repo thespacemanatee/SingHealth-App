@@ -3,6 +3,7 @@ import { StatusBar, Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import * as eva from "@eva-design/eva";
 import Constants from "expo-constants";
+import { registerRootComponent } from "expo";
 import {
   ApplicationProvider,
   IconRegistry,
@@ -16,6 +17,7 @@ import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
 import Toast from "react-native-toast-message";
 import { PersistGate } from "redux-persist/integration/react";
+import { patchFlatListProps } from "react-native-web-refresh-control";
 
 import { store, persistor } from "./src/store/store";
 import AppNavigator from "./src/navigation/AppNavigator";
@@ -45,7 +47,6 @@ const App = () => {
   const [ready, setReady] = useState(false);
   const [expoToken, setExpoToken] = useState("");
 
-  console.log(expoToken);
   const registerForPushNotificationsAsync = async () => {
     let token;
     if (Constants.isDevice) {
@@ -91,12 +92,17 @@ const App = () => {
     });
   };
 
-  const loadAppAssets = () => {
-    if (Platform.OS !== "web") {
-      registerForPushNotificationsAsync().then((token) => setExpoToken(token));
+  const loadAppAssets = async () => {
+    try {
+      await loadFonts();
+      if (Platform.OS !== "web") {
+        const token = await registerForPushNotificationsAsync();
+        setExpoToken(token);
+      }
+      await store.dispatch(authActions.restoreToken());
+    } catch (err) {
+      // continue
     }
-    loadFonts().then();
-    store.dispatch(authActions.restoreToken());
   };
 
   if (!ready) {
@@ -104,7 +110,7 @@ const App = () => {
       <AppLoading
         startAsync={loadAppAssets}
         onFinish={() => setReady(true)}
-        onError={console.warn}
+        onError={() => {}}
       />
     );
   }
@@ -119,7 +125,7 @@ const App = () => {
                 {Platform.OS === "ios" && <StatusBar barStyle="dark-content" />}
                 <AppNavigator expoToken={expoToken} />
                 <Toast
-                  topOffset={StatusBar.currentHeight}
+                  topOffset={StatusBar.currentHeight || 20}
                   ref={(ref) => Toast.setRef(ref)}
                 />
               </SafeAreaProvider>
@@ -131,11 +137,12 @@ const App = () => {
   );
 };
 
+patchFlatListProps();
+registerRootComponent(App);
 export default App;
 
 const styles = StyleService.create({
   screen: {
     flex: 1,
-    // marginTop: Platform.OS === "web" ? 0 : StatusBar.currentHeight,
   },
 });

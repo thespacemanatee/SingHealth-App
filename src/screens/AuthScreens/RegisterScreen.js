@@ -44,6 +44,8 @@ const RegisterScreen = ({ navigation }) => {
     ),
   });
 
+  const handleSubmitForm = () => {};
+
   const renderSecureIcon = (props) => (
     <TouchableOpacity
       onPress={() => {
@@ -89,12 +91,7 @@ const RegisterScreen = ({ navigation }) => {
         <Layout style={styles.layout}>
           <Formik
             initialValues={{ name: "", email: "", password: "" }}
-            onSubmit={(values) => {
-              console.log(values);
-              // dispatch(
-              //   authActions.signIn(values.email, values.password, "staff")
-              // );
-            }}
+            onSubmit={handleSubmitForm}
             validationSchema={RegisterSchema}
           >
             {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
