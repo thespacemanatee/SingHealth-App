@@ -1,123 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask_login import login_required
-from .utils import serverResponse, find_and_return_one, send_audit_email_excel, send_audit_email_word
-
-
-def check_valid_param(data):
-    if(len(data["missing"]) > 0) or (len(data["error"]) > 0):
-        return False
-    else:
-        return True
-
-def get_rect(question_dict, ans_dict):
-    rect_form = {}
-    
-    for checklist_name in question_dict.keys():        
-        for i in range(len(question_dict[checklist_name])): 
-            question = question_dict[checklist_name][i]['question']
-            answer_bool = ans_dict[checklist_name][i]['answer']
-            item = ans_dict[checklist_name][i]
-            
-            if answer_bool is None:
-                pass
-                
-            elif answer_bool:
-                pass
-                
-            else:
-                rect_form.setdefault(checklist_name,{})
-                
-                #get images from db
-                image_list = item.get("image", None)
-                if image_list is not None:
-                    image_list = ["doggy_image.jpg"]
-
-                remarks = item.get("remarks", "-")
-                rectified = item.get("rectified", False)
-
-                deadline = item.get("deadline", None)
-                if deadline is not None:
-                    deadline =  deadline.strftime("%m/%d/%Y %H:%M:%S")
-                else:
-                    deadline = "-"
-                if rectified:
-                    rectified = "Yes"
-                else:
-                    rectified = "No"
-                
-                #get rectification images from db
-                rect_remarks = item.get("rectificationRemarks", None)
-                rect_image_list = item.get("rectificationImages", None)
-                if rect_remarks is not None:
-                    rect_image_list = ["doggy_rectified_image.jpg"]
-                    
-                #required information
-                rect_form[checklist_name][question] = {
-                    "Non-compliance Images": image_list,
-                    "Remarks": remarks,
-                    "Rectified": rectified,
-                    "deadline": deadline
-                    }
-                
-                if rect_image_list is not None:
-                    rect_form[checklist_name][question]["Rectification Images"] = rect_image_list
-                
-                if rect_remarks is not None:
-                    rect_form[checklist_name][question]["Rectification Remarks"] = rect_remarks
-
-    return rect_form
-    
-def map_qna(question_dict, ans_dict):
-    form_with_ans = {}
-    summary_table = []
-    summary_form = {}
-    total_points = 0
-    
-    for checklist_name in question_dict.keys():        
-        form_with_ans[checklist_name] = []
-        
-        points = 0
-        max_points = 0
-        for i in range(len(question_dict[checklist_name])): 
-            question = question_dict[checklist_name][i]['question']
-            answer_bool = ans_dict[checklist_name][i]['answer']
-            item = ans_dict[checklist_name][i]
-            
-            if answer_bool is None:
-                pass
-                
-            elif answer_bool:
-                form_with_ans[checklist_name].append({
-                    "question": question,
-                    "answer": "1"})
-                points += 1
-                max_points += 1
-                
-            else:
-                if item["rectified"]:
-                    form_with_ans[checklist_name].append({
-                        "question": question,
-                        "answer": "1*"})
-                    points += 1
-                    max_points += 1
-                else:
-                    form_with_ans[checklist_name].append({
-                        "question": question,
-                        "answer": "0"})
-                    max_points += 1 
-                
-        summary_table.append({
-            "section": checklist_name,
-            "points": points,
-            "max_points": max_points
-            })
-        total_points += max_points
-    
-    summary_form["total"] = total_points
-    summary_form["table"] = summary_table
-    
-    return form_with_ans, summary_form
+from .utils import serverResponse, send_audit_email_word, find_and_return_one, check_valid_param, get_rect, map_qna
 
 def validate_and_pack_audit_info_word(auditID, mongo):
     data = {}
@@ -126,7 +10,7 @@ def validate_and_pack_audit_info_word(auditID, mongo):
 
     audit_found, audit_info = find_and_return_one(
         mongo, "audits", "_id", auditID)
-
+    
     # check audit
     if audit_found is None:
         data["error"].append("audit")
@@ -134,7 +18,7 @@ def validate_and_pack_audit_info_word(auditID, mongo):
         data["missing"].append("audit")
 
     if not(check_valid_param(data)):
-        return False, False
+        return False, data
 
     # get staff and tenants
     staff_found, staff_info = find_and_return_one(
@@ -152,7 +36,7 @@ def validate_and_pack_audit_info_word(auditID, mongo):
         data["missing"].append("tenant")
 
     if not(check_valid_param(data)):
-        return False, False
+        return False, data
 
     # get inst
     inst_found, inst_info = find_and_return_one(
@@ -163,7 +47,7 @@ def validate_and_pack_audit_info_word(auditID, mongo):
         data["missing"].append("institution")
 
     if not(check_valid_param(data)):
-        return False, False
+        return False, data
 
     # get all form
     audit_form = {}
@@ -199,7 +83,7 @@ def validate_and_pack_audit_info_word(auditID, mongo):
             audit_form["auditAns"][checklist_type] = ans_info["answers"]
 
     if not(check_valid_param(data)):
-        return False, False
+        return False, data
 
     # try to map question and ans
     audit_info["form_with_ans"] = {}
@@ -238,108 +122,7 @@ def validate_and_pack_audit_info_word(auditID, mongo):
 
     return True, data   
 
-
 def addAuditEmailEndpoints(app, mongo):
-    def validate_audit_info_excel(auditID):
-        data = {}
-        data["missing"] = []
-        data["error"] = []
-
-        audit_found, audit_info = find_and_return_one(
-            mongo, "audits", "_id", auditID)
-
-        if audit_found is not None:
-            if audit_found:
-                # get staff and tenants
-                staff_found, staff_info = find_and_return_one(
-                    mongo, "staff", "_id", audit_info["staffID"])
-                tenant_found, tenant_info = find_and_return_one(
-                    mongo, "tenant", "_id", audit_info["tenantID"])
-
-                # extracting necessary info from staff and tenant
-                if (staff_found is not None) and (tenant_found is not None):
-
-                    if staff_found and tenant_found:
-
-                        # get institution
-                        inst_found, inst_info = find_and_return_one(
-                            mongo, "institution", "_id", staff_info["institutionID"])
-                        if inst_found is not None:
-                            if inst_found:
-                                data = {}
-                                data["audit_info"] = audit_info
-                                data["staff_info"] = staff_info
-                                data["tenant_info"] = tenant_info
-                                data["inst_info"] = inst_info
-                                return True, data
-                            else:
-                                data["missing"].append("institution")
-
-                        else:
-                            data["error"].append("institution")
-
-                    elif (not staff_found) and tenant_found:
-                        data["missing"].append("staff")
-
-                    elif staff_found and (not tenant_found):
-                        data["missing"].append("tenant")
-
-                    else:
-                        data["missing"].append("staff")
-                        data["missing"].append("tenant")
-
-                elif (staff_found is None) and (tenant_found is not None):
-                    data["error"].append("staff")
-
-                elif (staff_found is not None) and (tenant_found is None):
-                    data["error"].append("tenant")
-
-                else:
-                    data["error"].append("staff")
-                    data["error"].append("tenant")
-
-            else:
-                data["missing"].append("audit")
-        else:
-            data["error"].append("audit")
-
-        return False, data
-
-    @app.route("/email/excel/<auditID>", methods=["POST"])
-    @login_required
-    def export_excel_to_email(auditID):
-        try:
-            validate, data = validate_audit_info_excel(auditID)
-
-            if validate:
-                date_underscore = data["audit_info"]["date"].strftime(
-                    '%Y_%m_%d')
-                date_slash = data["audit_info"]["date"].strftime('%Y/%m/%d')
-                stall_name = data["tenant_info"]["stallName"]
-
-                to_email = data["staff_info"]["email"]
-                subject = "Audit Data - " + \
-                    stall_name + " (" + date_slash + ")"
-                message = ""
-                page_name = "Info"
-
-                stall_name = stall_name.replace(" ", "_")
-                stall_name = stall_name.upper()
-                excel_name = "audit_" + date_underscore + "_" + stall_name
-
-                sent = send_audit_email_excel(app, to_email, subject, message,
-                                              excel_name, page_name, data)
-
-                if sent:
-                    return serverResponse(None, 200, "Audit email sent")
-                else:
-                    return serverResponse(None, 404, "Error in sending email")
-
-            else:
-                return serverResponse(data, 404, "Missing/Error in information")
-        except:
-            return serverResponse(data, 404, "Internal Error")
-
     @app.route("/email/word/<auditID>", methods=["POST"])
     @login_required
     def export_word_to_email(auditID):
@@ -373,4 +156,4 @@ def addAuditEmailEndpoints(app, mongo):
             else:
                 return serverResponse(data, 404, "Missing/Error in information")
         except:
-            return serverResponse(data, 404, "Internal Error")
+            return serverResponse(None, 404, "Internal Error")
