@@ -10,9 +10,10 @@ from BTS.rectificationEndpoints import addRectificationEndpts
 from BTS.staff_tenantEndpoint import change_tenant_info
 from BTS.auditsGetFormEndpoint import addGetFormEndpoints
 from BTS.recentAuditsEndpoints import addRecentAuditsEndpoints
-from BTS.auditEmailEndpoint import addAuditEmailEndpoints
+from BTS.auditEmailEndpoint import addAuditEmailEndpoints, validate_and_pack_audit_info_word
 from BTS.institutionEndpoint import institution_info
 from BTS.utils import serverResponse
+import unittest
 
 import BTS.database
 
@@ -49,4 +50,7 @@ class BTSAppTestCase(TestCase):
         addRecentAuditsEndpoints(app, self.mongo)
         addAuditEmailEndpoints(app, self.mongo)
         change_tenant_info(app, self.mongo)
+        
         return app
+
+

@@ -270,6 +270,12 @@ def from_audit_to_excel(workbook, page_name, data):
     return workbook
 
 # for word operations
+def check_valid_param(data):
+    if(len(data["missing"]) > 0) or (len(data["error"]) > 0):
+        return False
+    else:
+        return True
+    
 def set_column_width(column, width):
     for cell in column.cells:
         cell.width = width
@@ -323,6 +329,110 @@ def table_center_align(*columns):
         for cell in col.cells:
             cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
 
+def get_rect(question_dict, ans_dict):
+    rect_form = {}
+    
+    for checklist_name in question_dict.keys():        
+        for i in range(len(question_dict[checklist_name])): 
+            question = question_dict[checklist_name][i]['question']
+            answer_bool = ans_dict[checklist_name][i]['answer']
+            item = ans_dict[checklist_name][i]
+            
+            if answer_bool is None:
+                pass
+                
+            elif answer_bool:
+                pass
+                
+            else:
+                rect_form.setdefault(checklist_name,{})
+                
+                #get images from db
+                image_list = item.get("image", None)
+
+                remarks = item.get("remarks", "-")
+                rectified = item.get("rectified", False)
+
+                deadline = item.get("deadline", None)
+                if deadline is not None:
+                    deadline =  deadline.strftime("%m/%d/%Y %H:%M:%S")
+                else:
+                    deadline = "-"
+                if rectified:
+                    rectified = "Yes"
+                else:
+                    rectified = "No"
+                
+                #get rectification images from db
+                rect_remarks = item.get("rectificationRemarks", None)
+                rect_image_list = item.get("rectificationImages", None)
+                    
+                #required information
+                rect_form[checklist_name][question] = {
+                    "Non-compliance Images": image_list,
+                    "Remarks": remarks,
+                    "Rectified": rectified,
+                    "Deadline": deadline
+                    }
+                
+                if rect_image_list is not None:
+                    rect_form[checklist_name][question]["Rectification Images"] = rect_image_list
+                
+                if rect_remarks is not None:
+                    rect_form[checklist_name][question]["Rectification Remarks"] = rect_remarks
+
+    return rect_form
+    
+def map_qna(question_dict, ans_dict):
+    form_with_ans = {}
+    summary_table = []
+    summary_form = {}
+    total_points = 0
+    
+    for checklist_name in question_dict.keys():        
+        form_with_ans[checklist_name] = []
+        
+        points = 0
+        max_points = 0
+        for i in range(len(question_dict[checklist_name])): 
+            question = question_dict[checklist_name][i]['question']
+            answer_bool = ans_dict[checklist_name][i]['answer']
+            item = ans_dict[checklist_name][i]
+            
+            if answer_bool is None:
+                pass
+                
+            elif answer_bool:
+                form_with_ans[checklist_name].append({
+                    "question": question,
+                    "answer": "1"})
+                points += 1
+                max_points += 1
+                
+            else:
+                if item["rectified"]:
+                    form_with_ans[checklist_name].append({
+                        "question": question,
+                        "answer": "0*"})
+                    max_points += 1
+                else:
+                    form_with_ans[checklist_name].append({
+                        "question": question,
+                        "answer": "0"})
+                    max_points += 1 
+                
+        summary_table.append({
+            "section": checklist_name,
+            "points": points,
+            "max_points": max_points
+            })
+        total_points += max_points
+    
+    summary_form["total"] = total_points
+    summary_form["table"] = summary_table
+    
+    return form_with_ans, summary_form
+
 def add_image_to_word(cell, image_filename):
     #img_name, img_extension = os.path.splitext(image_filename)
     image_iobyte = download_image(image_filename, "singhealth")
@@ -335,7 +445,6 @@ def add_image_to_word(cell, image_filename):
     run = add_image.add_run()
     run.add_picture(image_iobyte, width = 4000000)
     
-
 def add_rectification_form(document, form_with_ans):
     hex_color = form_with_ans["color"]
     rect_form = form_with_ans["rect_form"]
@@ -610,51 +719,3 @@ def send_email_notif(app, to_email, subject, message):
         mail.send(msg)
     except:
         print("Mail failed to send")
-
-'''
-Input: AuditFormTemplate with answers and images and stuff
-Output: Map: AuditLineItem --> Images used + Remarks
-'''
-def download_the_images(AuditFormTemplate_w_Ans, S3bucketName):
-    rect_info = {}
-    
-    download_image("606969818e6e53b0f4e6ab4f325771996869.jpg",  "singhealth")
-    
-    # Wen Xin: pls leave the bottom as it is!
-    for section in AuditFormTemplate_w_Ans:
-        print(section)
-        for question in AuditFormTemplate_w_Ans[section]:
-            print(question)
-            imageFileList = None
-            rec_imageFileList = None
-            
-            qn = question["question"]
-            
-            if not question["answer"]:
-                
-                if "images" in question["items"]:
-                    imageFileList = []
-                    imagesList = question["items"]["images"]
-                    for image in imagesList:
-                        imageFile = download_image(image, S3bucketName)
-                        imageFileList.append(imageFile)
-                    
-                if "rectificationImages" in question["items"]:
-                    rec_imageFileList = []
-                    rec_imagesList = question["items"]["rectificationImages"]
-                    for image in rec_imagesList:
-                        rec_imagesFile = download_image(image, S3bucketName)
-                        rec_imageFileList.append(rec_imagesFile)
-        
-                lineItem = dict()
-                lineItem["question"] = qn
-                lineItem["images"] = imagesList
-                lineItem["rectification images"] = rec_imagesList
-                rect_info[section] = {
-                    "question": qn,
-                    "images": imageFileList,
-                    "rectificationImages": rec_imageFileList}
-    
-    return rect_info
-    
-        
