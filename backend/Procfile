@@ -1,1 +1,1 @@
-web: gunicorn --preload --worker-class=gevent --worker-connections=1000 --workers=3 app:create_app
+web: gunicorn --preload --worker-class=gevent --worker-connections=1000 --workers=3 'app:create_app()'
