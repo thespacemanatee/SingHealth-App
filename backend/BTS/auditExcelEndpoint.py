@@ -70,10 +70,10 @@ def validate_audit_info_excel(auditID, mongo):
 
 def addAuditExcelEndpoints(app, mongo):
     @app.route("/email/excel/<auditID>", methods=["POST"])
-    @login_required
+    # @login_required
     def export_excel_to_email(auditID):
         try:
-            validate, data = validate_audit_info_excel(auditID)
+            validate, data = validate_audit_info_excel(auditID, mongo)
 
             if validate:
                 date_underscore = data["audit_info"]["date"].strftime(
