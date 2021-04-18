@@ -78,7 +78,7 @@ coverage run -m --branch unittest discover
 
 ### Generate the report in the command line 
 ```
-coverage report ..\BTS\*.py
+coverage report ..\BTS\*point*.py
 ```
 #### Reading the outputs
 Below is a typical output from running `coverage report .\test_*.py .\BTSApp.py ..\BTS\*.py`
