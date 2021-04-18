@@ -31,30 +31,37 @@ def createIDForAuditMetaData(auditMetadata):
     date = auditMetadata["date"]
     return staffID + tenantID + institutionID + date
 
+def FNBscore(filledAuditForm) -> float:
+    c1 = percentageCompliant(list(map(
+        compliant, filledAuditForm["answers"]["Professionalism and Staff Hygiene"]))) * 0.1
+    c2 = percentageCompliant(list(map(
+        compliant, filledAuditForm["answers"]["Housekeeping and General Cleanliness"]))) * 0.2
+    c3 = percentageCompliant(list(map(
+        compliant, filledAuditForm["answers"]["Food Hygiene"]))) * 0.35
+    c4 = percentageCompliant(list(map(
+        compliant, filledAuditForm["answers"]["Healthier Choice in line with HPB's Healthy Eating's Initiative"]))) * 0.15
+    c5 = percentageCompliant(list(
+        map(compliant, filledAuditForm["answers"]["Workplace Safety and Health"]))) * 0.2
+    auditScore = c1 + c2 + c3 + c4 + c5
+    return auditScore
+
+def non_FNBscore(filledAuditForm) -> float:
+    c1 = percentageCompliant(list(map(
+        compliant, filledAuditForm["answers"]["Professionalism and Staff Hygiene"]))) * 0.2
+    c2 = percentageCompliant(list(map(
+        compliant, filledAuditForm["answers"]["Housekeeping and General Cleanliness"]))) * 0.4
+    c3 = percentageCompliant(list(
+        map(compliant, filledAuditForm["answers"]["Workplace Safety and Health"]))) * 0.4
+    auditScore = c1 + c2 + c3
+    return auditScore
 
 def calculateAuditScore(filledAuditForms) -> float:
     for formType, filledAuditForm in filledAuditForms.items():
         if filledAuditForm["type"] == "fnb":
-            c1 = percentageCompliant(list(map(
-                compliant, filledAuditForm["answers"]["Professionalism and Staff Hygiene"]))) * 0.1
-            c2 = percentageCompliant(list(map(
-                compliant, filledAuditForm["answers"]["Housekeeping and General Cleanliness"]))) * 0.2
-            c3 = percentageCompliant(list(map(
-                compliant, filledAuditForm["answers"]["Food Hygiene"]))) * 0.35
-            c4 = percentageCompliant(list(map(
-                compliant, filledAuditForm["answers"]["Healthier Choice in line with HPB's Healthy Eating's Initiative"]))) * 0.15
-            c5 = percentageCompliant(list(
-                map(compliant, filledAuditForm["answers"]["Workplace Safety and Health"]))) * 0.2
-            auditScore = c1 + c2 + c3 + c4 + c5
+            auditScore = FNBscore(filledAuditForm)
 
         elif filledAuditForm["type"] == "non_fnb":
-            c1 = percentageCompliant(list(map(
-                compliant, filledAuditForm["answers"]["Professionalism and Staff Hygiene"]))) * 0.2
-            c2 = percentageCompliant(list(map(
-                compliant, filledAuditForm["answers"]["Housekeeping and General Cleanliness"]))) * 0.4
-            c3 = percentageCompliant(list(
-                map(compliant, filledAuditForm["answers"]["Workplace Safety and Health"]))) * 0.4
-            auditScore = c1 + c2 + c3
+            auditScore = non_FNBscore(filledAuditForm)
 
     return auditScore
 
@@ -73,6 +80,8 @@ def validateFilledAuditForms(filledAuditForms):
         answers = filledAuditForm["questions"]
         for category, answerList in answers.items():
             for index, answer in enumerate(answerList):
+                if "answer" not in answer.keys():
+                    return False, category, index + 1, "Answer not provided"
                 if "images" in answer.keys():
                     if (numImages := len(answer.get("images", []))) > MAX_NUM_IMAGES_PER_NC:
                         return False, category, index + 1, f"Max allowed is {MAX_NUM_IMAGES_PER_NC} images but {numImages} provided."
@@ -102,7 +111,7 @@ def validateFilledAuditForms(filledAuditForms):
             return False, "Form contains conflicting types of forms: fnb & non_fnb"
     else:
         return False, "Form contains unknown form types"
-    for formType, form in filledAuditForms.items():
+    for form in filledAuditForms.values():
         isValid = validateFilledAuditForm(form)
         if not isValid[0]:
             return False, isValid[1:]
@@ -275,21 +284,21 @@ def addAuditsEndpoint(app, mongo):
 
             audits = mongo.db.audits.find(queryDict)
             auditsList = []
-            for audit in audits:
-                tenant = mongo.db.tenant.find_one(
-                    {"_id": tenantID},
-                    {
-                        "stallName": 1
-                    }
-                )
-                if tenant:
-                    auditsList.append(
+            if audits != None:
+                for audit in audits:
+                    tenant = mongo.db.tenant.find_one(
+                        {"_id": tenantID},
                         {
-                            "auditMetadata": audit,
-                            "stallName": tenant["stallName"]
+                            "stallName": 1
                         }
                     )
-
+                    if tenant:
+                        auditsList.append(
+                            {
+                                "auditMetadata": audit,
+                                "stallName": tenant["stallName"]
+                            }
+                        )
             if len(auditsList) == 0:
                 msg = "No audits found"
             else:
