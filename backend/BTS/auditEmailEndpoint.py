@@ -30,8 +30,6 @@ def get_rect(question_dict, ans_dict):
                 
                 #get images from db
                 image_list = item.get("image", None)
-                if image_list is not None:
-                    image_list = ["doggy_image.jpg"]
 
                 remarks = item.get("remarks", "-")
                 rectified = item.get("rectified", False)
@@ -49,15 +47,13 @@ def get_rect(question_dict, ans_dict):
                 #get rectification images from db
                 rect_remarks = item.get("rectificationRemarks", None)
                 rect_image_list = item.get("rectificationImages", None)
-                if rect_remarks is not None:
-                    rect_image_list = ["doggy_rectified_image.jpg"]
                     
                 #required information
                 rect_form[checklist_name][question] = {
                     "Non-compliance Images": image_list,
                     "Remarks": remarks,
                     "Rectified": rectified,
-                    "deadline": deadline
+                    "Deadline": deadline
                     }
                 
                 if rect_image_list is not None:
@@ -98,8 +94,7 @@ def map_qna(question_dict, ans_dict):
                 if item["rectified"]:
                     form_with_ans[checklist_name].append({
                         "question": question,
-                        "answer": "1*"})
-                    points += 1
+                        "answer": "0*"})
                     max_points += 1
                 else:
                     form_with_ans[checklist_name].append({

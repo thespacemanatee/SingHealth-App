@@ -26,6 +26,8 @@ from docx import Document
 from docx.shared import Inches, Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 
+from PIL import Image
+
 
 def parse_json(data):
     return json.loads(json_util.dumps(data))
@@ -321,6 +323,19 @@ def table_center_align(*columns):
         for cell in col.cells:
             cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
 
+def add_image_to_word(cell, image_filename):
+    #img_name, img_extension = os.path.splitext(image_filename)
+    image_iobyte = download_image(image_filename, "singhealth")
+    
+    im = io.BytesIO()
+    image = Image.open(image_iobyte)
+    #image.rotate(270).save(im, format=image.format)
+    
+    add_image = cell.paragraphs[0]
+    run = add_image.add_run()
+    run.add_picture(image_iobyte, width = 4000000)
+    
+
 def add_rectification_form(document, form_with_ans):
     hex_color = form_with_ans["color"]
     rect_form = form_with_ans["rect_form"]
@@ -355,19 +370,16 @@ def add_rectification_form(document, form_with_ans):
                     elif (item == "Non-compliance Images"):
                         if info[item] is not None:
                             for i in info[item]:
-                                add_image = row_cells[1].paragraphs[0]
-                                run = add_image.add_run()
-                                run.add_picture(i, width = 1400000)
+                                add_image_to_word(row_cells[1], i)
+                                
                         else:
                             row_cells[1].text = "-"
                             
                     else:
                         if info[item] is not None:
                             for i in info[item]:
-                                add_image = row_cells[1].paragraphs[0]
-                                run = add_image.add_run()
-                                run.add_picture(i, width = 1400000)
-                
+                                add_image_to_word(row_cells[1], i)
+                                
         set_column_width(rect.columns[0], Inches(1.57))
         set_column_width(rect.columns[1], Inches(4.6))
 
@@ -430,6 +442,7 @@ def add_form_to_docs(document, form_with_ans):
         set_column_width(checklist.columns[0], Inches(5.4))
         set_column_width(checklist.columns[1], Inches(0.76))
         table_center_align(checklist.columns[1])
+        document.add_paragraph("* Rectified")
 
 def from_audit_to_word(document, data):
     audit_dict = data["audit_info"]
@@ -485,15 +498,16 @@ def from_audit_to_word(document, data):
      # Add checklists
     for form in all_checklist.values():
         add_form_to_docs(document, form)
-        
+    
+    
     # Add rectification
-    document.add_page_break()
-    header4 = document.add_paragraph()
-    runner = header4.add_run("Rectification Information")
-    runner.underline = True
-    for form in all_checklist.values():
-        add_rectification_form(document, form)
-        document.add_paragraph("\n")
+    if score < 100:
+        document.add_page_break()
+        header4 = document.add_paragraph()
+        runner = header4.add_run("Rectification Information")
+        runner.underline = True
+        for form in all_checklist.values():
+            add_rectification_form(document, form)
 
     #  summary
     document.add_page_break()
