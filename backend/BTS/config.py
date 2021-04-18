@@ -8,6 +8,4 @@ FLASK_APP = os.getenv('FLASK_APP')
 FLASK_ENV = "development"
 
 SECRET_KEY = os.getenv('SECRET_KEY')
-MONGO_URI = os.getenv("LOCAL_MONGODB_URI")
-
-# SESSION_COOKIE_DOMAIN = "singhealth-backend-bts.herokuapp.com"
+MONGO_URI = os.getenv("MONGODB_URI")
