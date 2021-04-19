@@ -1654,7 +1654,7 @@ localhost:5000/notifications/tenant?userID=veagvtrhfvrtbhtvg
 
 #### Success
 
-##### Found several matching audits
+##### Found a several notifications
 
 ```js
 "status": 200,
@@ -1676,6 +1676,33 @@ localhost:5000/notifications/tenant?userID=veagvtrhfvrtbhtvg
     ],
     "description": "Notifications retrieved successfully"
 }
+```
+
+##### Rectification message object
+
+```js
+{
+    "auditID": "veagvtrhfvrtbhtvg",
+    "stallName": "Mr Bean",
+    "type": "patch",
+    "message": {
+        "index": "1",
+        "checklistType": "non-fnb",
+        "question": "Adequate and regular pest control. Pest control record.",
+        "section": "Housekeeping and General Cleanliness",
+        }
+},
+```
+
+##### New audit message object
+
+```js
+{
+    "auditID": "veagvtrhfvrtbhtvg",
+    "stallName": "Mr Bean",
+    "type": "post",
+    "message": `New audit on ${dateTime} ready for viewing. `
+},
 ```
 
 ##### Request performed, but found no matching audits
