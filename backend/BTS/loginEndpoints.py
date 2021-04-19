@@ -169,7 +169,8 @@ def addLoginEndpointsForTenantAndStaff(app, mongo, login_manager):
                 session.pop('account_type')
 
             except KeyError:
-                print("Session lost. Forcefully logging out the user")
+                # print("Session lost. Forcefully logging out the user")
+                pass
 
             finally:
                 logout_user()
