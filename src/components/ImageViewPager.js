@@ -10,7 +10,7 @@ const ImageViewPager = (props) => {
   const windowDimensions = useWindowDimensions();
   const { width, height } = windowDimensions;
 
-  const IMAGE_HEIGHT = height * 0.6;
+  const IMAGE_HEIGHT = height * 0.5;
   const IMAGE_WIDTH = (IMAGE_HEIGHT / 4) * 3;
 
   return imageArray.length > 0 ? (

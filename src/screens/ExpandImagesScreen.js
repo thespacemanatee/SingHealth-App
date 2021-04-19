@@ -7,6 +7,7 @@ import {
   Platform,
   TouchableOpacity,
   useWindowDimensions,
+  Dimensions,
 } from "react-native";
 import { Icon, StyleService } from "@ui-kitten/components";
 
@@ -34,6 +35,7 @@ const ExpandImagesScreen = ({ route, navigation }) => {
 
   const windowDimensions = useWindowDimensions();
   const { width, height } = windowDimensions;
+  const { height: screenHeight } = Dimensions.get("screen");
 
   const handleClose = () => {
     if (Platform.OS === "web") {
@@ -69,7 +71,12 @@ const ExpandImagesScreen = ({ route, navigation }) => {
   const renderImages = useCallback(
     (itemData) => {
       return (
-        <View style={{ width, height }}>
+        <View
+          style={{
+            width,
+            height: Platform.OS === "web" ? height : screenHeight,
+          }}
+        >
           <Image
             source={{ uri: itemData.item }}
             style={StyleSheet.absoluteFillObject}
