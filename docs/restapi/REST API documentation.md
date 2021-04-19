@@ -43,7 +43,7 @@
 
 ### Audit Email
 
-- [x] [`POST /email/<auditID>`](#`POST-/email/<auditID>`)
+- [x] [`POST /email/word/<auditID>`](#`POST-/email/word/<auditID>`)
 
 #### Others
 
@@ -1386,7 +1386,7 @@ http://127.0.0.1:5000/tenant?tenantID=6074222a576f86e1952e8be1
 }
 ```
 
-## `POST /email/<auditID>`
+## `POST /email/word/<auditID>`
 
 ### Description of use case
 
