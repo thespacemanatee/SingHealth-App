@@ -44,6 +44,7 @@ if __name__ == "__main__":
     driver.find_element_by_xpath('//div[text()="CREATE ACCOUNT"]').click()
     time.sleep(2)
     driver.get('https://esc-group-10.netlify.app/staff/manage-tenants/delete')
+    time.sleep(2)
     driver.find_element_by_xpath('//div[text()="Sengkang General Hospital"]').click()
     time.sleep(1)
     driver.find_element_by_xpath('//div[text()="TEST"]').click()
