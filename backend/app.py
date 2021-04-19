@@ -26,7 +26,8 @@ import os
     
 app = Flask(__name__)
 load_dotenv(dirname(__file__), '.env')
-app.config["FLASK_ENV"] = "development"
+app.config["FLASK_ENV"] = "production"#"development"
+# app.debug = False
 app.config["SECRET_KEY"] = os.getenv('SECRET_KEY')
 app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
 # SESSION_COOKIE_DOMAIN = "singhealth-backend-bts.herokuapp.com"
