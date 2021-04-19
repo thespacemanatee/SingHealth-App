@@ -537,7 +537,7 @@ def add_summary_to_docs(document, form_with_ans):
             weighted_total_score += weighted_score
             
     
-    elif form_with_ans["type"] == "Non F&B":
+    elif form_with_ans["type"] == "Non-F&B":
         for section in summary_form["table"]:
             row_cells = summary.add_row().cells
             sectionName = section["section"]
