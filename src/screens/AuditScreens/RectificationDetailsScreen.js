@@ -15,6 +15,7 @@ import {
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import moment from "moment";
+import useMountedState from "react-use/lib/useMountedState";
 
 import * as checklistActions from "../../store/actions/checklistActions";
 import ImagePage from "../../components/ui/ImagePage";
@@ -32,8 +33,11 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
   const [deadline, setDeadline] = useState();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [question, setQuestion] = useState();
 
-  const { index, checklistType, question, section } = route.params;
+  const { index, checklistType, section } = route.params;
+
+  const isMounted = useMountedState();
 
   const theme = useTheme();
 
@@ -121,6 +125,8 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
     const storeRemarks = checklistStore[type].questions[section][index].remarks;
     const storeDeadline =
       checklistStore[type].questions[section][index].deadline;
+    const storeQuestion =
+      checklistStore[type].questions[section][index].question;
 
     if (storeImages) {
       const images = storeImages.map((e) => e.uri);
@@ -138,7 +144,12 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
           .join(" ")
       );
     }
-  }, [checklistStore, checklistType, dispatch, index, section]);
+    if (storeQuestion) {
+      if (isMounted()) {
+        setQuestion(storeQuestion);
+      }
+    }
+  }, [checklistStore, checklistType, dispatch, index, isMounted, section]);
 
   const BackAction = () => (
     <TopNavigationAction

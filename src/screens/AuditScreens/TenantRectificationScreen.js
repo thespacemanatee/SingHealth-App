@@ -46,8 +46,9 @@ const TenantRectificationScreen = ({ route, navigation }) => {
   const [toggle, setToggle] = useState(false);
   const [disableToggle, setDisableToggle] = useState(false);
   const [rectified, setRectified] = useState(false);
+  const [question, setQuestion] = useState();
 
-  const { index, checklistType, question, section } = route.params;
+  const { index, checklistType, section } = route.params;
 
   const isMounted = useMountedState();
 
@@ -245,6 +246,8 @@ const TenantRectificationScreen = ({ route, navigation }) => {
       checklistStore[type].questions[section][index].rectificationRemarks;
     const storeRectified =
       checklistStore[type].questions[section][index].rectified;
+    const storeQuestion =
+      checklistStore[type].questions[section][index].question;
 
     if (storeImages) {
       const images = storeImages.map((e) => e.uri);
@@ -261,6 +264,11 @@ const TenantRectificationScreen = ({ route, navigation }) => {
     if (storeRectified) {
       if (isMounted()) {
         setRectified(storeRectified);
+      }
+    }
+    if (storeQuestion) {
+      if (isMounted()) {
+        setQuestion(storeQuestion);
       }
     }
   }, [checklistStore, checklistType, dispatch, index, isMounted, section]);

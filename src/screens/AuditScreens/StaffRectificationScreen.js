@@ -42,8 +42,9 @@ const StaffRectificationScreen = ({ route, navigation }) => {
   const [toggle, setToggle] = useState(false);
   const [isRectified, setIsRectified] = useState(false);
   const [deadline, setDeadline] = useState();
+  const [question, setQuestion] = useState();
 
-  const { index, checklistType, question, section } = route.params;
+  const { index, checklistType, section } = route.params;
 
   const isMounted = useMountedState();
 
@@ -222,6 +223,8 @@ const StaffRectificationScreen = ({ route, navigation }) => {
       checklistStore[type].questions[section][index].deadline;
     const storeRectified =
       checklistStore[type].questions[section][index].rectified;
+    const storeQuestion =
+      checklistStore[type].questions[section][index].question;
 
     if (storeImages) {
       const images = storeImages.map((e) => e.uri);
@@ -242,6 +245,11 @@ const StaffRectificationScreen = ({ route, navigation }) => {
     if (storeRectified) {
       if (isMounted()) {
         setIsRectified(storeRectified);
+      }
+    }
+    if (storeQuestion) {
+      if (isMounted()) {
+        setQuestion(storeQuestion);
       }
     }
   }, [checklistStore, checklistType, dispatch, index, isMounted, section]);

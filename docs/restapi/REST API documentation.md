@@ -1628,18 +1628,12 @@ The staff to get all audit data within a timeframe.
 }
 ```
 
-## `GET /notifications/<userType>`
-
-### URL Query Arguments
-
-| URL Arguments | Description                      |
-| ------------- | -------------------------------- |
-| `userType`      | The user type. |
+## `GET /notifications`
 
 ### Query string args
 
-| Arg        | Description                                                        |
-| ---------- | ------------------------------------------------------------------ |
+| Arg      | Description                       |
+| -------- | --------------------------------- |
 | `userID` | The unique identifier for a user. |
 
 <br>
@@ -1647,7 +1641,7 @@ The staff to get all audit data within a timeframe.
 ### Sample Request
 
 ```
-localhost:5000/notifications/tenant?userID=veagvtrhfvrtbhtvg
+localhost:5000/notifications?userID=veagvtrhfvrtbhtvg
 ```
 
 ### Sample Response
@@ -1667,8 +1661,8 @@ localhost:5000/notifications/tenant?userID=veagvtrhfvrtbhtvg
             "message": {
                 "index": "1",
                 "checklistType": "non-fnb",
-                "question": "Adequate and regular pest control. Pest control record.",
                 "section": "Housekeeping and General Cleanliness",
+                "rectified": boolean
              }
         },
         <Notification />,
@@ -1688,7 +1682,6 @@ localhost:5000/notifications/tenant?userID=veagvtrhfvrtbhtvg
     "message": {
         "index": "1",
         "checklistType": "non-fnb",
-        "question": "Adequate and regular pest control. Pest control record.",
         "section": "Housekeeping and General Cleanliness",
         }
 },
@@ -1705,7 +1698,7 @@ localhost:5000/notifications/tenant?userID=veagvtrhfvrtbhtvg
 },
 ```
 
-##### Request performed, but found no matching audits
+##### Request performed, but found no matching notifications
 
 ```js
 "status": 200,
@@ -1717,7 +1710,7 @@ localhost:5000/notifications/tenant?userID=veagvtrhfvrtbhtvg
 
 #### Failure
 
-##### `tenantID` not provided
+##### `userID` not provided
 
 ```js
 "status": 400,
