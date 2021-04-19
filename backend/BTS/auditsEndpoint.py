@@ -214,14 +214,15 @@ def addAuditsEndpoint(app, mongo):
             auditScore = calculateAuditScore(filledAuditForms_ID_processed)
             auditMetaData_ID_processed["score"] = auditScore
 
-            allAnswers = []
-            for filledAuditForm in filledAuditForms_ID_processed.values():
-                for answerList in filledAuditForm["answers"].values():
-                    allAnswers.extend(answerList)
-            percentRect = percentageRectification(allAnswers)
+            if auditScore < 1:
+                allAnswers = []
+                for filledAuditForm in filledAuditForms_ID_processed.values():
+                    for answerList in filledAuditForm["answers"].values():
+                        allAnswers.extend(answerList)
+                percentRect = percentageRectification(allAnswers)
 
-            if percentRect < 1:
-                auditMetaData_ID_processed['rectificationProgress'] = 0
+                if percentRect < 1:
+                    auditMetaData_ID_processed['rectificationProgress'] = 0
 
             try:
                 result1 = mongo.db.audits.insert_one(

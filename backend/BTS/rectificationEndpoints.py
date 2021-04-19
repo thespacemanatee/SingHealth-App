@@ -2,7 +2,7 @@ from .utils import serverResponse, send_push_message, send_email_notif
 from .constants import SGT_TIMEZONE
 from flask import request
 from flask_login import login_required
-from pytz import timezone
+from pytz import timezone, utc
 import iso8601
 
 requiredPatchKeys = ["category", "index"]
@@ -181,17 +181,37 @@ def addRectificationEndpts(app, mongo):
 
             date = selectedAudit['date']
             if date.tzinfo is None or date.tzinfo.utcoffset(date) is None:
-                date = timezone(SGT_TIMEZONE).localize(date)
+                date = utc.localize(date)
+            
+            date = date.astimezone(timezone(SGT_TIMEZONE))
+
+
+
+            summary = ""
+            for formtype, patchList in patches.items():
+                summary += f"Form:\t{formtype}\n"
+                for patch in patchList:
+                    part = ""
+                    part += f"Category:\t{patch['category']}\n"
+                    part += f"Line item no.:\t{patch['index']}\n"
+                    part += f"Note: Added \t{len(patch['rectificationImages'])} images to show rectification\n"
+                    part += f"Remarks:\t{patch['rectificationRemarks']}\n"
+                    part += f"Requested for extension:\t{patch['requestForExt']}"
+                    summary += part
+                summary += "\n\n"
 
             send_email_notif(
                 app,
                 staff["email"],
                 "Audit Results",
                 f"""Dear {staff['name']},
-                    Your tenant, {tenant['stallName']}, has submitted a review for one of his NCs for the audit dated {date.strftime('%d %B %Y, %I:%M %p')}. 
-                    Please check your app for details.
-                    This email is auto generated. No signature is required.
-                    You do not have to reply to this email."""
+
+Your tenant, {tenant['stallName']}, has submitted a review for one of his NCs for the audit dated {date.strftime('%d %B %Y, %I:%M %p')}. 
+Please check your app for details.
+
+{summary}
+This email is auto generated. No signature is required.
+You do not have to reply to this email."""
             )
             return serverResponse(patchResults, 200, "Changes sent to the database.")
 
@@ -264,17 +284,36 @@ def addRectificationEndpts(app, mongo):
                             continue
 
                 date = selectedAudit['date']
+                summary = ""
+                for formtype, patchList in patches.items():
+                    summary += f"Form:\t{formtype}\n"
+                    for patch in patchList:
+                        part = ""
+                        part += f"Category:\t{patch['category']}\n"
+                        part += f"Line item no.:\t{patch['index']}\n"
+                        part += f"Deadline:\t{patch['deadline']}\n"
+                        part += f"Rectified:\t{patch['rectified']}\n"
+                        part += f"Granted request for extension:\t{patch['acceptedRequest']}"
+                        summary += part
+                    summary += "\n\n"
+
+
+                
                 if date.tzinfo is None or date.tzinfo.utcoffset(date) is None:
-                    date = timezone(SGT_TIMEZONE).localize(date)
+                    date = utc.localize(date)
+                date = date.astimezone(timezone(SGT_TIMEZONE))
+                    
                 send_email_notif(
                     app,
                     tenant["email"],
                     "Audit Results",
                     f"""Dear {tenant['stallName']},
-                        {institution} has submitted a review for your rectifications for your audit dated {date.strftime('%d %B %Y, %I:%M %p')}. 
-                        Please check your app for details.
-                        This email is auto generated. No signature is required.
-                        You do not have to reply to this email."""
+
+{institution} has submitted a review for your rectifications for your audit dated {date.strftime('%d %B %Y, %I:%M %p')}. 
+Please check your app for details. Below is an overview:
+
+{summary}
+This email is auto generated. No signature is required. You do not have to reply to this email."""
                 )
             return serverResponse(
                 ack,
