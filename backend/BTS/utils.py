@@ -509,46 +509,63 @@ def add_summary_to_docs(document, form_with_ans):
     set_cell_background(hdr_cells[1], hex_color)
 
     weighted_total_score = 0
-    if runner == "F&B":
+    weighted_max_score = 0
+    
+    if form_with_ans["type"] == "F&B":
         for section in summary_form["table"]:
             row_cells = summary.add_row().cells
             sectionName = section["section"]
             row_cells[0].text = sectionName
-            weighted_score = section["points"] / section["max_points"]
+            
             if sectionName == "Professionalism and Staff Hygiene":
                 weighted_max_score = 10
             elif sectionName == "Housekeeping and General Cleanliness":
                 weighted_max_score = 20
             elif sectionName == "Food Hygiene":
                 weighted_max_score = 35
-            elif sectionName == "Healthier Choice":
+            elif sectionName == "Healthier Choice in line with HPB's Healthy Eating's Initiative":
                 weighted_max_score = 15
             elif sectionName == "Workplace Safety and Health":
                 weighted_max_score = 20
+            else:
+                header5 = document.add_paragraph("***Error in generating word docs")
+                return
+                
+            score = section["points"] / section["max_points"] 
+            weighted_score = score * weighted_max_score
             row_cells[1].text = "{:.2f}\t /{:.2f}%".format(weighted_score, weighted_max_score)
             weighted_total_score += weighted_score
+            
     
-    elif runner == "Non F&B":
+    elif form_with_ans["type"] == "Non F&B":
         for section in summary_form["table"]:
             row_cells = summary.add_row().cells
             sectionName = section["section"]
             row_cells[0].text = sectionName
-            weighted_score = section["points"] / section["max_points"]
+            
             if sectionName == "Professionalism and Staff Hygiene":
                 weighted_max_score = 20
             elif sectionName == "Housekeeping and General Cleanliness":
                 weighted_max_score = 40
-            elif sectionName == "Workplace Safety & Health":
+            elif sectionName == "Workplace Safety and Health":
                 weighted_max_score = 40
+            else:
+                header5 = document.add_paragraph("***Error in generating word docs")
+                return
+            
+            score = section["points"] / section["max_points"]
+            weighted_score = score * weighted_max_score
             row_cells[1].text = "{:.2f}\t /{:.2f}%".format(weighted_score, weighted_max_score)
             weighted_total_score += weighted_score
+            
     
-    elif runner == "Covid-19":
+    elif form_with_ans["type"] == "Covid-19":
         for section in summary_form["table"]:
             row_cells = summary.add_row().cells
             row_cells[0].text = section["section"]
-            weighted_score = section["points"]
-            weighted_max_score = total
+
+            weighted_score = section["points"] / total * 100
+            weighted_max_score = section["max_points"] / total * 100
             row_cells[1].text = "{:.2f}\t /{:.2f}%".format(weighted_score, weighted_max_score)
             weighted_total_score += weighted_score
 
