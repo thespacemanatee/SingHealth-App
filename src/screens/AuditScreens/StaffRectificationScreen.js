@@ -43,7 +43,7 @@ const StaffRectificationScreen = ({ route, navigation }) => {
   const [isRectified, setIsRectified] = useState(false);
   const [deadline, setDeadline] = useState();
 
-  const { index, checklistType, question, section, rectified } = route.params;
+  const { index, checklistType, question, section } = route.params;
 
   const isMounted = useMountedState();
 
@@ -149,7 +149,6 @@ const StaffRectificationScreen = ({ route, navigation }) => {
 
   // TODO: Cleanup memory leak when user leaves screen before image is loaded
   useEffect(() => {
-    setIsRectified(rectified);
     let type;
     if (checklistType === "covid19") {
       type = "covid19";
@@ -221,6 +220,8 @@ const StaffRectificationScreen = ({ route, navigation }) => {
       checklistStore[type].questions[section][index].rectificationRemarks;
     const storeDeadline =
       checklistStore[type].questions[section][index].deadline;
+    const storeRectified =
+      checklistStore[type].questions[section][index].rectified;
 
     if (storeImages) {
       const images = storeImages.map((e) => e.uri);
@@ -236,6 +237,11 @@ const StaffRectificationScreen = ({ route, navigation }) => {
     if (storeDeadline) {
       if (isMounted()) {
         setDeadline(moment(storeDeadline.$date || storeDeadline));
+      }
+    }
+    if (storeRectified) {
+      if (isMounted()) {
+        setIsRectified(storeRectified);
       }
     }
   }, [checklistStore, checklistType, dispatch, index, isMounted, section]);

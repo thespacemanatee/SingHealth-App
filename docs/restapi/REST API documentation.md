@@ -40,6 +40,7 @@
 - [x] [`PATCH /audits/<auditID>/staff`](#`PATCH-/audits/auditID/staff`)
 - [x] [`GET /audits`](#`GET-/audits`)
 - [x] [`GET /auditTimeframe/fromDate=<fromDate>&toDate=<toDate>&dataType=<dataType>&dataID=<dataID>`](#`GET-/auditTimeframe/fromDate=<fromDate>&toDate=<toDate>&dataType=<dataType>&dataID=<dataID>`)
+- [ ] [`GET /notifications`](#`GET-/notifications`)
 
 ### Audit Email
 
@@ -68,7 +69,9 @@ http://127.0.0.1:5000/tenants?institutionID=SKH
 ```
 
 ### Sample responses
+
 #### Success
+
 ```
 "status": 200,
 "data": {
@@ -84,8 +87,11 @@ http://127.0.0.1:5000/tenants?institutionID=SKH
     }]
 }
 ```
+
 #### Partial Failure
+
 ##### Missing Information
+
 ```
 "status": 200,
 "data": {
@@ -94,6 +100,7 @@ http://127.0.0.1:5000/tenants?institutionID=SKH
 ```
 
 ##### No tenant found
+
 ```
 "status": 200,
 "data": {
@@ -102,14 +109,15 @@ http://127.0.0.1:5000/tenants?institutionID=SKH
 ```
 
 #### Failure
-##### 
+
+#####
+
 ```
 "status": 404,
 "data": {
     "description": "Internal Error",
 }
 ```
-
 
 ### Response definitions
 
@@ -136,7 +144,9 @@ http://127.0.0.1:5000/auditForms?formType=covid19
 ```
 
 ### Sample Response
+
 #### Success
+
 ```js
 "status": 200,
 "data": {
@@ -169,8 +179,11 @@ http://127.0.0.1:5000/auditForms?formType=covid19
     }
 }
 ```
+
 #### Partial Failure
+
 ##### Missing Information
+
 ```
 "status": 200,
 "data": {
@@ -179,6 +192,7 @@ http://127.0.0.1:5000/auditForms?formType=covid19
 ```
 
 ##### No tenant found
+
 ```
 "status": 200,
 "data": {
@@ -187,7 +201,9 @@ http://127.0.0.1:5000/auditForms?formType=covid19
 ```
 
 #### Failure
-##### 
+
+#####
+
 ```
 "status": 404,
 "data": {
@@ -1147,25 +1163,28 @@ localhost: 5000 / audits / unrectified / recent / tenant / grwrbgbgbewvw / 0;
 The staff to add new tenant.
 
 ### Compulsory JSON Query string parameters
-| JSON param      | Description                                    |
-| --------------- | ---------------------------------------------- |
-| `name`          | Tenant's full name in upper case.              |
-| `stallName`    | Name of the stall.                             |
-| `email`         | The user email of a tenant. Unique email for each tenant                   |
-| `pswd`          | The password credentials for a tenant.         |
-| `fnb`           | Whether the stall is an F&B stall.             |
-| `institutionID` | The institution where a tenant operates under. |
-| `staffID`       | ID of staff who created this account.          |
 
+| JSON param      | Description                                              |
+| --------------- | -------------------------------------------------------- |
+| `name`          | Tenant's full name in upper case.                        |
+| `stallName`     | Name of the stall.                                       |
+| `email`         | The user email of a tenant. Unique email for each tenant |
+| `pswd`          | The password credentials for a tenant.                   |
+| `fnb`           | Whether the stall is an F&B stall.                       |
+| `institutionID` | The institution where a tenant operates under.           |
+| `staffID`       | ID of staff who created this account.                    |
 
 ### Optional JSON Query string parameters
-| JSON param        | Description                                    |
-| ---------------   | ---------------------------------------------- |
-| `tenantDateStart` | Time when tenant starts, in MM/YYYY format     |
-| `tenantDateEnd`   | Time when tenant ends, in MM/YYYY format       |
+
+| JSON param        | Description                                |
+| ----------------- | ------------------------------------------ |
+| `tenantDateStart` | Time when tenant starts, in MM/YYYY format |
+| `tenantDateEnd`   | Time when tenant ends, in MM/YYYY format   |
 
 ### Sample request
+
 #### With only compulsory data
+
 ```js
 {
     "name": "myname",
@@ -1179,6 +1198,7 @@ The staff to add new tenant.
 ```
 
 #### With all compulsory data
+
 ```js
 {
     "name": "myname",
@@ -1205,6 +1225,7 @@ The staff to add new tenant.
 ```
 
 #### Partial Success
+
 ##### Missing keys, null or empty value received for compulsory data fields
 
 ```js
@@ -1219,7 +1240,9 @@ The staff to add new tenant.
     ]
 }
 ```
+
 ##### Duplicate email found
+
 ```js
 "status": 200,
 "data": {
@@ -1243,7 +1266,9 @@ The staff to add new tenant.
 ```
 
 #### Failure
+
 ##### No response received
+
 ```js
 "status": 404,
 "data": {
@@ -1290,7 +1315,9 @@ http://127.0.0.1:5000/tenant?tenantID=6074222a576f86e1952e8be1
 ```
 
 #### Partial Failure
+
 ##### Missing TenantID
+
 ```js
 "status": 200,
 "data": {
@@ -1299,6 +1326,7 @@ http://127.0.0.1:5000/tenant?tenantID=6074222a576f86e1952e8be1
 ```
 
 ##### TenantID not found
+
 ```js
 "status": 200,
 "data": {
@@ -1307,7 +1335,9 @@ http://127.0.0.1:5000/tenant?tenantID=6074222a576f86e1952e8be1
 ```
 
 #### Failure
+
 ##### Server Error
+
 ```js
 "status": 404,
 "data": {
@@ -1316,6 +1346,7 @@ http://127.0.0.1:5000/tenant?tenantID=6074222a576f86e1952e8be1
 ```
 
 ##### Error in deleting data
+
 ```js
 "status": 404,
 "data": {
@@ -1324,7 +1355,9 @@ http://127.0.0.1:5000/tenant?tenantID=6074222a576f86e1952e8be1
 ```
 
 ## `GET /tenant/<tenantID>`
+
 ### URL Query Parameters
+
 | URL Param  | Description                      |
 | ---------- | -------------------------------- |
 | `tenantID` | The unique identifier for tenant |
@@ -1361,7 +1394,9 @@ http://127.0.0.1:5000/tenant?tenantID=6074222a576f86e1952e8be1
 ```
 
 #### Partial Failure
+
 ##### Missing TenantID
+
 ```js
 "status": 200,
 "data": {
@@ -1370,6 +1405,7 @@ http://127.0.0.1:5000/tenant?tenantID=6074222a576f86e1952e8be1
 ```
 
 ##### TenantID not found
+
 ```js
 "status": 200,
 "data": {
@@ -1378,7 +1414,9 @@ http://127.0.0.1:5000/tenant?tenantID=6074222a576f86e1952e8be1
 ```
 
 #### Failure
+
 ##### Server Error
+
 ```js
 "status": 404,
 "data": {
@@ -1506,12 +1544,12 @@ The staff to get all audit data within a timeframe.
 
 ### Compulsory JSON Query string parameters
 
-| JSON param | Description                                                                       |
-| ---------- | --------------------------------------------------------------------------------- |
-| `fromDate` | DateTime string in milli format with the start date of audit data to extract |
-| `toDate`   | DateTime string in milli format with the end date of audit data to extract   |
-| `dataType`   | Type of graph to extract, 'institution', 'tenant' or None   |
-| `dataID`   | Unique identifier for the tenant or institution, None value if dataType = None  |
+| JSON param | Description                                                                    |
+| ---------- | ------------------------------------------------------------------------------ |
+| `fromDate` | DateTime string in milli format with the start date of audit data to extract   |
+| `toDate`   | DateTime string in milli format with the end date of audit data to extract     |
+| `dataType` | Type of graph to extract, 'institution', 'tenant' or None                      |
+| `dataID`   | Unique identifier for the tenant or institution, None value if dataType = None |
 
 ### Sample request
 
@@ -1587,5 +1625,62 @@ The staff to get all audit data within a timeframe.
 "status": 404,
 "data": {
     "description": "Error in connection"
+}
+```
+
+## `GET /notifications`
+
+### URL Query Arguments
+
+| URL Arguments | Description                      |
+| ------------- | -------------------------------- |
+| `userID`      | The unique identifier for a user |
+
+### Sample Request
+
+```
+localhost:5000/notifications?userID=veagvtrhfvrtbhtvg
+```
+
+### Sample Response
+
+#### Success
+
+##### Found several matching audits
+
+```js
+"status": 200,
+"data": {
+    "data": [
+        {
+            "auditID": "veagvtrhfvrtbhtvg",
+            "stallName": "Mr Bean",
+            "message": { PATCH object } || { POST object } 
+        },
+        <Notification />,
+        <Notification />
+    ],
+    "description": "Notifications retrieved successfully"
+}
+```
+
+##### Request performed, but found no matching audits
+
+```js
+"status": 200,
+"data": {
+    "data": [],
+    "description": "No notifications found"
+}
+```
+
+#### Failure
+
+##### `tenantID` not provided
+
+```js
+"status": 400,
+"data": {
+    "description": "No userID provided"
 }
 ```

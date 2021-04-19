@@ -40,22 +40,18 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
 
   const handleGoToTenantRectifications = () => {
+    const payload = {
+      index,
+      checklistType,
+      question,
+      section,
+      rectified,
+    };
+
     if (authStore.userType === "staff") {
-      navigation.navigate("StaffRectification", {
-        index,
-        checklistType,
-        question,
-        section,
-        rectified,
-      });
+      navigation.navigate("StaffRectification", payload);
     } else {
-      navigation.navigate("TenantRectification", {
-        index,
-        checklistType,
-        question,
-        section,
-        rectified,
-      });
+      navigation.navigate("TenantRectification", payload);
     }
   };
 
