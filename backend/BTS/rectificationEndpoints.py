@@ -176,7 +176,7 @@ def addRectificationEndpts(app, mongo):
                         send_push_message(device, tenantStallName,
                                           "has reviewed an audit form")
                     except:
-                        print("Some error detected")
+                        # print("Some error detected")
                         continue
 
             date = selectedAudit['date']
@@ -260,7 +260,7 @@ def addRectificationEndpts(app, mongo):
                             send_push_message(device, institution,
                                               "has reviewed your rectifications")
                         except:
-                            print("Some error detected")
+                            # print("Some error detected")
                             continue
 
                 date = selectedAudit['date']

@@ -28,8 +28,6 @@ def audit_timeframe_endpoint(app, mongo):
                     hour=23, minute=59, second=59, microsecond=999999)
 
                 query = {"date": {"$gt": start_date, "$lt": end_date}}
-                # print(dataType)
-                # print(dataID)
 
                 if (dataType is None) and (dataID is None):
                     pass
