@@ -1628,18 +1628,26 @@ The staff to get all audit data within a timeframe.
 }
 ```
 
-## `GET /notifications`
+## `GET /notifications/<userType>`
 
 ### URL Query Arguments
 
 | URL Arguments | Description                      |
 | ------------- | -------------------------------- |
-| `userID`      | The unique identifier for a user |
+| `userType`      | The user type. |
+
+### Query string args
+
+| Arg        | Description                                                        |
+| ---------- | ------------------------------------------------------------------ |
+| `userID` | The unique identifier for a user. |
+
+<br>
 
 ### Sample Request
 
 ```
-localhost:5000/notifications?userID=veagvtrhfvrtbhtvg
+localhost:5000/notifications/tenant?userID=veagvtrhfvrtbhtvg
 ```
 
 ### Sample Response
@@ -1655,7 +1663,13 @@ localhost:5000/notifications?userID=veagvtrhfvrtbhtvg
         {
             "auditID": "veagvtrhfvrtbhtvg",
             "stallName": "Mr Bean",
-            "message": { PATCH object } || { POST object } 
+            "type": "patch",
+            "message": {
+                "index": "1",
+                "checklistType": "non-fnb",
+                "question": "Adequate and regular pest control. Pest control record.",
+                "section": "Housekeeping and General Cleanliness",
+             }
         },
         <Notification />,
         <Notification />

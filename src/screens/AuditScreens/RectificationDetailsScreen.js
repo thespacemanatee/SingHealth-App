@@ -33,7 +33,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const { index, checklistType, question, section, rectified } = route.params;
+  const { index, checklistType, question, section } = route.params;
 
   const theme = useTheme();
 
@@ -45,7 +45,6 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
       checklistType,
       question,
       section,
-      rectified,
     };
 
     if (authStore.userType === "staff") {
