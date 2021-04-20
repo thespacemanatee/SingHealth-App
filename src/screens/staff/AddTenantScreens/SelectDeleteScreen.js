@@ -11,6 +11,7 @@ import {
   Button,
 } from "@ui-kitten/components";
 import useMountedState from "react-use/lib/useMountedState";
+import { RefreshControl } from "react-native-web-refresh-control";
 
 import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
@@ -136,8 +137,9 @@ const SelectDeleteScreen = ({ route, navigation }) => {
           renderItem={renderTenants}
           contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
-          refreshing={listLoading}
-          onRefresh={getTenants}
+          refreshControl={
+            <RefreshControl refreshing={listLoading} onRefresh={getTenants} />
+          }
           ListEmptyComponent={renderEmptyComponent}
           ListHeaderComponent={
             <View style={styles.textContainer}>

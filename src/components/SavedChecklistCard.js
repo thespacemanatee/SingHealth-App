@@ -1,17 +1,15 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { View } from "react-native";
-import { StyleService, Button, useTheme, Icon } from "@ui-kitten/components";
+import { StyleService } from "@ui-kitten/components";
 import moment from "moment";
-import Swipeable from "react-native-gesture-handler/Swipeable";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import * as checklistActions from "../store/actions/checklistActions";
 import alert from "./CustomAlert";
 import CustomText from "./ui/CustomText";
 import ShadowCard from "./ui/ShadowCard";
-
-const TrashIcon = (props) => <Icon {...props} name="trash" />;
 
 const SavedChecklistCard = ({
   item,
@@ -20,10 +18,7 @@ const SavedChecklistCard = ({
   onError,
   onLoading,
 }) => {
-  const leftSwipeable = useRef(null);
   const dispatch = useDispatch();
-
-  const theme = useTheme();
 
   const handleOpenSavedChecklist = () => {
     dispatch(checklistActions.addSavedChecklist(item.data));
@@ -33,7 +28,7 @@ const SavedChecklistCard = ({
     });
   };
 
-  const rightSwipe = useCallback(async () => {
+  const deleteSaved = useCallback(async () => {
     try {
       onLoading(true);
       let data = await AsyncStorage.getItem("savedChecklists");
@@ -51,59 +46,33 @@ const SavedChecklistCard = ({
     }
   }, [deleteSave, item.time, onError, onLoading]);
 
-  const leftComponent = useCallback(() => {
-    return (
-      <View
-        style={[
-          styles.deleteBox,
-          { backgroundColor: theme["color-primary-100"] },
-        ]}
-      >
-        <Button appearance="ghost" accessoryLeft={TrashIcon} />
-      </View>
-    );
-  }, [theme]);
+  const longPressHandler = useCallback(async () => {
+    alert("Delete checklist", "Are you sure you want to delete this forever?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      { text: "Confirm", style: "destructive", onPress: deleteSaved },
+    ]);
+  }, [deleteSaved]);
 
   return (
-    <Swipeable
-      ref={leftSwipeable}
-      renderLeftActions={leftComponent}
-      onSwipeableOpen={() => {
-        leftSwipeable.current.close();
-        alert(
-          "Delete checklist",
-          "Are you sure you want to delete this forever?",
-          [
-            {
-              text: "Cancel",
-              style: "cancel",
-            },
-            { text: "Confirm", style: "destructive", onPress: rightSwipe },
-          ]
-        );
-      }}
-      friction={2}
+    <ShadowCard
+      style={styles.cardContainer}
+      status="info"
+      activeOpacity={0.5}
+      onPress={handleOpenSavedChecklist}
+      onLongPress={longPressHandler}
     >
-      <ShadowCard
-        style={styles.cardContainer}
-        status="info"
-        activeOpacity={0.5}
-        onPress={handleOpenSavedChecklist}
-      >
-        <View>
-          <CustomText style={styles.stallNameText}>
-            {item.data.chosen_tenant.stallName}
-          </CustomText>
-          <CustomText style={styles.stallNameText}>
-            {moment(item.time)
-              .toLocaleString()
-              .split(" ")
-              .slice(0, 5)
-              .join(" ")}
-          </CustomText>
-        </View>
-      </ShadowCard>
-    </Swipeable>
+      <View>
+        <CustomText style={styles.stallNameText}>
+          {item.data.chosen_tenant.stallName}
+        </CustomText>
+        <CustomText style={styles.stallNameText}>
+          {moment(item.time).toLocaleString().split(" ").slice(0, 5).join(" ")}
+        </CustomText>
+      </View>
+    </ShadowCard>
   );
 };
 

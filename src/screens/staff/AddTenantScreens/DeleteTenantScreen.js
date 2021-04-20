@@ -10,6 +10,7 @@ import {
   StyleService,
 } from "@ui-kitten/components";
 import useMountedState from "react-use/lib/useMountedState";
+import { RefreshControl } from "react-native-web-refresh-control";
 
 import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
@@ -116,8 +117,12 @@ const DeleteTenantScreen = ({ navigation }) => {
           contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
           renderItem={renderInstitutions}
-          refreshing={listLoading}
-          onRefresh={getInstitutions}
+          refreshControl={
+            <RefreshControl
+              refreshing={listLoading}
+              onRefresh={getInstitutions}
+            />
+          }
           ListEmptyComponent={renderEmptyComponent}
         />
       </Layout>
