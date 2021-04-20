@@ -6,7 +6,7 @@ from flask import request
 
 def addNotificationEndpt(app, mongo):
     @app.route("/notifications", methods=["GET"])
-    @login_required
+    # @login_required
     def getNotifs():
         if request.method == "GET":
             requestArgs = request.args
