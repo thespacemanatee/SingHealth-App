@@ -56,7 +56,7 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
             : 100
         }%`}
       </CustomText>
-      <CustomText>Progress</CustomText>
+      <CustomText>NCs Fixed</CustomText>
     </View>
   );
 
