@@ -238,7 +238,11 @@ def addAuditsEndpoint(app, mongo):
                         return serverResponse(None, 503, "Problem uploading forms to Database")
 
             except DuplicateKeyError:
-                return serverResponse(None, 400, "Form has already been uploaded")
+                return serverResponse(
+                    None, 
+                    400, 
+                    "Form has already been uploaded"
+                    )
 
             tenant = mongo.db.tenant.find_one(
                 {"_id": auditMetaData["tenantID"]})
@@ -264,7 +268,23 @@ def addAuditsEndpoint(app, mongo):
                         This email is auto generated. No signature is required.
                         You do not have to reply to this email."""
                 )
-            return serverResponse(None, 200, "Forms have been submitted successfully!")
+
+                notif = {
+                    "userID": tenant["_id"],
+                    "auditID": auditMetaData_ID_processed["_id"],
+                    "stallName": tenant["stallName"],
+                    "type": "post",
+                    "message": f"New audit on {date.strftime('%d/%m/%Y')} ready for viewing."
+                    }
+
+                result = mongo.db.notifications.insert_one(notif)
+                if not result.acknowledged:
+                    print("Failed to add POST nofitication to DB")
+            return serverResponse(
+                None, 
+                200, 
+                "Forms have been submitted successfully!"
+                )
         elif request.method == "GET":
             daysBefore = int(request.args.get("daysBefore", 0))
             tenantID = request.args.get("tenantID", None)
