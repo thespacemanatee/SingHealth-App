@@ -213,6 +213,25 @@ Please check your app for details.
 This email is auto generated. No signature is required.
 You do not have to reply to this email."""
             )
+
+            checklistType = list(patches.keys())[0]
+            patchForNotif = patches[checklistType][0]
+            notif = {
+                    "userID": staff["_id"],
+                    "auditID": auditID,
+                    "stallName": tenant["stallName"],
+                    "type": "patch",
+                    "message": {
+                        "checklistType": checklistType,
+                        "index": patchForNotif["index"],
+                        "section": patchForNotif["category"]
+                    }
+                }
+            result = mongo.db.notifications.insert_one(notif)
+            if not result.acknowledged:
+                print("PATCH ENDPT: Failed to add POST nofitication to DB")
+            else:
+                print("Added notif to the DB")
             return serverResponse(patchResults, 200, "Changes sent to the database.")
 
     @app.route("/audits/<auditID>/staff", methods=['PATCH'])
@@ -315,6 +334,29 @@ Please check your app for details. Below is an overview:
 {summary}
 This email is auto generated. No signature is required. You do not have to reply to this email."""
                 )
+                try:
+                    print(patches)
+                    checklistType = list(patches.keys())[0]
+                    patchForNotif = patches[checklistType][0]
+                    notif = {
+                            "userID": tenant["_id"],
+                            "auditID": auditID,
+                            "stallName": tenant["stallName"],
+                            "type": "patch",
+                            "message": {
+                                "checklistType": checklistType,
+                                "index": patchForNotif["index"],
+                                "section": patchForNotif["category"],
+                                "rectified": patchForNotif.get("rectified", False)
+                            }
+                        }
+                    result = mongo.db.notifications.insert_one(notif)
+                    if not result.acknowledged:
+                        print("PATCH ENDPT: Failed to add POST nofitication to DB")
+                    else:
+                        print("Added notif to the DB")
+                except KeyError:
+                    print("KEYERROR LA BODOH")
             return serverResponse(
                 ack,
                 200,
