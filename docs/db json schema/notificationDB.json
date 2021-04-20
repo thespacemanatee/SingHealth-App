@@ -1,0 +1,25 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://example.com/product.schema.json",
+    "title": "tenant",
+    "description": "Info about a single tenant",
+    "type": "object",
+    "properties": {
+        "_id": {
+            "description": "The unique identifier for a notif",
+            "type": "string"
+        },
+        "userID": {
+            "description": "The unique identifier for the recipient of this notifcation. Used to filter relevant notifications in DB",
+            "type":"string"
+        },
+        "auditID": {"type": "string"},
+        "stallName": {"type":"string"},
+        "type": {"type": "string"},
+        "message": {
+            "type":"object",
+            "description": "Can be a PATCH or POST object"
+        }
+    },
+    "required": ["_id", "userID", "auditID", "stallName", "message"]
+}
