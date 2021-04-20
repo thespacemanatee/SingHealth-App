@@ -1,6 +1,7 @@
 from .utils import serverResponse, send_push_message, send_email_notif
 from .constants import MAX_NUM_IMAGES_PER_NC, SGT_TIMEZONE
 from flask import request
+from flask_pymongo import ObjectId
 from .rectificationEndpoints import percentageRectification
 from flask_login import login_required
 from pymongo.errors import DuplicateKeyError
@@ -270,11 +271,15 @@ def addAuditsEndpoint(app, mongo):
                 )
 
                 notif = {
+                    "_id": str(ObjectId()),
                     "userID": tenant["_id"],
                     "auditID": auditMetaData_ID_processed["_id"],
                     "stallName": tenant["stallName"],
                     "type": "post",
-                    "message": f"New audit on {date.strftime('%d/%m/%Y')} ready for viewing."
+                    "message": f"New audit on {date.strftime('%d/%m/%Y')} ready for viewing.",
+                    "readReceipt": False,
+                    "notiDate": datetime.utcnow().isoformat(),
+                    "auditDate": date.isoformat()
                     }
 
                 result = mongo.db.notifications.insert_one(notif)
