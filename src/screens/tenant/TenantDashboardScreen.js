@@ -143,10 +143,7 @@ const TenantDashboardScreen = ({ navigation }) => {
 
   const getNotifications = useCallback(async () => {
     try {
-      const res = await dispatch(
-        databaseActions.getNotifications(authStore._id)
-      );
-      console.log(res.data);
+      await dispatch(databaseActions.getNotifications(authStore._id));
     } catch (err) {
       handleErrorResponse(err);
     }

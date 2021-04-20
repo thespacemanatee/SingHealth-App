@@ -26,6 +26,7 @@ import CustomText from "../../components/ui/CustomText";
 import EntityLoading from "../../components/ui/loading/EntityLoading";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
+const { Navigator, Screen } = createMaterialTopTabNavigator();
 
 const ChooseTenantScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
@@ -33,8 +34,7 @@ const ChooseTenantScreen = ({ navigation }) => {
   const [saved, setSaved] = useState([]);
   const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
-  const { Navigator, Screen } = createMaterialTopTabNavigator();
-  
+
   const isMounted = useMountedState();
 
   const theme = useTheme();

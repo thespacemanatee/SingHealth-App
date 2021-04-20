@@ -276,7 +276,7 @@ def addAuditsEndpoint(app, mongo):
                     "type": "post",
                     "message": f"New audit on {utc2sgt(date).strftime('%d/%m/%Y')} ready for viewing.",
                     "readReceipt": False,
-                    "notiDate": datetime.utcnow().isoformat(),
+                    "notiDate": datetime.now().isoformat(),
                     "auditDate": date.isoformat()
                     }
 
