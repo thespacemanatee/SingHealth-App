@@ -6,13 +6,14 @@ export const GET_TENANT_ACTIVE_AUDITS = "GET_TENANT_ACTIVE_AUDITS";
 export const GET_STAFF_ACTIVE_AUDITS = "GET_STAFF_ACTIVE_AUDITS";
 export const GET_GRAPH_DATA = "GET_GRAPH_DATA";
 export const STORE_GRAPH_DATA = "STORE_GRAPH_DATA";
+export const GET_NOTIFICATIONS = "GET_NOTIFICATIONS";
+export const CLEAR = "CLEAR";
 
 export const getInstitutions = () => {
   return async (dispatch) => {
     const options = {
       url: `${endpoint}institutions`,
       method: "get",
-      // withCredentials: true,
     };
     const res = await httpClient(options);
     dispatch({ type: GET_RELEVANT_TENANTS, institutions: res.data.data });
@@ -189,4 +190,22 @@ export const deleteTenant = (tenantID) => {
 
     return res;
   };
+};
+
+export const getNotifications = (userID) => {
+  return async (dispatch) => {
+    const options = {
+      url: `${endpoint}notifications`,
+      method: "get",
+      params: { userID },
+    };
+
+    const res = await httpClient(options);
+    dispatch({ type: GET_NOTIFICATIONS, notifications: res.data.data });
+    return res;
+  };
+};
+
+export const clear = () => {
+  return { type: CLEAR };
 };

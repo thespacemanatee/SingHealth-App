@@ -27,6 +27,8 @@ import AuditSubmitScreen from "../screens/AuditScreens/AuditSubmitScreen";
 import CameraScreen from "../screens/CameraScreen";
 import TenantsDirectoryScreen from "../screens/staff/DirectoryScreens/TenantsDirectoryScreen";
 import * as authActions from "../store/actions/authActions";
+import * as checklistActions from "../store/actions/checklistActions";
+import * as databaseActions from "../store/actions/databaseActions";
 import ManageTenantAccountsScreen from "../screens/staff/AddTenantScreens/ManageTenantAccountsScreen";
 import CreateTenantScreen from "../screens/staff/AddTenantScreens/CreateTenantScreen";
 import ExpandImagesScreen from "../screens/ExpandImagesScreen";
@@ -34,6 +36,7 @@ import TenantInfoScreen from "../screens/TenantInfoScreen";
 import DeleteTenantScreen from "../screens/staff/AddTenantScreens/DeleteTenantScreen";
 import SelectDeleteScreen from "../screens/staff/AddTenantScreens/SelectDeleteScreen";
 import { stackTransition, modalTransition } from "../helpers/config";
+import NotificationsScreen from "../screens/NotificationsScreen";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
 
@@ -64,14 +67,15 @@ const Footer = () => {
   const authStore = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
+  const handleLogout = async () => {
+    await dispatch(authActions.signOut(authStore.expoToken));
+    dispatch(checklistActions.clear());
+    dispatch(databaseActions.clear());
+  };
+
   return (
     <>
-      <DrawerItem
-        title="Logout"
-        onPress={() => {
-          dispatch(authActions.signOut(authStore.expoToken));
-        }}
-      />
+      <DrawerItem title="Logout" onPress={handleLogout} />
       <Divider />
     </>
   );
@@ -136,6 +140,7 @@ const StaffDashboardStackNavigator = () => {
   return (
     <Navigator headerMode="none" screenOptions={stackTransition}>
       <Screen name="StaffDashboard" component={StaffDashboardScreen} />
+      <Screen name="Notifications" component={NotificationsScreen} />
       <Screen name="ChooseTenant" component={ChooseTenantScreen} />
       <Screen name="Checklist" component={ChecklistScreen} />
       <Screen name="Rectification" component={RectificationScreen} />

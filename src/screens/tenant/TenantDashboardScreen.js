@@ -44,7 +44,12 @@ const TenantDashboardScreen = ({ navigation }) => {
   );
 
   const NotificationAction = () => (
-    <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
+    <TopNavigationAction
+      icon={NotificationIcon}
+      onPress={() => {
+        navigation.navigate("Notifications");
+      }}
+    />
   );
 
   const handleRefreshList = () => {
@@ -117,12 +122,25 @@ const TenantDashboardScreen = ({ navigation }) => {
     }
   }, [authStore._id, dispatch, isMounted]);
 
+  const getNotifications = useCallback(async () => {
+    try {
+      const res = await dispatch(
+        databaseActions.getNotifications(authStore._id)
+      );
+      console.log(res.data);
+    } catch (err) {
+      handleErrorResponse(err);
+    }
+  }, [authStore._id, dispatch]);
+
   useEffect(() => {
     // Subscribe for the focus Listener
     getListData();
+    getNotifications();
 
     const unsubscribe = navigation.addListener("focus", () => {
       getListData();
+      getNotifications();
     });
 
     return () => {
@@ -130,7 +148,7 @@ const TenantDashboardScreen = ({ navigation }) => {
       // eslint-disable-next-line no-unused-expressions
       unsubscribe;
     };
-  }, [getListData, navigation]);
+  }, [getListData, getNotifications, navigation]);
 
   return (
     <View style={styles.screen}>

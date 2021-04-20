@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Platform, useWindowDimensions } from "react-native";
+import { View, Platform } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -51,9 +51,6 @@ const TenantRectificationScreen = ({ route, navigation }) => {
   const { index, checklistType, section } = route.params;
 
   const isMounted = useMountedState();
-
-  const windowDimensions = useWindowDimensions();
-  const { height } = windowDimensions;
 
   const theme = useTheme();
 
@@ -481,7 +478,6 @@ const TenantRectificationScreen = ({ route, navigation }) => {
           <View style={styles.inputContainer}>
             <CustomText bold>Remarks: </CustomText>
             <Input
-              height={height * 0.1}
               multiline
               textStyle={styles.input}
               placeholder="Enter your remarks here"
@@ -516,9 +512,6 @@ const styles = StyleService.create({
     flex: 1,
     alignItems: "flex-start",
     marginVertical: 20,
-  },
-  inputContainer: {
-    // marginVertical: 20,
   },
   button: {
     borderRadius: 0,

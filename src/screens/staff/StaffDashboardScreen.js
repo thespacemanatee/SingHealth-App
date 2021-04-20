@@ -30,7 +30,7 @@ const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 const StaffDashboardScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
-  const [listLoading, setListLoading] = useState(true);
+  const [listLoading, setListLoading] = useState(false);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
 
@@ -52,7 +52,12 @@ const StaffDashboardScreen = ({ navigation }) => {
   );
 
   const NotificationAction = () => (
-    <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
+    <TopNavigationAction
+      icon={NotificationIcon}
+      onPress={() => {
+        navigation.navigate("Notifications");
+      }}
+    />
   );
 
   const handleOpenAudit = useCallback(
@@ -127,12 +132,22 @@ const StaffDashboardScreen = ({ navigation }) => {
     }
   }, [authStore.institutionID, dispatch, isMounted]);
 
+  const getNotifications = useCallback(async () => {
+    try {
+      await dispatch(databaseActions.getNotifications(authStore._id));
+    } catch (err) {
+      handleErrorResponse(err);
+    }
+  }, [authStore._id, dispatch]);
+
   useEffect(() => {
     // Subscribe for the focus Listener
     getListData();
+    getNotifications();
 
     const unsubscribe = navigation.addListener("focus", () => {
       getListData();
+      getNotifications();
     });
 
     return () => {
@@ -140,7 +155,7 @@ const StaffDashboardScreen = ({ navigation }) => {
       // eslint-disable-next-line no-unused-expressions
       unsubscribe;
     };
-  }, [getListData, navigation]);
+  }, [getListData, getNotifications, navigation]);
 
   return (
     <View style={styles.screen}>
