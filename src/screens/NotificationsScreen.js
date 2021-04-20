@@ -165,8 +165,6 @@ const styles = StyleService.create({
   },
   layout: {
     flex: 1,
-    justifyContent: "space-between",
-    alignItems: "center",
   },
   button: {
     marginBottom: 10,

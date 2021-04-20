@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Alert, Platform, useWindowDimensions } from "react-native";
+import { View, Alert, Platform } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
@@ -39,9 +39,6 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
   );
 
   const { index, checklistType, question, section } = route.params;
-
-  const windowDimensions = useWindowDimensions();
-  const { height } = windowDimensions;
 
   const theme = useTheme();
 
@@ -294,7 +291,6 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
           <View style={styles.inputContainer}>
             <CustomText bold>Remarks: </CustomText>
             <Input
-              height={height * 0.1}
               multiline
               textStyle={styles.input}
               placeholder="Enter your remarks here"
@@ -327,9 +323,6 @@ const styles = StyleService.create({
   },
   datePickerContainer: {
     marginTop: 20,
-  },
-  inputContainer: {
-    // margin: 20,
   },
   input: {
     minHeight: 64,
