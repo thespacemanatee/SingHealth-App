@@ -1,7 +1,16 @@
+/* eslint-disable global-require */
 import React from "react";
 import { Platform, useWindowDimensions } from "react-native";
 
-import { ContentLoader, Rect, Circle } from "../../../index";
+import { ContentLoader } from "../../../index";
+
+let Rect;
+let Circle;
+
+if (Platform.OS !== "web") {
+  Rect = require("../../../index").Rect;
+  Circle = require("../../../index").Circle;
+}
 
 const SkeletonLoading = (props) => {
   const windowDimensions = useWindowDimensions();

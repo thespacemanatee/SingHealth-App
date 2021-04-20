@@ -8,7 +8,7 @@ const SuccessAnimation = ({ loading }) => {
 
   useEffect(() => {
     if (loading) {
-      animation.current.play(0, 50);
+      animation.current.play(0, 45);
     } else {
       animation.current.play();
     }

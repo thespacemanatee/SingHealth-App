@@ -1,0 +1,26 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://example.com/product.schema.json",
+    "title": "tenant",
+    "description": "Info about a single tenant",
+    "type": "object",
+    "properties": {
+        "index": {
+            "description": "Question number/index number",
+            "type":"integer"
+        },
+        "checklistType": {
+            "description": "fnb / non fnb. Case sensitive",
+            "type": "string"
+        },
+        "section": {
+            "description": "i.e. Housekeeping and General Cleanliness",
+            "type": "string"
+        },
+        "rectified": {
+            "type":"boolean"
+        }
+    }
+}
+
+

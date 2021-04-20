@@ -10,6 +10,7 @@ import {
   TopNavigationAction,
 } from "@ui-kitten/components";
 import useMountedState from "react-use/lib/useMountedState";
+import { RefreshControl } from "react-native-web-refresh-control";
 
 import * as databaseActions from "../../store/actions/databaseActions";
 import * as checklistActions from "../../store/actions/checklistActions";
@@ -148,8 +149,12 @@ const TenantDashboardScreen = ({ navigation }) => {
           keyExtractor={(item, index) => String(index)}
           data={listData}
           renderItem={renderActiveAudits}
-          refreshing={listLoading}
-          onRefresh={handleRefreshList}
+          refreshControl={
+            <RefreshControl
+              refreshing={listLoading}
+              onRefresh={handleRefreshList}
+            />
+          }
           ListEmptyComponent={renderEmptyComponent}
           ListHeaderComponent={() => (
             <View style={styles.textContainer}>

@@ -18,6 +18,7 @@ from BTS.imagesEndpoint import addImagesEndpoint
 from BTS.loginEndpoints import addLoginEndpointsForTenantAndStaff
 from BTS.rectificationEndpoints import addRectificationEndpts
 from BTS.auditsEndpoint import addAuditsEndpoint
+from BTS.notificationEndpoint import addNotificationEndpt
 from BTS.constants import CORS_LOCALHOST
 
 from dotenv import load_dotenv
@@ -65,7 +66,7 @@ addAuditEmailEndpoints(app, mongo)
 institution_info(app, mongo)
 change_tenant_info(app, mongo)
 audit_timeframe_endpoint(app, mongo)
-
+addNotificationEndpt(app, mongo)
 
 
 

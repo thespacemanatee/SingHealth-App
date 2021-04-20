@@ -3,7 +3,6 @@ import { StatusBar, Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import * as eva from "@eva-design/eva";
 import Constants from "expo-constants";
-import { registerRootComponent } from "expo";
 import {
   ApplicationProvider,
   IconRegistry,
@@ -17,7 +16,6 @@ import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
 import Toast from "react-native-toast-message";
 import { PersistGate } from "redux-persist/integration/react";
-import { patchFlatListProps } from "react-native-web-refresh-control";
 
 import { store, persistor } from "./src/store/store";
 import AppNavigator from "./src/navigation/AppNavigator";
@@ -137,8 +135,6 @@ const App = () => {
   );
 };
 
-patchFlatListProps();
-registerRootComponent(App);
 export default App;
 
 const styles = StyleService.create({

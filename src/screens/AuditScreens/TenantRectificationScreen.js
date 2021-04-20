@@ -45,8 +45,10 @@ const TenantRectificationScreen = ({ route, navigation }) => {
   const [error, setError] = useState(false);
   const [toggle, setToggle] = useState(false);
   const [disableToggle, setDisableToggle] = useState(false);
+  const [rectified, setRectified] = useState(false);
+  const [question, setQuestion] = useState();
 
-  const { index, checklistType, question, section, rectified } = route.params;
+  const { index, checklistType, section } = route.params;
 
   const isMounted = useMountedState();
 
@@ -242,16 +244,34 @@ const TenantRectificationScreen = ({ route, navigation }) => {
       checklistStore[type].questions[section][index].rectificationImages;
     const storeRemarks =
       checklistStore[type].questions[section][index].rectificationRemarks;
+    const storeRectified =
+      checklistStore[type].questions[section][index].rectified;
+    const storeQuestion =
+      checklistStore[type].questions[section][index].question;
 
     if (storeImages) {
       const images = storeImages.map((e) => e.uri);
-      setImageArray(images);
-      setUploadImageArray(storeImages);
+      if (isMounted()) {
+        setImageArray(images);
+        setUploadImageArray(storeImages);
+      }
     }
     if (storeRemarks) {
-      setValue(storeRemarks);
+      if (isMounted()) {
+        setValue(storeRemarks);
+      }
     }
-  }, [checklistStore, checklistType, dispatch, index, section]);
+    if (storeRectified) {
+      if (isMounted()) {
+        setRectified(storeRectified);
+      }
+    }
+    if (storeQuestion) {
+      if (isMounted()) {
+        setQuestion(storeQuestion);
+      }
+    }
+  }, [checklistStore, checklistType, dispatch, index, isMounted, section]);
 
   const onSave = async (imageData) => {
     if (imageArray.length > 2) {

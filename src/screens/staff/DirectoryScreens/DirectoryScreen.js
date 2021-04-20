@@ -10,6 +10,7 @@ import {
   StyleService,
 } from "@ui-kitten/components";
 import useMountedState from "react-use/lib/useMountedState";
+import { RefreshControl } from "react-native-web-refresh-control";
 
 import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
@@ -18,7 +19,6 @@ import EntityLoading from "../../../components/ui/loading/EntityLoading";
 import CustomText from "../../../components/ui/CustomText";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
-const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 
 const DirectoryScreen = ({ navigation }) => {
   const [institutions, setInstitutions] = useState([]);
@@ -35,10 +35,6 @@ const DirectoryScreen = ({ navigation }) => {
         navigation.openDrawer();
       }}
     />
-  );
-
-  const NotificationAction = () => (
-    <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
   );
 
   const handleNavigateTenants = useCallback(
@@ -109,7 +105,6 @@ const DirectoryScreen = ({ navigation }) => {
         title="Directory"
         alignment="center"
         accessoryLeft={DrawerAction}
-        accessoryRight={NotificationAction}
       />
       <Divider />
       <Layout style={styles.layout}>
@@ -118,8 +113,12 @@ const DirectoryScreen = ({ navigation }) => {
           contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
           renderItem={renderInstitutions}
-          refreshing={listLoading}
-          onRefresh={getInstitutions}
+          refreshControl={
+            <RefreshControl
+              refreshing={listLoading}
+              onRefresh={getInstitutions}
+            />
+          }
           ListEmptyComponent={renderEmptyComponent}
         />
       </Layout>

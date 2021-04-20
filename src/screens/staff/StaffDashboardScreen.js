@@ -12,6 +12,7 @@ import {
 } from "@ui-kitten/components";
 import { FAB } from "react-native-paper";
 import useMountedState from "react-use/lib/useMountedState";
+import { RefreshControl } from "react-native-web-refresh-control";
 
 import * as databaseActions from "../../store/actions/databaseActions";
 import * as checklistActions from "../../store/actions/checklistActions";
@@ -51,7 +52,12 @@ const StaffDashboardScreen = ({ navigation }) => {
   );
 
   const NotificationAction = () => (
-    <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
+    <TopNavigationAction
+      icon={NotificationIcon}
+      onPress={() => {
+        navigation.navigate("Notifications");
+      }}
+    />
   );
 
   const handleOpenAudit = useCallback(
@@ -126,12 +132,25 @@ const StaffDashboardScreen = ({ navigation }) => {
     }
   }, [authStore.institutionID, dispatch, isMounted]);
 
+  const getNotifications = async () => {
+    try {
+      const res = await dispatch(
+        databaseActions.getNotifications(authStore._id)
+      );
+      console.log(res.data);
+    } catch (err) {
+      handleErrorResponse(err);
+    }
+  };
+
   useEffect(() => {
     // Subscribe for the focus Listener
     getListData();
+    getNotifications();
 
     const unsubscribe = navigation.addListener("focus", () => {
       getListData();
+      getNotifications();
     });
 
     return () => {
@@ -158,8 +177,9 @@ const StaffDashboardScreen = ({ navigation }) => {
           data={listData}
           renderItem={renderActiveAudits}
           onScroll={handleScroll}
-          refreshing={listLoading}
-          onRefresh={getListData}
+          refreshControl={
+            <RefreshControl refreshing={listLoading} onRefresh={getListData} />
+          }
           ListEmptyComponent={renderEmptyComponent}
           ListHeaderComponent={
             <>

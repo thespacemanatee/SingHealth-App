@@ -1,7 +1,14 @@
+/* eslint-disable global-require */
 import React from "react";
 import { Platform, useWindowDimensions } from "react-native";
 
-import { ContentLoader, Rect } from "../../../index";
+import { ContentLoader } from "../../../index";
+
+let Rect;
+
+if (Platform.OS !== "web") {
+  Rect = require("../../../index").Rect;
+}
 
 const EntityLoading = (props) => {
   const windowDimensions = useWindowDimensions();

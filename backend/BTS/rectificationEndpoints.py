@@ -194,9 +194,9 @@ def addRectificationEndpts(app, mongo):
                     part = ""
                     part += f"Category:\t{patch['category']}\n"
                     part += f"Line item no.:\t{patch['index']}\n"
-                    part += f"Note: Added \t{len(patch['rectificationImages'])} images to show rectification\n"
-                    part += f"Remarks:\t{patch['rectificationRemarks']}\n"
-                    part += f"Requested for extension:\t{patch['requestForExt']}"
+                    part += f"Note: Added \t{len(patch.get('rectificationImages',[]))} images to show rectification\n"
+                    part += f"Remarks:\t{patch.get('rectificationRemarks', None)}\n"
+                    part += f"Requested for extension:\t{patch.get('requestForExt',False)}"
                     summary += part
                 summary += "\n\n"
 
@@ -213,6 +213,25 @@ Please check your app for details.
 This email is auto generated. No signature is required.
 You do not have to reply to this email."""
             )
+
+            checklistType = list(patches.keys())[0]
+            patchForNotif = patches[checklistType][0]
+            notif = {
+                    "userID": staff["_id"],
+                    "auditID": auditID,
+                    "stallName": tenant["stallName"],
+                    "type": "patch",
+                    "message": {
+                        "checklistType": checklistType,
+                        "index": patchForNotif["index"],
+                        "section": patchForNotif["category"]
+                    }
+                }
+            result = mongo.db.notifications.insert_one(notif)
+            if not result.acknowledged:
+                print("PATCH ENDPT: Failed to add POST nofitication to DB")
+            else:
+                print("Added notif to the DB")
             return serverResponse(patchResults, 200, "Changes sent to the database.")
 
     @app.route("/audits/<auditID>/staff", methods=['PATCH'])
@@ -291,9 +310,9 @@ You do not have to reply to this email."""
                         part = ""
                         part += f"Category:\t{patch['category']}\n"
                         part += f"Line item no.:\t{patch['index']}\n"
-                        part += f"Deadline:\t{patch['deadline']}\n"
-                        part += f"Rectified:\t{patch['rectified']}\n"
-                        part += f"Granted request for extension:\t{patch['acceptedRequest']}"
+                        part += f"Deadline:\t{patch.get('deadline', 'No changes')}\n"
+                        part += f"Rectified:\t{patch.get('rectified',False)}\n"
+                        part += f"Granted request for extension:\t{patch.get('acceptedRequest',False)}"
                         summary += part
                     summary += "\n\n"
 
@@ -315,6 +334,29 @@ Please check your app for details. Below is an overview:
 {summary}
 This email is auto generated. No signature is required. You do not have to reply to this email."""
                 )
+                try:
+                    print(patches)
+                    checklistType = list(patches.keys())[0]
+                    patchForNotif = patches[checklistType][0]
+                    notif = {
+                            "userID": tenant["_id"],
+                            "auditID": auditID,
+                            "stallName": tenant["stallName"],
+                            "type": "patch",
+                            "message": {
+                                "checklistType": checklistType,
+                                "index": patchForNotif["index"],
+                                "section": patchForNotif["category"],
+                                "rectified": patchForNotif.get("rectified", False)
+                            }
+                        }
+                    result = mongo.db.notifications.insert_one(notif)
+                    if not result.acknowledged:
+                        print("PATCH ENDPT: Failed to add POST nofitication to DB")
+                    else:
+                        print("Added notif to the DB")
+                except KeyError:
+                    print("KEYERROR LA BODOH")
             return serverResponse(
                 ack,
                 200,

@@ -1,10 +1,12 @@
 import os
 import io
 import json
+
+from pytz import timezone, utc
 import boto3
 from flask import make_response, jsonify
 from bson import json_util
-from .constants import BTS_EMAIL, BTS_APP_CONFIG_EMAIL
+from .constants import BTS_EMAIL, BTS_APP_CONFIG_EMAIL, SGT_TIMEZONE
 from exponent_server_sdk import (
     DeviceNotRegisteredError,
     PushClient,
@@ -126,6 +128,12 @@ def send_push_message(token, title, message, extra=None):
             raise self.retry(exc=exc)
     except ValueError:
         pass
+
+def utc2sgt(date):
+    if date.tzinfo is None or date.tzinfo.utcoffset(date) is None:
+        date = utc.localize(date)
+    
+    return date.astimezone(timezone(SGT_TIMEZONE))
 
 # for checking data
 def check_required_info(mydict, key_arr):
@@ -355,7 +363,7 @@ def get_rect(question_dict, ans_dict):
 
                 deadline = item.get("deadline", None)
                 if deadline is not None:
-                    deadline =  deadline.strftime("%m/%d/%Y %H:%M:%S")
+                    deadline =  utc2sgt(deadline).strftime("%m/%d/%Y %H:%M:%S")
                 else:
                     deadline = "-"
                 if rectified:
@@ -653,7 +661,7 @@ def from_audit_to_word(document, data):
     insert_dict_by_col(info, 1, 1, staff_data, staff_dict)
     insert_dict_by_col(info, 3, 1, inst_data, inst_dict)
     insert_dict_by_col(info, 7, 1, tenant_data, tenant_dict)
-    info.cell(11, 1).text = date.strftime('%Y/%m/%d %I:%M %p')
+    info.cell(11, 1).text = utc2sgt(date).strftime('%Y/%m/%d %I:%M %p')
     info.cell(12, 1).text = str(score)+"%"
     
      # Add checklists

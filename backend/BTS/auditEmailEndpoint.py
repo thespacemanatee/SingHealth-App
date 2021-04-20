@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask_login import login_required
-from .utils import serverResponse, send_audit_email_word, find_and_return_one, check_valid_param, get_rect, map_qna
+from .utils import serverResponse, send_audit_email_word, find_and_return_one, check_valid_param, get_rect, map_qna, utc2sgt
 
 def validate_and_pack_audit_info_word(auditID, mongo):
     data = {}
@@ -130,9 +130,9 @@ def addAuditEmailEndpoints(app, mongo):
             validate, data = validate_and_pack_audit_info_word(auditID, mongo)
     
             if validate:
-                date_underscore = data["audit_info"]["date"].strftime(
+                date_underscore = utc2sgt(data["audit_info"]["date"]).strftime(
                     '%Y_%m_%d')
-                date_slash = data["audit_info"]["date"].strftime('%Y/%m/%d')
+                date_slash = utc2sgt(data["audit_info"]["date"]).strftime('%Y/%m/%d')
                 stall_name = data["tenant_info"]["stallName"]
                 
                 to_email = data["staff_info"]["email"]

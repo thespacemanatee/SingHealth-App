@@ -13,6 +13,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import useMountedState from "react-use/lib/useMountedState";
+import { RefreshControl } from "react-native-web-refresh-control";
 
 import * as checklistActions from "../../store/actions/checklistActions";
 import * as databaseActions from "../../store/actions/databaseActions";
@@ -169,8 +170,9 @@ const ChooseTenantScreen = ({ navigation }) => {
           contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
           renderItem={renderTenants}
-          refreshing={listLoading}
-          onRefresh={getListData}
+          refreshControl={
+            <RefreshControl refreshing={listLoading} onRefresh={getListData} />
+          }
           ListEmptyComponent={renderEmptyComponent}
         />
       </Layout>
@@ -190,8 +192,9 @@ const ChooseTenantScreen = ({ navigation }) => {
           contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
           renderItem={renderSaved}
-          refreshing={listLoading}
-          onRefresh={getListData}
+          refreshControl={
+            <RefreshControl refreshing={listLoading} onRefresh={getListData} />
+          }
           ListEmptyComponent={renderEmptyComponent}
         />
       </Layout>
@@ -250,9 +253,14 @@ const styles = StyleService.create({
     fontSize: 20,
   },
   contentContainer: {
-    // flexGrow: 1,
+    flexGrow: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
+  },
+  emptyComponent: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexGrow: 1,
   },
 });
 
