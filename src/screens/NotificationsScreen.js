@@ -20,7 +20,7 @@ import * as databaseActions from "../store/actions/databaseActions";
 import * as checklistActions from "../store/actions/checklistActions";
 import NotificationCard from "../components/NotificationCard";
 import CenteredLoading from "../components/ui/CenteredLoading";
-import { handleErrorResponse } from "../helpers/utils";
+import { formatDuration, handleErrorResponse } from "../helpers/utils";
 import SkeletonLoading from "../components/ui/loading/SkeletonLoading";
 import CustomText from "../components/ui/CustomText";
 
@@ -138,9 +138,8 @@ const NotificationsScreen = ({ navigation }) => {
       } else {
         headerText = "New Message";
       }
-      const starts = moment(notiDate);
-      const ends = moment();
-      let duration = moment.duration(ends.diff(starts));
+      const starts = moment(notiDate.$date || notiDate);
+      const duration = formatDuration(moment().diff(starts));
       console.log("DIFF TIME: ", duration);
 
       return (
@@ -149,7 +148,7 @@ const NotificationsScreen = ({ navigation }) => {
           message={message}
           data={itemData.item}
           onPress={handleNavigateRectifications}
-          notiDate={moment(auditDate).toLocaleString()}
+          duration={duration}
         />
       );
     },
