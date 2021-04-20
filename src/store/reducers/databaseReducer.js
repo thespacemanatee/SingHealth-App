@@ -79,8 +79,6 @@ const databaseReducer = (state = initialState, action) => {
       const unread = action.notifications.filter(
         (notification) => !notification.readReceipt
       );
-      console.log("READ: ", read);
-      console.log("UNREAD: ", unread);
       return {
         ...state,
         notifications: { read, unread },

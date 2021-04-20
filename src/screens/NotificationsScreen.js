@@ -16,6 +16,7 @@ import useMountedState from "react-use/lib/useMountedState";
 import useEffectOnce from "react-use/lib/useEffectOnce";
 import { RefreshControl } from "react-native-web-refresh-control";
 
+import { endpoint, httpClient } from "../helpers/CustomHTTPClient";
 import * as databaseActions from "../store/actions/databaseActions";
 import * as checklistActions from "../store/actions/checklistActions";
 import NotificationCard from "../components/NotificationCard";
@@ -53,10 +54,19 @@ const NotificationsScreen = ({ navigation }) => {
   );
 
   const handleNavigateRectifications = useCallback(
-    async (auditID, stallName, navProps) => {
+    async ({ _id, auditID, stallName, navProps, readReceipt }) => {
       try {
         setLoading(true);
         await dispatch(checklistActions.getAuditData(auditID));
+        if (!readReceipt) {
+          const options = {
+            url: `${endpoint}notifications`,
+            method: "patch",
+            params: { notifID: _id },
+          };
+
+          await httpClient(options);
+        }
 
         if (navProps.section) {
           navigation.navigate("RectificationDetails", navProps);
@@ -116,7 +126,13 @@ const NotificationsScreen = ({ navigation }) => {
 
   const renderNotifications = useCallback(
     (itemData) => {
-      const { auditDate, notiDate, stallName } = itemData.item;
+      const {
+        _id,
+        auditDate,
+        notiDate,
+        stallName,
+        readReceipt,
+      } = itemData.item;
       let { message } = itemData.item;
       let headerText;
       if (authStore.userType === "staff") {
@@ -136,19 +152,21 @@ const NotificationsScreen = ({ navigation }) => {
           message.section
         }.`;
       } else {
-        headerText = "New Message";
+        headerText = "Message";
       }
+
       const starts = moment(notiDate.$date || notiDate);
       const duration = formatDuration(moment().diff(starts));
-      console.log("DIFF TIME: ", duration);
 
       return (
         <NotificationCard
+          _id={_id}
           headerText={headerText}
           message={message}
           data={itemData.item}
           onPress={handleNavigateRectifications}
           duration={duration}
+          readReceipt={readReceipt}
         />
       );
     },
@@ -161,7 +179,6 @@ const NotificationsScreen = ({ navigation }) => {
       const res = await dispatch(
         databaseActions.getNotifications(authStore._id)
       );
-      console.log(res.data.data);
     } catch (err) {
       handleErrorResponse(err);
     } finally {
@@ -182,6 +199,16 @@ const NotificationsScreen = ({ navigation }) => {
 
   useEffectOnce(() => {
     getNotifications();
+    const unsubscribe = navigation.addListener("focus", () => {
+      // setLoading(true);
+      getNotifications();
+    });
+
+    return () => {
+      // Unsubscribe for the focus Listener
+      // eslint-disable-next-line no-unused-expressions
+      unsubscribe;
+    };
   });
 
   return (
