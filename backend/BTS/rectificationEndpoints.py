@@ -194,9 +194,9 @@ def addRectificationEndpts(app, mongo):
                     part = ""
                     part += f"Category:\t{patch['category']}\n"
                     part += f"Line item no.:\t{patch['index']}\n"
-                    part += f"Note: Added \t{len(patch['rectificationImages'])} images to show rectification\n"
-                    part += f"Remarks:\t{patch['rectificationRemarks']}\n"
-                    part += f"Requested for extension:\t{patch['requestForExt']}"
+                    part += f"Note: Added \t{len(patch.get('rectificationImages',[]))} images to show rectification\n"
+                    part += f"Remarks:\t{patch.get('rectificationRemarks', None)}\n"
+                    part += f"Requested for extension:\t{patch.get('requestForExt',False)}"
                     summary += part
                 summary += "\n\n"
 
@@ -291,9 +291,9 @@ You do not have to reply to this email."""
                         part = ""
                         part += f"Category:\t{patch['category']}\n"
                         part += f"Line item no.:\t{patch['index']}\n"
-                        part += f"Deadline:\t{patch['deadline']}\n"
-                        part += f"Rectified:\t{patch['rectified']}\n"
-                        part += f"Granted request for extension:\t{patch['acceptedRequest']}"
+                        part += f"Deadline:\t{patch.get('deadline', 'No changes')}\n"
+                        part += f"Rectified:\t{patch.get('rectified',False)}\n"
+                        part += f"Granted request for extension:\t{patch.get('acceptedRequest',False)}"
                         summary += part
                     summary += "\n\n"
 
