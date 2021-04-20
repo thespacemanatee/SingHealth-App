@@ -276,8 +276,8 @@ def addAuditsEndpoint(app, mongo):
                     "type": "post",
                     "message": f"New audit on {utc2sgt(date).strftime('%d/%m/%Y')} ready for viewing.",
                     "readReceipt": False,
-                    "notiDate": datetime.now().isoformat(),
-                    "auditDate": date.isoformat()
+                    "notiDate": datetime.now(),
+                    "auditDate": date
                     }
 
                 result = mongo.db.notifications.insert_one(notif)

@@ -230,7 +230,7 @@ You do not have to reply to this email."""
                         "section": patchForNotif["category"]
                     },
                     "readReceipt": False,
-                    "notiDate": datetime.now().isoformat(),
+                    "notiDate": datetime.now(),
                     "auditDate": selectedAudit["date"]
                 }
             result = mongo.db.notifications.insert_one(notif)
@@ -357,7 +357,7 @@ This email is auto generated. No signature is required. You do not have to reply
                                 "rectified": patchForNotif.get("rectified", False)
                             },
                             "readReceipt": False,
-                            "notiDate": datetime.now().isoformat(),
+                            "notiDate": datetime.now(),
                             "auditDate": selectedAudit["date"]
                         }
                     result = mongo.db.notifications.insert_one(notif)
