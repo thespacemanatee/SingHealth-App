@@ -7,9 +7,6 @@ import * as databaseActions from "../store/actions/databaseActions";
 import alert from "../components/CustomAlert";
 
 const formatInt = (int) => {
-  if (int > 24) {
-    return `${Math.floor(int / 24)}`;
-  }
   return `${int}`;
 };
 
@@ -18,13 +15,13 @@ export const formatDuration = (time) => {
   const minutes = moment.duration(time).minutes();
   const hours = moment.duration(time).hours();
   if (hours > 24) {
-    return `${formatInt(hours)}${hours > 48 ? "days" : "day"}`;
+    return `${formatInt(Math.floor(hours / 24))}${hours > 48 ? "days" : "day"}`;
   }
   if (hours > 0) {
     return `${formatInt(hours)}hr ${formatInt(minutes)}min`;
   }
   if (minutes > 0) {
-    return `${formatInt(minutes)}hr ${formatInt(seconds)}s`;
+    return `${formatInt(minutes)}min`;
   }
   return `00:${formatInt(seconds)}`;
 };

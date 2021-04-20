@@ -4,11 +4,19 @@ import { StyleService, Card } from "@ui-kitten/components";
 
 import CustomText from "./ui/CustomText";
 
-const NotificationCard = ({ headerText, message, data, onPress, duration }) => {
-  const { stallName, auditID, message: rectificationDetailsProps } = data;
+const NotificationCard = ({
+  _id,
+  headerText,
+  message,
+  data,
+  onPress,
+  duration,
+  readReceipt,
+}) => {
+  const { stallName, auditID, message: navProps } = data;
 
   const handleOnPress = () => {
-    onPress(auditID, stallName, rectificationDetailsProps);
+    onPress({ _id, auditID, stallName, navProps, readReceipt });
   };
 
   const Header = (headerProps) => (
