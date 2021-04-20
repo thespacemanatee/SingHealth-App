@@ -34,6 +34,7 @@ import TenantInfoScreen from "../screens/TenantInfoScreen";
 import DeleteTenantScreen from "../screens/staff/AddTenantScreens/DeleteTenantScreen";
 import SelectDeleteScreen from "../screens/staff/AddTenantScreens/SelectDeleteScreen";
 import { stackTransition, modalTransition } from "../helpers/config";
+import NotificationsScreen from "../screens/NotificationsScreen";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
 
@@ -136,6 +137,7 @@ const StaffDashboardStackNavigator = () => {
   return (
     <Navigator headerMode="none" screenOptions={stackTransition}>
       <Screen name="StaffDashboard" component={StaffDashboardScreen} />
+      <Screen name="Notifications" component={NotificationsScreen} />
       <Screen name="ChooseTenant" component={ChooseTenantScreen} />
       <Screen name="Checklist" component={ChecklistScreen} />
       <Screen name="Rectification" component={RectificationScreen} />

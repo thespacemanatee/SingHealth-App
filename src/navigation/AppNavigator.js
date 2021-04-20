@@ -35,6 +35,7 @@ const AppNavigator = () => {
                   StaffDashboardStack: {
                     screens: {
                       StaffDashboard: "staff/dashboard",
+                      Notifications: "staff/notifications",
                       ChooseTenant: {
                         screens: {
                           Tenants: "staff/new-audit",
@@ -83,6 +84,7 @@ const AppNavigator = () => {
                   TenantDashboardStack: {
                     screens: {
                       TenantDashboard: "tenant/dashboard",
+                      Notifications: "tenant/notifications",
                       Rectification: "tenant/rectification/:auditID",
                       RectificationDetails: "tenant/rectification/details",
                       TenantRectification: "tenant/rectification/status",

@@ -52,7 +52,12 @@ const StaffDashboardScreen = ({ navigation }) => {
   );
 
   const NotificationAction = () => (
-    <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
+    <TopNavigationAction
+      icon={NotificationIcon}
+      onPress={() => {
+        navigation.navigate("Notifications");
+      }}
+    />
   );
 
   const handleOpenAudit = useCallback(

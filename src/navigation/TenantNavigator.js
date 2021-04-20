@@ -24,6 +24,7 @@ import ExpandImagesScreen from "../screens/ExpandImagesScreen";
 import * as authActions from "../store/actions/authActions";
 import TenantInfoScreen from "../screens/TenantInfoScreen";
 import { stackTransition, modalTransition } from "../helpers/config";
+import NotificationsScreen from "../screens/NotificationsScreen";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
 const ArchiveIcon = (props) => <Icon {...props} name="archive-outline" />;
@@ -123,6 +124,7 @@ const TenantDashboardStackNavigator = () => {
   return (
     <Navigator headerMode="none" screenOptions={stackTransition}>
       <Screen name="TenantDashboard" component={TenantDashboardScreen} />
+      <Screen name="Notifications" component={NotificationsScreen} />
       <Screen name="Rectification" component={RectificationScreen} />
       <Screen
         name="RectificationDetails"
