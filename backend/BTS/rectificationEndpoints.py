@@ -345,7 +345,7 @@ This email is auto generated. No signature is required. You do not have to reply
                     checklistType = list(patches.keys())[0]
                     patchForNotif = patches[checklistType][0]
                     notif = {
-                            "_id": str(ObjectId),
+                            "_id": str(ObjectId()),
                             "userID": tenant["_id"],
                             "auditID": auditID,
                             "stallName": tenant["stallName"],
