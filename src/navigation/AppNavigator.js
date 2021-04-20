@@ -35,7 +35,12 @@ const AppNavigator = () => {
                   StaffDashboardStack: {
                     screens: {
                       StaffDashboard: "staff/dashboard",
-                      Notifications: "staff/notifications",
+                      Notifications: {
+                        screens: {
+                          Unread: "staff/notifications/unread",
+                          Read: "staff/notifications/read",
+                        },
+                      },
                       ChooseTenant: {
                         screens: {
                           Tenants: "staff/new-audit",
@@ -84,7 +89,12 @@ const AppNavigator = () => {
                   TenantDashboardStack: {
                     screens: {
                       TenantDashboard: "tenant/dashboard",
-                      Notifications: "tenant/notifications",
+                      Notifications: {
+                        screens: {
+                          Unread: "tenant/notifications/unread",
+                          Read: "tenant/notifications/read",
+                        },
+                      },
                       Rectification: "tenant/rectification/:auditID",
                       RectificationDetails: "tenant/rectification/details",
                       TenantRectification: "tenant/rectification/status",

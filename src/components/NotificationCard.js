@@ -4,7 +4,7 @@ import { StyleService, Card } from "@ui-kitten/components";
 
 import CustomText from "./ui/CustomText";
 
-const NotificationCard = ({ headerText, message, data, onPress }) => {
+const NotificationCard = ({ headerText, message, data, onPress, duration }) => {
   const { stallName, auditID, message: rectificationDetailsProps } = data;
 
   const handleOnPress = () => {
@@ -16,6 +16,7 @@ const NotificationCard = ({ headerText, message, data, onPress }) => {
       <CustomText bold style={styles.font}>
         {headerText}
       </CustomText>
+      <CustomText style={styles.font}>{`${duration} ago`}</CustomText>
     </View>
   );
 

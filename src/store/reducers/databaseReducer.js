@@ -72,11 +72,20 @@ const databaseReducer = (state = initialState, action) => {
         graphData: { ...action.graphData },
       };
 
-    case GET_NOTIFICATIONS:
+    case GET_NOTIFICATIONS: {
+      const read = action.notifications.filter(
+        (notification) => notification.readReceipt
+      );
+      const unread = action.notifications.filter(
+        (notification) => !notification.readReceipt
+      );
+      console.log("READ: ", read);
+      console.log("UNREAD: ", unread);
       return {
         ...state,
-        notifications: action.notifications,
+        notifications: { read, unread },
       };
+    }
 
     case CLEAR:
       return initialState;
