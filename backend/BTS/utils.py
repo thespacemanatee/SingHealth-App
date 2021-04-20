@@ -363,7 +363,7 @@ def get_rect(question_dict, ans_dict):
 
                 deadline = item.get("deadline", None)
                 if deadline is not None:
-                    deadline =  deadline.strftime("%m/%d/%Y %H:%M:%S")
+                    deadline =  utc2sgt(deadline).strftime("%m/%d/%Y %H:%M:%S")
                 else:
                     deadline = "-"
                 if rectified:
@@ -661,7 +661,7 @@ def from_audit_to_word(document, data):
     insert_dict_by_col(info, 1, 1, staff_data, staff_dict)
     insert_dict_by_col(info, 3, 1, inst_data, inst_dict)
     insert_dict_by_col(info, 7, 1, tenant_data, tenant_dict)
-    info.cell(11, 1).text = date.strftime('%Y/%m/%d %I:%M %p')
+    info.cell(11, 1).text = utc2sgt(date).strftime('%Y/%m/%d %I:%M %p')
     info.cell(12, 1).text = str(score)+"%"
     
      # Add checklists
