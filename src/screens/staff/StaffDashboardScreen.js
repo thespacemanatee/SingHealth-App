@@ -132,12 +132,25 @@ const StaffDashboardScreen = ({ navigation }) => {
     }
   }, [authStore.institutionID, dispatch, isMounted]);
 
+  const getNotifications = async () => {
+    try {
+      const res = await dispatch(
+        databaseActions.getNotifications(authStore._id)
+      );
+      console.log(res.data);
+    } catch (err) {
+      handleErrorResponse(err);
+    }
+  };
+
   useEffect(() => {
     // Subscribe for the focus Listener
     getListData();
+    getNotifications();
 
     const unsubscribe = navigation.addListener("focus", () => {
       getListData();
+      getNotifications();
     });
 
     return () => {

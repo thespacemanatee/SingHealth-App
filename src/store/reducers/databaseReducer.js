@@ -4,6 +4,7 @@ import {
   GET_STAFF_ACTIVE_AUDITS,
   GET_INSTITUTIONS,
   STORE_GRAPH_DATA,
+  GET_NOTIFICATIONS,
 } from "../actions/databaseActions";
 
 const initialState = {
@@ -11,6 +12,7 @@ const initialState = {
   relevantTenants: [],
   activeAudits: [],
   graphData: {},
+  notifications: [],
 };
 
 const equals = (a, b) => {
@@ -67,6 +69,12 @@ const databaseReducer = (state = initialState, action) => {
       return {
         ...state,
         graphData: { ...action.graphData },
+      };
+
+    case GET_NOTIFICATIONS:
+      return {
+        ...state,
+        notifications: action.notifications,
       };
 
     default:
