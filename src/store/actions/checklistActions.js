@@ -20,7 +20,7 @@ export const CHANGE_RECTIFY = "CHANGE_RECTIFY";
 export const TYPE_FNB = "fnb";
 export const TYPE_NON_FNB = "non_fnb";
 export const TYPE_COVID = "covid19";
-export const RESET = "RESET";
+export const CLEAR = "CLEAR";
 
 export const getChecklist = (checklistType, tenant) => async (dispatch) => {
   await Promise.all([
@@ -224,5 +224,5 @@ export const submitRectification = (
 };
 
 export const clear = () => {
-  return { type: RESET };
+  return { type: CLEAR };
 };

@@ -7,7 +7,7 @@ export const GET_STAFF_ACTIVE_AUDITS = "GET_STAFF_ACTIVE_AUDITS";
 export const GET_GRAPH_DATA = "GET_GRAPH_DATA";
 export const STORE_GRAPH_DATA = "STORE_GRAPH_DATA";
 export const GET_NOTIFICATIONS = "GET_NOTIFICATIONS";
-export const RESET = "RESET";
+export const CLEAR = "CLEAR";
 
 export const getInstitutions = () => {
   return async (dispatch) => {
@@ -207,5 +207,5 @@ export const getNotifications = (userID) => {
 };
 
 export const clear = () => {
-  return { type: RESET };
+  return { type: CLEAR };
 };

@@ -67,16 +67,15 @@ const Footer = () => {
   const authStore = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
+  const handleLogout = async () => {
+    await dispatch(authActions.signOut(authStore.expoToken));
+    dispatch(checklistActions.clear());
+    dispatch(databaseActions.clear());
+  };
+
   return (
     <>
-      <DrawerItem
-        title="Logout"
-        onPress={() => {
-          dispatch(authActions.signOut(authStore.expoToken));
-          dispatch(checklistActions.clear());
-          dispatch(databaseActions.clear());
-        }}
-      />
+      <DrawerItem title="Logout" onPress={handleLogout} />
       <Divider />
     </>
   );
