@@ -100,7 +100,9 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
             handleErrorResponse(err);
           }
         } finally {
-          setLoading(false);
+          if (isMounted()) {
+            setLoading(false);
+          }
         }
       }
     };

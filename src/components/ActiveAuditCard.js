@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import { View } from "react-native";
 import {
   useTheme,
@@ -6,7 +6,6 @@ import {
   StyleService,
   Icon,
 } from "@ui-kitten/components";
-import moment from "moment";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import ShadowCard from "./ui/ShadowCard";
 import CustomText from "./ui/CustomText";
@@ -19,49 +18,33 @@ const FailIcon = (props) => (
   <Icon {...props} name="alert-circle-outline" width={20} height={20} />
 );
 
-const ActiveAuditCard = ({ userType, item, onPress }) => {
+const ActiveAuditCard = ({
+  userType,
+  _id,
+  stallName,
+  score,
+  progress,
+  dateInfo,
+  onPress,
+}) => {
   const animation = useRef(null);
   const styles = useStyleSheet(themedStyles);
-  const [progress, setProgress] = useState(1);
-  const { auditMetadata, stallName } = item;
-  const [dateInfo] = useState(
-    moment(auditMetadata.date.$date).toLocaleString().split(" ").slice(0, 5)
-  );
 
   const theme = useTheme();
 
   const handleOnPress = () => {
-    onPress(auditMetadata._id, stallName);
+    onPress(_id, stallName);
   };
-
-  useEffect(() => {
-    const temp = Number.parseFloat(
-      (Number.parseFloat(auditMetadata.rectificationProgress) * 100).toFixed(1)
-    );
-    if (auditMetadata.rectificationProgress === undefined) {
-      setProgress(100);
-    } else if (temp > 0) {
-      setProgress(temp);
-    }
-  }, [auditMetadata.rectificationProgress]);
 
   const renderChildren = () => (
     <View style={styles.progressContainer}>
-      <CustomText>
-        {`${
-          auditMetadata.rectificationProgress !== undefined
-            ? (
-                Number.parseFloat(auditMetadata.rectificationProgress) * 100
-              ).toFixed(1)
-            : 100
-        }%`}
-      </CustomText>
-      <CustomText>NCs Fixed</CustomText>
+      <CustomText>{`${progress}%`}</CustomText>
+      <CustomText>Progress</CustomText>
     </View>
   );
 
   const renderPassFailIcon = () => {
-    if (Number.parseFloat(auditMetadata.score) * 100 < 95) {
+    if (Number.parseFloat(score) * 100 < 95) {
       return (
         <View style={styles.iconContainer}>
           <CustomText style={styles.failed}>FAILED</CustomText>
@@ -99,7 +82,7 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
             >{`Time: ${dateInfo[4]}`}</CustomText>
             <CustomText style={{ color: theme["color-basic-600"] }}>{`${
               userType === "staff" ? "Tenant" : "You"
-            } scored: ${(Number.parseFloat(auditMetadata.score) * 100).toFixed(
+            } scored: ${(Number.parseFloat(score) * 100).toFixed(
               1
             )}`}</CustomText>
           </View>
@@ -110,7 +93,7 @@ const ActiveAuditCard = ({ userType, item, onPress }) => {
           width={10}
           rotation={0}
           lineCap="round"
-          fill={progress}
+          fill={progress || 1}
           duration={1000}
           tintColor={theme["color-info-400"]}
           backgroundColor={theme["color-basic-400"]}

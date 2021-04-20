@@ -11,6 +11,7 @@ import {
   useStyleSheet,
 } from "@ui-kitten/components";
 import { FAB } from "react-native-paper";
+import moment from "moment";
 import useMountedState from "react-use/lib/useMountedState";
 import { RefreshControl } from "react-native-web-refresh-control";
 
@@ -85,18 +86,35 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   const renderActiveAudits = useCallback(
     ({ item }) => {
+      const { auditMetadata, stallName } = item;
+      const { _id, score, rectificationProgress } = auditMetadata;
+      const dateInfo = moment(auditMetadata.date.$date)
+        .toLocaleString()
+        .split(" ")
+        .slice(0, 5);
+
+      let progress = Number.parseFloat(
+        (Number.parseFloat(rectificationProgress) * 100).toFixed(1)
+      );
+      if (rectificationProgress === undefined) {
+        progress = 100;
+      }
+
       return (
         <View style={styles.item}>
           <ActiveAuditCard
             userType={authStore.userType}
-            item={item}
+            _id={_id}
+            stallName={stallName}
+            score={score}
+            progress={progress}
+            dateInfo={dateInfo}
             onPress={handleOpenAudit}
           />
         </View>
       );
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [authStore.userType, handleOpenAudit]
+    [authStore.userType, handleOpenAudit, styles.item]
   );
 
   const renderEmptyComponent = () =>
