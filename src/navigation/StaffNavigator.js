@@ -27,6 +27,8 @@ import AuditSubmitScreen from "../screens/AuditScreens/AuditSubmitScreen";
 import CameraScreen from "../screens/CameraScreen";
 import TenantsDirectoryScreen from "../screens/staff/DirectoryScreens/TenantsDirectoryScreen";
 import * as authActions from "../store/actions/authActions";
+import * as checklistActions from "../store/actions/checklistActions";
+import * as databaseActions from "../store/actions/databaseActions";
 import ManageTenantAccountsScreen from "../screens/staff/AddTenantScreens/ManageTenantAccountsScreen";
 import CreateTenantScreen from "../screens/staff/AddTenantScreens/CreateTenantScreen";
 import ExpandImagesScreen from "../screens/ExpandImagesScreen";
@@ -71,6 +73,8 @@ const Footer = () => {
         title="Logout"
         onPress={() => {
           dispatch(authActions.signOut(authStore.expoToken));
+          dispatch(checklistActions.clear());
+          dispatch(databaseActions.clear());
         }}
       />
       <Divider />

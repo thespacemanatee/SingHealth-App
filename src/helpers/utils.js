@@ -1,6 +1,8 @@
 import { store } from "../store/store";
 
 import * as authActions from "../store/actions/authActions";
+import * as checklistActions from "../store/actions/checklistActions";
+import * as databaseActions from "../store/actions/databaseActions";
 import alert from "../components/CustomAlert";
 
 // eslint-disable-next-line import/prefer-default-export
@@ -14,6 +16,8 @@ export const handleErrorResponse = (err, action) => {
     console.error(headers);
     if (status === 401 || status === 403) {
       store.dispatch(authActions.signOut());
+      store.dispatch(checklistActions.clear());
+      store.dispatch(databaseActions.clear());
     } else {
       switch (Math.floor(err.response.status / 100)) {
         case 4:

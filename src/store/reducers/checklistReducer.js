@@ -14,6 +14,7 @@ import {
   RESET_CHECKLIST_STORE,
   GET_AUDIT_DATA,
   CHANGE_RECTIFY,
+  CLEAR,
 } from "../actions/checklistActions";
 
 const initialState = {
@@ -259,6 +260,9 @@ const checklistReducer = (state = initialState, action) => {
         chosen_checklist: newChecklist,
       };
     }
+
+    case CLEAR:
+      return initialState;
 
     default:
       return state;
