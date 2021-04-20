@@ -1,10 +1,12 @@
 import os
 import io
 import json
+
+from pytz import timezone, utc
 import boto3
 from flask import make_response, jsonify
 from bson import json_util
-from .constants import BTS_EMAIL, BTS_APP_CONFIG_EMAIL
+from .constants import BTS_EMAIL, BTS_APP_CONFIG_EMAIL, SGT_TIMEZONE
 from exponent_server_sdk import (
     DeviceNotRegisteredError,
     PushClient,
@@ -126,6 +128,12 @@ def send_push_message(token, title, message, extra=None):
             raise self.retry(exc=exc)
     except ValueError:
         pass
+
+def utc2sgt(date):
+    if date.tzinfo is None or date.tzinfo.utcoffset(date) is None:
+        date = utc.localize(date)
+    
+    return date.astimezone(timezone(SGT_TIMEZONE))
 
 # for checking data
 def check_required_info(mydict, key_arr):
