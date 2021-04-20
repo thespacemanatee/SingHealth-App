@@ -231,7 +231,7 @@ You do not have to reply to this email."""
                     },
                     "readReceipt": False,
                     "notiDate": datetime.now().isoformat(),
-                    "auditDate": iso8601.parse_date(selectedAudit["date"]).isoformat()
+                    "auditDate": selectedAudit["date"]
                 }
             result = mongo.db.notifications.insert_one(notif)
             if not result.acknowledged:
@@ -358,7 +358,7 @@ This email is auto generated. No signature is required. You do not have to reply
                             },
                             "readReceipt": False,
                             "notiDate": datetime.now().isoformat(),
-                            "auditDate": iso8601.parse_date(selectedAudit["date"]).isoformat()
+                            "auditDate": selectedAudit["date"]
                         }
                     result = mongo.db.notifications.insert_one(notif)
                     if not result.acknowledged:
