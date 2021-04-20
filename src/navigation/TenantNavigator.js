@@ -22,6 +22,8 @@ import TenantRectificationScreen from "../screens/AuditScreens/TenantRectificati
 import CameraScreen from "../screens/CameraScreen";
 import ExpandImagesScreen from "../screens/ExpandImagesScreen";
 import * as authActions from "../store/actions/authActions";
+import * as checklistActions from "../store/actions/checklistActions";
+import * as databaseActions from "../store/actions/databaseActions";
 import TenantInfoScreen from "../screens/TenantInfoScreen";
 import { stackTransition, modalTransition } from "../helpers/config";
 import NotificationsScreen from "../screens/NotificationsScreen";
@@ -60,6 +62,8 @@ const Footer = () => {
         title="Logout"
         onPress={() => {
           dispatch(authActions.signOut(authStore.expoToken));
+          dispatch(checklistActions.clear());
+          dispatch(databaseActions.clear());
         }}
       />
       <Divider />

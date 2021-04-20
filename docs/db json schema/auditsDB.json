@@ -22,8 +22,8 @@
             "type": "string"
         },
         "date": {
-            "description": "Date in ISO format",
-            "type": "string"
+            "description": "Date in ISO format. A python datetime object equivalent",
+            "type": "object"
         },
         "score": {
             "description": "The audit score as a percentage out of 100",

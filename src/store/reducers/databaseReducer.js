@@ -5,6 +5,7 @@ import {
   GET_INSTITUTIONS,
   STORE_GRAPH_DATA,
   GET_NOTIFICATIONS,
+  CLEAR,
 } from "../actions/databaseActions";
 
 const initialState = {
@@ -76,6 +77,9 @@ const databaseReducer = (state = initialState, action) => {
         ...state,
         notifications: action.notifications,
       };
+
+    case CLEAR:
+      return initialState;
 
     default:
       return state;

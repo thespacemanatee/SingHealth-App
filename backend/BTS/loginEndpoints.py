@@ -51,7 +51,7 @@ def addLoginEndpointsForTenantAndStaff(app, mongo, login_manager):
                     return serverResponse(
                         None,
                         404,
-                        "Either user email or pswd is wrong"
+                        "Wrong password! Please try again."
                     )
 
             else:
@@ -114,7 +114,7 @@ def addLoginEndpointsForTenantAndStaff(app, mongo, login_manager):
                     return serverResponse(
                         None,
                         400,
-                        "Either user email or pswd is incorrect"
+                        "Wrong password! Please try again."
                     )
 
             else:

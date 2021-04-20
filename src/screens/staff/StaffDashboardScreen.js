@@ -11,6 +11,7 @@ import {
   useStyleSheet,
 } from "@ui-kitten/components";
 import { FAB } from "react-native-paper";
+import moment from "moment";
 import useMountedState from "react-use/lib/useMountedState";
 import { RefreshControl } from "react-native-web-refresh-control";
 
@@ -30,7 +31,7 @@ const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 const StaffDashboardScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
-  const [listLoading, setListLoading] = useState(true);
+  const [listLoading, setListLoading] = useState(false);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
 
@@ -85,18 +86,35 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   const renderActiveAudits = useCallback(
     ({ item }) => {
+      const { auditMetadata, stallName } = item;
+      const { _id, score, rectificationProgress } = auditMetadata;
+      const dateInfo = moment(auditMetadata.date.$date)
+        .toLocaleString()
+        .split(" ")
+        .slice(0, 5);
+
+      let progress = Number.parseFloat(
+        (Number.parseFloat(rectificationProgress) * 100).toFixed(1)
+      );
+      if (rectificationProgress === undefined) {
+        progress = 100;
+      }
+
       return (
         <View style={styles.item}>
           <ActiveAuditCard
             userType={authStore.userType}
-            item={item}
+            _id={_id}
+            stallName={stallName}
+            score={score}
+            progress={progress}
+            dateInfo={dateInfo}
             onPress={handleOpenAudit}
           />
         </View>
       );
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [authStore.userType, handleOpenAudit]
+    [authStore.userType, handleOpenAudit, styles.item]
   );
 
   const renderEmptyComponent = () =>
@@ -132,16 +150,13 @@ const StaffDashboardScreen = ({ navigation }) => {
     }
   }, [authStore.institutionID, dispatch, isMounted]);
 
-  const getNotifications = async () => {
+  const getNotifications = useCallback(async () => {
     try {
-      const res = await dispatch(
-        databaseActions.getNotifications(authStore._id)
-      );
-      console.log(res.data);
+      await dispatch(databaseActions.getNotifications(authStore._id));
     } catch (err) {
       handleErrorResponse(err);
     }
-  };
+  }, [authStore._id, dispatch]);
 
   useEffect(() => {
     // Subscribe for the focus Listener
@@ -158,7 +173,7 @@ const StaffDashboardScreen = ({ navigation }) => {
       // eslint-disable-next-line no-unused-expressions
       unsubscribe;
     };
-  }, [getListData, navigation]);
+  }, [getListData, getNotifications, navigation]);
 
   return (
     <View style={styles.screen}>

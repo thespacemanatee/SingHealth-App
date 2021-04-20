@@ -60,7 +60,7 @@ const authReducer = (state = initialState, action) => {
         stallName,
       };
     }
-    case SIGN_OUT: {
+    case SIGN_OUT:
       return {
         ...state,
         isLoading: false,
@@ -71,13 +71,12 @@ const authReducer = (state = initialState, action) => {
         institutionID: null,
         name: null,
       };
-    }
-    case SAVE_EXPO_TOKEN: {
+
+    case SAVE_EXPO_TOKEN:
       return {
         ...state,
         expoToken: action.expoToken,
       };
-    }
 
     default:
       return state;

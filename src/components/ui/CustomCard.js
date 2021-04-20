@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, View, useWindowDimensions } from "react-native";
+import { View } from "react-native";
 import {
   Card,
   StyleService,
@@ -48,8 +48,6 @@ const CustomCard = (props) => {
     deadline,
   } = props;
 
-  const windowDimensions = useWindowDimensions();
-
   const theme = useTheme();
 
   const Header = (headerProps) => (
@@ -92,7 +90,6 @@ const CustomCard = (props) => {
             numberOfLines={2}
             // eslint-disable-next-line react-native/no-inline-styles
             style={{
-              width: Platform.select({ web: windowDimensions.width }),
               textDecorationLine: deleted ? "line-through" : null,
               fontFamily: "SFProDisplay-Regular",
             }}

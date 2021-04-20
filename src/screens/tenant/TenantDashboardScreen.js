@@ -9,6 +9,7 @@ import {
   TopNavigation,
   TopNavigationAction,
 } from "@ui-kitten/components";
+import moment from "moment";
 import useMountedState from "react-use/lib/useMountedState";
 import { RefreshControl } from "react-native-web-refresh-control";
 
@@ -44,7 +45,12 @@ const TenantDashboardScreen = ({ navigation }) => {
   );
 
   const NotificationAction = () => (
-    <TopNavigationAction icon={NotificationIcon} onPress={() => {}} />
+    <TopNavigationAction
+      icon={NotificationIcon}
+      onPress={() => {
+        navigation.navigate("Notifications");
+      }}
+    />
   );
 
   const handleRefreshList = () => {
@@ -75,11 +81,29 @@ const TenantDashboardScreen = ({ navigation }) => {
 
   const renderActiveAudits = useCallback(
     ({ item }) => {
+      const { auditMetadata, stallName } = item;
+      const { _id, score, rectificationProgress } = auditMetadata;
+      const dateInfo = moment(auditMetadata.date.$date)
+        .toLocaleString()
+        .split(" ")
+        .slice(0, 5);
+
+      let progress = Number.parseFloat(
+        (Number.parseFloat(rectificationProgress) * 100).toFixed(1)
+      );
+      if (rectificationProgress === undefined) {
+        progress = 100;
+      }
+
       return (
         <View style={styles.item}>
           <ActiveAuditCard
             userType={authStore.userType}
-            item={item}
+            _id={_id}
+            stallName={stallName}
+            score={score}
+            progress={progress}
+            dateInfo={dateInfo}
             onPress={handleOpenAudit}
           />
         </View>
@@ -117,12 +141,25 @@ const TenantDashboardScreen = ({ navigation }) => {
     }
   }, [authStore._id, dispatch, isMounted]);
 
+  const getNotifications = useCallback(async () => {
+    try {
+      const res = await dispatch(
+        databaseActions.getNotifications(authStore._id)
+      );
+      console.log(res.data);
+    } catch (err) {
+      handleErrorResponse(err);
+    }
+  }, [authStore._id, dispatch]);
+
   useEffect(() => {
     // Subscribe for the focus Listener
     getListData();
+    getNotifications();
 
     const unsubscribe = navigation.addListener("focus", () => {
       getListData();
+      getNotifications();
     });
 
     return () => {
@@ -130,7 +167,7 @@ const TenantDashboardScreen = ({ navigation }) => {
       // eslint-disable-next-line no-unused-expressions
       unsubscribe;
     };
-  }, [getListData, navigation]);
+  }, [getListData, getNotifications, navigation]);
 
   return (
     <View style={styles.screen}>

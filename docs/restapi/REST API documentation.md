@@ -40,7 +40,8 @@
 - [x] [`PATCH /audits/<auditID>/staff`](#`PATCH-/audits/auditID/staff`)
 - [x] [`GET /audits`](#`GET-/audits`)
 - [x] [`GET /auditTimeframe/fromDate=<fromDate>&toDate=<toDate>&dataType=<dataType>&dataID=<dataID>`](#`GET-/auditTimeframe/fromDate=<fromDate>&toDate=<toDate>&dataType=<dataType>&dataID=<dataID>`)
-- [ ] [`GET /notifications`](#`GET-/notifications`)
+- [x] [`GET /notifications`](#`GET-/notifications`)
+- [ ] [`PATCH /notifications`](#`PATCH-/notifications`)
 
 ### Audit Email
 
@@ -1716,5 +1717,41 @@ localhost:5000/notifications?userID=veagvtrhfvrtbhtvg
 "status": 400,
 "data": {
     "description": "No userID provided"
+}
+```
+
+## PATCH /notifications
+### Query string args
+
+| Arg      | Description                       |
+| -------- | --------------------------------- |
+| `notifID` | The unique identifier for a user. |
+
+<br>
+
+### Sample Request
+
+```
+localhost:5000/notifications?notifID=veagvtrhfvrtbhtvg
+```
+
+### Sample Response
+#### Success
+##### Toggled the switch
+```js
+"status": 200,
+"data": {
+    "data": null,
+    "description": "Sent read receipt"
+}
+```
+
+#### Failure
+##### Notif doesn't exist
+```js
+"status": 404,
+"data": {
+    "data": null,
+    "description": "Couldn't find the requested notification"
 }
 ```

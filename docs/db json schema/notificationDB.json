@@ -19,7 +19,18 @@
         "message": {
             "type":"object",
             "description": "Can be a PATCH or POST object"
+        },
+        "readReceipt": {
+            "description": "Whether the notification has been read",
+            "type": "boolean",
+            "default": false
+        },
+        "auditDate": {
+            "type": "string"
+        },
+        "notiDate": {
+            "type": "string"
         }
     },
-    "required": ["_id", "userID", "auditID", "stallName", "message"]
+    "required": ["_id", "userID", "auditID", "stallName", "message", "readReceipt", "auditDate", "notiDate"]
 }

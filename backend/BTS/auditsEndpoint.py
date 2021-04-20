@@ -1,6 +1,7 @@
-from .utils import serverResponse, send_push_message, send_email_notif
+from .utils import serverResponse, send_push_message, send_email_notif, utc2sgt
 from .constants import MAX_NUM_IMAGES_PER_NC, SGT_TIMEZONE
 from flask import request
+from flask_pymongo import ObjectId
 from .rectificationEndpoints import percentageRectification
 from flask_login import login_required
 from pymongo.errors import DuplicateKeyError
@@ -256,25 +257,27 @@ def addAuditsEndpoint(app, mongo):
                             continue
 
                 date = auditMetaData_ID_processed['date']
-                if date.tzinfo is None or date.tzinfo.utcoffset(date) is None:
-                    date = timezone(SGT_TIMEZONE).localize(date)
 
                 send_email_notif(
                     app,
                     tenant["email"],
                     "Audit Results",
                     f"""Dear {tenant["name"]},
-                        Your recent audit results dated {date.strftime('%d %B %Y, %I:%M %p')} are ready for reviewing. Please check your app for details.
+                        Your recent audit results dated {utc2sgt(date).strftime('%d %B %Y, %I:%M %p')} are ready for reviewing. Please check your app for details.
                         This email is auto generated. No signature is required.
                         You do not have to reply to this email."""
                 )
 
                 notif = {
+                    "_id": str(ObjectId()),
                     "userID": tenant["_id"],
                     "auditID": auditMetaData_ID_processed["_id"],
                     "stallName": tenant["stallName"],
                     "type": "post",
-                    "message": f"New audit on {date.strftime('%d/%m/%Y')} ready for viewing."
+                    "message": f"New audit on {utc2sgt(date).strftime('%d/%m/%Y')} ready for viewing.",
+                    "readReceipt": False,
+                    "notiDate": datetime.utcnow().isoformat(),
+                    "auditDate": date.isoformat()
                     }
 
                 result = mongo.db.notifications.insert_one(notif)

@@ -34,6 +34,7 @@ const ChooseTenantScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
   const { Navigator, Screen } = createMaterialTopTabNavigator();
+  
   const isMounted = useMountedState();
 
   const theme = useTheme();

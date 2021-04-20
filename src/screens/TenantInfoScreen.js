@@ -9,6 +9,7 @@ import {
   TopNavigation,
   TopNavigationAction,
 } from "@ui-kitten/components";
+import moment from "moment";
 import useMountedState from "react-use/lib/useMountedState";
 import { RefreshControl } from "react-native-web-refresh-control";
 
@@ -69,11 +70,29 @@ const TenantInfoScreen = ({ route, navigation }) => {
 
   const renderAudits = useCallback(
     ({ item }) => {
+      const { auditMetadata, stallName: name } = item;
+      const { _id, score, rectificationProgress } = auditMetadata;
+      const dateInfo = moment(auditMetadata.date.$date)
+        .toLocaleString()
+        .split(" ")
+        .slice(0, 5);
+
+      let progress = Number.parseFloat(
+        (Number.parseFloat(rectificationProgress) * 100).toFixed(1)
+      );
+      if (rectificationProgress === undefined) {
+        progress = 100;
+      }
+
       return (
         <View style={styles.item}>
           <ActiveAuditCard
             userType={authStore.userType}
-            item={item}
+            _id={_id}
+            stallName={name}
+            score={score}
+            progress={progress}
+            dateInfo={dateInfo}
             onPress={handleOpenAudit}
           />
         </View>
