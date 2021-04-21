@@ -15,8 +15,6 @@ import ForgotPasswordScreen from "../screens/AuthScreens/ForgotPasswordScreen";
 import CustomText from "../components/ui/CustomText";
 import { stackTransition } from "../helpers/config";
 
-const { Navigator, Screen } = createStackNavigator();
-
 const AppNavigator = () => {
   const authStore = useSelector((state) => state.auth);
 
@@ -125,6 +123,7 @@ const AppNavigator = () => {
     config,
   };
 
+  const { Navigator, Screen } = createStackNavigator();
   const renderNavigator = () => {
     if (authStore.userType === "staff") {
       return (

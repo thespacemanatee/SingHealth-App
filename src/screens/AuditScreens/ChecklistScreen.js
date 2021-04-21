@@ -13,14 +13,16 @@ import {
   CheckBox,
 } from "@ui-kitten/components";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import moment from "moment";
 import sectionListGetItemLayout from "react-native-section-list-get-item-layout";
+import moment from "moment";
+import useMountedState from "react-use/lib/useMountedState";
 
 import QuestionCard from "../../components/QuestionCard";
 import alert from "../../components/CustomAlert";
 import SectionHeader from "../../components/ui/SectionHeader";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import CustomText from "../../components/ui/CustomText";
+import { handleErrorResponse } from "../../helpers/utils";
 
 export const FNB_SECTION = "F&B Checklist";
 export const NON_FNB_SECTION = "Non-F&B Checklist";
@@ -38,6 +40,8 @@ const ChecklistScreen = ({ route, navigation }) => {
   const [indeterminate, setIndeterminate] = useState(false);
 
   const { auditID, stallName } = route.params;
+
+  const isMounted = useMountedState();
 
   const theme = useTheme();
 
@@ -125,8 +129,11 @@ const ChecklistScreen = ({ route, navigation }) => {
         AsyncStorage.setItem("savedChecklists", JSON.stringify(temp));
       }
     } catch (err) {
-      alert("Saving failed", "Please try again!");
-      setLoading(false);
+      handleErrorResponse(err);
+    } finally {
+      if (isMounted()) {
+        setLoading(false);
+      }
     }
   };
 

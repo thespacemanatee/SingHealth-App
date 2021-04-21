@@ -27,7 +27,7 @@ def login():
     time.sleep(1)
     links = driver.find_elements_by_xpath('//div[text()="LOGIN"]')
     links[-1].click()
-    time.sleep(5)
+    time.sleep(8)
 
 if __name__ == "__main__":
     driver = webdriver.Chrome()
@@ -45,22 +45,21 @@ if __name__ == "__main__":
     time.sleep(1)
     links[0].click()
     url = driver.current_url
-    driver.find_element_by_xpath('//div[text()="Food is stored in appropriate conditions and at an appropriate temperature."]').click()
-    # css-view-1dbjc4n r-cursor-1loqt21 r-outlineWidth-10paoce r-touchAction-1otgn73 r-transitionProperty-1i6wzkk r-userSelect-lrvibr
-    links2 = driver.find_elements_by_xpath("//div[contains(@class, 'css-view-1dbjc4n') and contains(@class, 'r-cursor-1loqt21') and contains(@class, 'r-outlineWidth-10paoce') and contains(@class, ' r-touchAction-1otgn73') and contains(@class, 'r-transitionProperty-1i6wzkk') and contains(@class, 'r-userSelect-lrvibr')]")
-    links2[-6].click()
-    handle_upload_file_dialog("test.bmp")
-    time.sleep(5)
-    driver.find_element_by_xpath("//textarea").send_keys("test")
-    #css-view-1dbjc4n r-cursor-1loqt21 r-outlineWidth-10paoce r-touchAction-1otgn73 r-transitionProperty-1i6wzkk r-userSelect-lrvibr
-    time.sleep(2)
-    driver.find_element_by_xpath('//div[text()="Details"]').click()
+    driver.find_element_by_xpath('//div[text()="Adequate and regular pest control. Pest control record."]').click()
     time.sleep(3)
-    driver.get(url)
+    links2 = driver.find_elements_by_xpath("//div/div[1]/div[3]/div[2]/div")
+    #links2[5].click()
+
+    #handle_upload_file_dialog("test.bmp")
+    #time.sleep(5)
+    driver.find_element_by_xpath("//textarea").send_keys("test")
+    time.sleep(3)
+    driver.find_element_by_xpath('//div[text()="Details"]').click()
+    # css-1dbjc4n r-1loqt21 r-1ybube5 r-10paoce r-1otgn73 r-1i6wzkk r-lrvibr
+    driver.back()
     time.sleep(3)
     driver.find_element_by_xpath('//div[text()="SUBMIT"]').click()
     time.sleep(1)
     Alert(driver).accept()
     time.sleep(10)
     #end of second test
-

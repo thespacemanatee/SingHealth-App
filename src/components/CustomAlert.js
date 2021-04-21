@@ -7,10 +7,10 @@ const alertPolyfill = (title, description, options) => {
   );
 
   if (result) {
-    const confirmOption = options.find(({ style }) => style !== "cancel");
+    const confirmOption = options?.find(({ style }) => style !== "cancel");
     confirmOption?.onPress?.();
   } else {
-    const cancelOption = options.find(({ style }) => style === "cancel");
+    const cancelOption = options?.find(({ style }) => style === "cancel");
     cancelOption?.onPress?.();
   }
 };

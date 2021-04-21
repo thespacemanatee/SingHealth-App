@@ -39,7 +39,7 @@ const ActiveAuditCard = ({
   const renderChildren = () => (
     <View style={styles.progressContainer}>
       <CustomText>{`${progress}%`}</CustomText>
-      <CustomText>Progress</CustomText>
+      <CustomText>NCs Fixed</CustomText>
     </View>
   );
 

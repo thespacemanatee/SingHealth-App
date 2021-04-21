@@ -1,7 +1,6 @@
 import {
   GET_RELEVANT_TENANTS,
-  GET_TENANT_ACTIVE_AUDITS,
-  GET_STAFF_ACTIVE_AUDITS,
+  GET_ACTIVE_AUDITS,
   GET_INSTITUTIONS,
   STORE_GRAPH_DATA,
   GET_NOTIFICATIONS,
@@ -16,51 +15,21 @@ const initialState = {
   notifications: [],
 };
 
-const equals = (a, b) => {
-  if (a === b) return true;
-  if (a instanceof Date && b instanceof Date)
-    return a.getTime() === b.getTime();
-  if (!a || !b || (typeof a !== "object" && typeof b !== "object"))
-    return a === b;
-  if (a.prototype !== b.prototype) return false;
-  const keys = Object.keys(a);
-  if (keys.length !== Object.keys(b).length) return false;
-  return keys.every((k) => equals(a[k], b[k]));
-};
-
 const databaseReducer = (state = initialState, action) => {
   switch (action.type) {
-    case GET_RELEVANT_TENANTS:
-      if (equals(state.institutions, action.institutions)) {
-        return state;
-      }
+    case GET_INSTITUTIONS:
       return {
         ...state,
         institutions: action.institutions,
       };
 
-    case GET_INSTITUTIONS:
-      if (equals(state.relevantTenants, action.relevantTenants)) {
-        return state;
-      }
+    case GET_RELEVANT_TENANTS:
       return {
         ...state,
         relevantTenants: action.relevantTenants,
       };
 
-    case GET_TENANT_ACTIVE_AUDITS:
-      if (equals(state.activeAudits, action.activeAudits)) {
-        return state;
-      }
-      return {
-        ...state,
-        activeAudits: action.activeAudits,
-      };
-
-    case GET_STAFF_ACTIVE_AUDITS:
-      if (equals(state.activeAudits, action.activeAudits)) {
-        return state;
-      }
+    case GET_ACTIVE_AUDITS:
       return {
         ...state,
         activeAudits: action.activeAudits,

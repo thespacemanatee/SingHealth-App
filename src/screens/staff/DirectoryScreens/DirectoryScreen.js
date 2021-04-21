@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FlatList, View } from "react-native";
 import {
   Divider,
@@ -21,7 +21,7 @@ import CustomText from "../../../components/ui/CustomText";
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 
 const DirectoryScreen = ({ navigation }) => {
-  const [institutions, setInstitutions] = useState([]);
+  const databaseStore = useSelector((state) => state.database);
   const [listLoading, setListLoading] = useState(true);
 
   const isMounted = useMountedState();
@@ -36,6 +36,10 @@ const DirectoryScreen = ({ navigation }) => {
       }}
     />
   );
+
+  const handleRefreshList = () => {
+    getInstitutions();
+  };
 
   const handleNavigateTenants = useCallback(
     (institutionID, displayName) => {
@@ -63,11 +67,7 @@ const DirectoryScreen = ({ navigation }) => {
   const getInstitutions = useCallback(async () => {
     try {
       setListLoading(true);
-
-      const res = await dispatch(databaseActions.getInstitutions());
-      if (isMounted()) {
-        setInstitutions(res.data.data);
-      }
+      await dispatch(databaseActions.getInstitutions());
     } catch (err) {
       handleErrorResponse(err);
     } finally {
@@ -109,14 +109,14 @@ const DirectoryScreen = ({ navigation }) => {
       <Divider />
       <Layout style={styles.layout}>
         <FlatList
-          data={institutions}
+          data={databaseStore.institutions}
           contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
           renderItem={renderInstitutions}
           refreshControl={
             <RefreshControl
               refreshing={listLoading}
-              onRefresh={getInstitutions}
+              onRefresh={handleRefreshList}
             />
           }
           ListEmptyComponent={renderEmptyComponent}

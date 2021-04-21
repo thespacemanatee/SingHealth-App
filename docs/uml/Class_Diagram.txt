@@ -10,7 +10,6 @@ User <|.. Tenant
 
 Staff -- Notifier
 Tenant -- Notifier
-Tenant "1"-right- "1..*" Stall
 
 Staff "1..*"--"0..*" Audit
 Audit o-right- AuditForm
@@ -20,100 +19,99 @@ FilledAuditForm --o Audit
 Staff -> Tenant
 
 class Institution {
-	-institutionId : String
+	-ID : String
 	-name : String
 	-address : String
 	-institutionPOCName : String
 	-institutionPOCEmail : String
+	Dict[] getAllInstitutions()
 }
 
 skinparam classAttributeIconSize 0
 abstract class User {
-	-userId: String
+	-ID: String
 	-email: String
 	-password: String
 	-institutionId: String
-	void getUserId()
-	void getInstitutionId()
-	void login(username : String, pwd : String)
+	-expoToken: String
+	User getUserInfo(User.ID : String
+	String getInstitutionID(User.ID : String)
+	Boolean login(username : String, pwd : String)
+	void logout()
 }
 
 class Staff {
-	void addTenant(Tenant.userId : String)
-	void removeTenant(Tenant.userId : String)
-	void submitAudit(auditData : Audit)
+	Boolean signUp()
+	Tenant addTenant(Tenant.ID : String)
+	Boolean deleteTenant(Tenant.ID : String)
+	Tenant getTenant(Tenant.ID : String)
+	Audit createNewAudit()
 	void capturePhoto()
+	void uploadPhoto(imageData : String[])
 	void editAuditForm(auditData : Audit)
-	json sendAuditForm(auditData : Audit)
-	void showTrendingGraphs(data : Audit)
-	void compareData(institution_id1 : String, institution_id2 : String)
-	Audit getAuditSubmission(audit_ID : String)
-	void sendBroadcast(data : Json)	
-	Audit respondToExtensionReq(audit_id : String)
-	Tenant createNewTenantAcc()
-	void editStaffAccount(user_id : String, data : Json)
+	Boolean sendAuditForm(auditData : Audit)
+	Audit getAudit(Audit.ID : String)
+	Boolean respondToRectification (Audit.ID : String)
+	Boolean respondToExtensionReq(Audit.ID : String)
+	Tenant[] getTenantsByInstitution(Institution.ID : String)
+	Boolean exportAuditToEmail(Audit.ID : String)
 }
 
 class Notifier {
 	-sender : String
 	-message : String
 	void notify(receiver_list : String[])
-	void createNewNotifier()
-	void promptNC(receiver_list : String[]
 }
 
 class Tenant {
-	-demeritPoints : int
-	-stall : Stall
-	void submitRectifications(data : Json)
-	void takePicture()
-	json requestForExtension(audit_id : String)
-	Audit readAuditForm(audit_id : String)
-	void editTenantAccount(user_id : String, data : Json)
-}
-
-class Stall {
-	-name: String
-	-companyName: String
-	-companyPOCName: String
-	-companyPOCEmail: String
-	-group: String
-	-bldg: String
-	-unitNo: String
-	-fnb: Boolean
+	-fnb : Boolean 
+	-stallName : String
+	-createdBy : String
+	-dateCreated: DateTime
+	Boolean submitRectifications(auditData: Audit)
+	void capturePhoto()
+	void requestForExtension(AuditID : String)
+	Audit getAuditForm(AuditID: String)
 }
 
 class Audit {
-	-auditId: String
-	-staffId: String
-	-tenantId: String
-	-institutionId: String
+	-ID: String
+	-staffID: String
+	-tenantID: String
+	-institutionID: String
 	-date: Date
-	-auditChecklists: AuditForm[]
+	-auditFormID: String
+	-filledAuditFormID: String
+	-score: Integer
+	-formType: String
+	-rectificationProgress: Integer
 	integer autoComputeScore(filledAuditForm : FilledAuditForm)
-	AuditForm getAuditForm (audit_form_type : String)
-	FilledAuditForm getPreviousAuditResult(filled_audit_id : String)
+	AuditForm getAuditForm (AuditForm.type : String)
+	FilledAuditForm getPreviousAuditResult(FilledAuditForm.ID : String)
+	Boolean fromAuditToEmail(AuditForm.ID : String, FilledAuditForm.ID : String)
 }
 
 class AuditForm {
-	-formId: String
-	-questions: String[]
+	-ID: String
 	-type: String
-	-answer: String[]
-	-image: Boolean[]
-	-remarks: Boolean[]
-	-rectification: Boolean[]
+	-question: String[]
+	-index: Integer[]
 }
 
 
 class FilledAuditForm{
-	-answer_id : String
-	-audit_form_id : String
+	-ID : String
+	-type: String
+	-formTemplateID: String
 	-answers : Boolean[]
-	-image : String[]
-	-remarks : String[]
-	-rectification: Boolean[]
-	
+	-image: Boolean[]
+	-remarks: String[]
+	-rectifed: Boolean[]
+	-deadline: String[]
+	-rectificationImages: List[String[]]
+	-requestForExt: Boolean[]
+	-acceptedRequest: Boolean[]
+	void showTrendingGraphs(data : Audit)
 }
 
 
