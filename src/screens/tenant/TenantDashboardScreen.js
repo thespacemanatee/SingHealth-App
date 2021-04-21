@@ -9,6 +9,8 @@ import {
   TopNavigation,
   TopNavigationAction,
 } from "@ui-kitten/components";
+import moment from "moment";
+import { Badge } from "react-native-paper";
 import useMountedState from "react-use/lib/useMountedState";
 import { RefreshControl } from "react-native-web-refresh-control";
 
@@ -29,6 +31,7 @@ const TenantDashboardScreen = ({ navigation }) => {
   const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const isMounted = useMountedState();
 
@@ -44,16 +47,22 @@ const TenantDashboardScreen = ({ navigation }) => {
   );
 
   const NotificationAction = () => (
-    <TopNavigationAction
-      icon={NotificationIcon}
-      onPress={() => {
-        navigation.navigate("Notifications");
-      }}
-    />
+    <View>
+      <Badge style={styles.badge} visible={notificationCount}>
+        {notificationCount}
+      </Badge>
+      <TopNavigationAction
+        icon={NotificationIcon}
+        onPress={() => {
+          navigation.navigate("Notifications");
+        }}
+      />
+    </View>
   );
 
   const handleRefreshList = () => {
     getListData();
+    getNotifications();
   };
 
   const handleOpenAudit = useCallback(
@@ -80,11 +89,29 @@ const TenantDashboardScreen = ({ navigation }) => {
 
   const renderActiveAudits = useCallback(
     ({ item }) => {
+      const { auditMetadata, stallName } = item;
+      const { _id, score, rectificationProgress } = auditMetadata;
+      const dateInfo = moment(auditMetadata.date.$date)
+        .toLocaleString()
+        .split(" ")
+        .slice(0, 5);
+
+      let progress = Number.parseFloat(
+        (Number.parseFloat(rectificationProgress) * 100).toFixed(1)
+      );
+      if (rectificationProgress === undefined) {
+        progress = 100;
+      }
+
       return (
         <View style={styles.item}>
           <ActiveAuditCard
             userType={authStore.userType}
-            item={item}
+            _id={_id}
+            stallName={stallName}
+            score={score}
+            progress={progress}
+            dateInfo={dateInfo}
             onPress={handleOpenAudit}
           />
         </View>
@@ -127,11 +154,14 @@ const TenantDashboardScreen = ({ navigation }) => {
       const res = await dispatch(
         databaseActions.getNotifications(authStore._id)
       );
-      console.log(res.data);
+      const temp = res.data.data.filter((e) => !e.readReceipt);
+      if (isMounted()) {
+        setNotificationCount(temp.length);
+      }
     } catch (err) {
       handleErrorResponse(err);
     }
-  }, [authStore._id, dispatch]);
+  }, [authStore._id, dispatch, isMounted]);
 
   useEffect(() => {
     // Subscribe for the focus Listener
@@ -193,6 +223,10 @@ const styles = StyleService.create({
   },
   layout: {
     flex: 1,
+  },
+  badge: {
+    position: "absolute",
+    left: 0,
   },
   textContainer: {
     marginVertical: 20,

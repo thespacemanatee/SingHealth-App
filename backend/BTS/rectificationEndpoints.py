@@ -1,6 +1,8 @@
+from datetime import datetime
 from .utils import serverResponse, send_push_message, send_email_notif
 from .constants import SGT_TIMEZONE
 from flask import request
+from flask_pymongo import ObjectId
 from flask_login import login_required
 from pytz import timezone, utc
 import iso8601
@@ -217,6 +219,7 @@ You do not have to reply to this email."""
             checklistType = list(patches.keys())[0]
             patchForNotif = patches[checklistType][0]
             notif = {
+                    "_id": str(ObjectId()),
                     "userID": staff["_id"],
                     "auditID": auditID,
                     "stallName": tenant["stallName"],
@@ -225,7 +228,10 @@ You do not have to reply to this email."""
                         "checklistType": checklistType,
                         "index": patchForNotif["index"],
                         "section": patchForNotif["category"]
-                    }
+                    },
+                    "readReceipt": False,
+                    "notiDate": datetime.now(),
+                    "auditDate": selectedAudit["date"]
                 }
             result = mongo.db.notifications.insert_one(notif)
             if not result.acknowledged:
@@ -339,6 +345,7 @@ This email is auto generated. No signature is required. You do not have to reply
                     checklistType = list(patches.keys())[0]
                     patchForNotif = patches[checklistType][0]
                     notif = {
+                            "_id": str(ObjectId()),
                             "userID": tenant["_id"],
                             "auditID": auditID,
                             "stallName": tenant["stallName"],
@@ -348,7 +355,10 @@ This email is auto generated. No signature is required. You do not have to reply
                                 "index": patchForNotif["index"],
                                 "section": patchForNotif["category"],
                                 "rectified": patchForNotif.get("rectified", False)
-                            }
+                            },
+                            "readReceipt": False,
+                            "notiDate": datetime.now(),
+                            "auditDate": selectedAudit["date"]
                         }
                     result = mongo.db.notifications.insert_one(notif)
                     if not result.acknowledged:
@@ -360,5 +370,5 @@ This email is auto generated. No signature is required. You do not have to reply
             return serverResponse(
                 ack,
                 200,
-                "Updates submitted successfully. "
+                "Updates submitted successfully."
             )

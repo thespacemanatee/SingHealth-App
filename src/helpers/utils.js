@@ -1,9 +1,30 @@
+import moment from "moment";
 import { store } from "../store/store";
 
 import * as authActions from "../store/actions/authActions";
 import * as checklistActions from "../store/actions/checklistActions";
 import * as databaseActions from "../store/actions/databaseActions";
 import alert from "../components/CustomAlert";
+
+const formatInt = (int) => {
+  return `${int}`;
+};
+
+export const formatDuration = (time) => {
+  const seconds = moment.duration(time).seconds();
+  const minutes = moment.duration(time).minutes();
+  const hours = moment.duration(time).hours();
+  if (hours > 24) {
+    return `${formatInt(Math.floor(hours / 24))}${hours > 48 ? "days" : "day"}`;
+  }
+  if (hours > 0) {
+    return `${formatInt(hours)}hr ${formatInt(minutes)}min`;
+  }
+  if (minutes > 0) {
+    return `${formatInt(minutes)}min`;
+  }
+  return `${formatInt(seconds)}s`;
+};
 
 // eslint-disable-next-line import/prefer-default-export
 export const handleErrorResponse = (err, action) => {

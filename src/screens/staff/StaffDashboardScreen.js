@@ -10,7 +10,8 @@ import {
   TopNavigationAction,
   useStyleSheet,
 } from "@ui-kitten/components";
-import { FAB } from "react-native-paper";
+import moment from "moment";
+import { FAB, Badge } from "react-native-paper";
 import useMountedState from "react-use/lib/useMountedState";
 import { RefreshControl } from "react-native-web-refresh-control";
 
@@ -33,6 +34,7 @@ const StaffDashboardScreen = ({ navigation }) => {
   const [listLoading, setListLoading] = useState(false);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const { handleScroll, showButton } = useHandleScroll();
 
@@ -52,13 +54,23 @@ const StaffDashboardScreen = ({ navigation }) => {
   );
 
   const NotificationAction = () => (
-    <TopNavigationAction
-      icon={NotificationIcon}
-      onPress={() => {
-        navigation.navigate("Notifications");
-      }}
-    />
+    <View>
+      <Badge style={styles.badge} visible={notificationCount}>
+        {notificationCount}
+      </Badge>
+      <TopNavigationAction
+        icon={NotificationIcon}
+        onPress={() => {
+          navigation.navigate("Notifications");
+        }}
+      />
+    </View>
   );
+
+  const handleRefreshList = () => {
+    getListData();
+    getNotifications();
+  };
 
   const handleOpenAudit = useCallback(
     async (auditID, stallName) => {
@@ -85,18 +97,35 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   const renderActiveAudits = useCallback(
     ({ item }) => {
+      const { auditMetadata, stallName } = item;
+      const { _id, score, rectificationProgress } = auditMetadata;
+      const dateInfo = moment(auditMetadata.date.$date)
+        .toLocaleString()
+        .split(" ")
+        .slice(0, 5);
+
+      let progress = Number.parseFloat(
+        (Number.parseFloat(rectificationProgress) * 100).toFixed(1)
+      );
+      if (rectificationProgress === undefined) {
+        progress = 100;
+      }
+
       return (
         <View style={styles.item}>
           <ActiveAuditCard
             userType={authStore.userType}
-            item={item}
+            _id={_id}
+            stallName={stallName}
+            score={score}
+            progress={progress}
+            dateInfo={dateInfo}
             onPress={handleOpenAudit}
           />
         </View>
       );
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [authStore.userType, handleOpenAudit]
+    [authStore.userType, handleOpenAudit, styles.item]
   );
 
   const renderEmptyComponent = () =>
@@ -134,11 +163,17 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   const getNotifications = useCallback(async () => {
     try {
-      await dispatch(databaseActions.getNotifications(authStore._id));
+      const res = await dispatch(
+        databaseActions.getNotifications(authStore._id)
+      );
+      const temp = res.data.data.filter((e) => !e.readReceipt);
+      if (isMounted()) {
+        setNotificationCount(temp.length);
+      }
     } catch (err) {
       handleErrorResponse(err);
     }
-  }, [authStore._id, dispatch]);
+  }, [authStore._id, dispatch, isMounted]);
 
   useEffect(() => {
     // Subscribe for the focus Listener
@@ -175,7 +210,10 @@ const StaffDashboardScreen = ({ navigation }) => {
           renderItem={renderActiveAudits}
           onScroll={handleScroll}
           refreshControl={
-            <RefreshControl refreshing={listLoading} onRefresh={getListData} />
+            <RefreshControl
+              refreshing={listLoading}
+              onRefresh={handleRefreshList}
+            />
           }
           ListEmptyComponent={renderEmptyComponent}
           ListHeaderComponent={
@@ -211,6 +249,10 @@ const themedStyles = StyleService.create({
   },
   layout: {
     flex: 1,
+  },
+  badge: {
+    position: "absolute",
+    left: 0,
   },
   textContainer: {
     marginVertical: 10,

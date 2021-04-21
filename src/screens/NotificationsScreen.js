@@ -8,20 +8,25 @@ import {
   StyleService,
   Icon,
   TopNavigationAction,
+  useTheme,
 } from "@ui-kitten/components";
+import moment from "moment";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import useMountedState from "react-use/lib/useMountedState";
 import useEffectOnce from "react-use/lib/useEffectOnce";
 import { RefreshControl } from "react-native-web-refresh-control";
 
+import { endpoint, httpClient } from "../helpers/CustomHTTPClient";
 import * as databaseActions from "../store/actions/databaseActions";
 import * as checklistActions from "../store/actions/checklistActions";
 import NotificationCard from "../components/NotificationCard";
 import CenteredLoading from "../components/ui/CenteredLoading";
-import { handleErrorResponse } from "../helpers/utils";
+import { formatDuration, handleErrorResponse } from "../helpers/utils";
 import SkeletonLoading from "../components/ui/loading/SkeletonLoading";
 import CustomText from "../components/ui/CustomText";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
+const { Navigator, Screen } = createMaterialTopTabNavigator();
 
 const NotificationsScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
@@ -30,6 +35,8 @@ const NotificationsScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
 
   const isMounted = useMountedState();
+
+  const theme = useTheme();
 
   const dispatch = useDispatch();
 
@@ -47,10 +54,19 @@ const NotificationsScreen = ({ navigation }) => {
   );
 
   const handleNavigateRectifications = useCallback(
-    async (auditID, stallName, navProps) => {
+    async ({ _id, auditID, stallName, navProps, readReceipt }) => {
       try {
         setLoading(true);
         await dispatch(checklistActions.getAuditData(auditID));
+        if (!readReceipt) {
+          const options = {
+            url: `${endpoint}notifications`,
+            method: "patch",
+            params: { notifID: _id },
+          };
+
+          await httpClient(options);
+        }
 
         if (navProps.section) {
           navigation.navigate("RectificationDetails", navProps);
@@ -68,9 +84,55 @@ const NotificationsScreen = ({ navigation }) => {
     [dispatch, isMounted, navigation]
   );
 
+  const Unread = () => {
+    return (
+      <Layout style={styles.layout}>
+        <FlatList
+          keyExtractor={(item, index) => String(index)}
+          contentContainerStyle={styles.contentContainer}
+          renderItem={renderNotifications}
+          data={databaseStore.notifications.unread}
+          refreshControl={
+            <RefreshControl
+              refreshing={listLoading}
+              onRefresh={getNotifications}
+            />
+          }
+          ListEmptyComponent={renderEmptyComponent}
+        />
+      </Layout>
+    );
+  };
+
+  const Read = () => {
+    return (
+      <Layout style={styles.layout}>
+        <FlatList
+          keyExtractor={(item, index) => String(index)}
+          contentContainerStyle={styles.contentContainer}
+          renderItem={renderNotifications}
+          data={databaseStore.notifications.read}
+          refreshControl={
+            <RefreshControl
+              refreshing={listLoading}
+              onRefresh={getNotifications}
+            />
+          }
+          ListEmptyComponent={renderEmptyComponent}
+        />
+      </Layout>
+    );
+  };
+
   const renderNotifications = useCallback(
     (itemData) => {
-      const { stallName } = itemData.item;
+      const {
+        _id,
+        auditDate,
+        notiDate,
+        stallName,
+        readReceipt,
+      } = itemData.item;
       let { message } = itemData.item;
       let headerText;
       if (authStore.userType === "staff") {
@@ -90,15 +152,21 @@ const NotificationsScreen = ({ navigation }) => {
           message.section
         }.`;
       } else {
-        headerText = "New Message";
+        headerText = "Message";
       }
+
+      const starts = moment(notiDate.$date || notiDate);
+      const duration = formatDuration(moment().diff(starts));
 
       return (
         <NotificationCard
+          _id={_id}
           headerText={headerText}
           message={message}
           data={itemData.item}
           onPress={handleNavigateRectifications}
+          duration={duration}
+          readReceipt={readReceipt}
         />
       );
     },
@@ -108,7 +176,9 @@ const NotificationsScreen = ({ navigation }) => {
   const getNotifications = useCallback(async () => {
     try {
       setListLoading(true);
-      await dispatch(databaseActions.getNotifications(authStore._id));
+      const res = await dispatch(
+        databaseActions.getNotifications(authStore._id)
+      );
     } catch (err) {
       handleErrorResponse(err);
     } finally {
@@ -129,6 +199,16 @@ const NotificationsScreen = ({ navigation }) => {
 
   useEffectOnce(() => {
     getNotifications();
+    const unsubscribe = navigation.addListener("focus", () => {
+      // setLoading(true);
+      getNotifications();
+    });
+
+    return () => {
+      // Unsubscribe for the focus Listener
+      // eslint-disable-next-line no-unused-expressions
+      unsubscribe;
+    };
   });
 
   return (
@@ -139,22 +219,26 @@ const NotificationsScreen = ({ navigation }) => {
         accessoryLeft={BackAction}
       />
       <Divider />
-      <Layout style={styles.layout}>
-        <CenteredLoading loading={loading} />
-        <FlatList
-          keyExtractor={(item, index) => String(index)}
-          contentContainerStyle={styles.contentContainer}
-          renderItem={renderNotifications}
-          data={databaseStore.notifications}
-          refreshControl={
-            <RefreshControl
-              refreshing={listLoading}
-              onRefresh={getNotifications}
-            />
-          }
-          ListEmptyComponent={renderEmptyComponent}
+      <CenteredLoading loading={loading} />
+      <Navigator
+        initialRouteName="Unread"
+        backBehavior="none"
+        tabBarOptions={{
+          labelStyle: { fontSize: 12, fontFamily: "SFProDisplay-Regular" },
+          indicatorStyle: { backgroundColor: theme["color-primary-500"] },
+        }}
+      >
+        <Screen
+          name="Unread"
+          component={Unread}
+          options={{ tabBarLabel: "UNREAD" }}
         />
-      </Layout>
+        <Screen
+          name="Read"
+          component={Read}
+          options={{ tabBarLabel: "READ" }}
+        />
+      </Navigator>
     </View>
   );
 };
