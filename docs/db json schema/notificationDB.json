@@ -26,10 +26,12 @@
             "default": false
         },
         "auditDate": {
-            "type": "string"
+            "description": "A Python equivalent of a datetime object",
+            "type": "object"
         },
         "notiDate": {
-            "type": "string"
+            "description": "A Python equivalent of a datetime object",
+            "type": "object"
         }
     },
     "required": ["_id", "userID", "auditID", "stallName", "message", "readReceipt", "auditDate", "notiDate"]
