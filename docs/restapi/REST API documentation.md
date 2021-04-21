@@ -39,7 +39,7 @@
 - [x] [`PATCH /audits/<auditID>/tenant`](#`PATCH-/audits/auditID/tenant`)
 - [x] [`PATCH /audits/<auditID>/staff`](#`PATCH-/audits/auditID/staff`)
 - [x] [`GET /audits`](#`GET-/audits`)
-- [x] [`GET /auditTimeframe/fromDate=<fromDate>&toDate=<toDate>&dataType=<dataType>&dataID=<dataID>`](#`GET-/auditTimeframe/fromDate=<fromDate>&toDate=<toDate>&dataType=<dataType>&dataID=<dataID>`)
+- [x] [`GET /auditTimeframe/<fromDate><toDate><dataType><dataID>`](#`GET-/auditTimeframe/<fromDate>&<toDate><dataType><dataID>`)
 - [x] [`GET /notifications`](#`GET-/notifications`)
 - [ ] [`PATCH /notifications`](#`PATCH-/notifications`)
 
@@ -1537,7 +1537,7 @@ localhost:5000/institutions
 }
 ```
 
-## `GET /auditTimeframe/fromDate=<fromDate>&toDate=<toDate>&dataType=<dataType>&dataID=<dataID>`
+## `GET /auditTimeframe/<fromDate><toDate><dataType><dataID>`
 
 ### Description of use case
 
@@ -1594,7 +1594,7 @@ The staff to get all audit data within a timeframe.
 ##### Wrong date format
 
 ```js
-"status": 200,
+"status": 400,
 "data": {
     "description": "Wrong date format"
 }
@@ -1603,7 +1603,7 @@ The staff to get all audit data within a timeframe.
 ##### Wrong data format
 
 ```js
-"status": 200,
+"status": 400,
 "data": {
     "description": "Insufficient data or wrong data format"
 }
@@ -1614,7 +1614,7 @@ The staff to get all audit data within a timeframe.
 ##### No audit data found
 
 ```js
-"status": 200,
+"status": 400,
 "data": {
     "description": "No audit data found within the timeframe"
 }
