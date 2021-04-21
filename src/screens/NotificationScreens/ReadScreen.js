@@ -12,7 +12,7 @@ import * as databaseActions from "../../store/actions/databaseActions";
 import * as checklistActions from "../../store/actions/checklistActions";
 import NotificationCard from "../../components/NotificationCard";
 import CenteredLoading from "../../components/ui/CenteredLoading";
-import { formatDuration, handleErrorResponse } from "../../helpers/utils";
+import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
 
 const ReadScreen = ({ navigation }) => {
@@ -58,13 +58,7 @@ const ReadScreen = ({ navigation }) => {
 
   const renderNotifications = useCallback(
     (itemData) => {
-      const {
-        _id,
-        auditDate,
-        notiDate,
-        stallName,
-        readReceipt,
-      } = itemData.item;
+      const { _id, notiDate, stallName, readReceipt } = itemData.item;
       let { message } = itemData.item;
       let headerText;
       if (authStore.userType === "staff") {
@@ -88,7 +82,7 @@ const ReadScreen = ({ navigation }) => {
       }
 
       const starts = moment(notiDate.$date || notiDate);
-      const duration = formatDuration(moment().diff(starts));
+      const duration = moment.duration(starts.diff(moment())).humanize();
 
       return (
         <NotificationCard

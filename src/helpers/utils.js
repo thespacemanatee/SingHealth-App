@@ -1,39 +1,9 @@
-import moment from "moment";
 import { store } from "../store/store";
 
 import * as authActions from "../store/actions/authActions";
 import * as checklistActions from "../store/actions/checklistActions";
 import * as databaseActions from "../store/actions/databaseActions";
 import alert from "../components/CustomAlert";
-
-export const formatDuration = (time) => {
-  const seconds = moment.duration(time).seconds();
-  const minutes = moment.duration(time).minutes();
-  const hours = moment.duration(time).hours();
-  const days = moment.duration(time).days();
-  const weeks = moment.duration(time).weeks();
-  const months = moment.duration(time).months();
-  const years = moment.duration(time).years();
-  if (years > 0) {
-    return `${years}${years > 1 ? " years" : " year"}`;
-  }
-  if (months > 0) {
-    return `${months}${months > 1 ? " months" : " month"}`;
-  }
-  if (weeks > 0) {
-    return `${weeks}${weeks > 1 ? " weeks" : " week"}`;
-  }
-  if (days > 0) {
-    return `${days}${days > 1 ? " days" : " day"}`;
-  }
-  if (hours > 0) {
-    return `${hours}hr ${minutes}min`;
-  }
-  if (minutes > 0) {
-    return `${minutes}min`;
-  }
-  return `${seconds}s`;
-};
 
 // eslint-disable-next-line import/prefer-default-export
 export const handleErrorResponse = (err, action) => {
