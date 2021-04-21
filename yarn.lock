@@ -9548,10 +9548,10 @@ react-native-web-refresh-control@^1.0.3:
   resolved "https://registry.yarnpkg.com/react-native-web-refresh-control/-/react-native-web-refresh-control-1.0.3.tgz#3ffc5dbe12506088a9ee64ab53a682a421cf88eb"
   integrity sha512-o1qWewp6ZFmw4aYF5bPIh4zDJJXrfCl5FDoV0Cw8Bh33PSlnl9zpsn7wXl6RVA4l0leUTqUeI/OhmT3XIuvLcw==
 
-react-native-web@^0.15.7:
-  version "0.15.7"
-  resolved "https://registry.yarnpkg.com/react-native-web/-/react-native-web-0.15.7.tgz#5b07d98032a36af3cb558357c7a1470e879fc422"
-  integrity sha512-mrbQayl1luIO4Gfyw6KLdlWc30JcJOQgRn84iOj6dLJYVRwcE6W5U2Af68hQYFJsGgVb9sdlYC0ppfFM7ywqXQ==
+react-native-web@^0.16.0:
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/react-native-web/-/react-native-web-0.16.0.tgz#0fbb7d3e5c63f4fd347fcfecd6ebaf8713e7c191"
+  integrity sha512-l96LG3aT5UomhbI5B4bjYzO9oSjIbieAFjeReSbieMrMXB8q6FVQhrfSsnj8pOpcNUH6LcWW/5iZpNaa98J1Og==
   dependencies:
     array-find-index "^1.0.2"
     create-react-class "^15.7.0"
