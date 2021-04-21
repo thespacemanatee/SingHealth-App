@@ -13,7 +13,7 @@ import * as checklistActions from "../../store/actions/checklistActions";
 import NotificationCard from "../../components/NotificationCard";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import { formatDuration, handleErrorResponse } from "../../helpers/utils";
-import SkeletonLoading from "../../components/ui/loading/SkeletonLoading";
+import EntityLoading from "../../components/ui/loading/EntityLoading";
 import CustomText from "../../components/ui/CustomText";
 
 const ReadScreen = ({ navigation }) => {
@@ -121,7 +121,7 @@ const ReadScreen = ({ navigation }) => {
 
   const renderEmptyComponent = () =>
     listLoading ? (
-      <SkeletonLoading />
+      <EntityLoading />
     ) : (
       <View style={styles.emptyComponent}>
         <CustomText bold>NO READ NOTIFICATIONS</CustomText>
