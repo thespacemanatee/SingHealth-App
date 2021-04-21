@@ -8,7 +8,6 @@ import { RefreshControl } from "react-native-web-refresh-control";
 import * as checklistActions from "../../store/actions/checklistActions";
 import * as databaseActions from "../../store/actions/databaseActions";
 import NewChecklistCard from "../../components/NewChecklistCard";
-
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";

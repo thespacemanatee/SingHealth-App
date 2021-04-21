@@ -42,11 +42,61 @@ import TenantInfoScreen from "../screens/TenantInfoScreen";
 import DeleteTenantScreen from "../screens/staff/AddTenantScreens/DeleteTenantScreen";
 import SelectDeleteScreen from "../screens/staff/AddTenantScreens/SelectDeleteScreen";
 import { stackTransition, modalTransition } from "../helpers/config";
-import NotificationsScreen from "../screens/NotificationsScreen";
+import UnreadScreen from "../screens/NotificationScreens/UnreadScreen";
+import ReadScreen from "../screens/NotificationScreens/ReadScreen";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
 const DirectoryIcon = (props) => <Icon {...props} name="folder-outline" />;
+
+export const NotificationsTabNavigator = ({ navigation }) => {
+  const { Navigator, Screen } = createMaterialTopTabNavigator();
+
+  const theme = useTheme();
+
+  const BackAction = () => (
+    <TopNavigationAction
+      icon={BackIcon}
+      onPress={() => {
+        if (Platform.OS === "web") {
+          window.history.back();
+        } else {
+          navigation.goBack();
+        }
+      }}
+    />
+  );
+
+  return (
+    <View style={styles.screen}>
+      <TopNavigation
+        title="Tenant Selection"
+        alignment="center"
+        accessoryLeft={BackAction}
+      />
+      <Divider />
+      <Navigator
+        initialRouteName="Tenants"
+        backBehavior="none"
+        tabBarOptions={{
+          labelStyle: { fontSize: 12, fontFamily: "SFProDisplay-Regular" },
+          indicatorStyle: { backgroundColor: theme["color-primary-500"] },
+        }}
+      >
+        <Screen
+          name="Unread"
+          component={UnreadScreen}
+          options={{ tabBarLabel: "UNREAD" }}
+        />
+        <Screen
+          name="Read"
+          component={ReadScreen}
+          options={{ tabBarLabel: "READ" }}
+        />
+      </Navigator>
+    </View>
+  );
+};
 
 const useBottomNavigationState = (initialState = 0) => {
   const [selectedIndex, setSelectedIndex] = useState(initialState);
@@ -146,7 +196,7 @@ const StaffDashboardStackNavigator = () => {
   return (
     <Navigator headerMode="none" screenOptions={stackTransition}>
       <Screen name="StaffDashboard" component={StaffDashboardScreen} />
-      <Screen name="Notifications" component={NotificationsScreen} />
+      <Screen name="Notifications" component={NotificationsTabNavigator} />
       <Screen name="ChooseTenant" component={ChooseTenantTopTabNavigator} />
       <Screen name="Checklist" component={ChecklistScreen} />
       <Screen name="Rectification" component={RectificationScreen} />

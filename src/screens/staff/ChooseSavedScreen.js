@@ -8,7 +8,6 @@ import { RefreshControl } from "react-native-web-refresh-control";
 
 import * as checklistActions from "../../store/actions/checklistActions";
 import SavedChecklistCard from "../../components/SavedChecklistCard";
-
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
@@ -82,7 +81,6 @@ const ChooseTenantScreen = ({ navigation }) => {
 
   useEffect(() => {
     // Subscribe for the focus Listener
-    // getListData();
     const unsubscribe = navigation.addListener("focus", () => {
       // setLoading(true);
       getListData();

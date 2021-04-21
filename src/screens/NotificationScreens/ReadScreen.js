@@ -1,34 +1,22 @@
 import React, { useState, useCallback } from "react";
-import { View, Platform, FlatList } from "react-native";
+import { View, FlatList } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  Divider,
-  Layout,
-  TopNavigation,
-  StyleService,
-  Icon,
-  TopNavigationAction,
-  useTheme,
-} from "@ui-kitten/components";
+import { Layout, StyleService } from "@ui-kitten/components";
 import moment from "moment";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import useMountedState from "react-use/lib/useMountedState";
 import useEffectOnce from "react-use/lib/useEffectOnce";
 import { RefreshControl } from "react-native-web-refresh-control";
 
-import { endpoint, httpClient } from "../helpers/CustomHTTPClient";
-import * as databaseActions from "../store/actions/databaseActions";
-import * as checklistActions from "../store/actions/checklistActions";
-import NotificationCard from "../components/NotificationCard";
-import CenteredLoading from "../components/ui/CenteredLoading";
-import { formatDuration, handleErrorResponse } from "../helpers/utils";
-import SkeletonLoading from "../components/ui/loading/SkeletonLoading";
-import CustomText from "../components/ui/CustomText";
+import { endpoint, httpClient } from "../../helpers/CustomHTTPClient";
+import * as databaseActions from "../../store/actions/databaseActions";
+import * as checklistActions from "../../store/actions/checklistActions";
+import NotificationCard from "../../components/NotificationCard";
+import CenteredLoading from "../../components/ui/CenteredLoading";
+import { formatDuration, handleErrorResponse } from "../../helpers/utils";
+import SkeletonLoading from "../../components/ui/loading/SkeletonLoading";
+import CustomText from "../../components/ui/CustomText";
 
-const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
-const { Navigator, Screen } = createMaterialTopTabNavigator();
-
-const NotificationsScreen = ({ navigation }) => {
+const ReadScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
   const databaseStore = useSelector((state) => state.database);
   const [listLoading, setListLoading] = useState(false);
@@ -36,22 +24,7 @@ const NotificationsScreen = ({ navigation }) => {
 
   const isMounted = useMountedState();
 
-  const theme = useTheme();
-
   const dispatch = useDispatch();
-
-  const BackAction = () => (
-    <TopNavigationAction
-      icon={BackIcon}
-      onPress={() => {
-        if (Platform.OS === "web") {
-          window.history.back();
-        } else {
-          navigation.goBack();
-        }
-      }}
-    />
-  );
 
   const handleNavigateRectifications = useCallback(
     async ({ _id, auditID, stallName, navProps, readReceipt }) => {
@@ -84,46 +57,6 @@ const NotificationsScreen = ({ navigation }) => {
     [dispatch, isMounted, navigation]
   );
 
-  const Unread = () => {
-    return (
-      <Layout style={styles.layout}>
-        <FlatList
-          keyExtractor={(item, index) => String(index)}
-          contentContainerStyle={styles.contentContainer}
-          renderItem={renderNotifications}
-          data={databaseStore.notifications.unread}
-          refreshControl={
-            <RefreshControl
-              refreshing={listLoading}
-              onRefresh={getNotifications}
-            />
-          }
-          ListEmptyComponent={renderEmptyComponent}
-        />
-      </Layout>
-    );
-  };
-
-  const Read = () => {
-    return (
-      <Layout style={styles.layout}>
-        <FlatList
-          keyExtractor={(item, index) => String(index)}
-          contentContainerStyle={styles.contentContainer}
-          renderItem={renderNotifications}
-          data={databaseStore.notifications.read}
-          refreshControl={
-            <RefreshControl
-              refreshing={listLoading}
-              onRefresh={getNotifications}
-            />
-          }
-          ListEmptyComponent={renderEmptyComponent}
-        />
-      </Layout>
-    );
-  };
-
   const renderNotifications = useCallback(
     (itemData) => {
       const {
@@ -136,7 +69,7 @@ const NotificationsScreen = ({ navigation }) => {
       let { message } = itemData.item;
       let headerText;
       if (authStore.userType === "staff") {
-        headerText = `Stall: ${stallName}`;
+        headerText = stallName;
         if (itemData.item.type === "patch") {
           message = `Tenant has updated rectifications for item ${
             message.index + 1
@@ -191,7 +124,7 @@ const NotificationsScreen = ({ navigation }) => {
       <SkeletonLoading />
     ) : (
       <View style={styles.emptyComponent}>
-        <CustomText bold>NO NOTIFICATIONS</CustomText>
+        <CustomText bold>NO READ NOTIFICATIONS</CustomText>
       </View>
     );
 
@@ -209,34 +142,24 @@ const NotificationsScreen = ({ navigation }) => {
   });
 
   return (
-    <View style={styles.screen}>
-      <TopNavigation
-        title="Notifications"
-        alignment="center"
-        accessoryLeft={BackAction}
-      />
-      <Divider />
+    <>
       <CenteredLoading loading={loading} />
-      <Navigator
-        initialRouteName="Unread"
-        backBehavior="none"
-        tabBarOptions={{
-          labelStyle: { fontSize: 12, fontFamily: "SFProDisplay-Regular" },
-          indicatorStyle: { backgroundColor: theme["color-primary-500"] },
-        }}
-      >
-        <Screen
-          name="Unread"
-          component={Unread}
-          options={{ tabBarLabel: "UNREAD" }}
+      <Layout style={styles.layout}>
+        <FlatList
+          keyExtractor={(item, index) => String(index)}
+          contentContainerStyle={styles.contentContainer}
+          renderItem={renderNotifications}
+          data={databaseStore.notifications.read}
+          refreshControl={
+            <RefreshControl
+              refreshing={listLoading}
+              onRefresh={getNotifications}
+            />
+          }
+          ListEmptyComponent={renderEmptyComponent}
         />
-        <Screen
-          name="Read"
-          component={Read}
-          options={{ tabBarLabel: "READ" }}
-        />
-      </Navigator>
-    </View>
+      </Layout>
+    </>
   );
 };
 
@@ -260,4 +183,4 @@ const styles = StyleService.create({
   },
 });
 
-export default NotificationsScreen;
+export default ReadScreen;
