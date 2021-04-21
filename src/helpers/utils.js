@@ -6,24 +6,33 @@ import * as checklistActions from "../store/actions/checklistActions";
 import * as databaseActions from "../store/actions/databaseActions";
 import alert from "../components/CustomAlert";
 
-const formatInt = (int) => {
-  return `${int}`;
-};
-
 export const formatDuration = (time) => {
   const seconds = moment.duration(time).seconds();
   const minutes = moment.duration(time).minutes();
   const hours = moment.duration(time).hours();
-  if (hours > 24) {
-    return `${formatInt(Math.floor(hours / 24))}${hours > 48 ? "days" : "day"}`;
+  const days = moment.duration(time).days();
+  const weeks = moment.duration(time).weeks();
+  const months = moment.duration(time).months();
+  const years = moment.duration(time).years();
+  if (years > 0) {
+    return `${years}${years > 1 ? " years" : " year"}`;
+  }
+  if (months > 0) {
+    return `${months}${months > 1 ? " months" : " month"}`;
+  }
+  if (weeks > 0) {
+    return `${weeks}${weeks > 1 ? " weeks" : " week"}`;
+  }
+  if (days > 0) {
+    return `${days}${days > 1 ? " days" : " day"}`;
   }
   if (hours > 0) {
-    return `${formatInt(hours)}hr ${formatInt(minutes)}min`;
+    return `${hours}hr ${minutes}min`;
   }
   if (minutes > 0) {
-    return `${formatInt(minutes)}min`;
+    return `${minutes}min`;
   }
-  return `${formatInt(seconds)}s`;
+  return `${seconds}s`;
 };
 
 // eslint-disable-next-line import/prefer-default-export

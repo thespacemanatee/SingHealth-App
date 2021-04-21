@@ -101,7 +101,7 @@ const ChooseTenantScreen = ({ navigation }) => {
       <EntityLoading />
     ) : (
       <View style={styles.emptyComponent}>
-        <CustomText bold>NO TENANTS AVAILABLE</CustomText>
+        <CustomText bold>NO SAVED CHECKLISTS AVAILABLE</CustomText>
       </View>
     );
 

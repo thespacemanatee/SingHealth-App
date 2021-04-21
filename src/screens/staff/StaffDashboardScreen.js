@@ -76,10 +76,7 @@ const StaffDashboardScreen = ({ navigation }) => {
     async (auditID, stallName) => {
       try {
         setLoading(true);
-
         await dispatch(checklistActions.getAuditData(auditID));
-
-        setLoading(false);
         navigation.navigate("Rectification", { stallName });
       } catch (err) {
         handleErrorResponse(err);

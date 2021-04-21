@@ -13,7 +13,6 @@ import * as checklistActions from "../../store/actions/checklistActions";
 import NotificationCard from "../../components/NotificationCard";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import { formatDuration, handleErrorResponse } from "../../helpers/utils";
-import EntityLoading from "../../components/ui/loading/EntityLoading";
 import CustomText from "../../components/ui/CustomText";
 
 const ReadScreen = ({ navigation }) => {
@@ -119,14 +118,11 @@ const ReadScreen = ({ navigation }) => {
     }
   }, [authStore._id, dispatch, isMounted]);
 
-  const renderEmptyComponent = () =>
-    listLoading ? (
-      <EntityLoading />
-    ) : (
-      <View style={styles.emptyComponent}>
-        <CustomText bold>NO READ NOTIFICATIONS</CustomText>
-      </View>
-    );
+  const renderEmptyComponent = () => (
+    <View style={styles.emptyComponent}>
+      <CustomText bold>NO READ NOTIFICATIONS</CustomText>
+    </View>
+  );
 
   useEffectOnce(() => {
     const unsubscribe = navigation.addListener("focus", () => {
