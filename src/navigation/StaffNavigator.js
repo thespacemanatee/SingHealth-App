@@ -70,13 +70,13 @@ export const NotificationsTabNavigator = ({ navigation }) => {
   return (
     <View style={styles.screen}>
       <TopNavigation
-        title="Tenant Selection"
+        title="Notifications"
         alignment="center"
         accessoryLeft={BackAction}
       />
       <Divider />
       <Navigator
-        initialRouteName="Tenants"
+        initialRouteName="Unread"
         backBehavior="none"
         tabBarOptions={{
           labelStyle: { fontSize: 12, fontFamily: "SFProDisplay-Regular" },
