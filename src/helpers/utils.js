@@ -23,7 +23,7 @@ export const formatDuration = (time) => {
   if (minutes > 0) {
     return `${formatInt(minutes)}min`;
   }
-  return `00:${formatInt(seconds)}`;
+  return `${formatInt(seconds)}s`;
 };
 
 // eslint-disable-next-line import/prefer-default-export

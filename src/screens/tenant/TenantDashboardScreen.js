@@ -10,6 +10,7 @@ import {
   TopNavigationAction,
 } from "@ui-kitten/components";
 import moment from "moment";
+import { Badge } from "react-native-paper";
 import useMountedState from "react-use/lib/useMountedState";
 import { RefreshControl } from "react-native-web-refresh-control";
 
@@ -30,6 +31,7 @@ const TenantDashboardScreen = ({ navigation }) => {
   const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const isMounted = useMountedState();
 
@@ -45,16 +47,22 @@ const TenantDashboardScreen = ({ navigation }) => {
   );
 
   const NotificationAction = () => (
-    <TopNavigationAction
-      icon={NotificationIcon}
-      onPress={() => {
-        navigation.navigate("Notifications");
-      }}
-    />
+    <View>
+      <Badge style={styles.badge} visible={notificationCount}>
+        {notificationCount}
+      </Badge>
+      <TopNavigationAction
+        icon={NotificationIcon}
+        onPress={() => {
+          navigation.navigate("Notifications");
+        }}
+      />
+    </View>
   );
 
   const handleRefreshList = () => {
     getListData();
+    getNotifications();
   };
 
   const handleOpenAudit = useCallback(
@@ -143,11 +151,17 @@ const TenantDashboardScreen = ({ navigation }) => {
 
   const getNotifications = useCallback(async () => {
     try {
-      await dispatch(databaseActions.getNotifications(authStore._id));
+      const res = await dispatch(
+        databaseActions.getNotifications(authStore._id)
+      );
+      const temp = res.data.data.filter((e) => !e.readReceipt);
+      if (isMounted()) {
+        setNotificationCount(temp.length);
+      }
     } catch (err) {
       handleErrorResponse(err);
     }
-  }, [authStore._id, dispatch]);
+  }, [authStore._id, dispatch, isMounted]);
 
   useEffect(() => {
     // Subscribe for the focus Listener
@@ -209,6 +223,10 @@ const styles = StyleService.create({
   },
   layout: {
     flex: 1,
+  },
+  badge: {
+    position: "absolute",
+    left: 0,
   },
   textContainer: {
     marginVertical: 20,
