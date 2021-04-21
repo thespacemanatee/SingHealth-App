@@ -50,11 +50,11 @@ def change_tenant_info(app, mongo):
             else:
                 # send appropriate error messages
                 if not validated and not duplicate:
-                    return serverResponse(message, 200, "Insufficient/Error in data to add new tenant")
+                    return serverResponse(message, 404, "Insufficient/Error in data to add new tenant")
                 elif validated and duplicate:
-                    return serverResponse(None, 200, "Duplicate email found")
+                    return serverResponse(None, 404, "Duplicate email found")
                 else:
-                    return serverResponse(message, 200, "Duplicate email and insufficient/error in data to add new tenant")
+                    return serverResponse(message, 404, "Duplicate email and insufficient/error in data to add new tenant")
         except:
             return serverResponse(None, 404, "No response received")
 
@@ -66,12 +66,12 @@ def change_tenant_info(app, mongo):
         try:
             tenantID = request.args.get("tenantID", None)
             if tenantID is None:
-                return serverResponse(None, 200, "Missing tenantID")
+                return serverResponse(None, 404, "Missing tenantID")
 
             tenant_found, tenant_info = find_tenant_by_id(tenantID)
             if tenant_found is not None:
                 if not tenant_found:
-                    return serverResponse(None, 200, "No matching tenant ID found")
+                    return serverResponse(None, 404, "No matching tenant ID found")
 
             if request.method == "GET":
                 return serverResponse(tenant_info, 200, "Success")

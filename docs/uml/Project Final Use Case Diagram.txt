@@ -1,0 +1,78 @@
+@startuml
+Staff -> (Sign up as staff)
+Staff --> (Login as staff)
+(Sign up as staff) -r-> (Login as staff) : <<precedes>>
+
+(Login as staff) --> (Perform Audit) : <<precedes>>
+(Login as staff) ---> (View audit history) : <<precedes>>
+(Login as staff) --> (Show tenant rectification progress)
+(Login as staff) --> (Add new tenant) : <<precedes>> 
+(Login as staff) --> (Delete existing tenant): <<precedes>> 
+(Login as staff) --> (View directory of respective SingHealth institutions) 
+(Login as staff) --> (View audit progress)
+
+(Add new tenant) -> (Delete existing tenant) : <<precedes>>
+(Submit audit) --> (View audit history) : <<precedes>>
+
+(Perform Audit) -> (Capture photos) 
+(Perform Audit) -> (Upload photos) 
+(Perform Audit) --> (Add notes and tags) 
+
+(Capture photos) --> (Submit audit) 
+(Perform Audit) --> (Submit audit) 
+(Upload photos) --> (Submit audit) 
+(Add notes and tags) --> (Submit audit) 
+(Perform Audit) --> (Automatically computes checklist score)
+
+(Automatically computes checklist score) --> (Submit audit) : <<precedes>>
+(Upload photos) --> (Limit number of photos) 
+(Capture photos) --> (Limit number of photos) 
+
+(View audit history) --> (Tabulate performance scores and provide trending graphs) : <<precedes>>
+(Tabulate performance scores and provide trending graphs) --> (Compare performance scores)
+(View audit history) --> (Export to word and email)
+
+(Send large number of photos) ---> (Upload photos) : <<threatens>>
+(Send large number of photos) ---> (Capture photos) : <<threatens>>
+(Send large number of photos) <-- (Limit number of photos)  : <<prevents>>
+(Submit audit) -d-> (Send audit report to tenant)
+(Send audit report to tenant) --> (Tenant receive audit report)
+
+Tenant -r-> (Login as tenant) 
+(Add new tenant) -> (Login as tenant) : <<precedes>>
+(Tenant receive audit report) <-- (Login as tenant) : <<precedes>>
+(Tenant receive audit report) --> (View audit details) : <<precedes>>
+(View audit details) --> (Check and fix outstanding non-compliance)
+(Check and fix outstanding non-compliance) --> (Send audit report with rectifications) : <<precedes>>
+(Check and fix outstanding non-compliance) --> (Request extension with reason) : <<precedes>>
+(Receive audit report with rectifications) <-- (Send audit report with rectifications) : <<precedes>>
+
+(View audit progress) --> (Receive audit report with rectifications)
+(View audit progress) <-- (Submit audit) : <<precedes>>
+(Receive audit report with rectifications) --> (Approve or decline rectifications) : <<precedes>>
+(View audit progress) --> (Approve or decline rectifications)
+(Approve or decline rectifications) --> (Send notification to tenant) : <<precedes>>
+(Send notification to tenant) --> Tenant
+(Request extension with reason) --> (View audit progress) 
+(View audit progress) --> (Approve or decline extension) 
+
+
+
+
+
+
+
+Hacker ---> (Send large number of photos)
+Hacker --> (Interact with backend database)
+Hacker --> (Create duplicate staff accounts) 
+(Create duplicate staff accounts) --> (Add new tenant) : <<threatens>>
+(Login as staff) --> (Interact with backend database): <<prevents>>
+(Verify unique tenant email address) --> (Add new tenant) : <<precedes>>
+(Verify unique tenant email address) --> (Create duplicate staff accounts) : <<prevents>>
+Hacker --> (Send dummy audit checklist) 
+(Send dummy audit checklist) --> (Send audit report to tenant) : <<threatens>>
+(Validate audit report) --> (Send dummy audit checklist) : <<prevents>>
+
+
+
+@enduml
