@@ -27,7 +27,7 @@ def login():
     time.sleep(1)
     links = driver.find_elements_by_xpath('//div[text()="LOGIN"]')
     links[-1].click()
-    time.sleep(5)
+    time.sleep(8)
 
 if __name__ == "__main__":
     driver = webdriver.Chrome()
