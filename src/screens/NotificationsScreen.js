@@ -176,9 +176,7 @@ const NotificationsScreen = ({ navigation }) => {
   const getNotifications = useCallback(async () => {
     try {
       setListLoading(true);
-      const res = await dispatch(
-        databaseActions.getNotifications(authStore._id)
-      );
+      await dispatch(databaseActions.getNotifications(authStore._id));
     } catch (err) {
       handleErrorResponse(err);
     } finally {
@@ -198,7 +196,6 @@ const NotificationsScreen = ({ navigation }) => {
     );
 
   useEffectOnce(() => {
-    getNotifications();
     const unsubscribe = navigation.addListener("focus", () => {
       // setLoading(true);
       getNotifications();

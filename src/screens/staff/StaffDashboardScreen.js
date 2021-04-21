@@ -30,10 +30,10 @@ const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 
 const StaffDashboardScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
+  const databaseStore = useSelector((state) => state.database);
   const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [listData, setListData] = useState([]);
   const [notificationCount, setNotificationCount] = useState(0);
 
   const { handleScroll, showButton } = useHandleScroll();
@@ -141,16 +141,13 @@ const StaffDashboardScreen = ({ navigation }) => {
     try {
       setListLoading(true);
 
-      const res = await dispatch(
+      await dispatch(
         databaseActions.getStaffActiveAudits(authStore.institutionID)
       );
       await dispatch(
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
       await dispatch(databaseActions.getInstitutions());
-      if (isMounted()) {
-        setListData(res.data.data);
-      }
     } catch (err) {
       handleErrorResponse(err);
     } finally {
@@ -177,9 +174,6 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   useEffect(() => {
     // Subscribe for the focus Listener
-    getListData();
-    getNotifications();
-
     const unsubscribe = navigation.addListener("focus", () => {
       getListData();
       getNotifications();
@@ -206,7 +200,7 @@ const StaffDashboardScreen = ({ navigation }) => {
         <FlatList
           contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
-          data={listData}
+          data={databaseStore.activeAudits}
           renderItem={renderActiveAudits}
           onScroll={handleScroll}
           refreshControl={
