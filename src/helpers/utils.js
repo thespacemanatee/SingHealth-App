@@ -1,4 +1,3 @@
-import moment from "moment";
 import { store } from "../store/store";
 
 import * as authActions from "../store/actions/authActions";
@@ -6,35 +5,12 @@ import * as checklistActions from "../store/actions/checklistActions";
 import * as databaseActions from "../store/actions/databaseActions";
 import alert from "../components/CustomAlert";
 
-const formatInt = (int) => {
-  return `${int}`;
-};
-
-export const formatDuration = (time) => {
-  const seconds = moment.duration(time).seconds();
-  const minutes = moment.duration(time).minutes();
-  const hours = moment.duration(time).hours();
-  if (hours > 24) {
-    return `${formatInt(Math.floor(hours / 24))}${hours > 48 ? "days" : "day"}`;
-  }
-  if (hours > 0) {
-    return `${formatInt(hours)}hr ${formatInt(minutes)}min`;
-  }
-  if (minutes > 0) {
-    return `${formatInt(minutes)}min`;
-  }
-  return `00:${formatInt(seconds)}`;
-};
-
 // eslint-disable-next-line import/prefer-default-export
 export const handleErrorResponse = (err, action) => {
   if (err.response) {
     // The request was made and the server responded with a status code
     // that falls out of the range of 2xx
-    const { data, status, headers } = err.response;
-    console.error(data);
-    console.error(status);
-    console.error(headers);
+    const { data, status } = err.response;
     if (status === 401 || status === 403) {
       store.dispatch(authActions.signOut());
       store.dispatch(checklistActions.clear());
@@ -67,11 +43,9 @@ export const handleErrorResponse = (err, action) => {
     // The request was made but no response was received
     // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
     // http.ClientRequest in node.js
-    console.error(err.request);
     alert("Request timeout", "Check your internet connection.");
   } else {
     // Something happened in setting up the request that triggered an Error
-    console.error("Error", err.message);
+    console.error(err);
   }
-  console.error(err.config);
 };

@@ -26,7 +26,7 @@ import * as checklistActions from "../store/actions/checklistActions";
 import * as databaseActions from "../store/actions/databaseActions";
 import TenantInfoScreen from "../screens/TenantInfoScreen";
 import { stackTransition, modalTransition } from "../helpers/config";
-import NotificationsScreen from "../screens/NotificationsScreen";
+import { NotificationsTabNavigator } from "./StaffNavigator";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
 const ArchiveIcon = (props) => <Icon {...props} name="archive-outline" />;
@@ -128,7 +128,7 @@ const TenantDashboardStackNavigator = () => {
   return (
     <Navigator headerMode="none" screenOptions={stackTransition}>
       <Screen name="TenantDashboard" component={TenantDashboardScreen} />
-      <Screen name="Notifications" component={NotificationsScreen} />
+      <Screen name="Notifications" component={NotificationsTabNavigator} />
       <Screen name="Rectification" component={RectificationScreen} />
       <Screen
         name="RectificationDetails"

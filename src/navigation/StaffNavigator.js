@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { Platform, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Drawer,
@@ -13,11 +15,15 @@ import {
   BottomNavigationTab,
   Icon,
   StyleService,
+  TopNavigation,
+  TopNavigationAction,
+  useTheme,
 } from "@ui-kitten/components";
 
 import StaffDashboardScreen from "../screens/staff/StaffDashboardScreen";
 import DirectoryScreen from "../screens/staff/DirectoryScreens/DirectoryScreen";
 import ChooseTenantScreen from "../screens/staff/ChooseTenantScreen";
+import ChooseSavedScreen from "../screens/staff/ChooseSavedScreen";
 import ChecklistScreen from "../screens/AuditScreens/ChecklistScreen";
 import RectificationScreen from "../screens/AuditScreens/RectificationScreen";
 import QuestionDetailsScreen from "../screens/AuditScreens/QuestionDetailsScreen";
@@ -36,11 +42,61 @@ import TenantInfoScreen from "../screens/TenantInfoScreen";
 import DeleteTenantScreen from "../screens/staff/AddTenantScreens/DeleteTenantScreen";
 import SelectDeleteScreen from "../screens/staff/AddTenantScreens/SelectDeleteScreen";
 import { stackTransition, modalTransition } from "../helpers/config";
-import NotificationsScreen from "../screens/NotificationsScreen";
+import UnreadScreen from "../screens/NotificationScreens/UnreadScreen";
+import ReadScreen from "../screens/NotificationScreens/ReadScreen";
 
+const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
-
 const DirectoryIcon = (props) => <Icon {...props} name="folder-outline" />;
+
+export const NotificationsTabNavigator = ({ navigation }) => {
+  const { Navigator, Screen } = createMaterialTopTabNavigator();
+
+  const theme = useTheme();
+
+  const BackAction = () => (
+    <TopNavigationAction
+      icon={BackIcon}
+      onPress={() => {
+        if (Platform.OS === "web") {
+          window.history.back();
+        } else {
+          navigation.goBack();
+        }
+      }}
+    />
+  );
+
+  return (
+    <View style={styles.screen}>
+      <TopNavigation
+        title="Notifications"
+        alignment="center"
+        accessoryLeft={BackAction}
+      />
+      <Divider />
+      <Navigator
+        initialRouteName="Unread"
+        backBehavior="none"
+        tabBarOptions={{
+          labelStyle: { fontSize: 12, fontFamily: "SFProDisplay-Regular" },
+          indicatorStyle: { backgroundColor: theme["color-primary-500"] },
+        }}
+      >
+        <Screen
+          name="Unread"
+          component={UnreadScreen}
+          options={{ tabBarLabel: "UNREAD" }}
+        />
+        <Screen
+          name="Read"
+          component={ReadScreen}
+          options={{ tabBarLabel: "READ" }}
+        />
+      </Navigator>
+    </View>
+  );
+};
 
 const useBottomNavigationState = (initialState = 0) => {
   const [selectedIndex, setSelectedIndex] = useState(initialState);
@@ -140,8 +196,8 @@ const StaffDashboardStackNavigator = () => {
   return (
     <Navigator headerMode="none" screenOptions={stackTransition}>
       <Screen name="StaffDashboard" component={StaffDashboardScreen} />
-      <Screen name="Notifications" component={NotificationsScreen} />
-      <Screen name="ChooseTenant" component={ChooseTenantScreen} />
+      <Screen name="Notifications" component={NotificationsTabNavigator} />
+      <Screen name="ChooseTenant" component={ChooseTenantTopTabNavigator} />
       <Screen name="Checklist" component={ChecklistScreen} />
       <Screen name="Rectification" component={RectificationScreen} />
       <Screen name="QuestionDetails" component={QuestionDetailsScreen} />
@@ -152,6 +208,55 @@ const StaffDashboardStackNavigator = () => {
       <Screen name="StaffRectification" component={StaffRectificationScreen} />
       <Screen name="AuditSubmit" component={AuditSubmitScreen} />
     </Navigator>
+  );
+};
+
+const ChooseTenantTopTabNavigator = ({ navigation }) => {
+  const { Navigator, Screen } = createMaterialTopTabNavigator();
+
+  const theme = useTheme();
+
+  const BackAction = () => (
+    <TopNavigationAction
+      icon={BackIcon}
+      onPress={() => {
+        if (Platform.OS === "web") {
+          window.history.back();
+        } else {
+          navigation.goBack();
+        }
+      }}
+    />
+  );
+
+  return (
+    <View style={styles.screen}>
+      <TopNavigation
+        title="Tenant Selection"
+        alignment="center"
+        accessoryLeft={BackAction}
+      />
+      <Divider />
+      <Navigator
+        initialRouteName="Tenants"
+        backBehavior="none"
+        tabBarOptions={{
+          labelStyle: { fontSize: 12, fontFamily: "SFProDisplay-Regular" },
+          indicatorStyle: { backgroundColor: theme["color-primary-500"] },
+        }}
+      >
+        <Screen
+          name="Tenants"
+          component={ChooseTenantScreen}
+          options={{ tabBarLabel: "Available" }}
+        />
+        <Screen
+          name="Saved"
+          component={ChooseSavedScreen}
+          options={{ tabBarLabel: "Saved" }}
+        />
+      </Navigator>
+    </View>
   );
 };
 

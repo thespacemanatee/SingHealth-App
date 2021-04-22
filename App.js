@@ -123,7 +123,7 @@ const App = () => {
                 {Platform.OS === "ios" && <StatusBar barStyle="dark-content" />}
                 <AppNavigator expoToken={expoToken} />
                 <Toast
-                  topOffset={StatusBar.currentHeight || 20}
+                  topOffset={Constants.statusBarHeight || 44}
                   ref={(ref) => Toast.setRef(ref)}
                 />
               </SafeAreaProvider>
@@ -140,5 +140,7 @@ export default App;
 const styles = StyleService.create({
   screen: {
     flex: 1,
+    overflow: "hidden",
+    overscrollBehavior: "none",
   },
 });

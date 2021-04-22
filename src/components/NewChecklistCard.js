@@ -12,7 +12,6 @@ import { handleErrorResponse } from "../helpers/utils";
 const NewChecklistCard = ({
   item,
   navigation,
-  onError,
   onLoading,
   staffID,
   institutionID,
@@ -41,7 +40,6 @@ const NewChecklistCard = ({
       });
     } catch (err) {
       handleErrorResponse(err);
-      onError(err);
     } finally {
       onLoading(false);
     }

@@ -10,8 +10,8 @@ import {
   TopNavigationAction,
   useStyleSheet,
 } from "@ui-kitten/components";
-import { FAB } from "react-native-paper";
 import moment from "moment";
+import { FAB, Badge } from "react-native-paper";
 import useMountedState from "react-use/lib/useMountedState";
 import { RefreshControl } from "react-native-web-refresh-control";
 
@@ -30,10 +30,11 @@ const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 
 const StaffDashboardScreen = ({ navigation }) => {
   const authStore = useSelector((state) => state.auth);
+  const databaseStore = useSelector((state) => state.database);
   const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [listData, setListData] = useState([]);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const { handleScroll, showButton } = useHandleScroll();
 
@@ -53,22 +54,29 @@ const StaffDashboardScreen = ({ navigation }) => {
   );
 
   const NotificationAction = () => (
-    <TopNavigationAction
-      icon={NotificationIcon}
-      onPress={() => {
-        navigation.navigate("Notifications");
-      }}
-    />
+    <View>
+      <Badge style={styles.badge} visible={notificationCount}>
+        {notificationCount}
+      </Badge>
+      <TopNavigationAction
+        icon={NotificationIcon}
+        onPress={() => {
+          navigation.navigate("Notifications");
+        }}
+      />
+    </View>
   );
+
+  const handleRefreshList = () => {
+    getListData();
+    getNotifications();
+  };
 
   const handleOpenAudit = useCallback(
     async (auditID, stallName) => {
       try {
         setLoading(true);
-
         await dispatch(checklistActions.getAuditData(auditID));
-
-        setLoading(false);
         navigation.navigate("Rectification", { stallName });
       } catch (err) {
         handleErrorResponse(err);
@@ -130,16 +138,13 @@ const StaffDashboardScreen = ({ navigation }) => {
     try {
       setListLoading(true);
 
-      const res = await dispatch(
+      await dispatch(
         databaseActions.getStaffActiveAudits(authStore.institutionID)
       );
       await dispatch(
         databaseActions.getRelevantTenants(authStore.institutionID)
       );
       await dispatch(databaseActions.getInstitutions());
-      if (isMounted()) {
-        setListData(res.data.data);
-      }
     } catch (err) {
       handleErrorResponse(err);
     } finally {
@@ -152,17 +157,20 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   const getNotifications = useCallback(async () => {
     try {
-      await dispatch(databaseActions.getNotifications(authStore._id));
+      const res = await dispatch(
+        databaseActions.getNotifications(authStore._id)
+      );
+      const temp = res.data.data.filter((e) => !e.readReceipt);
+      if (isMounted()) {
+        setNotificationCount(temp.length);
+      }
     } catch (err) {
       handleErrorResponse(err);
     }
-  }, [authStore._id, dispatch]);
+  }, [authStore._id, dispatch, isMounted]);
 
   useEffect(() => {
     // Subscribe for the focus Listener
-    getListData();
-    getNotifications();
-
     const unsubscribe = navigation.addListener("focus", () => {
       getListData();
       getNotifications();
@@ -189,11 +197,14 @@ const StaffDashboardScreen = ({ navigation }) => {
         <FlatList
           contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
-          data={listData}
+          data={databaseStore.activeAudits}
           renderItem={renderActiveAudits}
           onScroll={handleScroll}
           refreshControl={
-            <RefreshControl refreshing={listLoading} onRefresh={getListData} />
+            <RefreshControl
+              refreshing={listLoading}
+              onRefresh={handleRefreshList}
+            />
           }
           ListEmptyComponent={renderEmptyComponent}
           ListHeaderComponent={
@@ -229,6 +240,10 @@ const themedStyles = StyleService.create({
   },
   layout: {
     flex: 1,
+  },
+  badge: {
+    position: "absolute",
+    left: 0,
   },
   textContainer: {
     marginVertical: 10,

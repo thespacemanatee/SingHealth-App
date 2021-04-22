@@ -10,14 +10,9 @@ import * as checklistActions from "../store/actions/checklistActions";
 import alert from "./CustomAlert";
 import CustomText from "./ui/CustomText";
 import ShadowCard from "./ui/ShadowCard";
+import { handleErrorResponse } from "../helpers/utils";
 
-const SavedChecklistCard = ({
-  item,
-  navigation,
-  deleteSave,
-  onError,
-  onLoading,
-}) => {
+const SavedChecklistCard = ({ item, navigation, deleteSave, onLoading }) => {
   const dispatch = useDispatch();
 
   const handleOpenSavedChecklist = () => {
@@ -40,11 +35,11 @@ const SavedChecklistCard = ({
 
       await deleteSave();
     } catch (err) {
-      onError(err);
+      handleErrorResponse(err);
     } finally {
       onLoading(false);
     }
-  }, [deleteSave, item.time, onError, onLoading]);
+  }, [deleteSave, item.time, onLoading]);
 
   const longPressHandler = useCallback(async () => {
     alert("Delete checklist", "Are you sure you want to delete this forever?", [

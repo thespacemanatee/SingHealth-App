@@ -2,8 +2,7 @@ import { endpoint, httpClient } from "../../helpers/CustomHTTPClient";
 
 export const GET_RELEVANT_TENANTS = "GET_RELEVANT_TENANTS";
 export const GET_INSTITUTIONS = "GET_INSTITUTIONS";
-export const GET_TENANT_ACTIVE_AUDITS = "GET_TENANT_ACTIVE_AUDITS";
-export const GET_STAFF_ACTIVE_AUDITS = "GET_STAFF_ACTIVE_AUDITS";
+export const GET_ACTIVE_AUDITS = "GET_ACTIVE_AUDITS";
 export const GET_GRAPH_DATA = "GET_GRAPH_DATA";
 export const STORE_GRAPH_DATA = "STORE_GRAPH_DATA";
 export const GET_NOTIFICATIONS = "GET_NOTIFICATIONS";
@@ -15,8 +14,9 @@ export const getInstitutions = () => {
       url: `${endpoint}institutions`,
       method: "get",
     };
+
     const res = await httpClient(options);
-    dispatch({ type: GET_RELEVANT_TENANTS, institutions: res.data.data });
+    dispatch({ type: GET_INSTITUTIONS, institutions: res.data.data });
     return res;
   };
 };
@@ -43,7 +43,7 @@ export const getTenantActiveAudits = (tenantID, daysBefore = 0) => {
       // withCredentials: true,
     };
     const res = await httpClient(options);
-    dispatch({ type: GET_TENANT_ACTIVE_AUDITS, activeAudits: res.data.data });
+    dispatch({ type: GET_ACTIVE_AUDITS, activeAudits: res.data.data });
     return res;
   };
 };
@@ -56,7 +56,7 @@ export const getStaffActiveAudits = (institutionID, daysBefore = 0) => {
       // withCredentials: true,
     };
     const res = await httpClient(options);
-    dispatch({ type: GET_STAFF_ACTIVE_AUDITS, activeAudits: res.data.data });
+    dispatch({ type: GET_ACTIVE_AUDITS, activeAudits: res.data.data });
     return res;
   };
 };
