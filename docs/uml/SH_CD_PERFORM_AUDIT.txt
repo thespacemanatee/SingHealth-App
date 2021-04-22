@@ -1,16 +1,37 @@
 @startuml
 
-title Performing an audit on a tenant
+title Staff audits a tenant
 
 actor Staff
+Staff -> App: Navigate to tenants\nunder the same institution
+note left: Assuming the staff is already logged in.\nRefer to SH_CD_LOGIN for login process
 
-Staff -> StaffObject: Login with username and password
-activate StaffObject 
-StaffObject -> Staff: Access granted
-deactivate StaffObject 
+App -> Server: Request for list of tenants\nunder the same institution\nI.e. /tenants/<institutionID>
+Server -> MongoDB: Encoded request from App
+activate MongoDB
+MongoDB -> MongoDB: Search
+MongoDB -> Server: List of tenants\nunder the same institution
+deactivate MongoDB
 
-Staff -> App : Start an audit form
+Server -> App: List of tenants\nunder the same institution
+App -> Staff: Display the list of tenants\nunder the same institution
 
+Staff -> App: Selected tenant
+activate App
+App -> App: Check if tenant stall type\ni.e F&B or non F&B
+App -> Server: Request for the appropriate audit form\nI.e. F&B or non F&B
+deactivate App
+
+Server -> MongoDB: Encoded request for the\nappropriate audit form\nI.e. F&B or non F&B
+MongoDB -> Server: Audit form in JSON
+
+activate Server
+Server -> Server: Package the data into a Response
+Server -> App: Appropriate audit form within\na Response with code 200
+deactivate Server
+App -> Staff: Display audit form
+
+activate Staff 
 loop audit incomplete
 	alt non compliance
 		Staff -> App: Take/upload photo of non compliance 
@@ -23,19 +44,56 @@ loop audit incomplete
 		Staff -> App: Tick a checkbox
 	end
 end
+deactivate Staff 
 
-Staff -> App: Upload form
+
+Staff -> App: Upload filled audit form
 activate App
-App -> Server: Filled audit form
+App -> App: Separate images from JSON form
+App -> Server: Filled audit form JSON part
 activate Server
-Server -> Database: Filled audit form
-activate Database
-Database -> Server: Acknowledgement message
-deactivate Database
-Server -> App: Acknowledgement message
-deactivate Server
+App -> Server: Image files
 deactivate App
 
+Server -> Server: Validate all fields of the form
+
+loop Any field invalid
+	Server -> App: Response code 400 (Bad request)
+	deactivate Server
+	App -> Staff: "Please fill in the correct details" msg
+	activate Staff
+	Staff -> Staff: Amend form
+	Staff -> App: Upload filled audit form
+	deactivate Staff
+	activate App
+	App -> App: Separate images from JSON form
+	App -> Server: Filled audit form JSON part
+	activate Server
+	deactivate App
+	Server -> Server: Validate all fields of the form
+end
+
+deactivate Server
+
+
+
+
+Server -> "AWS S3 Bucket": Image files
+Server -> MongoDB: Filled audit form
+
+alt Form already submitted before recently
+	MongoDB -> Server: Error
+	Server -> App: Response code 400 (Bad request)
+	App -> Staff: "Forms have already been submitted" msg
+end
+
+activate MongoDB
+MongoDB -> Server: Acknowledgement message
+deactivate MongoDB
+Server -> App: Acknowledgement message
+
+
+App -> Staff: "Forms have been submitted" msg
 
 
 @enduml

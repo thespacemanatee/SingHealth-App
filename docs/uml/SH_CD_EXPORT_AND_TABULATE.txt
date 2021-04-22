@@ -1,0 +1,42 @@
+@startuml
+title Tabulate scores, trending graphs and export an audit as a Word document
+actor Staff 
+
+Staff -> App: Login
+App -> Staff: Dashboard
+note left: This is just a placeholder.\nThe detailed login process\ncan be found in SH_CD_LOGIN
+
+Staff -> App: Select an audit to view
+
+App -> Server: Request for audit\ndetails given audit ID
+Server -> MongoDB: Search for selected\naudit given audit ID
+activate MongoDB
+MongoDB -> MongoDB: Search
+MongoDB -> Server: Selected audit details
+deactivate MongoDB
+
+Server -> App: Response code 200,\nwith selected audit details
+App -> Staff: Display filled form
+
+Staff -> App: Export form
+App -> Server: Request to convert the\nform to Word Doc
+Server -> "AWS S3 Bucket": Request for all images\nunder selected audit
+"AWS S3 Bucket" -> Server: Images under selected audit
+Server -> MongoDB: Request for the selected audit
+
+
+activate MongoDB
+MongoDB -> MongoDB: Search
+MongoDB -> Server: Selected audit details
+deactivate MongoDB
+
+activate Server
+Server -> Server: Convert selected audit from JSON to Word Doc table
+Server -> Server: Append images under the selected audit to Word Doc
+Server -> Server: Send an email to the staff,\nusing email associated with staff account
+Server -> App: Response code 200
+deactivate Server
+
+App -> Staff: "Email sent" msg
+
+@enduml

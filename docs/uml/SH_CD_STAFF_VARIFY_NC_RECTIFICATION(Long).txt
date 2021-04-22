@@ -1,0 +1,92 @@
+@startuml
+title Staff varifies a noncompliance rectification
+actor Staff 
+
+Staff -> App: Institutions
+note left: Assuming user has already logged in.\nFor details on the login process,\nrefer to SH_CD_LOGIN
+
+App -> Server: Request for all institutions\nin Singapore
+Server -> MongoDB: Search for all available\ninstitutions in Singapore
+
+activate MongoDB
+MongoDB -> MongoDB: Search
+MongoDB -> Server: List of all available\ninstitutions in Singapore
+deactivate MongoDB
+
+Server -> App: Response code 200,\nwith a list of all available\ninstitutions in Singapore
+App -> Staff: Displayed names of all\ninstitutions in Singapore
+
+Staff -> App: Selected institution
+
+App -> Server: Request for list of tenants\nunder the same institution\nI.e. /tenants/<institutionID>
+Server -> MongoDB: Encoded request from App
+activate MongoDB
+MongoDB -> MongoDB: Search
+MongoDB -> Server: List of tenants\nunder the same institution
+deactivate MongoDB
+
+Server -> App: List of tenants\nunder the same institution
+App -> Staff: Display the list of tenants\nunder the same institution
+
+Staff -> App: Selected tenant
+App -> Server: Request for all audits with a given tenant ID
+Server -> MongoDB: Encoded request to retrieve\nall audits with a given tenant ID
+activate MongoDB
+MongoDB -> MongoDB: Search
+MongoDB -> Server: List of audits with a given tenant ID
+deactivate MongoDB
+
+Server -> App: Response code 200 with a list\nof audits with a given tenant ID
+App -> Staff: Display all the audits\ndone on a single tenant
+
+
+Staff -> App: Selected audit
+
+App -> Server: Request for audit\ndetails given audit ID
+Server -> MongoDB: Search for selected\naudit given audit ID
+activate MongoDB
+MongoDB -> MongoDB: Search
+MongoDB -> Server: Selected audit details
+deactivate MongoDB
+
+Server -> App: Response code 200,\nwith selected audit details
+App -> Staff: Display filled form
+
+Staff-> App: Selected line item
+App -> Server: File names of images to query
+Server -> "AWS S3 Bucket": File names of images to query
+"AWS S3 Bucket" -> Server: Images files corresponding to the file names
+Server -> App: Images files corresponding to the file names
+App -> Staff: Display details
+
+
+activate Staff
+Staff-> Staff: Navigate to Rectifications page
+
+loop verifications not done
+Staff-> App: Change deadline(optional)
+Staff-> App: Approve and accept rectifications
+end
+deactivate Staff
+
+App -> Server: Audit rectifications + auditID
+
+activate Server
+
+Server -> Server: Validate request
+break valid invalid
+	Server -> App: Response 400(Patches invalid/illegal)
+	App -> Staff: "Please check your fields" msg
+end
+
+deactivate Server
+
+Server -> MongoDB: Edit request to edit\naudit with auditID
+MongoDB -> Server: ACK(Edits done)
+
+Server -> App: Response code 200
+
+App -> Staff: "Rectifications submitted" msg
+
+
+@enduml
