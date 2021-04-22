@@ -1614,7 +1614,7 @@ The staff to get all audit data within a timeframe.
 ##### No audit data found
 
 ```js
-"status": 400,
+"status": 200,
 "data": {
     "description": "No audit data found within the timeframe"
 }
