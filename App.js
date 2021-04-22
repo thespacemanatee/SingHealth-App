@@ -140,5 +140,7 @@ export default App;
 const styles = StyleService.create({
   screen: {
     flex: 1,
+    overflow: "hidden",
+    overscrollBehavior: "none",
   },
 });
