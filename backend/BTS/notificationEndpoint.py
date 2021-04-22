@@ -3,9 +3,8 @@ from flask_login import login_required
 from flask import request
 
 
-
 def addNotificationEndpt(app, mongo):
-    @app.route("/notifications", methods=["GET","PATCH"])
+    @app.route("/notifications", methods=["GET", "PATCH"])
     @login_required
     def getNotifs():
         if request.method == "GET":
@@ -13,41 +12,41 @@ def addNotificationEndpt(app, mongo):
             userID = requestArgs.get("userID", None)
             if userID == None:
                 return serverResponse(
-                    None, 
-                    400, 
+                    None,
+                    400,
                     "No userID provided"
-                    )
-            
+                )
+
             notifications = mongo.db.notifications.find(
                 {"userID": userID},
                 {"userID": 0}
             )
-            if notifications == None:
-                return serverResponse(None, 200, "No notifications found")
-            elif notifications.count() == 0:
-                return serverResponse(None, 200, "No notifications found")
-
             notifList = []
+            if notifications == None:
+                return serverResponse(notifList, 200, "No notifications found")
+            elif notifications.count() == 0:
+                return serverResponse(notifList, 200, "No notifications found")
+
             for notification in notifications:
                 notifList.append(notification)
-            
+
             notifList.reverse()
             return serverResponse(
                 notifList,
                 200,
                 "Notifications retrieved successfully"
-                )
-        
+            )
+
         elif request.method == "PATCH":
             requestArgs = request.args
             notifID = requestArgs.get("notifID", None)
             if notifID == None:
                 return serverResponse(
-                    None, 
-                    400, 
+                    None,
+                    400,
                     "No notification ID provided"
-                    )
-            
+                )
+
             updateResult = mongo.db.notifications.update_one(
                 {"_id": notifID},
                 {
@@ -61,5 +60,3 @@ def addNotificationEndpt(app, mongo):
                 return serverResponse(None, 503, "Failed to update the database")
 
             return serverResponse(None, 200, "Sent read receipt")
-
-            
