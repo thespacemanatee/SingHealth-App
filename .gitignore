@@ -13,6 +13,8 @@ web-build/
 # uml
 **/plantuml.jar
 docs/uml/*.pdf
+docs/uml/*.jpg
+docs/uml/*.png
 
 # backend code
 **/__pycache__

@@ -1,0 +1,68 @@
+@startuml
+title Staff deletes a tenant
+actor Staff 
+
+Staff -> App: Navigate to\nManage Tenants screen
+note left: Assuming staff has already logged in.\nFor details on the login process,\nrefer to SH_CD_LOGIN
+
+
+App -> Server: Request for all institutions\nin Singapore
+Server -> MongoDB: Search for all available\ninstitutions in Singapore
+
+activate MongoDB
+MongoDB -> MongoDB: Search
+MongoDB -> Server: List of all available\ninstitutions in Singapore
+deactivate MongoDB
+
+Server -> App: Response code 200,\nwith a list of all available\ninstitutions in Singapore
+App -> Staff: Displayed names of all\ninstitutions in Singapore
+
+Staff -> App: Selected institution
+
+App -> Server: Request for list of tenants\nunder the same institution\nI.e. /tenants/<institutionID>
+Server -> MongoDB: Encoded request from App
+activate MongoDB
+MongoDB -> MongoDB: Search
+MongoDB -> Server: List of tenants\nunder the same institution
+deactivate MongoDB
+
+Server -> App: List of tenants\nunder the same institution
+App -> Staff: Display the list of tenants\nunder the same institution
+
+Staff -> App: Selected tenant
+App -> Server: Details of tenant to delete
+Server -> MongoDB: Delete request for\nselected tenant
+MongoDB -> Server: ACK\n(Tenant has been deleted from MongoDB)
+Server -> App: Response code 200
+App -> Staff: "Tenant has been deleted" msg
+@enduml
+
+
+activate App
+App -> App: Encrypt\npassword
+App -> Server: Encrypted login credentials
+deactivate App
+Server -> MongoDB: Encrypted login credentials
+activate MongoDB
+MongoDB -> MongoDB: Check if user name exists in MongoDB
+
+alt user exists
+	MongoDB -> MongoDB: Check if password matches
+
+	alt password matches
+		MongoDB -> Server: user secure details,\nno password included
+		Server -> App: user secure details,\nno password included
+		App -> User: "Login success" msg
+	else
+		MongoDB -> Server: False
+		Server -> App: Response code 401
+		App -> User: "Login failure" msg
+	end
+
+else
+	MongoDB -> Server: None
+	deactivate MongoDB
+	Server -> App: Response code 404\n(User acc does not exist)
+	App -> User: "Login failure" msg
+end
+

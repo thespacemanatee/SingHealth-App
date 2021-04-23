@@ -1,0 +1,17 @@
+@startuml
+title Staff views directory of all institutions
+actor Staff 
+
+Staff -> App: Institutions
+
+App -> Server: Request for all institutions\nin Singapore
+Server -> MongoDB: Search for all available\ninstitutions in Singapore
+
+activate MongoDB
+MongoDB -> MongoDB: Search
+MongoDB -> Server: List of all available\ninstitutions in Singapore
+deactivate MongoDB
+
+Server -> App: Response code 200,\nwith a list of all available\ninstitutions in Singapore
+App -> Staff: Displayed names of all\ninstitutions in Singapore
+@enduml

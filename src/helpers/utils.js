@@ -46,6 +46,6 @@ export const handleErrorResponse = (err, action) => {
     alert("Request timeout", "Check your internet connection.");
   } else {
     // Something happened in setting up the request that triggered an Error
-    console.errror(err);
+    console.error(err);
   }
 };
