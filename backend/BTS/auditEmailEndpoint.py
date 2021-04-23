@@ -158,4 +158,4 @@ def addAuditEmailEndpoints(app, mongo):
             else:
                 return serverResponse(data, 404, "Missing/Error in information")
         except:
-            return serverResponse(data, 404, "Internal Error")
+            return serverResponse(None, 404, "Internal Error")
