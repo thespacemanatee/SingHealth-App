@@ -280,53 +280,9 @@ localhost:5000/audits?tenantID=veagvtrhfvrtbhtvg&daysBefore=0
 }
 ```
 
-## `POST /images`
+## `GET /images/upload`
 
 ---
-
-Duplicate filenames will be rejected.
-Will throw a 400 error if no images are received.
-
-There are 2 ways to send in images to this endpoint, choose only 1 per request:
-
-- by json in base64 encoded format
-- by Multipart/formdata
-
-### JSON body parameters (for sending images in base64 str format)
-
-| JSON param | Description                                                        |
-| ---------- | ------------------------------------------------------------------ |
-| `images`   | An array of image objects each containing `fileName` & `uri`.      |
-| `fileName` | The name and file extension of the image. Must be globally unique. |
-| `uri`      | The actual image as a base64 string.                               |
-
-#### Dummy request
-
-```js
-{
-    "images": [
-        {
-            "fileName": "...",
-            "uri": "..."
-        },
-        {
-            "fileName": "...",
-            "uri": "..."
-        }
-    ]
-}
-```
-
-### Multipart/formdata parameters
-
-| Category | Name                      |
-| -------- | ------------------------- |
-| Mimetype | `image/jpg` / `image/png` |
-| Key      | `images`                  |
-
-<br>
-
-<br>
 
 ### Sample response
 
@@ -335,7 +291,16 @@ There are 2 ways to send in images to this endpoint, choose only 1 per request:
 ```js
 "status": 200,
 "data": {
-  "description": "Images have successfully been uploaded"
+  "description": "Presigned upload URL successfully generated",
+  "data": {
+    "url": "https://singhealth.s3.amazonaws.com/",
+    "fields": {
+        "key": "exampleFileName.jpg",
+        "AWSAccessKeyId": "AKIAIIFTHJDDKRYMAFZQ",
+        "policy": "eyJleHBpcmF0aW9uIjogIjIwMjEtMDUtMjFUMTU6MjU6MTFaIiwgImNvbmRpdGlvbnMiOiBbeyJidWNrZXQiOiAic2luZ2hlYWx0aCJ9LCB7ImtleSI6ICJleGFtcGxlRmlsZU5hbWUuanBnIn1dfQ==",
+        "signature": "svfcIx9vkN3GkIgpT78Qij84d5o="
+    }
+}
 }
 ```
 
@@ -362,7 +327,7 @@ There are 2 ways to send in images to this endpoint, choose only 1 per request:
 
 ### Sample request
 
-```js
+```
 /images?fileName=picture.jpg
 ```
 
@@ -373,8 +338,8 @@ There are 2 ways to send in images to this endpoint, choose only 1 per request:
 ```js
 "status": 200,
 "data": {
-  "description": "Images have successfully been uploaded",
-  "data": "image1 in base64"
+  "description": "Presigned upload URL successfully generated",
+  "data": "https://singhealth.s3.amazonaws.com/picture.jpg"
 }
 ```
 
@@ -1721,10 +1686,11 @@ localhost:5000/notifications?userID=veagvtrhfvrtbhtvg
 ```
 
 ## PATCH /notifications
+
 ### Query string args
 
-| Arg      | Description                       |
-| -------- | --------------------------------- |
+| Arg       | Description                       |
+| --------- | --------------------------------- |
 | `notifID` | The unique identifier for a user. |
 
 <br>
@@ -1736,8 +1702,11 @@ localhost:5000/notifications?notifID=veagvtrhfvrtbhtvg
 ```
 
 ### Sample Response
+
 #### Success
+
 ##### Toggled the switch
+
 ```js
 "status": 200,
 "data": {
@@ -1747,7 +1716,9 @@ localhost:5000/notifications?notifID=veagvtrhfvrtbhtvg
 ```
 
 #### Failure
+
 ##### Notif doesn't exist
+
 ```js
 "status": 404,
 "data": {
