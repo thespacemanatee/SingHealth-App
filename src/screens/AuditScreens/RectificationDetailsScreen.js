@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Platform, View } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
   Layout,
@@ -22,12 +21,13 @@ import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const RectificationDetailsScreen = ({ route, navigation }) => {
-  const authStore = useSelector((state) => state.auth);
-  const checklistStore = useSelector((state) => state.checklist);
+  const authStore = useAppSelector((state) => state.auth);
+  const checklistStore = useAppSelector((state) => state.checklist);
   const [value, setValue] = useState("");
   const [imageArray, setImageArray] = useState([]);
   const [deadline, setDeadline] = useState();
@@ -41,7 +41,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
 
   const theme = useTheme();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleGoToTenantRectifications = () => {
     const payload = {

@@ -9,7 +9,8 @@
     "postinstall": "patch-package",
     "build": "expo build:web",
     "lint": "eslint --ext .jsx,.js,.ts,.tsx ./src",
-    "format": "prettier --check ./src"
+    "format": "prettier --check ./src",
+    "debug": "open 'rndebugger://set-debugger-loc?host=localhost&port=19000'"
   },
   "dependencies": {
     "@eva-design/eva": "^2.1.0",
@@ -22,6 +23,7 @@
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/routers": "^5.7.2",
     "@react-navigation/stack": "^5.14.5",
+    "@reduxjs/toolkit": "^1.5.1",
     "@ui-kitten/components": "^5.0.0",
     "@ui-kitten/eva-icons": "^5.0.0",
     "@ui-kitten/moment": "^5.0.0",
@@ -63,20 +65,18 @@
     "react-native-web": "^0.16.3",
     "react-native-web-lottie": "^1.4.4",
     "react-native-web-refresh-control": "^1.0.3",
-    "react-use": "^17.2.4",
     "react-redux": "^7.2.4",
-    "redux": "^4.1.0",
+    "react-use": "^17.2.4",
     "redux-persist": "^6.0.0",
-    "redux-thunk": "^2.3.0",
     "yup": "^0.32.9"
   },
   "devDependencies": {
+    "@babel/core": "^7.14.3",
     "@babel/eslint-parser": "^7.14.3",
     "@types/react": "^17.0.6",
-    "@babel/core": "^7.14.3",
-    "@typescript-eslint/eslint-plugin": "^4.24.0",
     "@types/react-native": "^0.64.5",
     "@types/react-redux": "^7.1.16",
+    "@typescript-eslint/eslint-plugin": "^4.24.0",
     "@typescript-eslint/parser": "^4.24.0",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "eslint": "^7.26.0",

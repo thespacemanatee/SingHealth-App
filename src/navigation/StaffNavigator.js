@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Platform, View } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -32,9 +31,7 @@ import StaffRectificationScreen from "../screens/AuditScreens/StaffRectification
 import AuditSubmitScreen from "../screens/AuditScreens/AuditSubmitScreen";
 import CameraScreen from "../screens/CameraScreen";
 import TenantsDirectoryScreen from "../screens/staff/DirectoryScreens/TenantsDirectoryScreen";
-import * as authActions from "../store/actions/authActions";
 import * as checklistActions from "../store/actions/checklistActions";
-import * as databaseActions from "../store/actions/databaseActions";
 import ManageTenantAccountsScreen from "../screens/staff/AddTenantScreens/ManageTenantAccountsScreen";
 import CreateTenantScreen from "../screens/staff/AddTenantScreens/CreateTenantScreen";
 import ExpandImagesScreen from "../screens/ExpandImagesScreen";
@@ -44,6 +41,9 @@ import SelectDeleteScreen from "../screens/staff/AddTenantScreens/SelectDeleteSc
 import { stackTransition, modalTransition } from "../helpers/config";
 import UnreadScreen from "../screens/NotificationScreens/UnreadScreen";
 import ReadScreen from "../screens/NotificationScreens/ReadScreen";
+import { signOut } from "../features/auth/authSlice";
+import { clearDatabase } from "../features/database/databaseSlice";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
@@ -120,13 +120,13 @@ export const BottomNavigationAccessoriesShowcase = ({ navigation, state }) => {
 };
 
 const Footer = () => {
-  const authStore = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
+  const authStore = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
 
   const handleLogout = async () => {
-    await dispatch(authActions.signOut(authStore.expoToken));
+    await dispatch(signOut(authStore.expoToken));
     dispatch(checklistActions.clear());
-    dispatch(databaseActions.clear());
+    dispatch(clearDatabase());
   };
 
   return (

@@ -7,7 +7,6 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
   Divider,
@@ -23,22 +22,23 @@ import {
 import { Formik } from "formik";
 import * as Yup from "yup";
 import CustomTextInput from "../../components/CustomTextInput";
-import * as authActions from "../../store/actions/authActions";
 import Logo from "../../components/ui/Logo";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
+import { signIn } from "../../features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const LoginScreen = ({ navigation }) => {
-  const authStore = useSelector((state) => state.auth);
+  const authStore = useAppSelector((state) => state.auth);
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(false);
   const theme = useTheme();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
@@ -49,15 +49,14 @@ const LoginScreen = ({ navigation }) => {
 
   const handleSubmitForm = async (values) => {
     try {
+      const payload = {
+        user: values.email,
+        pswd: values.password,
+        userType: checked ? "staff" : "tenant",
+        expoToken: authStore.expoToken,
+      };
       setLoading(true);
-      await dispatch(
-        authActions.signIn(
-          values.email,
-          values.password,
-          checked ? "staff" : "tenant",
-          authStore.expoToken
-        )
-      );
+      await dispatch(signIn(payload));
     } catch (err) {
       handleErrorResponse(err);
     } finally {

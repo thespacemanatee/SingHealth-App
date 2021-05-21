@@ -2,16 +2,20 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { StyleSheet, Pressable, View } from "react-native";
 import { useTheme } from "@ui-kitten/components";
-import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
+import { unwrapResult } from "@reduxjs/toolkit";
 import { useNavigation } from "@react-navigation/native";
 import useMountedState from "react-use/lib/useMountedState";
 
-import * as databaseActions from "../store/actions/databaseActions";
 import { handleErrorResponse } from "../helpers/utils";
 
 import CustomText from "./ui/CustomText";
 import Graph from "./ui/graph";
+import {
+  getGraphData,
+  storeGraphData,
+} from "../features/database/databaseSlice";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 
 const Axis = ({ startX, endX }) => {
   return (
@@ -61,18 +65,18 @@ const TimedButton = ({ id, pressed, onPress, children, ...props }) => {
 };
 
 const TimedGraph = ({ label, type, id }) => {
-  const databaseStore = useSelector((state) => state.database);
+  const databaseStore = useAppSelector((state) => state.database);
   const [buttonPressed, setButtonPressed] = useState(0);
   const [graphLoading, setGraphLoading] = useState(true);
-  const [graphData, setGraphData] = useState();
-  const [startX, setStartX] = useState();
-  const [endX, setEndX] = useState();
+  const [graphData, setGraphData] = useState(null);
+  const [startX, setStartX] = useState(null);
+  const [endX, setEndX] = useState(null);
 
   const isMounted = useMountedState();
 
   const navigation = useNavigation();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handlePress = (index) => {
     setButtonPressed(index);
@@ -104,54 +108,60 @@ const TimedGraph = ({ label, type, id }) => {
     }
   }, [buttonPressed, databaseStore.graphData, isMounted]);
 
-  const getGraphData = useCallback(async () => {
+  const getData = useCallback(async () => {
     try {
       setGraphLoading(true);
 
       const toDate = new Date().getTime();
 
-      const res = await Promise.all([
+      let res;
+
+      await Promise.all([
         dispatch(
-          databaseActions.getGraphData(
-            moment().subtract(1, "months").toDate().getTime(),
+          getGraphData({
+            fromDate: moment().subtract(1, "months").toDate().getTime(),
             toDate,
-            type,
-            id
-          )
+            dataType: type,
+            dataID: id,
+          })
         ),
         dispatch(
-          databaseActions.getGraphData(
-            moment().subtract(3, "months").toDate().getTime(),
+          getGraphData({
+            fromDate: moment().subtract(3, "months").toDate().getTime(),
             toDate,
-            type,
-            id
-          )
+            dataType: type,
+            dataID: id,
+          })
         ),
         dispatch(
-          databaseActions.getGraphData(
-            moment().subtract(6, "months").toDate().getTime(),
+          getGraphData({
+            fromDate: moment().subtract(6, "months").toDate().getTime(),
             toDate,
-            type,
-            id
-          )
+            dataType: type,
+            dataID: id,
+          })
         ),
         dispatch(
-          databaseActions.getGraphData(
-            moment().startOf("year").toDate().getTime(),
+          getGraphData({
+            fromDate: moment().startOf("year").toDate().getTime(),
             toDate,
-            type,
-            id
-          )
+            dataType: type,
+            dataID: id,
+          })
         ),
         dispatch(
-          databaseActions.getGraphData(
-            moment().subtract(12, "months").toDate().getTime(),
+          getGraphData({
+            fromDate: moment().subtract(12, "months").toDate().getTime(),
             toDate,
-            type,
-            id
-          )
+            dataType: type,
+            dataID: id,
+          })
         ),
-      ]);
+      ])
+        .then(unwrapResult)
+        .then((r) => {
+          res = r;
+        });
 
       res.forEach((e) => {
         e.data.data?.sort((a, b) => {
@@ -185,11 +195,11 @@ const TimedGraph = ({ label, type, id }) => {
         })),
       };
 
-      dispatch(databaseActions.storeGraphData(dataObject));
+      dispatch(storeGraphData(dataObject));
     } catch (err) {
-      dispatch(databaseActions.storeGraphData({}));
+      dispatch(storeGraphData({}));
       if (isMounted()) {
-        setGraphData();
+        setGraphData(null);
       }
       handleErrorResponse(err);
     } finally {
@@ -204,15 +214,15 @@ const TimedGraph = ({ label, type, id }) => {
   }, [renderGraph]);
 
   useEffect(() => {
-    getGraphData();
+    getData();
     const unsubscribe = navigation.addListener("focus", () => {
-      getGraphData();
+      getData();
     });
     return () => {
       // eslint-disable-next-line no-unused-expressions
       unsubscribe;
     };
-  }, [getGraphData, navigation]);
+  }, [getData, navigation]);
 
   return (
     <>

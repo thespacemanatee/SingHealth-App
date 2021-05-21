@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { View, SectionList, Platform } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
   Layout,
@@ -19,9 +18,10 @@ import alert from "../../components/CustomAlert";
 import SectionHeader from "../../components/ui/SectionHeader";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import RectificationCard from "../../components/RectificationCard";
-import * as databaseActions from "../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
+import { exportAndEmail } from "../../features/database/databaseSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 export const FNB_SECTION = "F&B Checklist";
 export const NON_FNB_SECTION = "Non-F&B Checklist";
@@ -35,8 +35,8 @@ const DownloadIcon = (props) => (
 );
 
 const RectificationScreen = ({ route, navigation }) => {
-  const authStore = useSelector((state) => state.auth);
-  const checklistStore = useSelector((state) => state.checklist);
+  const authStore = useAppSelector((state) => state.auth);
+  const checklistStore = useAppSelector((state) => state.checklist);
   const [completeChecklist, setCompleteChecklist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [covid19Keys, setCovid19Keys] = useState(true);
@@ -47,7 +47,7 @@ const RectificationScreen = ({ route, navigation }) => {
 
   const theme = useTheme();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleCompliantFilter = () => {
     createNewSections(COMPLIANT);
@@ -109,9 +109,7 @@ const RectificationScreen = ({ route, navigation }) => {
 
   const downloadToEmail = async () => {
     try {
-      await dispatch(
-        databaseActions.exportAndEmail(checklistStore.auditMetadata._id)
-      );
+      await dispatch(exportAndEmail(checklistStore.auditMetadata._id));
       Toast.show({
         text1: "Success",
         text2: "Please check your email!",

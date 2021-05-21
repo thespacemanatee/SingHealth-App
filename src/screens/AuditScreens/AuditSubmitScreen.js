@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Platform, View } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
 import {
   Button,
   Divider,
@@ -17,17 +16,22 @@ import Toast from "react-native-toast-message";
 
 import SuccessAnimation from "../../components/ui/SuccessAnimation";
 import CrossAnimation from "../../components/ui/CrossAnimation";
-import * as databaseActions from "../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../helpers/utils";
+import {
+  postAuditForm,
+  postAuditImages,
+  postAuditImagesWeb,
+} from "../../features/database/databaseSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const AuditSubmitScreen = ({ navigation }) => {
-  const checklistStore = useSelector((state) => state.checklist);
+  const checklistStore = useAppSelector((state) => state.checklist);
   const [submitting, setSubmitting] = useState(true);
   const [error, setError] = useState(false);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const submitHandler = useCallback(async () => {
     setError(false);
@@ -64,9 +68,8 @@ const AuditSubmitScreen = ({ navigation }) => {
             }
             chosenChecklistImages.push(image.name);
           });
-          tempChosenChecklist.questions[section][
-            index
-          ].image = chosenChecklistImages;
+          tempChosenChecklist.questions[section][index].image =
+            chosenChecklistImages;
           chosenChecklistImages = [];
         }
       });
@@ -95,9 +98,8 @@ const AuditSubmitScreen = ({ navigation }) => {
             }
             covid19ChecklistImages.push(image.name);
           });
-          tempCovid19Checklist.questions[section][
-            index
-          ].image = covid19ChecklistImages;
+          tempCovid19Checklist.questions[section][index].image =
+            covid19ChecklistImages;
           covid19ChecklistImages = [];
         }
       });
@@ -125,13 +127,13 @@ const AuditSubmitScreen = ({ navigation }) => {
       try {
         if (imageAdded) {
           if (Platform.OS === "web") {
-            await dispatch(databaseActions.postAuditImagesWeb(base64images));
+            await dispatch(postAuditImagesWeb(base64images));
           } else {
-            await dispatch(databaseActions.postAuditImages(formData));
+            await dispatch(postAuditImages(formData));
           }
         }
 
-        await dispatch(databaseActions.postAuditForm(auditData));
+        await dispatch(postAuditForm(auditData));
 
         Toast.show({
           text1: "Success",

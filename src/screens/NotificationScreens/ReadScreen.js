@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from "react";
 import { View, FlatList } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
 import { Layout, StyleService } from "@ui-kitten/components";
 import moment from "moment";
 import useMountedState from "react-use/lib/useMountedState";
@@ -8,7 +7,6 @@ import useEffectOnce from "react-use/lib/useEffectOnce";
 import { RefreshControl } from "react-native-web-refresh-control";
 
 import { endpoint, httpClient } from "../../helpers/CustomHTTPClient";
-import * as databaseActions from "../../store/actions/databaseActions";
 import * as checklistActions from "../../store/actions/checklistActions";
 import NotificationCard from "../../components/NotificationCard";
 import CenteredLoading from "../../components/ui/CenteredLoading";
@@ -102,7 +100,7 @@ const ReadScreen = ({ navigation }) => {
   const getNotifications = useCallback(async () => {
     try {
       setListLoading(true);
-      await dispatch(databaseActions.getNotifications(authStore._id));
+      await dispatch(getNotifications(authStore._id));
     } catch (err) {
       handleErrorResponse(err);
     } finally {

@@ -1,9 +1,9 @@
-import { store } from "../store/store";
+import { store } from "../app/stores";
+import { clearDatabase } from "../features/database/databaseSlice";
 
-import * as authActions from "../store/actions/authActions";
 import * as checklistActions from "../store/actions/checklistActions";
-import * as databaseActions from "../store/actions/databaseActions";
 import alert from "../components/CustomAlert";
+import { signOut } from "../features/auth/authSlice";
 
 // eslint-disable-next-line import/prefer-default-export
 export const handleErrorResponse = (err, action) => {
@@ -12,9 +12,9 @@ export const handleErrorResponse = (err, action) => {
     // that falls out of the range of 2xx
     const { data, status } = err.response;
     if (status === 401 || status === 403) {
-      store.dispatch(authActions.signOut());
+      store.dispatch(signOut());
       store.dispatch(checklistActions.clear());
-      store.dispatch(databaseActions.clear());
+      store.dispatch(clearDatabase());
     } else {
       switch (Math.floor(err.response.status / 100)) {
         case 4:

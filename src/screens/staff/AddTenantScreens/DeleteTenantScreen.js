@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useDispatch } from "react-redux";
 import { FlatList, Platform, View } from "react-native";
 import {
   Divider,
@@ -12,11 +11,11 @@ import {
 import useMountedState from "react-use/lib/useMountedState";
 import { RefreshControl } from "react-native-web-refresh-control";
 
-import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
 import EntityCard from "../../../components/EntityCard";
 import EntityLoading from "../../../components/ui/loading/EntityLoading";
 import CustomText from "../../../components/ui/CustomText";
+import { useAppDispatch } from "../../../app/hooks";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -26,7 +25,7 @@ const DeleteTenantScreen = ({ navigation }) => {
 
   const isMounted = useMountedState();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const BackAction = () => (
     <TopNavigationAction
@@ -68,7 +67,7 @@ const DeleteTenantScreen = ({ navigation }) => {
     try {
       setListLoading(true);
 
-      const res = await dispatch(databaseActions.getInstitutions());
+      const res = await dispatch(getInstitutions());
       if (isMounted()) {
         setInstitutions(res.data.data);
       }

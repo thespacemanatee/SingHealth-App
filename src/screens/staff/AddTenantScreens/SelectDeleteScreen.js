@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { FlatList, Platform, View } from "react-native";
-import { useDispatch } from "react-redux";
 import {
   Divider,
   Icon,
@@ -13,13 +12,17 @@ import {
 import useMountedState from "react-use/lib/useMountedState";
 import { RefreshControl } from "react-native-web-refresh-control";
 
-import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
 import EntityCard from "../../../components/EntityCard";
 import EntityLoading from "../../../components/ui/loading/EntityLoading";
 import CustomText from "../../../components/ui/CustomText";
 import alert from "../../../components/CustomAlert";
 import CenteredLoading from "../../../components/ui/CenteredLoading";
+import {
+  deleteTenant,
+  getRelevantTenants,
+} from "../../../features/database/databaseSlice";
+import { useAppDispatch } from "../../../app/hooks";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -32,7 +35,7 @@ const SelectDeleteScreen = ({ route, navigation }) => {
 
   const isMounted = useMountedState();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const BackAction = () => (
     <TopNavigationAction
@@ -56,9 +59,7 @@ const SelectDeleteScreen = ({ route, navigation }) => {
         onPress: async () => {
           setLoading(true);
           try {
-            await dispatch(
-              databaseActions.deleteTenant(selectedTenant.tenantID)
-            );
+            await dispatch(deleteTenant(selectedTenant.tenantID));
             getTenants();
           } catch (err) {
             handleErrorResponse(err);
@@ -94,9 +95,7 @@ const SelectDeleteScreen = ({ route, navigation }) => {
     try {
       setListLoading(true);
 
-      const res = await dispatch(
-        databaseActions.getRelevantTenants(institutionID)
-      );
+      const res = await dispatch(getRelevantTenants(institutionID));
       if (isMounted()) {
         setTenants(res.data.data);
       }

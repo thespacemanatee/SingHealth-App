@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Platform, View } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
   Layout,
@@ -28,12 +27,13 @@ import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
 import CustomDatepicker from "../../components/CustomDatePicker";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const StaffRectificationScreen = ({ route, navigation }) => {
-  const authStore = useSelector((state) => state.auth);
-  const checklistStore = useSelector((state) => state.checklist);
+  const authStore = useAppSelector((state) => state.auth);
+  const checklistStore = useAppSelector((state) => state.checklist);
   const [value, setValue] = useState();
   const [imageArray, setImageArray] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +50,7 @@ const StaffRectificationScreen = ({ route, navigation }) => {
 
   const theme = useTheme();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const submitApproval = async () => {
     try {

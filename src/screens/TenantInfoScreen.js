@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { FlatList, Platform, View } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
   Icon,
@@ -13,7 +12,6 @@ import moment from "moment";
 import useMountedState from "react-use/lib/useMountedState";
 import { RefreshControl } from "react-native-web-refresh-control";
 
-import * as databaseActions from "../store/actions/databaseActions";
 import * as checklistActions from "../store/actions/checklistActions";
 import ActiveAuditCard from "../components/ActiveAuditCard";
 import CenteredLoading from "../components/ui/CenteredLoading";
@@ -21,11 +19,13 @@ import { handleErrorResponse } from "../helpers/utils";
 import CustomText from "../components/ui/CustomText";
 import SkeletonLoading from "../components/ui/loading/SkeletonLoading";
 import TimedGraph from "../components/TimedGraph";
+import { getTenantAudits } from "../features/database/databaseSlice";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const TenantInfoScreen = ({ route, navigation }) => {
-  const authStore = useSelector((state) => state.auth);
+  const authStore = useAppSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -34,7 +34,7 @@ const TenantInfoScreen = ({ route, navigation }) => {
 
   const isMounted = useMountedState();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const BackAction = () => (
     <TopNavigationAction
@@ -114,7 +114,7 @@ const TenantInfoScreen = ({ route, navigation }) => {
     try {
       setListLoading(true);
 
-      const res = await dispatch(databaseActions.getTenantAudits(tenantID));
+      const res = await dispatch(getTenantAudits(tenantID));
 
       if (isMounted()) {
         setListData(res.data.data);

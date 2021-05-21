@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { View, SectionList, Platform } from "react-native";
-import { useSelector } from "react-redux";
 import {
   Button,
   Divider,
@@ -23,6 +22,7 @@ import SectionHeader from "../../components/ui/SectionHeader";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import CustomText from "../../components/ui/CustomText";
 import { handleErrorResponse } from "../../helpers/utils";
+import { useAppSelector } from "../../app/hooks";
 
 export const FNB_SECTION = "F&B Checklist";
 export const NON_FNB_SECTION = "Non-F&B Checklist";
@@ -32,7 +32,7 @@ const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const SaveIcon = (props) => <Icon {...props} name="save-outline" />;
 
 const ChecklistScreen = ({ route, navigation }) => {
-  const checklistStore = useSelector((state) => state.checklist);
+  const checklistStore = useAppSelector((state) => state.checklist);
   const [completeChecklist, setCompleteChecklist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [covid19Keys, setCovid19Keys] = useState([]);

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { View, Alert, Platform } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
   Layout,
@@ -23,13 +22,14 @@ import CustomDatepicker from "../../components/CustomDatePicker";
 import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
 import CustomText from "../../components/ui/CustomText";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
 const ImageIcon = (props) => <Icon {...props} name="image-outline" />;
 
 const QuestionDetailsScreen = ({ route, navigation }) => {
-  const checklistStore = useSelector((state) => state.checklist);
+  const checklistStore = useAppSelector((state) => state.checklist);
   const [value, setValue] = useState("");
   const [imageArray, setImageArray] = useState([]);
   const [deadline, setDeadline] = useState();
@@ -42,7 +42,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
 
   const theme = useTheme();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleDateChange = (date) => {
     dispatch(

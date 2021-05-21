@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { FlatList, View } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
   Icon,
@@ -15,7 +14,6 @@ import { FAB, Badge } from "react-native-paper";
 import useMountedState from "react-use/lib/useMountedState";
 import { RefreshControl } from "react-native-web-refresh-control";
 
-import * as databaseActions from "../../store/actions/databaseActions";
 import * as checklistActions from "../../store/actions/checklistActions";
 import ActiveAuditCard from "../../components/ActiveAuditCard";
 import CenteredLoading from "../../components/ui/CenteredLoading";
@@ -24,13 +22,19 @@ import CustomText from "../../components/ui/CustomText";
 import SkeletonLoading from "../../components/ui/loading/SkeletonLoading";
 import useHandleScroll from "../../helpers/hooks/useHandleScroll";
 import TimedGraph from "../../components/TimedGraph";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+  getInstitutions,
+  getRelevantTenants,
+  getStaffActiveAudits,
+} from "../../features/database/databaseSlice";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 
 const StaffDashboardScreen = ({ navigation }) => {
-  const authStore = useSelector((state) => state.auth);
-  const databaseStore = useSelector((state) => state.database);
+  const authStore = useAppSelector((state) => state.auth);
+  const databaseStore = useAppSelector((state) => state.database);
   const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -42,7 +46,7 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   const styles = useStyleSheet(themedStyles);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const DrawerAction = () => (
     <TopNavigationAction
@@ -138,13 +142,9 @@ const StaffDashboardScreen = ({ navigation }) => {
     try {
       setListLoading(true);
 
-      await dispatch(
-        databaseActions.getStaffActiveAudits(authStore.institutionID)
-      );
-      await dispatch(
-        databaseActions.getRelevantTenants(authStore.institutionID)
-      );
-      await dispatch(databaseActions.getInstitutions());
+      await dispatch(getStaffActiveAudits(authStore.institutionID));
+      await dispatch(getRelevantTenants(authStore.institutionID));
+      await dispatch(getInstitutions());
     } catch (err) {
       handleErrorResponse(err);
     } finally {
@@ -157,9 +157,7 @@ const StaffDashboardScreen = ({ navigation }) => {
 
   const getNotifications = useCallback(async () => {
     try {
-      const res = await dispatch(
-        databaseActions.getNotifications(authStore._id)
-      );
+      const res = await dispatch(getNotifications(authStore._id));
       const temp = res.data.data.filter((e) => !e.readReceipt);
       if (isMounted()) {
         setNotificationCount(temp.length);

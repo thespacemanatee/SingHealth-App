@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { View, Platform } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
   Layout,
@@ -23,20 +22,21 @@ import useMountedState from "react-use/lib/useMountedState";
 
 import alert from "../../components/CustomAlert";
 import * as checklistActions from "../../store/actions/checklistActions";
-import * as databaseActions from "../../store/actions/databaseActions";
 import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { postAuditImagesWeb } from "../../features/database/databaseSlice";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
 const ImageIcon = (props) => <Icon {...props} name="image-outline" />;
 
 const TenantRectificationScreen = ({ route, navigation }) => {
-  const authStore = useSelector((state) => state.auth);
-  const checklistStore = useSelector((state) => state.checklist);
+  const authStore = useAppSelector((state) => state.auth);
+  const checklistStore = useAppSelector((state) => state.checklist);
   const [value, setValue] = useState("");
   const [imageArray, setImageArray] = useState([]);
   const [uploadImageArray, setUploadImageArray] = useState([]);
@@ -54,7 +54,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
 
   const theme = useTheme();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleExtendDeadline = async (isChecked) => {
     setToggle(true);
@@ -125,7 +125,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
 
       // let res;
       if (base64images.images.length > 0) {
-        await dispatch(databaseActions.postAuditImagesWeb(base64images));
+        await dispatch(postAuditImagesWeb(base64images));
         await dispatch(
           checklistActions.submitRectification(
             checklistStore.auditMetadata._id,

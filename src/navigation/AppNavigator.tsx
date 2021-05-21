@@ -1,6 +1,5 @@
 import React from "react";
 import { View } from "react-native";
-import { useSelector } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -14,9 +13,10 @@ import RegisterScreen from "../screens/AuthScreens/RegisterScreen";
 import ForgotPasswordScreen from "../screens/AuthScreens/ForgotPasswordScreen";
 import CustomText from "../components/ui/CustomText";
 import { stackTransition } from "../helpers/config";
+import { useAppSelector } from "../app/hooks";
 
 const AppNavigator = () => {
-  const authStore = useSelector((state) => state.auth);
+  const authStore = useAppSelector((state) => state.auth);
 
   const config = {
     screens: {

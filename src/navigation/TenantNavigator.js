@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -21,12 +20,13 @@ import RectificationDetailsScreen from "../screens/AuditScreens/RectificationDet
 import TenantRectificationScreen from "../screens/AuditScreens/TenantRectificationScreen";
 import CameraScreen from "../screens/CameraScreen";
 import ExpandImagesScreen from "../screens/ExpandImagesScreen";
-import * as authActions from "../store/actions/authActions";
 import * as checklistActions from "../store/actions/checklistActions";
-import * as databaseActions from "../store/actions/databaseActions";
 import TenantInfoScreen from "../screens/TenantInfoScreen";
 import { stackTransition, modalTransition } from "../helpers/config";
 import { NotificationsTabNavigator } from "./StaffNavigator";
+import { signOut } from "../features/auth/authSlice";
+import { clearDatabase } from "../features/database/databaseSlice";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
 const ArchiveIcon = (props) => <Icon {...props} name="archive-outline" />;
@@ -53,17 +53,17 @@ export const BottomNavigationAccessoriesShowcase = ({ navigation, state }) => {
 };
 
 const Footer = () => {
-  const authStore = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
+  const authStore = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
 
   return (
     <>
       <DrawerItem
         title="Logout"
         onPress={() => {
-          dispatch(authActions.signOut(authStore.expoToken));
+          dispatch(signOut(authStore.expoToken));
           dispatch(checklistActions.clear());
-          dispatch(databaseActions.clear());
+          dispatch(clearDatabase());
         }}
       />
       <Divider />
@@ -143,7 +143,7 @@ const TenantDashboardStackNavigator = () => {
 };
 
 const TenantRecordsStackNavigator = () => {
-  const authStore = useSelector((state) => state.auth);
+  const authStore = useAppSelector((state) => state.auth);
   const { Navigator, Screen } = createStackNavigator();
   return (
     <Navigator headerMode="none" screenOptions={stackTransition}>

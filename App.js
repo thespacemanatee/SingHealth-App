@@ -17,11 +17,11 @@ import * as Font from "expo-font";
 import Toast from "react-native-toast-message";
 import { PersistGate } from "redux-persist/integration/react";
 
-import { store, persistor } from "./src/store/store";
+import { store, persistor } from "./src/app/stores";
+import { restoreToken, saveExpoToken } from "./src/features/auth/authSlice";
 import AppNavigator from "./src/navigation/AppNavigator";
 import theme from "./src/theme/theme.json";
 import alert from "./src/components/CustomAlert";
-import * as authActions from "./src/store/actions/authActions";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -48,9 +48,8 @@ const App = () => {
   const registerForPushNotificationsAsync = async () => {
     let token;
     if (Constants.isDevice) {
-      const {
-        status: existingStatus,
-      } = await Notifications.getPermissionsAsync();
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
       if (existingStatus !== "granted") {
         const { status } = await Notifications.requestPermissionsAsync();
@@ -73,7 +72,7 @@ const App = () => {
     }
 
     if (token) {
-      store.dispatch(authActions.saveExpoToken(token));
+      store.dispatch(saveExpoToken(token));
     }
 
     // eslint-disable-next-line consistent-return
@@ -97,7 +96,7 @@ const App = () => {
         const token = await registerForPushNotificationsAsync();
         setExpoToken(token);
       }
-      await store.dispatch(authActions.restoreToken());
+      await store.dispatch(restoreToken());
     } catch (err) {
       // continue
     }

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { FlatList, View } from "react-native";
 import {
   Divider,
@@ -12,21 +11,21 @@ import {
 import useMountedState from "react-use/lib/useMountedState";
 import { RefreshControl } from "react-native-web-refresh-control";
 
-import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
 import EntityCard from "../../../components/EntityCard";
 import EntityLoading from "../../../components/ui/loading/EntityLoading";
 import CustomText from "../../../components/ui/CustomText";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 
 const DirectoryScreen = ({ navigation }) => {
-  const databaseStore = useSelector((state) => state.database);
+  const databaseStore = useAppSelector((state) => state.database);
   const [listLoading, setListLoading] = useState(true);
 
   const isMounted = useMountedState();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const DrawerAction = () => (
     <TopNavigationAction
@@ -67,7 +66,7 @@ const DirectoryScreen = ({ navigation }) => {
   const getInstitutions = useCallback(async () => {
     try {
       setListLoading(true);
-      await dispatch(databaseActions.getInstitutions());
+      await dispatch(getInstitutions());
     } catch (err) {
       handleErrorResponse(err);
     } finally {

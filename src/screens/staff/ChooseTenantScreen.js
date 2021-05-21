@@ -1,27 +1,27 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { FlatList, View } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
 import { Layout, StyleService } from "@ui-kitten/components";
 import useMountedState from "react-use/lib/useMountedState";
 import { RefreshControl } from "react-native-web-refresh-control";
 
 import * as checklistActions from "../../store/actions/checklistActions";
-import * as databaseActions from "../../store/actions/databaseActions";
 import NewChecklistCard from "../../components/NewChecklistCard";
 import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
 import EntityLoading from "../../components/ui/loading/EntityLoading";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { getRelevantTenants } from "../../features/database/databaseSlice";
 
 const ChooseTenantScreen = ({ navigation }) => {
-  const authStore = useSelector((state) => state.auth);
-  const databaseStore = useSelector((state) => state.database);
+  const authStore = useAppSelector((state) => state.auth);
+  const databaseStore = useAppSelector((state) => state.database);
   const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
 
   const isMounted = useMountedState();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleRefreshList = () => {
     getListData();
@@ -46,9 +46,7 @@ const ChooseTenantScreen = ({ navigation }) => {
     try {
       setListLoading(true);
 
-      await dispatch(
-        databaseActions.getRelevantTenants(authStore.institutionID)
-      );
+      await dispatch(getRelevantTenants(authStore.institutionID));
     } catch (err) {
       handleErrorResponse(err);
     } finally {

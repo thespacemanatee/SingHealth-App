@@ -1,14 +1,7 @@
-module.exports = (api) => {
+module.exports = function (api) {
   api.cache(true);
   return {
     presets: ["babel-preset-expo"],
-    env: {
-      production: {
-        plugins: ["transform-remove-console", "react-native-reanimated/plugin"],
-      },
-      development: {
-        plugins: ["react-native-reanimated/plugin"],
-      },
-    },
+    plugins: ["react-native-reanimated/plugin"],
   };
 };

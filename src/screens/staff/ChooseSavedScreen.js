@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { FlatList, View } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
 import { Layout, StyleService } from "@ui-kitten/components";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useMountedState from "react-use/lib/useMountedState";
@@ -12,16 +11,17 @@ import CenteredLoading from "../../components/ui/CenteredLoading";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
 import EntityLoading from "../../components/ui/loading/EntityLoading";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 const ChooseTenantScreen = ({ navigation }) => {
-  const authStore = useSelector((state) => state.auth);
+  const authStore = useAppSelector((state) => state.auth);
   const [saved, setSaved] = useState([]);
   const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
 
   const isMounted = useMountedState();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleRefreshList = () => {
     getListData();

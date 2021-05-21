@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { FlatList, View } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
 import {
   Divider,
   Icon,
@@ -14,19 +13,20 @@ import { Badge } from "react-native-paper";
 import useMountedState from "react-use/lib/useMountedState";
 import { RefreshControl } from "react-native-web-refresh-control";
 
-import * as databaseActions from "../../store/actions/databaseActions";
 import * as checklistActions from "../../store/actions/checklistActions";
 import ActiveAuditCard from "../../components/ActiveAuditCard";
 import { handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
 import SkeletonLoading from "../../components/ui/loading/SkeletonLoading";
 import CenteredLoading from "../../components/ui/CenteredLoading";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { getTenantActiveAudits } from "../../features/database/databaseSlice";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
 
 const TenantDashboardScreen = ({ navigation }) => {
-  const authStore = useSelector((state) => state.auth);
+  const authStore = useAppSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -35,7 +35,7 @@ const TenantDashboardScreen = ({ navigation }) => {
 
   const isMounted = useMountedState();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const DrawerAction = () => (
     <TopNavigationAction
@@ -133,9 +133,7 @@ const TenantDashboardScreen = ({ navigation }) => {
     try {
       setListLoading(true);
 
-      const res = await dispatch(
-        databaseActions.getTenantActiveAudits(authStore._id)
-      );
+      const res = await dispatch(getTenantActiveAudits(authStore._id));
       if (isMounted()) {
         setListData(res.data.data);
       }
@@ -151,9 +149,7 @@ const TenantDashboardScreen = ({ navigation }) => {
 
   const getNotifications = useCallback(async () => {
     try {
-      const res = await dispatch(
-        databaseActions.getNotifications(authStore._id)
-      );
+      const res = await dispatch(getTenantActiveAudits(authStore._id));
       const temp = res.data.data.filter((e) => !e.readReceipt);
       if (isMounted()) {
         setNotificationCount(temp.length);

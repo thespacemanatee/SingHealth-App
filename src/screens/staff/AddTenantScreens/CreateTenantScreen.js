@@ -11,7 +11,6 @@ import {
   useTheme,
   Toggle,
 } from "@ui-kitten/components";
-import { useDispatch, useSelector } from "react-redux";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -21,14 +20,15 @@ import useMountedState from "react-use/lib/useMountedState";
 
 import CustomTextInput from "../../../components/CustomTextInput";
 import Logo from "../../../components/ui/Logo";
-import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
 import CenteredLoading from "../../../components/ui/CenteredLoading";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { createNewTenant } from "../../../features/database/databaseSlice";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const AddTenantCredScreen = ({ navigation }) => {
-  const authStore = useSelector((state) => state.auth);
+  const authStore = useAppSelector((state) => state.auth);
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -37,7 +37,7 @@ const AddTenantCredScreen = ({ navigation }) => {
 
   const theme = useTheme();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const onCheckedChange = (isChecked) => {
     setChecked(isChecked);
@@ -52,7 +52,7 @@ const AddTenantCredScreen = ({ navigation }) => {
         staffID: authStore._id,
       };
 
-      await dispatch(databaseActions.createNewTenant(data));
+      await dispatch(createNewTenant(data));
 
       Toast.show({
         text1: "Success",
