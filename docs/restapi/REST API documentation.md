@@ -35,6 +35,7 @@
 ### Audit Reviewing process
 
 - [x] [`GET /images`](#`GET-/images`)
+- [ ] [`GET /images/upload_url`](#`GET-/images/upload_url`)
 - [x] [`GET /audits/<auditID>`](#`GET-/audits/auditID`)
 - [x] [`PATCH /audits/<auditID>/tenant`](#`PATCH-/audits/auditID/tenant`)
 - [x] [`PATCH /audits/<auditID>/staff`](#`PATCH-/audits/auditID/staff`)
@@ -280,14 +281,13 @@ localhost:5000/audits?tenantID=veagvtrhfvrtbhtvg&daysBefore=0
 }
 ```
 
-## `GET /images/upload`
-
+## `GET /images/upload-url`
 ---
 Gets a Amazom S3 presigned url for client to upload a single file.
 ### Sample request
 
 ```
-/images/upload
+/images/upload-url
 ```
 ### Sample response
 
@@ -304,17 +304,50 @@ Gets a Amazom S3 presigned url for client to upload a single file.
         "AWSAccessKeyId": "AKIAIIFTHJDDKRYMAFZQ",
         "policy": "eyJleHBpcmF0aW9uIjogIjIwMjEtMDUtMjFUMTU6MjU6MTFaIiwgImNvbmRpdGlvbnMiOiBbeyJidWNrZXQiOiAic2luZ2hlYWx0aCJ9LCB7ImtleSI6ICJleGFtcGxlRmlsZU5hbWUuanBnIn1dfQ==",
         "signature": "svfcIx9vkN3GkIgpT78Qij84d5o="
+        }
     }
 }
+```
+
+## `GET /images/download-url`
+### Request Args
+Arg | Description
+-|-
+fileName | Name of file. Includes the extension.
+### Sample request
+```
+/images/download-url?fileName=e4566tgy56h4tg3rfyhrf3gttrr.jpg
+```
+### Sample response
+
+
+#### Success
+```js
+"status": 200,
+"data": {
+  "description": "Presigned download URL successfully generated",
+  "data": "https://singhealth.s3.amazonaws.com/60633999bf3a4370134c31041341667097886.jpg?AWSAccessKeyId=AKIAIIFTHJDDKRYMAFZQ&Signature=fw7FjR9hgpumd4FZrbny%2FRRk9h4%3D&Expires=1621674652"
+    }
 }
 ```
 
 #### Failure
-
+##### No such image
+```js
+"status": 404,
+"data": {
+  "description": "The specified object does not exist",
+  "data": null
+    }
+}
+```
+##### No file name provided
 ```js
 "status": 400,
 "data": {
-  "description": "Image filenames not unique"
+  "description": "Pls provide a file name",
+  "data": null
+    }
 }
 ```
 
@@ -326,7 +359,7 @@ Gets a Amazom S3 presigned url for client to download a single file.
 ### Query string args
 
 | Arg        | Description                                                        |
-| ---------- | ------------------------------------------------------------------ |
+| ---------- | ------------------------------------------------------------------ 
 | `fileName` | The name and file extension of the image. Must be globally unique. |
 
 ### Sample request

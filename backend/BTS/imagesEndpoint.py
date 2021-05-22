@@ -5,7 +5,7 @@ from flask import request
 from .utils import serverResponse, upload_image, download_image
 from .constants import IMAGE_FILETYPES, PRESIGNED_LINK_TIMEOUT, MAX_IMAGE_FILE_SIZE_PER_UPLOAD 
 from base64 import b64decode, b64encode
-from botocore.exceptions import ClientError
+from botocore.exceptions import ClientError, ParamValidationError
 import boto3
 import io
 import os
@@ -87,7 +87,7 @@ def addImagesEndpoint(app):
             except:
                 return serverResponse(None, 500, "Unexpected error, pls try again.")
 
-    @app.route("/images/upload", methods=["GET"])
+    @app.route("/images/upload-url", methods=["GET"])
     @login_required
     def images_upload():
         if request.method == 'GET':
@@ -107,7 +107,7 @@ def addImagesEndpoint(app):
                         0, 
                         MAX_IMAGE_FILE_SIZE_PER_UPLOAD
                     ],
-                    ["starts-with", "$Content-Type", "image/png"]
+                    {"Content-Type": "image/jpg"}
                 ]
                 )
             return serverResponse(
@@ -115,5 +115,49 @@ def addImagesEndpoint(app):
                 200, 
                 "Presigned upload URL successfully generated"
                 )
+                
+    @app.route("/images/download-url", methods=["GET"])
+    @login_required
+    def images_download(): 
+        if request.method == 'GET':
+            args = request.args
+            fileName = args.get("fileName", None)
             
+            try:
+                s3_client = boto3.client('s3')
+                content = s3_client.head_object(
+                    Bucket=os.getenv("S3_BUCKET"),
+                    Key=fileName
+                    )
+                download_link = s3_client.generate_presigned_url(
+                    "get_object",
+                    Params={
+                        "Bucket": os.getenv("S3_BUCKET"),
+                        "Key": fileName
+                    },
+                    ExpiresIn=PRESIGNED_LINK_TIMEOUT
+                )
+                status_code = 200
+                msg = "Presigned download URL successfully generated"
+            except ClientError:
+                download_link = None
+                status_code = 404
+                msg = "The specified object does not exist"
+       
+            except ParamValidationError:
+                msg = "Pls provide a file name"
+                download_link = None
+                status_code = 400
+            
+            except:
+                msg = "unknown error"
+                download_link = None
+                status_code = 500
+
+        
+            return serverResponse(
+                download_link, 
+                status_code = status_code, 
+                msg = msg
+                )
             
