@@ -1,11 +1,19 @@
+from botocore.client import Config
 from flask_login import login_required
+from flask_pymongo import ObjectId
 from flask import request
 from .utils import serverResponse, upload_image, download_image
-from .constants import IMAGE_FILETYPES
+from .constants import IMAGE_FILETYPES, PRESIGNED_LINK_TIMEOUT, MAX_IMAGE_FILE_SIZE_PER_UPLOAD 
 from base64 import b64decode, b64encode
 from botocore.exceptions import ClientError
+import boto3
 import io
 import os
+from dotenv import load_dotenv
+from os.path import dirname, join
+import os
+    
+load_dotenv(dirname(__file__), '.env')
 
 
 def addImagesEndpoint(app):
@@ -78,3 +86,34 @@ def addImagesEndpoint(app):
                 return serverResponse(None, 404, "Image not found")
             except:
                 return serverResponse(None, 500, "Unexpected error, pls try again.")
+
+    @app.route("/images/upload", methods=["GET"])
+    @login_required
+    def images_upload():
+        if request.method == 'GET':
+            fileName = str(ObjectId())
+            bucketName = os.getenv("S3_BUCKET")
+            s3_client = boto3.client(
+                's3',
+                config=Config(signature_version="s3")
+                )
+            upload_link_metadata = s3_client.generate_presigned_post(
+                bucketName, 
+                fileName,
+                ExpiresIn=PRESIGNED_LINK_TIMEOUT,
+                Conditions=[
+                    [
+                        "content-length-range", 
+                        0, 
+                        MAX_IMAGE_FILE_SIZE_PER_UPLOAD
+                    ],
+                    ["starts-with", "$Content-Type", "image/png"]
+                ]
+                )
+            return serverResponse(
+                upload_link_metadata,
+                200, 
+                "Presigned upload URL successfully generated"
+                )
+            
+            
