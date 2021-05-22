@@ -284,15 +284,10 @@ localhost:5000/audits?tenantID=veagvtrhfvrtbhtvg&daysBefore=0
 
 ---
 Gets a Amazom S3 presigned url for client to upload a single file.
-### Query string args
-
-| Arg        | Description                                                        |
-| ---------- | ------------------------------------------------------------------ |
-| `fileName` | The name and file extension of the image. Must be globally unique. |
 ### Sample request
 
 ```
-/images/upload?fileName=picture.jpg
+/images/upload
 ```
 ### Sample response
 
