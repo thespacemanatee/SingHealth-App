@@ -14,11 +14,14 @@ import _ from "lodash";
 import moment from "moment";
 import { StackActions } from "@react-navigation/routers";
 import Toast from "react-native-toast-message";
+import axios from "axios";
+import * as FileSystem from "expo-file-system";
 
 import SuccessAnimation from "../../components/ui/SuccessAnimation";
 import CrossAnimation from "../../components/ui/CrossAnimation";
 import * as databaseActions from "../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../helpers/utils";
+import { endpoint, httpClient } from "../../helpers/CustomHTTPClient";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -39,8 +42,9 @@ const AuditSubmitScreen = ({ navigation }) => {
     let covid19ChecklistImages = [];
     let imageAdded = false;
 
-    const formData = new FormData();
-    const base64images = { images: [] };
+    // const formData = new FormData();
+    // const base64images = { images: [] };
+    // TODO: convert to for ... of loop
     const chosenKeys = Object.keys(checklistStore.chosen_checklist.questions);
     chosenKeys.forEach((section) => {
       tempChosenChecklist.questions[section].forEach((element, index) => {
@@ -50,28 +54,43 @@ const AuditSubmitScreen = ({ navigation }) => {
         }
         if (element.image) {
           imageAdded = true;
-          element.image.forEach((image) => {
-            if (Platform.OS === "web") {
-              base64images.images.push({
-                fileName: image.name,
-                uri: image.uri,
+          element.image.forEach(async (image) => {
+            try {
+              const res = await httpClient(`${endpoint}/images/upload-url`);
+              const s3UrlData = res.data.data;
+              const formData = new FormData();
+              const imageData = await fetch(image.uri);
+              const imageBlob = await imageData.blob();
+              Object.keys(s3UrlData.fields).forEach((key) => {
+                console.log(key, s3UrlData.fields[key]);
+                formData.append(key, s3UrlData.fields[key]);
               });
-            } else {
-              formData.append("images", {
-                ...image,
-                type: "image/jpg",
-              });
+              formData.append("file", imageBlob);
+              // const upload = await FileSystem.uploadAsync(
+              //   s3UrlData.url,
+              //   image.uri,
+              //   {
+              //     uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+              //     fieldName: "file",
+              //     mimeType: "image/jpg",
+              //     parameters: s3UrlData.fields,
+              //   }
+              // );
+              // console.log(JSON.stringify(upload));
+              chosenChecklistImages.push(s3UrlData.fields.key);
+              console.log(s3UrlData.fields);
+            } catch (err) {
+              handleErrorResponse(err);
             }
-            chosenChecklistImages.push(image.name);
           });
-          tempChosenChecklist.questions[section][
-            index
-          ].image = chosenChecklistImages;
+          tempChosenChecklist.questions[section][index].image =
+            chosenChecklistImages;
           chosenChecklistImages = [];
         }
       });
     });
 
+    // TODO: convert to for ... of loop
     const covid19Keys = Object.keys(checklistStore.covid19.questions);
     covid19Keys.forEach((section) => {
       tempCovid19Checklist.questions[section].forEach((element, index) => {
@@ -81,27 +100,42 @@ const AuditSubmitScreen = ({ navigation }) => {
         }
         if (element.image) {
           imageAdded = true;
-          element.image.forEach((image) => {
-            if (Platform.OS === "web") {
-              base64images.images.push({
-                fileName: image.name,
-                uri: image.uri,
+          element.image.forEach(async (image) => {
+            try {
+              const res = await httpClient(`${endpoint}/images/upload-url`);
+              const s3UrlData = res.data.data;
+              const formData = new FormData();
+              const imageData = await fetch(image.uri);
+              const imageBlob = await imageData.blob();
+              Object.keys(s3UrlData.fields).forEach((key) => {
+                formData.append(key, s3UrlData.fields[key]);
               });
-            } else {
-              formData.append("images", {
-                ...image,
-                type: "image/jpeg",
-              });
+              formData.append("file", imageBlob);
+              const upload = await FileSystem.uploadAsync(
+                s3UrlData.url,
+                image.uri,
+                {
+                  uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+                  fieldName: "file",
+                  mimeType: "image/jpg",
+                  parameters: s3UrlData.fields,
+                }
+              );
+              console.log(JSON.stringify(upload));
+              covid19ChecklistImages.push(s3UrlData.fields.fileName);
+            } catch (err) {
+              handleErrorResponse(err);
             }
-            covid19ChecklistImages.push(image.name);
           });
-          tempCovid19Checklist.questions[section][
-            index
-          ].image = covid19ChecklistImages;
+          tempCovid19Checklist.questions[section][index].image =
+            covid19ChecklistImages;
           covid19ChecklistImages = [];
         }
       });
     });
+
+    setSubmitting(false);
+    setError(true);
 
     const auditData = {
       auditMetadata: checklistStore.auditMetadata,
@@ -111,25 +145,27 @@ const AuditSubmitScreen = ({ navigation }) => {
       },
     };
 
-    uploadAuditData(imageAdded, auditData, base64images, formData);
+    console.log(auditData);
+
+    // uploadAuditData(imageAdded, auditData);
   }, [
     checklistStore.auditMetadata,
     checklistStore.chosen_checklist,
     checklistStore.chosen_checklist_type,
     checklistStore.covid19,
-    uploadAuditData,
+    // uploadAuditData,
   ]);
 
   const uploadAuditData = useCallback(
-    async (imageAdded, auditData, base64images, formData) => {
+    async (imageAdded, auditData) => {
       try {
-        if (imageAdded) {
-          if (Platform.OS === "web") {
-            await dispatch(databaseActions.postAuditImagesWeb(base64images));
-          } else {
-            await dispatch(databaseActions.postAuditImages(formData));
-          }
-        }
+        // if (imageAdded) {
+        //   if (Platform.OS === "web") {
+        //     await dispatch(databaseActions.postAuditImagesWeb(base64images));
+        //   } else {
+        //     await dispatch(databaseActions.postAuditImages(formData));
+        //   }
+        // }
 
         await dispatch(databaseActions.postAuditForm(auditData));
 

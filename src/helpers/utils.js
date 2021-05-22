@@ -1,9 +1,9 @@
 import { store } from "../store/store";
-
 import * as authActions from "../store/actions/authActions";
 import * as checklistActions from "../store/actions/checklistActions";
 import * as databaseActions from "../store/actions/databaseActions";
 import alert from "../components/CustomAlert";
+import { httpClient, endpoint } from "./CustomHTTPClient";
 
 // eslint-disable-next-line import/prefer-default-export
 export const handleErrorResponse = (err, action) => {
@@ -48,4 +48,13 @@ export const handleErrorResponse = (err, action) => {
     // Something happened in setting up the request that triggered an Error
     console.error(err);
   }
+};
+
+export const getS3Image = async (fileName) => {
+  const { data } = await httpClient(`${endpoint}images/download-url`, {
+    params: {
+      fileName,
+    },
+  });
+  return data.data;
 };

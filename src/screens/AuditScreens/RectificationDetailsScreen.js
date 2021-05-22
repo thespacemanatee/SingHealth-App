@@ -20,8 +20,9 @@ import useMountedState from "react-use/lib/useMountedState";
 import * as checklistActions from "../../store/actions/checklistActions";
 import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
-import { handleErrorResponse } from "../../helpers/utils";
+import { getS3Image, handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
+import { httpClient, endpoint } from "../../helpers/CustomHTTPClient";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -75,16 +76,14 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
             checklistStore[type].questions[section][index].image.map(
               async (fileName) => {
                 if (!fileName.name) {
-                  const res = await dispatch(
-                    checklistActions.getImage(fileName, source)
-                  );
+                  const image = await getS3Image(fileName);
                   dispatch(
                     checklistActions.addImage(
                       checklistType,
                       section,
                       index,
                       fileName,
-                      `data:image/jpg;base64,${res.data.data}`
+                      image
                     )
                   );
                 }

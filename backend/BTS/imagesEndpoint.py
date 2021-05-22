@@ -3,7 +3,7 @@ from flask_login import login_required
 from flask_pymongo import ObjectId
 from flask import request
 from .utils import serverResponse, upload_image, download_image
-from .constants import IMAGE_FILETYPES, PRESIGNED_LINK_TIMEOUT, MAX_IMAGE_FILE_SIZE_PER_UPLOAD 
+from .constants import IMAGE_FILETYPES, PRESIGNED_LINK_TIMEOUT, MAX_IMAGE_FILE_SIZE_PER_UPLOAD
 from base64 import b64decode, b64encode
 from botocore.exceptions import ClientError, ParamValidationError
 import boto3
@@ -12,7 +12,7 @@ import os
 from dotenv import load_dotenv
 from os.path import dirname, join
 import os
-    
+
 load_dotenv(dirname(__file__), '.env')
 
 
@@ -31,10 +31,10 @@ def addImagesEndpoint(app):
                                 imageFilenames.append(imageFilename)
                             else:
                                 return serverResponse(
-                                    None, 
-                                    400, 
+                                    None,
+                                    400,
                                     f"Unknown image file extension used: {imageFilename.split('.')[-1]}"
-                                    )
+                                )
 
                     detected_Duplicate_filenames = len(
                         imageFilenames) > len(set(imageFilenames))
@@ -93,42 +93,36 @@ def addImagesEndpoint(app):
         if request.method == 'GET':
             fileName = str(ObjectId())
             bucketName = os.getenv("S3_BUCKET")
-            s3_client = boto3.client(
-                's3',
-                config=Config(signature_version="s3")
-                )
+            session = boto3.session.Session()
+            s3_client = session.client('s3')
             upload_link_metadata = s3_client.generate_presigned_post(
-                bucketName, 
+                bucketName,
                 fileName,
                 ExpiresIn=PRESIGNED_LINK_TIMEOUT,
                 Conditions=[
                     [
-                        "content-length-range", 
-                        0, 
+                        "content-length-range",
+                        0,
                         MAX_IMAGE_FILE_SIZE_PER_UPLOAD
                     ],
-                    {"Content-Type": "image/jpg"}
                 ]
-                )
+            )
             return serverResponse(
                 upload_link_metadata,
-                200, 
+                200,
                 "Presigned upload URL successfully generated"
-                )
-                
+            )
+
     @app.route("/images/download-url", methods=["GET"])
     @login_required
-    def images_download(): 
+    def images_download():
         if request.method == 'GET':
             args = request.args
             fileName = args.get("fileName", None)
-            
+
             try:
-                s3_client = boto3.client('s3')
-                content = s3_client.head_object(
-                    Bucket=os.getenv("S3_BUCKET"),
-                    Key=fileName
-                    )
+                session = boto3.session.Session()
+                s3_client = session.client('s3')
                 download_link = s3_client.generate_presigned_url(
                     "get_object",
                     Params={
@@ -143,21 +137,19 @@ def addImagesEndpoint(app):
                 download_link = None
                 status_code = 404
                 msg = "The specified object does not exist"
-       
+
             except ParamValidationError:
-                msg = "Pls provide a file name"
+                msg = "Please provide a file name"
                 download_link = None
                 status_code = 400
-            
+
             except:
-                msg = "unknown error"
+                msg = "Please contact your administrator"
                 download_link = None
                 status_code = 500
 
-        
             return serverResponse(
-                download_link, 
-                status_code = status_code, 
-                msg = msg
-                )
-            
+                download_link,
+                status_code=status_code,
+                msg=msg
+            )

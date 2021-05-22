@@ -27,7 +27,7 @@ import * as databaseActions from "../../store/actions/databaseActions";
 import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
 import CenteredLoading from "../../components/ui/CenteredLoading";
-import { handleErrorResponse } from "../../helpers/utils";
+import { getS3Image, handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
@@ -191,16 +191,14 @@ const TenantRectificationScreen = ({ route, navigation }) => {
               index
             ].rectificationImages.map(async (fileName) => {
               if (!fileName.name) {
-                const res = await dispatch(
-                  checklistActions.getImage(fileName, source)
-                );
+                const image = await getS3Image(fileName);
                 dispatch(
                   checklistActions.addImage(
                     checklistType,
                     section,
                     index,
                     fileName,
-                    `data:image/jpg;base64,${res.data.data}`,
+                    image,
                     true
                   )
                 );
