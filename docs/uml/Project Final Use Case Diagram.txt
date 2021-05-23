@@ -25,17 +25,10 @@ Staff --> (Login as staff)
 (Perform Audit) --> (Automatically computes checklist score)
 
 (Automatically computes checklist score) --> (Submit audit) : <<precedes>>
-(Upload photos) --> (Limit number of photos) 
-(Capture photos) --> (Limit number of photos) 
-
 (View audit history) --> (Tabulate performance scores and provide trending graphs) : <<precedes>>
 (Tabulate performance scores and provide trending graphs) --> (Compare performance scores)
 (View audit history) --> (Export to word and email)
 
-(Send large number of photos) ---> (Upload photos) : <<threatens>>
-(Send large number of photos) ---> (Capture photos) : <<threatens>>
-(Send large number of photos) <-- (Limit number of photos)  : <<prevents>>
-(Submit audit) -d-> (Send audit report to tenant)
 (Send audit report to tenant) --> (Tenant receive audit report)
 
 Tenant -r-> (Login as tenant) 
@@ -59,10 +52,6 @@ Tenant -r-> (Login as tenant)
 
 
 
-
-
-
-Hacker ---> (Send large number of photos)
 Hacker --> (Interact with backend database)
 Hacker --> (Create duplicate staff accounts) 
 (Create duplicate staff accounts) --> (Add new tenant) : <<threatens>>
@@ -72,7 +61,8 @@ Hacker --> (Create duplicate staff accounts)
 Hacker --> (Send dummy audit checklist) 
 (Send dummy audit checklist) --> (Send audit report to tenant) : <<threatens>>
 (Validate audit report) --> (Send dummy audit checklist) : <<prevents>>
-
-
+(Submit audit) -d-> (Validate audit report) 
+(Validate audit report) --> (Send audit report to tenant)
+(Login as tenant) ----> (Interact with backend database): <<prevents>>
 
 @enduml

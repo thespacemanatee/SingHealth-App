@@ -48,9 +48,8 @@ const App = () => {
   const registerForPushNotificationsAsync = async () => {
     let token;
     if (Constants.isDevice) {
-      const {
-        status: existingStatus,
-      } = await Notifications.getPermissionsAsync();
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
       if (existingStatus !== "granted") {
         const { status } = await Notifications.requestPermissionsAsync();
@@ -123,7 +122,7 @@ const App = () => {
                 {Platform.OS === "ios" && <StatusBar barStyle="dark-content" />}
                 <AppNavigator expoToken={expoToken} />
                 <Toast
-                  topOffset={StatusBar.currentHeight || 20}
+                  topOffset={Constants.statusBarHeight || 44}
                   ref={(ref) => Toast.setRef(ref)}
                 />
               </SafeAreaProvider>
@@ -140,5 +139,7 @@ export default App;
 const styles = StyleService.create({
   screen: {
     flex: 1,
+    overflow: "hidden",
+    overscrollBehavior: "none",
   },
 });

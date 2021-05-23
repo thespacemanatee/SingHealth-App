@@ -35,11 +35,12 @@
 ### Audit Reviewing process
 
 - [x] [`GET /images`](#`GET-/images`)
+- [ ] [`GET /images/upload_url`](#`GET-/images/upload_url`)
 - [x] [`GET /audits/<auditID>`](#`GET-/audits/auditID`)
 - [x] [`PATCH /audits/<auditID>/tenant`](#`PATCH-/audits/auditID/tenant`)
 - [x] [`PATCH /audits/<auditID>/staff`](#`PATCH-/audits/auditID/staff`)
 - [x] [`GET /audits`](#`GET-/audits`)
-- [x] [`GET /auditTimeframe/fromDate=<fromDate>&toDate=<toDate>&dataType=<dataType>&dataID=<dataID>`](#`GET-/auditTimeframe/fromDate=<fromDate>&toDate=<toDate>&dataType=<dataType>&dataID=<dataID>`)
+- [x] [`GET /auditTimeframe/<fromDate><toDate><dataType><dataID>`](#`GET-/auditTimeframe/<fromDate>&<toDate><dataType><dataID>`)
 - [x] [`GET /notifications`](#`GET-/notifications`)
 - [ ] [`PATCH /notifications`](#`PATCH-/notifications`)
 
@@ -280,54 +281,14 @@ localhost:5000/audits?tenantID=veagvtrhfvrtbhtvg&daysBefore=0
 }
 ```
 
-## `POST /images`
-
+## `GET /images/upload-url`
 ---
+Gets a Amazom S3 presigned url for client to upload a single file.
+### Sample request
 
-Duplicate filenames will be rejected.
-Will throw a 400 error if no images are received.
-
-There are 2 ways to send in images to this endpoint, choose only 1 per request:
-
-- by json in base64 encoded format
-- by Multipart/formdata
-
-### JSON body parameters (for sending images in base64 str format)
-
-| JSON param | Description                                                        |
-| ---------- | ------------------------------------------------------------------ |
-| `images`   | An array of image objects each containing `fileName` & `uri`.      |
-| `fileName` | The name and file extension of the image. Must be globally unique. |
-| `uri`      | The actual image as a base64 string.                               |
-
-#### Dummy request
-
-```js
-{
-    "images": [
-        {
-            "fileName": "...",
-            "uri": "..."
-        },
-        {
-            "fileName": "...",
-            "uri": "..."
-        }
-    ]
-}
 ```
-
-### Multipart/formdata parameters
-
-| Category | Name                      |
-| -------- | ------------------------- |
-| Mimetype | `image/jpg` / `image/png` |
-| Key      | `images`                  |
-
-<br>
-
-<br>
-
+/images/upload-url
+```
 ### Sample response
 
 #### Success
@@ -335,34 +296,75 @@ There are 2 ways to send in images to this endpoint, choose only 1 per request:
 ```js
 "status": 200,
 "data": {
-  "description": "Images have successfully been uploaded"
+  "description": "Presigned upload URL successfully generated",
+  "data": {
+    "url": "https://singhealth.s3.amazonaws.com/",
+    "fields": {
+        "key": "exampleFileName.jpg",
+        "AWSAccessKeyId": "AKIAIIFTHJDDKRYMAFZQ",
+        "policy": "eyJleHBpcmF0aW9uIjogIjIwMjEtMDUtMjFUMTU6MjU6MTFaIiwgImNvbmRpdGlvbnMiOiBbeyJidWNrZXQiOiAic2luZ2hlYWx0aCJ9LCB7ImtleSI6ICJleGFtcGxlRmlsZU5hbWUuanBnIn1dfQ==",
+        "signature": "svfcIx9vkN3GkIgpT78Qij84d5o="
+        }
+    }
+}
+```
+
+## `GET /images/download-url`
+### Request Args
+Arg | Description
+-|-
+fileName | Name of file. Includes the extension.
+### Sample request
+```
+/images/download-url?fileName=e4566tgy56h4tg3rfyhrf3gttrr.jpg
+```
+### Sample response
+
+
+#### Success
+```js
+"status": 200,
+"data": {
+  "description": "Presigned download URL successfully generated",
+  "data": "https://singhealth.s3.amazonaws.com/60633999bf3a4370134c31041341667097886.jpg?AWSAccessKeyId=AKIAIIFTHJDDKRYMAFZQ&Signature=fw7FjR9hgpumd4FZrbny%2FRRk9h4%3D&Expires=1621674652"
+    }
 }
 ```
 
 #### Failure
-
+##### No such image
+```js
+"status": 404,
+"data": {
+  "description": "The specified object does not exist",
+  "data": null
+    }
+}
+```
+##### No file name provided
 ```js
 "status": 400,
 "data": {
-  "description": "Image filenames not unique"
+  "description": "Pls provide a file name",
+  "data": null
+    }
 }
 ```
 
 ## `GET /images`
 
 ---
+Gets a Amazom S3 presigned url for client to download a single file.
 
 ### Query string args
 
 | Arg        | Description                                                        |
-| ---------- | ------------------------------------------------------------------ |
+| ---------- | ------------------------------------------------------------------ 
 | `fileName` | The name and file extension of the image. Must be globally unique. |
-
-<br>
 
 ### Sample request
 
-```js
+```
 /images?fileName=picture.jpg
 ```
 
@@ -373,8 +375,8 @@ There are 2 ways to send in images to this endpoint, choose only 1 per request:
 ```js
 "status": 200,
 "data": {
-  "description": "Images have successfully been uploaded",
-  "data": "image1 in base64"
+  "description": "Presigned upload URL successfully generated",
+  "data": "https://singhealth.s3.amazonaws.com/picture.jpg"
 }
 ```
 
@@ -1537,7 +1539,7 @@ localhost:5000/institutions
 }
 ```
 
-## `GET /auditTimeframe/fromDate=<fromDate>&toDate=<toDate>&dataType=<dataType>&dataID=<dataID>`
+## `GET /auditTimeframe/<fromDate><toDate><dataType><dataID>`
 
 ### Description of use case
 
@@ -1594,7 +1596,7 @@ The staff to get all audit data within a timeframe.
 ##### Wrong date format
 
 ```js
-"status": 200,
+"status": 400,
 "data": {
     "description": "Wrong date format"
 }
@@ -1603,7 +1605,7 @@ The staff to get all audit data within a timeframe.
 ##### Wrong data format
 
 ```js
-"status": 200,
+"status": 400,
 "data": {
     "description": "Insufficient data or wrong data format"
 }
@@ -1721,10 +1723,11 @@ localhost:5000/notifications?userID=veagvtrhfvrtbhtvg
 ```
 
 ## PATCH /notifications
+
 ### Query string args
 
-| Arg      | Description                       |
-| -------- | --------------------------------- |
+| Arg       | Description                       |
+| --------- | --------------------------------- |
 | `notifID` | The unique identifier for a user. |
 
 <br>
@@ -1736,8 +1739,11 @@ localhost:5000/notifications?notifID=veagvtrhfvrtbhtvg
 ```
 
 ### Sample Response
+
 #### Success
+
 ##### Toggled the switch
+
 ```js
 "status": 200,
 "data": {
@@ -1747,7 +1753,9 @@ localhost:5000/notifications?notifID=veagvtrhfvrtbhtvg
 ```
 
 #### Failure
+
 ##### Notif doesn't exist
+
 ```js
 "status": 404,
 "data": {

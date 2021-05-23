@@ -1,0 +1,39 @@
+@startuml
+title Staff creates an account for tenant
+actor Staff
+
+Staff -> App: Navigate to\n"Manage Tenants"\npage
+Staff -> App: Enter tenant\naccount & stall details
+
+loop user email invalid OR password too short
+	App -> Staff: "Your account credentials are invalid" msg
+end
+
+
+App -> App: Encrypt password
+
+App -> Server: Tenant\naccount & stall details
+
+
+
+Server -> MongoDB: Check if tenant email already\nexists in the MongoDB
+
+activate MongoDB
+alt Tenant account already exists
+	MongoDB -> Server: True
+	Server -> App: Response code 400 (Bad request)
+	App -> Staff: "Tenant already has an account" msg
+else
+	MongoDB -> Server: False
+	activate Server
+	Server -> Server: Encrypt Tenant password
+	Server -> MongoDB: Tenant\naccount & stall details
+	deactivate Server
+	MongoDB -> MongoDB: Insert the Tenant account\ndetails into the MongoDB
+	MongoDB -> Server: ACK\n(Tenant has been added to MongoDB)
+	deactivate MongoDB
+	Server -> App: Response code 200\n(Tenant account has been created)
+	App -> Staff: "Tenant account creation successful" msg
+end
+
+@enduml

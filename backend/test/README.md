@@ -106,7 +106,7 @@ TOTAL                                    1045    726    344     11    25%
 
 ### Generate HTML reports on coverage
 ```
-coverage html .\test_*.py .\BTSApp.py ..\BTS\*.py
+coverage html ..\BTS\*.py
 ```
 #### Reading the outputs
 There will be a folder called `/htmlcov` and a file called `index.html` which contains the summary of the coverage report. To see in detail which lines were run and which lines weren't, check out any file named `*_py.html`

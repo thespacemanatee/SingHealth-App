@@ -1,0 +1,26 @@
+@startuml
+title Staff views dashboard graph
+actor Staff 
+
+Staff -> App: Login
+note left: This is just a placeholder. To view the\nlogin details, please refer to SH_CD_LOGIN
+
+
+App -> Server: Request for recent audit average scores
+Server -> MongoDB: Search for all recent audits given institution ID
+activate MongoDB
+MongoDB -> MongoDB: Search
+MongoDB -> Server: List of recent audits under the same institution
+deactivate MongoDB
+
+activate Server
+Server -> Server: Calculate average of all scores\nunder the same date, for all dates
+Server -> App: Array of scores and their respective dates
+deactivate Server
+
+activate App
+App -> App: Render the data into a graph
+App -> Staff: Display graph
+deactivate App
+
+@enduml

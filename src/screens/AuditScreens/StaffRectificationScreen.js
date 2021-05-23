@@ -25,7 +25,7 @@ import * as checklistActions from "../../store/actions/checklistActions";
 import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
 import CenteredLoading from "../../components/ui/CenteredLoading";
-import { handleErrorResponse } from "../../helpers/utils";
+import { handleErrorResponse, getS3Image } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
 import CustomDatepicker from "../../components/CustomDatePicker";
 
@@ -148,7 +148,6 @@ const StaffRectificationScreen = ({ route, navigation }) => {
     );
   };
 
-  // TODO: Cleanup memory leak when user leaves screen before image is loaded
   useEffect(() => {
     let type;
     if (checklistType === "covid19") {
@@ -166,16 +165,14 @@ const StaffRectificationScreen = ({ route, navigation }) => {
               index
             ].rectificationImages.map(async (fileName) => {
               if (!fileName.name) {
-                const res = await dispatch(
-                  checklistActions.getImage(fileName, source)
-                );
+                const image = await getS3Image(fileName);
                 dispatch(
                   checklistActions.addImage(
                     checklistType,
                     section,
                     index,
                     fileName,
-                    `data:image/jpg;base64,${res.data.data}`,
+                    image,
                     true
                   )
                 );

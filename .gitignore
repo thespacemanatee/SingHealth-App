@@ -8,10 +8,14 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
+*.log
+*.env.*
 
 # uml
 **/plantuml.jar
 docs/uml/*.pdf
+docs/uml/*.jpg
+docs/uml/*.png
 
 # backend code
 **/__pycache__
@@ -33,5 +37,6 @@ backend/TestDeploy
 
 # jest
 .jest/cache
+
 backend/backend_wx.py
 backend/demo.docx

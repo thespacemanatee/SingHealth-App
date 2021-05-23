@@ -1,0 +1,35 @@
+@startuml
+title Login process
+actor User
+
+User -> App: Enter username & password\n& press Login
+note left: User in this diagram can be a staff or tenant
+activate App
+App -> App: Encrypt\npassword
+App -> Server: Encrypted login credentials
+deactivate App
+Server -> MongoDB: Encrypted login credentials
+activate MongoDB
+MongoDB -> MongoDB: Check if user name exists in MongoDB
+
+alt user exists
+	MongoDB -> MongoDB: Check if password matches
+
+	alt password matches
+		MongoDB -> Server: user secure details,\nno password included
+		Server -> App: user secure details,\nno password included
+		App -> User: "Login success" msg
+	else
+		MongoDB -> Server: False
+		Server -> App: Response code 401
+		App -> User: "Login failure" msg
+	end
+
+else
+	MongoDB -> Server: None
+	deactivate MongoDB
+	Server -> App: Response code 404\n(User acc does not exist)
+	App -> User: "Login failure" msg
+end
+
+@enduml

@@ -40,6 +40,7 @@ def login_as_tenant():
     links[-1].click()
     time.sleep(8)
 
+
 if __name__ == "__main__":
     
     #staff add NC

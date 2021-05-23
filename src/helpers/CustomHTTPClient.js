@@ -1,19 +1,23 @@
 import axios from "axios";
 import { Platform } from "react-native";
 
+import {
+  ENDPOINT_DEV,
+  ENDPOINT_DEV_ANDROID,
+  ENDPOINT_PROD_WEB,
+  ENDPOINT_PROD_NATIVE,
+} from "react-native-dotenv";
+
 export const httpClient = axios.create();
 
-httpClient.defaults.timeout = 10000;
 httpClient.defaults.withCredentials = true;
 
 export const endpoint =
-  Platform.OS === "web"
-    ? "https://singhealth-backend-sessionless.herokuapp.com/"
-    : "https://singhealth-backend-bts.herokuapp.com/";
-// export let endpoint;
-
-// if (Platform.OS === "android") {
-//   endpoint = "http://10.0.2.2:5000/";
-// } else {
-//   endpoint = "http://localhost:5000/";
-// }
+  // eslint-disable-next-line no-nested-ternary
+  process.env.NODE_ENV === "production"
+    ? Platform.OS === "web"
+      ? ENDPOINT_PROD_WEB
+      : ENDPOINT_PROD_NATIVE
+    : Platform.OS === "android"
+    ? ENDPOINT_DEV_ANDROID
+    : ENDPOINT_DEV;
