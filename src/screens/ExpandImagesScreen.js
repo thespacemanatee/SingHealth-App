@@ -84,7 +84,7 @@ const ExpandImagesScreen = ({ route, navigation }) => {
         </View>
       );
     },
-    [height, width]
+    [height, screenHeight, width]
   );
 
   const renderThumbnail = useCallback(

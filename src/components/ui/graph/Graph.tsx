@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   thresholdLine: {
-    // width,
     height: 0.75,
     backgroundColor: "gray",
   },
@@ -69,10 +68,10 @@ const Graph = ({
   const maxX = React.useMemo(() => Math.max(...data.map(([x]) => x)), [data]);
   const minY = React.useMemo(() => Math.min(...data.map(([, y]) => y)), [data]);
   const maxY = React.useMemo(() => Math.max(...data.map(([, y]) => y)), [data]);
-  const thresholdLine = React.useMemo(() => (95 - minY) / (maxY - minY), [
-    maxY,
-    minY,
-  ]);
+  const thresholdLine = React.useMemo(
+    () => (95 - minY) / (maxY - minY),
+    [maxY, minY]
+  );
 
   const domain = {
     x: [minX, maxX],

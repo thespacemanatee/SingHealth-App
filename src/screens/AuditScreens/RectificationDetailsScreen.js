@@ -22,7 +22,6 @@ import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
 import { getS3Image, handleErrorResponse } from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
-import { httpClient, endpoint } from "../../helpers/CustomHTTPClient";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -77,7 +76,6 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
               async (fileName) => {
                 if (!fileName.name) {
                   const image = await getS3Image(fileName);
-                  console.log(image);
                   dispatch(
                     checklistActions.addImage(
                       checklistType,

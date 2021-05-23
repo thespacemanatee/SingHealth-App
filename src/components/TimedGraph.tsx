@@ -1,72 +1,24 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useState, useCallback, useEffect } from "react";
-import { StyleSheet, Pressable, View } from "react-native";
-import { useTheme } from "@ui-kitten/components";
+import { StyleSheet, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import moment from "moment";
+import moment, { Moment } from "moment";
 import { useNavigation } from "@react-navigation/native";
 import useMountedState from "react-use/lib/useMountedState";
 
+import Graph from "./ui/graph";
+import Axis from "./ui/graph/Axis";
+import TimedButton from "./ui/graph/TimedButton";
 import * as databaseActions from "../store/actions/databaseActions";
 import { handleErrorResponse } from "../helpers/utils";
 
-import CustomText from "./ui/CustomText";
-import Graph from "./ui/graph";
-
-const Axis = ({ startX, endX }) => {
-  return (
-    <View
-      style={{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        paddingHorizontal: 10,
-        paddingTop: 10,
-        opacity: 0.75,
-      }}
-    >
-      <CustomText>{moment.months(startX?.month())}</CustomText>
-      <CustomText>{moment.months(endX?.month())}</CustomText>
-    </View>
-  );
-};
-
-const TimedButton = ({ id, pressed, onPress, children, ...props }) => {
-  const theme = useTheme();
-
-  const handlePress = () => {
-    onPress(id);
-  };
-
-  return (
-    <Pressable
-      {...props}
-      style={[
-        styles.timeFrameButton,
-        {
-          backgroundColor:
-            pressed === id ? theme["color-primary-400"] : "white",
-        },
-      ]}
-      onPress={handlePress}
-    >
-      <CustomText
-        style={{
-          color: pressed === id ? "white" : theme["color-primary-400"],
-        }}
-      >
-        {children}
-      </CustomText>
-    </Pressable>
-  );
-};
-
 const TimedGraph = ({ label, type, id }) => {
   const databaseStore = useSelector((state) => state.database);
-  const [buttonPressed, setButtonPressed] = useState(0);
-  const [graphLoading, setGraphLoading] = useState(true);
-  const [graphData, setGraphData] = useState();
-  const [startX, setStartX] = useState();
-  const [endX, setEndX] = useState();
+  const [buttonPressed, setButtonPressed] = useState<number>(0);
+  const [graphLoading, setGraphLoading] = useState<boolean>(true);
+  const [graphData, setGraphData] = useState<any>();
+  const [startX, setStartX] = useState<Moment>();
+  const [endX, setEndX] = useState<Moment>();
 
   const isMounted = useMountedState();
 
@@ -96,11 +48,11 @@ const TimedGraph = ({ label, type, id }) => {
       if (temp) {
         setStartX(moment(temp[0].x));
         setEndX(moment(temp[temp.length - 1].x));
-        setGraphData(temp.map((p) => [new Date(p.x).getTime(), p.y]));
       } else {
         setStartX(moment());
         setEndX(moment());
       }
+      setGraphData(temp?.map((p) => [new Date(p.x).getTime(), p.y]));
     }
   }, [buttonPressed, databaseStore.graphData, isMounted]);
 
@@ -163,23 +115,23 @@ const TimedGraph = ({ label, type, id }) => {
       });
 
       const dataObject = {
-        oneMonth: res[0]?.data.data.map((e) => ({
+        oneMonth: res[0].data.data?.map((e) => ({
           x: moment(e.date).toDate(),
           y: Number.parseFloat(e.avgScore) * 100,
         })),
-        threeMonths: res[1]?.data.data.map((e) => ({
+        threeMonths: res[1].data.data?.map((e) => ({
           x: moment(e.date).toDate(),
           y: Number.parseFloat(e.avgScore) * 100,
         })),
-        sixMonths: res[2]?.data.data.map((e) => ({
+        sixMonths: res[2].data.data?.map((e) => ({
           x: moment(e.date).toDate(),
           y: Number.parseFloat(e.avgScore) * 100,
         })),
-        ytd: res[3]?.data.data.map((e) => ({
+        ytd: res[3].data.data?.map((e) => ({
           x: moment(e.date).toDate(),
           y: Number.parseFloat(e.avgScore) * 100,
         })),
-        oneYear: res[4]?.data.data.map((e) => ({
+        oneYear: res[4].data.data?.map((e) => ({
           x: moment(e.date).toDate(),
           y: Number.parseFloat(e.avgScore) * 100,
         })),
@@ -189,7 +141,7 @@ const TimedGraph = ({ label, type, id }) => {
     } catch (err) {
       dispatch(databaseActions.storeGraphData({}));
       if (isMounted()) {
-        setGraphData();
+        setGraphData(null);
       }
       handleErrorResponse(err);
     } finally {
@@ -204,13 +156,12 @@ const TimedGraph = ({ label, type, id }) => {
   }, [renderGraph]);
 
   useEffect(() => {
-    getGraphData();
-    const unsubscribe = navigation.addListener("focus", () => {
+    const onfocus = navigation.addListener("focus", () => {
       getGraphData();
     });
     return () => {
       // eslint-disable-next-line no-unused-expressions
-      unsubscribe;
+      onfocus;
     };
   }, [getGraphData, navigation]);
 
@@ -245,9 +196,5 @@ const styles = StyleSheet.create({
   timeFrameContainer: {
     flexDirection: "row",
     justifyContent: "space-evenly",
-  },
-  timeFrameButton: {
-    borderRadius: 5,
-    padding: 5,
   },
 });

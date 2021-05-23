@@ -93,42 +93,6 @@ export const postAuditForm = (auditData) => {
   };
 };
 
-export const postAuditImages = (data) => {
-  return async () => {
-    const options = {
-      url: `${endpoint}images`,
-      method: "post",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "multipart/form-data",
-      },
-      data,
-      timeout: 50000,
-    };
-    const res = await httpClient(options);
-
-    return res;
-  };
-};
-
-export const postAuditImagesWeb = (data) => {
-  return async () => {
-    const options = {
-      url: `${endpoint}images`,
-      method: "post",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      data,
-      timeout: 50000,
-    };
-    const res = await httpClient(options);
-
-    return res;
-  };
-};
-
 export const exportAndEmail = (auditID) => {
   return async () => {
     const options = {
