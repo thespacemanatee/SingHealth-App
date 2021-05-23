@@ -1,3 +1,5 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
 import React, { useState, useEffect, useCallback } from "react";
 import { Platform, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
@@ -14,14 +16,11 @@ import _ from "lodash";
 import moment from "moment";
 import { StackActions } from "@react-navigation/routers";
 import Toast from "react-native-toast-message";
-import axios from "axios";
-import * as FileSystem from "expo-file-system";
 
 import SuccessAnimation from "../../components/ui/SuccessAnimation";
 import CrossAnimation from "../../components/ui/CrossAnimation";
 import * as databaseActions from "../../store/actions/databaseActions";
-import { handleErrorResponse } from "../../helpers/utils";
-import { endpoint, httpClient } from "../../helpers/CustomHTTPClient";
+import { handleErrorResponse, processAuditForms } from "../../helpers/utils";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -35,138 +34,34 @@ const AuditSubmitScreen = ({ navigation }) => {
   const submitHandler = useCallback(async () => {
     setError(false);
     setSubmitting(true);
-    const tempChosenChecklist = _.cloneDeep(checklistStore.chosen_checklist);
-    const tempCovid19Checklist = _.cloneDeep(checklistStore.covid19);
     const chosenChecklistType = checklistStore.chosen_checklist_type;
-    let chosenChecklistImages = [];
-    let covid19ChecklistImages = [];
-    let imageAdded = false;
-
-    // const formData = new FormData();
-    // const base64images = { images: [] };
-    // TODO: convert to for ... of loop
-    const chosenKeys = Object.keys(checklistStore.chosen_checklist.questions);
-    chosenKeys.forEach((section) => {
-      tempChosenChecklist.questions[section].forEach((element, index) => {
-        if (element.answer !== false) {
-          // eslint-disable-next-line no-param-reassign
-          delete element.deadline;
-        }
-        if (element.image) {
-          imageAdded = true;
-          element.image.forEach(async (image) => {
-            try {
-              const res = await httpClient(`${endpoint}/images/upload-url`);
-              const s3UrlData = res.data.data;
-              const formData = new FormData();
-              const imageData = await fetch(image.uri);
-              const imageBlob = await imageData.blob();
-              Object.keys(s3UrlData.fields).forEach((key) => {
-                console.log(key, s3UrlData.fields[key]);
-                formData.append(key, s3UrlData.fields[key]);
-              });
-              formData.append("file", imageBlob);
-              // const upload = await FileSystem.uploadAsync(
-              //   s3UrlData.url,
-              //   image.uri,
-              //   {
-              //     uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-              //     fieldName: "file",
-              //     mimeType: "image/jpg",
-              //     parameters: s3UrlData.fields,
-              //   }
-              // );
-              // console.log(JSON.stringify(upload));
-              chosenChecklistImages.push(s3UrlData.fields.key);
-              console.log(s3UrlData.fields);
-            } catch (err) {
-              handleErrorResponse(err);
-            }
-          });
-          tempChosenChecklist.questions[section][index].image =
-            chosenChecklistImages;
-          chosenChecklistImages = [];
-        }
-      });
-    });
-
-    // TODO: convert to for ... of loop
-    const covid19Keys = Object.keys(checklistStore.covid19.questions);
-    covid19Keys.forEach((section) => {
-      tempCovid19Checklist.questions[section].forEach((element, index) => {
-        if (element.answer !== false) {
-          // eslint-disable-next-line no-param-reassign
-          delete element.deadline;
-        }
-        if (element.image) {
-          imageAdded = true;
-          element.image.forEach(async (image) => {
-            try {
-              const res = await httpClient(`${endpoint}/images/upload-url`);
-              const s3UrlData = res.data.data;
-              const formData = new FormData();
-              const imageData = await fetch(image.uri);
-              const imageBlob = await imageData.blob();
-              Object.keys(s3UrlData.fields).forEach((key) => {
-                formData.append(key, s3UrlData.fields[key]);
-              });
-              formData.append("file", imageBlob);
-              const upload = await FileSystem.uploadAsync(
-                s3UrlData.url,
-                image.uri,
-                {
-                  uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-                  fieldName: "file",
-                  mimeType: "image/jpg",
-                  parameters: s3UrlData.fields,
-                }
-              );
-              console.log(JSON.stringify(upload));
-              covid19ChecklistImages.push(s3UrlData.fields.fileName);
-            } catch (err) {
-              handleErrorResponse(err);
-            }
-          });
-          tempCovid19Checklist.questions[section][index].image =
-            covid19ChecklistImages;
-          covid19ChecklistImages = [];
-        }
-      });
-    });
-
-    setSubmitting(false);
-    setError(true);
+    const tempChosenChecklist = await processAuditForms(
+      checklistStore.chosen_checklist
+    );
+    const tempCovidChecklist = await processAuditForms(checklistStore.covid19);
 
     const auditData = {
       auditMetadata: checklistStore.auditMetadata,
       auditForms: {
         [chosenChecklistType]: tempChosenChecklist,
-        covid19: tempCovid19Checklist,
+        covid19: tempCovidChecklist,
       },
     };
 
     console.log(auditData);
 
-    // uploadAuditData(imageAdded, auditData);
+    uploadAuditData(auditData);
   }, [
     checklistStore.auditMetadata,
     checklistStore.chosen_checklist,
     checklistStore.chosen_checklist_type,
     checklistStore.covid19,
-    // uploadAuditData,
+    uploadAuditData,
   ]);
 
   const uploadAuditData = useCallback(
-    async (imageAdded, auditData) => {
+    async (auditData) => {
       try {
-        // if (imageAdded) {
-        //   if (Platform.OS === "web") {
-        //     await dispatch(databaseActions.postAuditImagesWeb(base64images));
-        //   } else {
-        //     await dispatch(databaseActions.postAuditImages(formData));
-        //   }
-        // }
-
         await dispatch(databaseActions.postAuditForm(auditData));
 
         Toast.show({

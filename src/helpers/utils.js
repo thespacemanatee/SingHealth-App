@@ -1,3 +1,8 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
+import * as FileSystem from "expo-file-system";
+import _ from "lodash";
+
 import { store } from "../store/store";
 import * as authActions from "../store/actions/authActions";
 import * as checklistActions from "../store/actions/checklistActions";
@@ -57,4 +62,63 @@ export const getS3Image = async (fileName) => {
     },
   });
   return data.data;
+};
+
+export const uploadToS3 = async (image) => {
+  const res = await httpClient(`${endpoint}/images/upload-url`);
+  const s3UrlData = res.data.data;
+  const fileName = s3UrlData.fields.key;
+  const formData = new FormData();
+  const imageData = await fetch(image.uri);
+  const imageBlob = await imageData.blob();
+  Object.keys(s3UrlData.fields).forEach((key) => {
+    formData.append(key, s3UrlData.fields[key]);
+  });
+  formData.append("file", imageBlob);
+  const result = await FileSystem.uploadAsync(s3UrlData.url, image.uri, {
+    uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+    fieldName: "file",
+    mimeType: "image/jpg",
+    parameters: s3UrlData.fields,
+  });
+  return { result, fileName };
+};
+
+export const processAuditForms = async (checklist) => {
+  const tempChecklist = _.cloneDeep(checklist);
+  const chosenKeys = Object.keys(checklist.questions);
+  for (const section of chosenKeys) {
+    for (const question of tempChecklist.questions[section]) {
+      if (question.answer !== false) {
+        delete question.deadline;
+      }
+      const images = question.image;
+      if (images) {
+        if (images.length === 0) {
+          delete question.images;
+        } else {
+          await Promise.all(
+            images.map(() => {
+              return httpClient(`${endpoint}/images/upload-url`);
+            })
+          );
+
+          const res = await Promise.all(
+            images.map((e) => {
+              return uploadToS3(e);
+            })
+          );
+
+          const chosenChecklistImages = [];
+          res.forEach((e) => {
+            chosenChecklistImages.push(e.fileName);
+          });
+
+          tempChecklist.questions[section][question.index - 1].image =
+            chosenChecklistImages;
+        }
+      }
+    }
+  }
+  return tempChecklist;
 };
