@@ -4,10 +4,27 @@ module.exports = (api) => {
     presets: ["babel-preset-expo"],
     env: {
       production: {
-        plugins: ["transform-remove-console", "react-native-reanimated/plugin"],
+        plugins: [
+          [
+            "module:react-native-dotenv",
+            {
+              moduleName: "react-native-dotenv",
+            },
+          ],
+          "transform-remove-console",
+          "react-native-reanimated/plugin",
+        ],
       },
       development: {
-        plugins: ["react-native-reanimated/plugin"],
+        plugins: [
+          [
+            "module:react-native-dotenv",
+            {
+              moduleName: "react-native-dotenv",
+            },
+          ],
+          "react-native-reanimated/plugin",
+        ],
       },
     },
   };

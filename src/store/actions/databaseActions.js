@@ -63,13 +63,13 @@ export const getStaffActiveAudits = (institutionID, daysBefore = 0) => {
 
 export const getTenantAudits = (tenantID, daysBefore = 0) => {
   return async () => {
-    const getAudit = {
+    const options = {
       url: `${endpoint}audits`,
       method: "get",
       params: { tenantID, daysBefore },
     };
 
-    const res = await httpClient(getAudit);
+    const res = await httpClient(options);
 
     return res;
   };
@@ -77,7 +77,7 @@ export const getTenantAudits = (tenantID, daysBefore = 0) => {
 
 export const postAuditForm = (auditData) => {
   return async () => {
-    const postAudit = {
+    const options = {
       url: `${endpoint}audits`,
       method: "post",
       headers: {
@@ -87,7 +87,7 @@ export const postAuditForm = (auditData) => {
       data: auditData,
     };
 
-    const res = await httpClient(postAudit);
+    const res = await httpClient(options);
 
     return res;
   };
@@ -95,7 +95,7 @@ export const postAuditForm = (auditData) => {
 
 export const postAuditImages = (data) => {
   return async () => {
-    const postImages = {
+    const options = {
       url: `${endpoint}images`,
       method: "post",
       headers: {
@@ -105,7 +105,7 @@ export const postAuditImages = (data) => {
       data,
       timeout: 50000,
     };
-    const res = await httpClient(postImages);
+    const res = await httpClient(options);
 
     return res;
   };
@@ -113,7 +113,7 @@ export const postAuditImages = (data) => {
 
 export const postAuditImagesWeb = (data) => {
   return async () => {
-    const postImagesWeb = {
+    const options = {
       url: `${endpoint}images`,
       method: "post",
       headers: {
@@ -123,7 +123,7 @@ export const postAuditImagesWeb = (data) => {
       data,
       timeout: 50000,
     };
-    const res = await httpClient(postImagesWeb);
+    const res = await httpClient(options);
 
     return res;
   };
@@ -162,13 +162,13 @@ export const createNewTenant = (data) => {
 
 export const getGraphData = (fromDate, toDate, dataType, dataID) => {
   return async () => {
-    const getAudit = {
+    const options = {
       url: `${endpoint}auditTimeframe`,
       method: "get",
       params: { fromDate, toDate, dataType, dataID },
     };
 
-    const res = await httpClient(getAudit);
+    const res = await httpClient(options);
 
     return res;
   };

@@ -12,7 +12,6 @@ import {
   useTheme,
 } from "@ui-kitten/components";
 import { Camera } from "expo-camera";
-import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import moment from "moment";
@@ -23,6 +22,7 @@ import CustomDatepicker from "../../components/CustomDatePicker";
 import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
 import CustomText from "../../components/ui/CustomText";
+import { saveDestination } from "../../helpers/utils";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const CameraIcon = (props) => <Icon {...props} name="camera-outline" />;
@@ -111,20 +111,10 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     if (imageArray.length > 2) {
       alert("Upload Failed", "Max upload count is 3.", [{ text: "OK" }]);
     } else {
-      const fileName = `${`${checklistStore.chosen_tenant.tenantID}${Math.round(
-        Date.now() * Math.random()
-      )}`}.jpg`;
-      // const fileName = checklistStore.chosen_tenant.stallName + Date.now();
-      let destination;
-      if (Platform.OS === "web") {
-        destination = imageData.uri;
-      } else {
-        destination = FileSystem.cacheDirectory + fileName.replace(/\s+/g, "");
-        await FileSystem.copyAsync({
-          from: imageData.uri,
-          to: destination,
-        });
-      }
+      const { fileName, destination } = await saveDestination(
+        checklistStore.chosen_tenant.tenantID,
+        imageData
+      );
       dispatch(
         checklistActions.addImage(
           checklistType,
@@ -189,11 +179,7 @@ const QuestionDetailsScreen = ({ route, navigation }) => {
     <TopNavigationAction
       icon={ImageIcon}
       onPress={() => {
-        // if (Platform.OS === "web") {
-        //   navigation.navigate("CameraModal", { onSave: onSave });
-        // } else {
         imagePickerHandler();
-        // }
       }}
     />
   );

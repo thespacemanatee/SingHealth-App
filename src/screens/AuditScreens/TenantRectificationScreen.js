@@ -23,11 +23,15 @@ import useMountedState from "react-use/lib/useMountedState";
 
 import alert from "../../components/CustomAlert";
 import * as checklistActions from "../../store/actions/checklistActions";
-import * as databaseActions from "../../store/actions/databaseActions";
 import ImagePage from "../../components/ui/ImagePage";
 import ImageViewPager from "../../components/ImageViewPager";
 import CenteredLoading from "../../components/ui/CenteredLoading";
-import { handleErrorResponse } from "../../helpers/utils";
+import {
+  getS3Image,
+  handleErrorResponse,
+  processRectifications,
+  saveDestination,
+} from "../../helpers/utils";
 import CustomText from "../../components/ui/CustomText";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
@@ -101,53 +105,30 @@ const TenantRectificationScreen = ({ route, navigation }) => {
   const handleSubmitRectification = async () => {
     try {
       setLoadDialog(true);
-      const temp = uploadImageArray.map((e) => e.name);
+      const res = await processRectifications(uploadImageArray);
+      const fileNames = res.map((e) => e.fileName);
       const data = {
         [checklistType]: [
           {
             category: section,
             index,
-            rectificationImages: temp,
             rectificationRemarks: value,
             requestForExt: toggle,
+            ...(res.length > 0 && { rectificationImages: fileNames }),
           },
         ],
       };
 
-      const base64images = { images: [] };
-
-      uploadImageArray.forEach((image) => {
-        base64images.images.push({
-          fileName: image.name,
-          uri: image.uri,
-        });
-      });
-
-      // let res;
-      if (base64images.images.length > 0) {
-        await dispatch(databaseActions.postAuditImagesWeb(base64images));
-        await dispatch(
-          checklistActions.submitRectification(
-            checklistStore.auditMetadata._id,
-            data,
-            authStore.userType,
-            checklistType,
-            section,
-            index
-          )
-        );
-      } else {
-        await dispatch(
-          checklistActions.submitRectification(
-            checklistStore.auditMetadata._id,
-            data,
-            authStore.userType,
-            checklistType,
-            section,
-            index
-          )
-        );
-      }
+      await dispatch(
+        checklistActions.submitRectification(
+          checklistStore.auditMetadata._id,
+          data,
+          authStore.userType,
+          checklistType,
+          section,
+          index
+        )
+      );
 
       Toast.show({
         text1: "Success",
@@ -173,7 +154,6 @@ const TenantRectificationScreen = ({ route, navigation }) => {
     );
   };
 
-  // TODO: Cleanup memory leak when user leaves screen before image is loaded
   useEffect(() => {
     let type;
     if (checklistType === "covid19") {
@@ -191,16 +171,14 @@ const TenantRectificationScreen = ({ route, navigation }) => {
               index
             ].rectificationImages.map(async (fileName) => {
               if (!fileName.name) {
-                const res = await dispatch(
-                  checklistActions.getImage(fileName, source)
-                );
+                const image = await getS3Image(fileName);
                 dispatch(
                   checklistActions.addImage(
                     checklistType,
                     section,
                     index,
                     fileName,
-                    `data:image/jpg;base64,${res.data.data}`,
+                    image,
                     true
                   )
                 );
@@ -274,16 +252,10 @@ const TenantRectificationScreen = ({ route, navigation }) => {
     if (imageArray.length > 2) {
       alert("Upload Failed", "Max upload count is 3.", [{ text: "OK" }]);
     } else {
-      const fileName = `${`${checklistStore.chosen_tenant.tenantID}${Math.round(
-        Date.now() * Math.random()
-      )}`}.jpg`;
-
-      let destination;
-      if (Platform.OS === "web") {
-        destination = imageData.uri;
-      } else {
-        destination = `data:image/jpg;base64,${imageData.base64}`;
-      }
+      const { fileName, destination } = await saveDestination(
+        checklistStore.chosen_tenant.tenantID,
+        imageData
+      );
 
       const tempImageArray = [...imageArray];
       const tempUploadImageArray = [...uploadImageArray];
@@ -319,7 +291,6 @@ const TenantRectificationScreen = ({ route, navigation }) => {
       allowsEditing: true,
       aspect: [3, 4],
       quality: 0.5,
-      base64: true,
     });
 
     if (!result.cancelled) {
@@ -357,11 +328,7 @@ const TenantRectificationScreen = ({ route, navigation }) => {
     <TopNavigationAction
       icon={ImageIcon}
       onPress={() => {
-        // if (Platform.OS === "web") {
-        //   navigation.navigate("CameraModal", { onSave: onSave });
-        // } else {
         imagePickerHandler();
-        // }
       }}
     />
   );
