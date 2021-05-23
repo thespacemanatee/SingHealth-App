@@ -1,5 +1,3 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-restricted-syntax */
 import React, { useState, useEffect, useCallback } from "react";
 import { Platform, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
@@ -12,7 +10,6 @@ import {
   TopNavigationAction,
   Icon,
 } from "@ui-kitten/components";
-import _ from "lodash";
 import moment from "moment";
 import { StackActions } from "@react-navigation/routers";
 import Toast from "react-native-toast-message";
@@ -35,22 +32,27 @@ const AuditSubmitScreen = ({ navigation }) => {
     setError(false);
     setSubmitting(true);
     const chosenChecklistType = checklistStore.chosen_checklist_type;
-    const tempChosenChecklist = await processAuditForms(
-      checklistStore.chosen_checklist
-    );
-    const tempCovidChecklist = await processAuditForms(checklistStore.covid19);
+    try {
+      const tempChosenChecklist = await processAuditForms(
+        checklistStore.chosen_checklist
+      );
+      const tempCovidChecklist = await processAuditForms(
+        checklistStore.covid19
+      );
+      const auditData = {
+        auditMetadata: checklistStore.auditMetadata,
+        auditForms: {
+          [chosenChecklistType]: tempChosenChecklist,
+          covid19: tempCovidChecklist,
+        },
+      };
 
-    const auditData = {
-      auditMetadata: checklistStore.auditMetadata,
-      auditForms: {
-        [chosenChecklistType]: tempChosenChecklist,
-        covid19: tempCovidChecklist,
-      },
-    };
-
-    console.log(auditData);
-
-    uploadAuditData(auditData);
+      uploadAuditData(auditData);
+    } catch (err) {
+      handleErrorResponse(err);
+      setError(true);
+      setSubmitting(false);
+    }
   }, [
     checklistStore.auditMetadata,
     checklistStore.chosen_checklist,

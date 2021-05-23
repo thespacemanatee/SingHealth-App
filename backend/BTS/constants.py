@@ -3,7 +3,7 @@ MAX_NUM_IMAGES_PER_NC = 20
 PRESIGNED_LINK_TIMEOUT = 300# seconds
 MAX_IMAGE_FILE_SIZE_PER_UPLOAD = 100_000_000# Bytes
 
-BTS_EMAIL = "Build.Tech.for.SingHealth@gmail.com"
+BTS_EMAIL = "mailservice.bts@gmail.com"
 
 BTS_APP_CONFIG_EMAIL = dict(
         MAIL_SERVER='smtp.gmail.com',

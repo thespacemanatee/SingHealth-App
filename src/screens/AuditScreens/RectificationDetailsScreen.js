@@ -77,6 +77,7 @@ const RectificationDetailsScreen = ({ route, navigation }) => {
               async (fileName) => {
                 if (!fileName.name) {
                   const image = await getS3Image(fileName);
+                  console.log(image);
                   dispatch(
                     checklistActions.addImage(
                       checklistType,

@@ -45,10 +45,10 @@ const AppNavigator = () => {
                           Saved: "staff/new-audit/saved",
                         },
                       },
-                      Checklist: "staff/new-audit/:auditID",
+                      Checklist: "staff/new-audit/:stallName",
                       QuestionDetails: "staff/new-audit/details",
                       AuditSubmit: "staff/new-audit/submit",
-                      Rectification: "staff/rectification/:auditID",
+                      Rectification: "staff/rectification/:stallName",
                       RectificationDetails: "staff/rectification/details",
                       StaffRectification: "staff/rectification/status",
                     },
@@ -59,7 +59,7 @@ const AppNavigator = () => {
                       TenantsDirectory:
                         "staff/directory/institution/:institutionID",
                       TenantInfo: "staff/directory/stall/:tenantID",
-                      Rectification: "staff/directory/stall/:auditID",
+                      Rectification: "staff/directory/stall/:stallName",
                       RectificationDetails: "staff/directory/stall/details",
                       StaffRectification: "staff/directory/stall/status",
                     },
@@ -93,7 +93,7 @@ const AppNavigator = () => {
                           Read: "tenant/notifications/read",
                         },
                       },
-                      Rectification: "tenant/rectification/:auditID",
+                      Rectification: "tenant/rectification/:stallName",
                       RectificationDetails: "tenant/rectification/details",
                       TenantRectification: "tenant/rectification/status",
                     },
@@ -101,7 +101,7 @@ const AppNavigator = () => {
                   TenantRecordsStack: {
                     screens: {
                       TenantRecords: "tenant/records",
-                      Rectification: "tenant/records/rectification/:auditID",
+                      Rectification: "tenant/records/rectification/:stallName",
                       RectificationDetails:
                         "tenant/records/rectification/:stallName/details",
                       TenantRectification:
