@@ -88,7 +88,7 @@ def addImagesEndpoint(app):
                 return serverResponse(None, 500, "Unexpected error, pls try again.")
 
     @app.route("/images/upload-url", methods=["GET"])
-    @login_required
+    # @login_required
     def images_upload():
         if request.method == 'GET':
             fileName = str(ObjectId())
@@ -114,7 +114,7 @@ def addImagesEndpoint(app):
             )
 
     @app.route("/images/download-url", methods=["GET"])
-    @login_required
+    # @login_required
     def images_download():
         if request.method == 'GET':
             args = request.args
