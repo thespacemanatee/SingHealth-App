@@ -9549,10 +9549,10 @@ react-native-pager-view@^5.1.10:
   resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-5.1.10.tgz#6ec52b16f4bca9ba3cdbfa442d53620c976db4c2"
   integrity sha512-sVWEPaxSyp2TOQ9yt+v+ecEdZ2lGnZ9TtoNU+WA1c6SjYdQlIvS2ZMb2hvdmgTMCnZpzKF02WH9BimGOzQRDIg==
 
-react-native-paper@^4.9.0:
-  version "4.9.0"
-  resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-4.9.0.tgz#af67ae6fd92c13d8cf5e37700ad2b37aac85b2ed"
-  integrity sha512-1+7V5wJgNcEdTE+sckGF+ABImLQbWdYFGTEqkVsqdsd1mKxRSVeHJXqeQAZwiFJAZJiHzxL403rKPNdi8ZpGng==
+react-native-paper@^4.9.1:
+  version "4.9.1"
+  resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-4.9.1.tgz#9b2aadcb1bd48ff6825641df60821e20e0cc8276"
+  integrity sha512-vGgNvQE/GlNSjwJw+1LW0yoULTh7enxln16bYfOoI9Xiz1NOKxhfyQN0/LlZn7JFhRdbXW+3+6yMBJ50Emt+ng==
   dependencies:
     "@callstack/react-theme-provider" "^3.0.6"
     color "^3.1.2"
