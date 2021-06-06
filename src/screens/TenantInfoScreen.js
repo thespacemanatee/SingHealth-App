@@ -21,6 +21,7 @@ import { handleErrorResponse } from "../helpers/utils";
 import CustomText from "../components/ui/CustomText";
 import SkeletonLoading from "../components/ui/loading/SkeletonLoading";
 import TimedGraph from "../components/TimedGraph";
+import AuditsHeader from "../components/AuditsHeader";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
@@ -30,6 +31,8 @@ const TenantInfoScreen = ({ route, navigation }) => {
   const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState(false);
   const [listData, setListData] = useState([]);
+  const [sortedListData, setSortedListData] = useState([]);
+  const [orderedBy, setOrderedBy] = useState("Oldest");
   const { tenantID, stallName } = route.params;
 
   const isMounted = useMountedState();
@@ -144,6 +147,46 @@ const TenantInfoScreen = ({ route, navigation }) => {
     };
   }, [getListData, navigation]);
 
+  useEffect(() => {
+    const temp = [...listData];
+    switch (orderedBy) {
+      case "Oldest":
+        setSortedListData(
+          temp.sort((a, b) => {
+            return a.auditMetadata.date.$date - b.auditMetadata.date.$date;
+          })
+        );
+        break;
+
+      case "Newest":
+        setSortedListData(
+          temp.sort((a, b) => {
+            return b.auditMetadata.date.$date - a.auditMetadata.date.$date;
+          })
+        );
+        break;
+
+      case "Increasing Score":
+        setSortedListData(
+          temp.sort((a, b) => {
+            return a.auditMetadata.score - b.auditMetadata.score;
+          })
+        );
+        break;
+
+      case "Decreasing Score":
+        setSortedListData(
+          temp.sort((a, b) => {
+            return b.auditMetadata.score - a.auditMetadata.score;
+          })
+        );
+        break;
+
+      default:
+        break;
+    }
+  }, [orderedBy, listData]);
+
   return (
     <View style={styles.screen}>
       <TopNavigation
@@ -159,7 +202,7 @@ const TenantInfoScreen = ({ route, navigation }) => {
         <FlatList
           contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
-          data={listData}
+          data={sortedListData}
           renderItem={renderAudits}
           refreshControl={
             <RefreshControl refreshing={listLoading} onRefresh={getListData} />
@@ -168,9 +211,13 @@ const TenantInfoScreen = ({ route, navigation }) => {
           ListHeaderComponent={
             <>
               <TimedGraph label="Average Scores" type="tenant" id={tenantID} />
-              <View style={styles.textContainer}>
-                <CustomText style={styles.text}>All Audits</CustomText>
-              </View>
+              <AuditsHeader
+                label="All Audits"
+                onOldestPress={(type) => setOrderedBy(type)}
+                onNewestPress={(type) => setOrderedBy(type)}
+                onIncreasingScorePress={(type) => setOrderedBy(type)}
+                onDecreasingScorePress={(type) => setOrderedBy(type)}
+              />
             </>
           }
         />
@@ -187,13 +234,6 @@ const styles = StyleService.create({
   },
   layout: {
     flex: 1,
-  },
-  textContainer: {
-    margin: 20,
-  },
-  text: {
-    fontSize: 26,
-    fontFamily: "SFProDisplay-Bold",
   },
   contentContainer: {
     flexGrow: 1,
