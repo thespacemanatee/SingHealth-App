@@ -84,11 +84,15 @@ const styles = StyleService.create({
     paddingHorizontal: 10,
   },
   imageContainer: {
-    elevation: 10,
-    shadowOffset: { width: 5, height: 5 },
-    shadowColor: "grey",
-    shadowOpacity: 0.7,
-    borderRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    borderRadius: 10,
   },
   image: {
     backgroundColor: "white",

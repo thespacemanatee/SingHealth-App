@@ -85,5 +85,6 @@ const styles = StyleService.create({
   text: {
     fontSize: 26,
     fontFamily: "SFProDisplay-Bold",
+    flexShrink: 1,
   },
 });
