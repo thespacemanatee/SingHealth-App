@@ -73,7 +73,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.3",
+    "@babel/core": "^7.14.5",
     "@types/react": "^17.0.11",
     "@babel/eslint-parser": "^7.14.5",
     "@types/react-native": "^0.64.10",
