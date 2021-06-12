@@ -33,6 +33,7 @@ def change_tenant_info(app, mongo):
                     "_id": str(ObjectId()),
                     "name": tenant_info["name"],
                     "stallName": tenant_info["stallName"],
+                    "image": tenant_info.get("image", None),
                     "email": tenant_info["email"].lower(),
                     "pswd": generate_password_hash(tenant_info["pswd"]),
                     "institutionID": tenant_info["institutionID"],

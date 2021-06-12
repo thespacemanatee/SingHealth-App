@@ -13,6 +13,10 @@
             "description": "Tenant's full name in upper case",
             "type": "string"
         },
+        "image": {
+            "description": "The file name of the profile picture",
+            "type": "string"
+        },
         "email": {
             "description": "The user email of a tenant",
             "type": "string"

@@ -9,11 +9,13 @@ def addLoginEndpointsForTenantAndStaff(app, mongo, login_manager):
     @app.route('/login/staff',  methods=["POST"])
     def login_for_staff():
         if request.method == "POST":
+            print("REcieved post login request")
             credentials = request.json
             expoToken = credentials.get("expoToken", None)
             userEmail = credentials["user"].lower()
-
+            print("Forwarding to mongo")
             user = mongo.db.staff.find_one({"email": userEmail})
+            print("Response from mongo")
             if user:
                 dbUserEmail = user['email'].lower()
                 if check_password_hash(user["pswd"], credentials["pswd"]):

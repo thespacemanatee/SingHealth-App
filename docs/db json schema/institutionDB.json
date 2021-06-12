@@ -13,6 +13,10 @@
             "description": "Full name of the institution",
             "type": "string"
         },
+        "image": {
+            "description": "The file name of the profile picture",
+            "type": "string"
+        },
         "address": {
             "description": "The address of the institution",
             "type": "object",
