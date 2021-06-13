@@ -171,6 +171,11 @@ const styles = StyleService.create({
     marginBottom: 20,
     paddingHorizontal: 10,
   },
+  emptyComponent: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexGrow: 1,
+  },
 });
 
 export default SelectDeleteScreen;
