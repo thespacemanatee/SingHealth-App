@@ -148,7 +148,7 @@ const TenantInfoScreen = ({ route, navigation }) => {
   }, [getListData, navigation]);
 
   useEffect(() => {
-    const temp = [...listData];
+    const temp = listData ? [...listData] : [];
     switch (orderedBy) {
       case "Oldest":
         setSortedListData(

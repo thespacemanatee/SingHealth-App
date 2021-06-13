@@ -140,7 +140,6 @@ const StaffDashboardScreen = ({ navigation }) => {
   const getListData = useCallback(async () => {
     try {
       setListLoading(true);
-
       await dispatch(
         databaseActions.getStaffActiveAudits(authStore.institutionID)
       );
@@ -187,7 +186,9 @@ const StaffDashboardScreen = ({ navigation }) => {
   }, [getListData, getNotifications, navigation]);
 
   useEffect(() => {
-    const temp = [...databaseStore.activeAudits];
+    const temp = databaseStore.activeAudits
+      ? [...databaseStore.activeAudits]
+      : [];
     switch (orderedBy) {
       case "Oldest":
         setSortedListData(

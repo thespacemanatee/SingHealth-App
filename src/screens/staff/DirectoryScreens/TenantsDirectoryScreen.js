@@ -151,7 +151,7 @@ const styles = StyleService.create({
     fontFamily: "SFProDisplay-Bold",
   },
   contentContainer: {
-    // flexGrow: 1,
+    flexGrow: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
   },
