@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { StyleSheet, View, Pressable } from "react-native";
+import React from "react";
+import { StyleSheet, View, Platform, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, {
   interpolate,
@@ -7,26 +7,21 @@ import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import { Icon } from "@ui-kitten/components";
 import * as ImagePicker from "expo-image-picker";
 
 import { MAX_HEADER_HEIGHT, MIN_HEADER_HEIGHT } from "./Model";
 import Header from "./Header";
 import AddTenantContent from "../../screens/staff/AddTenantScreens/AddTenantContent";
-import CustomText from "../ui/CustomText";
 
 interface ContentProps {
   navigation: any;
   y: Animated.SharedValue<number>;
-  onImageAdded: (image: ImagePicker.ImagePickerResult) => void;
+  imageAdded: ImagePicker.ImagePickerResult;
+  // onImageAdded: (image: ImagePicker.ImagePickerResult) => void;
 }
 
-const ImageIcon = (props) => (
-  <Icon {...props} name="image-outline" fill="gray" style={styles.imageIcon} />
-);
-
-export default ({ navigation, y, onImageAdded }: ContentProps) => {
-  const [imageAdded, setImageAdded] = useState<ImagePicker.ImagePickerResult>();
+export default ({ navigation, y, imageAdded }: ContentProps) => {
+  // const [imageAdded, setImageAdded] = useState<ImagePicker.ImagePickerResult>();
   const handler = useAnimatedScrollHandler((event) => {
     // eslint-disable-next-line no-param-reassign
     y.value = event.contentOffset.y;
@@ -39,7 +34,12 @@ export default ({ navigation, y, onImageAdded }: ContentProps) => {
         [0, MAX_HEADER_HEIGHT],
         Extrapolate.CLAMP
       ),
-      opacity: y.value >= MAX_HEADER_HEIGHT ? 0 : 1,
+      opacity: interpolate(
+        y.value,
+        [-MAX_HEADER_HEIGHT, 0, MAX_HEADER_HEIGHT],
+        [0, 1, 0],
+        Extrapolate.CLAMP
+      ),
     };
   });
   const imageStyle = useAnimatedStyle(() => {
@@ -52,20 +52,6 @@ export default ({ navigation, y, onImageAdded }: ContentProps) => {
       ),
     };
   });
-
-  const handleAddImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    if (!result.cancelled) {
-      setImageAdded(result);
-      onImageAdded(result);
-    }
-  };
 
   return (
     <Animated.ScrollView
@@ -82,16 +68,13 @@ export default ({ navigation, y, onImageAdded }: ContentProps) => {
               style={StyleSheet.absoluteFill}
               start={[0, 0.3]}
               end={[0, 1]}
-              colors={["transparent", "rgba(0, 0, 0, 0.2)", "white"]}
+              colors={["transparent", "white"]}
             />
           </Animated.View>
         )}
         {!imageAdded && (
-          <Animated.View style={imageStyle}>
-            <Pressable onPress={handleAddImage} style={styles.imageContainer}>
-              <ImageIcon />
-              <CustomText style={styles.imageText}>Create Tenant</CustomText>
-            </Pressable>
+          <Animated.View style={[styles.titleContainer, imageStyle]}>
+            <Text style={styles.titleText}>Create Tenant</Text>
           </Animated.View>
         )}
       </View>
@@ -108,6 +91,7 @@ const styles = StyleSheet.create({
   },
   cover: {
     height: MAX_HEADER_HEIGHT,
+    justifyContent: Platform.select({ web: "center" }),
   },
   gradient: {
     position: "absolute",
@@ -116,16 +100,12 @@ const styles = StyleSheet.create({
     right: 0,
     alignItems: "center",
   },
-  imageIcon: {
-    height: 100,
-    width: 100,
-  },
-  imageContainer: {
+  titleContainer: {
     alignItems: "center",
   },
-  imageText: {
-    textAlign: "center",
+  titleText: {
     fontSize: 36,
     marginTop: 16,
+    fontFamily: "SFProDisplay-Regular",
   },
 });

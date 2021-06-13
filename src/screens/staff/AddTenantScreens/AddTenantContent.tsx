@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, useWindowDimensions } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  useWindowDimensions,
+  Platform,
+} from "react-native";
 import {
   Button,
   Icon,
@@ -19,7 +24,10 @@ import CustomTextInput from "../../../components/CustomTextInput";
 import * as databaseActions from "../../../store/actions/databaseActions";
 import { handleErrorResponse } from "../../../helpers/utils";
 import CenteredLoading from "../../../components/ui/CenteredLoading";
-import { MIN_HEADER_HEIGHT } from "../../../components/createTenant/Model";
+import {
+  MIN_HEADER_HEIGHT,
+  WEB_PADDINGTOP,
+} from "../../../components/createTenant/Model";
 
 interface AddTenantContentProps {
   navigation: any;
@@ -125,7 +133,14 @@ const AddTenantContent = ({
           values,
           errors,
         }) => (
-          <View style={[styles.container, { height }]}>
+          <View
+            style={[
+              styles.container,
+              {
+                height,
+              },
+            ]}
+          >
             <CustomTextInput
               label="Tenant Name"
               returnKeyType="next"
@@ -224,10 +239,10 @@ const AddTenantContent = ({
 
 const styles = StyleService.create({
   container: {
-    flex: 1,
     backgroundColor: "white",
     paddingLeft: 20,
     paddingRight: 20,
+    paddingTop: Platform.select({ web: WEB_PADDINGTOP * 2 }),
   },
   buttonContainer: {
     flex: 1,

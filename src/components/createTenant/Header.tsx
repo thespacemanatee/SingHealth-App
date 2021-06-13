@@ -1,12 +1,12 @@
 import * as React from "react";
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import Constants from "expo-constants";
 import Animated, {
   interpolate,
   Extrapolate,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import { MIN_HEADER_HEIGHT, HEADER_DELTA } from "./Model";
+import { MIN_HEADER_HEIGHT, HEADER_DELTA, WEB_PADDINGTOP } from "./Model";
 
 interface HeaderProps {
   y: Animated.SharedValue<number>;
@@ -49,7 +49,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: MIN_HEADER_HEIGHT,
-    paddingTop: Constants.statusBarHeight,
+    paddingTop:
+      Platform.OS === "web" ? WEB_PADDINGTOP : Constants.statusBarHeight,
   },
   title: {
     color: "black",

@@ -13,6 +13,7 @@ import Cover from "../../../components/createTenant/Cover";
 import Content from "../../../components/createTenant/Content";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
+const ImageIcon = (props) => <Icon {...props} name="image-outline" />;
 
 const CreateTenantScreen = ({ navigation }) => {
   const y = useSharedValue(0);
@@ -20,9 +21,22 @@ const CreateTenantScreen = ({ navigation }) => {
 
   const insets = useSafeAreaInsets();
 
-  const onImageAdded = (image: ImagePicker.ImagePickerResult) => {
-    setImageAdded(image);
+  const handleAddImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setImageAdded(result);
+    }
   };
+
+  const ImageAction = () => (
+    <TopNavigationAction icon={ImageIcon} onPress={handleAddImage} />
+  );
 
   const BackAction = () => (
     <TopNavigationAction
@@ -41,10 +55,11 @@ const CreateTenantScreen = ({ navigation }) => {
     <View style={styles.container}>
       <TopNavigation
         accessoryLeft={BackAction}
+        accessoryRight={ImageAction}
         style={[styles.header, { paddingTop: insets.top }]}
       />
       <Cover {...{ y, imageAdded }} />
-      <Content {...{ navigation, y, onImageAdded }} />
+      <Content {...{ navigation, y, imageAdded }} />
     </View>
   );
 };
@@ -60,5 +75,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
     position: "absolute",
     backgroundColor: "transparent",
+    width: "100%",
   },
 });
