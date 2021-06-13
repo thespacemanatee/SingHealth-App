@@ -113,7 +113,7 @@ const AuditSubmitScreen = ({ navigation }) => {
   return (
     <View style={styles.screen}>
       <TopNavigation
-        title="SingHealth"
+        title="Audit Submission"
         alignment="center"
         accessoryLeft={renderBackAction}
       />
