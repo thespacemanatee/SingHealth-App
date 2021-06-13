@@ -11,16 +11,7 @@ def institution_info(app, mongo):
         try:
             insts = mongo.db.institution.find()
 
-            result = [{
-                'institutionID': str(inst['_id']),
-                'institutionName': inst["name"]
-            }
-                for inst in insts]
-
-            if len(result) > 0:
-                output = serverResponse(result, 200, "Success")
-            else:
-                output = serverResponse(None, 200, "No institution found")
+            output = serverResponse(insts, 200, "Success")
         except:
             output = serverResponse(None, 404, "Error in connection")
 
