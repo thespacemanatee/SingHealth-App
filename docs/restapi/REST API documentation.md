@@ -7,7 +7,7 @@
 ### Authentication
 
 - [x] [`POST /login/tenant`](#POST-/login/tenant`)
-- [x] [`POST /login/staff`](#`GET-/login/staff`)
+- [x] [`POST /login/staff`](#`POST-/login/staff`)
 - [x] [`POST /logout`](#`POST-/logout`)
 
 ### Tenant Management
