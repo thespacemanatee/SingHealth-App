@@ -8,9 +8,12 @@ import * as checklistActions from "../store/actions/checklistActions";
 import alert from "./CustomAlert";
 import EntityCard from "./EntityCard";
 import { handleErrorResponse } from "../helpers/utils";
+import useGetTenantDetails from "../helpers/hooks/useGetTenantDetails";
 
 const SavedChecklistCard = ({ item, navigation, deleteSave, onLoading }) => {
   const dispatch = useDispatch();
+
+  const { response } = useGetTenantDetails(item.chosen_tenant.tenantID);
 
   const handleOpenSavedChecklist = () => {
     dispatch(checklistActions.addSavedChecklist(item.data));
@@ -58,7 +61,7 @@ const SavedChecklistCard = ({ item, navigation, deleteSave, onLoading }) => {
         .split(" ")
         .slice(0, 5)
         .join(" ")}
-      image={item.image}
+      image={response?.image}
     />
   );
 };
