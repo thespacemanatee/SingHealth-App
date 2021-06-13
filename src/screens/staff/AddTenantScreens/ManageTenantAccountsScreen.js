@@ -42,7 +42,9 @@ const ManageTenantAccountsScreen = ({ navigation }) => {
       />
       <Divider />
       <Layout style={styles.layout}>
-        <Logo />
+        <View style={styles.logo}>
+          <Logo />
+        </View>
         <View style={styles.buttonsContainer}>
           <Button style={styles.button} onPress={handleRegister}>
             Create Tenant Account
@@ -64,10 +66,12 @@ const styles = StyleService.create({
   layout: {
     flex: 1,
     justifyContent: "space-between",
+  },
+  logo: {
+    width: "100%",
     alignItems: "center",
   },
   buttonsContainer: {
-    width: "100%",
     padding: 20,
   },
   button: {

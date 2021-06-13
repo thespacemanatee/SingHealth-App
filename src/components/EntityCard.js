@@ -36,6 +36,8 @@ const EntityCard = ({
     };
     if (image) {
       getImage();
+    } else {
+      setImageUri(null);
     }
   }, [image]);
 

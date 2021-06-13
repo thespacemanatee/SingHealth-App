@@ -14,7 +14,7 @@ const EntityLoading = (props) => {
   const windowDimensions = useWindowDimensions();
   const { width, height } = windowDimensions;
 
-  const SVG_HEIGHT = 75;
+  const SVG_HEIGHT = 115;
   const len = new Array(Math.ceil(height / SVG_HEIGHT)).fill();
   if (Platform.OS === "web") {
     return len.map((item, index) => {
@@ -29,7 +29,7 @@ const EntityLoading = (props) => {
           foregroundColor="#ecebeb"
           {...props}
         >
-          <rect x="0" y="15" rx="10" ry="10" width={`${width}`} height="60" />
+          <rect x="0" y="15" rx="10" ry="10" width={`${width}`} height="100" />
         </ContentLoader>
       );
     });
@@ -47,7 +47,7 @@ const EntityLoading = (props) => {
         foregroundColor="#ecebeb"
         {...props}
       >
-        <Rect x="0" y="15" rx="10" ry="10" width={`${width}`} height="60" />
+        <Rect x="0" y="15" rx="10" ry="10" width={`${width}`} height="100" />
       </ContentLoader>
     );
   });

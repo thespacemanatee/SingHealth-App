@@ -146,7 +146,11 @@ const SelectDeleteScreen = ({ route, navigation }) => {
           ListEmptyComponent={renderEmptyComponent}
         />
         <View style={styles.buttonContainer}>
-          <Button disabled={!selectedTenant} onPress={handleDeleteTenant}>
+          <Button
+            style={styles.button}
+            disabled={!selectedTenant}
+            onPress={handleDeleteTenant}
+          >
             DELETE TENANT
           </Button>
         </View>
@@ -163,14 +167,16 @@ const styles = StyleService.create({
   layout: {
     flex: 1,
   },
+  buttonContainer: {
+    padding: 20,
+  },
+  button: {
+    marginBottom: 10,
+  },
   contentContainer: {
     flexGrow: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
-  },
-  buttonContainer: {
-    marginBottom: 20,
-    paddingHorizontal: 10,
   },
   emptyComponent: {
     justifyContent: "center",
