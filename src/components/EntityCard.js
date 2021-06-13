@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Image, useWindowDimensions } from "react-native";
 import { StyleService, useTheme } from "@ui-kitten/components";
 import { LinearGradient } from "expo-linear-gradient";
+import * as FileSystem from "expo-file-system";
 
 import CustomText from "./ui/CustomText";
 import ShadowCard from "./ui/ShadowCard";
-import useGetS3Image from "../helpers/hooks/useGetS3Image";
+import { getS3Image } from "../helpers/utils";
 
 const CARD_HEIGHT = 100;
 
@@ -16,11 +17,25 @@ const EntityCard = ({
   timestamp,
   image,
 }) => {
-  const { response: imageUri } = useGetS3Image(image);
-
+  const [imageUri, setImageUri] = useState();
   const { width } = useWindowDimensions();
 
   const theme = useTheme();
+
+  useEffect(() => {
+    const getImage = async () => {
+      const destination = `${FileSystem.cacheDirectory}${image}`;
+      const cachedImage = await FileSystem.getInfoAsync(destination);
+      if (cachedImage.exists) {
+        setImageUri(cachedImage.uri);
+      } else {
+        const url = await getS3Image(image);
+        const downloadImage = await FileSystem.downloadAsync(url, destination);
+        setImageUri(downloadImage);
+      }
+    };
+    getImage();
+  }, [image]);
 
   return (
     <ShadowCard
