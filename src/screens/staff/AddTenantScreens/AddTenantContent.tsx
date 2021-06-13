@@ -64,8 +64,8 @@ const AddTenantContent = ({
         staffID: authStore._id,
       };
       if (imageAdded) {
-        const { fileName } = await uploadToS3(imageAdded);
-        data = { ...data, fileName };
+        const { fileName: image } = await uploadToS3(imageAdded);
+        data = { ...data, image };
       }
 
       await dispatch(databaseActions.createNewTenant(data));
