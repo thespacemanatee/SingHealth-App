@@ -101,7 +101,7 @@ const ChooseTenantScreen = ({ navigation }) => {
       <EntityLoading />
     ) : (
       <View style={styles.emptyComponent}>
-        <CustomText bold>NO SAVED CHECKLISTS AVAILABLE</CustomText>
+        <CustomText bold>NO SAVED AUDITS AVAILABLE</CustomText>
       </View>
     );
 
@@ -110,9 +110,7 @@ const ChooseTenantScreen = ({ navigation }) => {
       <CenteredLoading loading={loading} />
       <Layout style={styles.screen}>
         <View style={styles.titleContainer}>
-          <CustomText bold style={styles.title}>
-            Saved Checklists
-          </CustomText>
+          <CustomText style={styles.title}>Saved Audits</CustomText>
         </View>
         <FlatList
           data={saved}
@@ -149,7 +147,9 @@ const styles = StyleService.create({
     margin: 20,
   },
   title: {
-    fontSize: 20,
+    fontSize: 26,
+    fontFamily: "SFProDisplay-Bold",
+    flexShrink: 1,
   },
   contentContainer: {
     flexGrow: 1,

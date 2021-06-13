@@ -58,11 +58,12 @@ const DeleteTenantScreen = ({ navigation }) => {
         <EntityCard
           onPress={() => {
             handleNavigateTenants(
-              itemData.item.institutionID,
+              itemData.item._id,
               itemData.item.institutionName
             );
           }}
           displayName={itemData.item.institutionName}
+          image={itemData.item.image}
         />
       );
     },

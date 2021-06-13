@@ -88,9 +88,7 @@ const ChooseTenantScreen = ({ navigation }) => {
       <CenteredLoading loading={loading} />
       <Layout style={styles.screen}>
         <View style={styles.titleContainer}>
-          <CustomText bold style={styles.title}>
-            Choose a Tenant to Audit
-          </CustomText>
+          <CustomText style={styles.title}>Select Tenant</CustomText>
         </View>
         <FlatList
           data={databaseStore.relevantTenants}
@@ -127,7 +125,9 @@ const styles = StyleService.create({
     margin: 20,
   },
   title: {
-    fontSize: 20,
+    fontSize: 26,
+    fontFamily: "SFProDisplay-Bold",
+    flexShrink: 1,
   },
   contentContainer: {
     flexGrow: 1,

@@ -232,7 +232,7 @@ const ChooseTenantTopTabNavigator = ({ navigation }) => {
   return (
     <View style={styles.screen}>
       <TopNavigation
-        title="Tenant Selection"
+        title="Create Audit"
         alignment="center"
         accessoryLeft={BackAction}
       />
