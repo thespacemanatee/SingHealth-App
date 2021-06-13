@@ -6,7 +6,7 @@
 
 ### Authentication
 
-- [x] [`POST /login/tenant`](#`GET-/login/tenant`)
+- [x] [`POST /login/tenant`](#POST-/login/tenant`)
 - [x] [`POST /login/staff`](#`GET-/login/staff`)
 - [x] [`POST /logout`](#`POST-/logout`)
 
@@ -282,13 +282,17 @@ localhost:5000/audits?tenantID=veagvtrhfvrtbhtvg&daysBefore=0
 ```
 
 ## `GET /images/upload-url`
+
 ---
+
 Gets a Amazom S3 presigned url for client to upload a single file.
+
 ### Sample request
 
 ```
 /images/upload-url
 ```
+
 ### Sample response
 
 #### Success
@@ -310,18 +314,23 @@ Gets a Amazom S3 presigned url for client to upload a single file.
 ```
 
 ## `GET /images/download-url`
+
 ### Request Args
-Arg | Description
--|-
-fileName | Name of file. Includes the extension.
+
+| Arg      | Description                           |
+| -------- | ------------------------------------- |
+| fileName | Name of file. Includes the extension. |
+
 ### Sample request
+
 ```
 /images/download-url?fileName=e4566tgy56h4tg3rfyhrf3gttrr.jpg
 ```
+
 ### Sample response
 
-
 #### Success
+
 ```js
 "status": 200,
 "data": {
@@ -332,7 +341,9 @@ fileName | Name of file. Includes the extension.
 ```
 
 #### Failure
+
 ##### No such image
+
 ```js
 "status": 404,
 "data": {
@@ -341,7 +352,9 @@ fileName | Name of file. Includes the extension.
     }
 }
 ```
+
 ##### No file name provided
+
 ```js
 "status": 400,
 "data": {
@@ -354,12 +367,13 @@ fileName | Name of file. Includes the extension.
 ## `GET /images`
 
 ---
+
 Gets a Amazom S3 presigned url for client to download a single file.
 
 ### Query string args
 
 | Arg        | Description                                                        |
-| ---------- | ------------------------------------------------------------------ 
+| ---------- | ------------------------------------------------------------------ |
 | `fileName` | The name and file extension of the image. Must be globally unique. |
 
 ### Sample request
@@ -1171,7 +1185,7 @@ The staff to add new tenant.
 | --------------- | -------------------------------------------------------- |
 | `name`          | Tenant's full name in upper case.                        |
 | `stallName`     | Name of the stall.                                       |
-`image` | The filename of the profile photo. Optional.
+| `image`         | The filename of the profile photo. Optional.             |
 | `email`         | The user email of a tenant. Unique email for each tenant |
 | `pswd`          | The password credentials for a tenant.                   |
 | `fnb`           | Whether the stall is an F&B stall.                       |
@@ -1506,10 +1520,17 @@ localhost:5000/institutions
 "data": {
     "description": "Success",
     "data": [
-        {"institutionID": "CGH",
-        "institutionName": "Changi General Hospital"},
-        {"institutionID": "SKH",
-        "institutionName": "Sengkang General Hospital"},
+        {"_id": "CGH",
+        "institutionName": "Changi General Hospital",
+        "image":"63sadsadwqq21321dasds",
+        "poc": ...,
+        "address": ...,},
+        {"_id": "SKH",
+        "institutionName": "Sengkang General Hospital",
+        "image":"63sadsadwqqd13d1dasds",
+        "poc": ...,
+        "address": ...,},
+        },
         ...
     ]
 }
@@ -1519,8 +1540,10 @@ localhost:5000/institutions
 
 | Attribute         | Description                        |
 | ----------------- | ---------------------------------- |
-| `institutionID`   | Unique identifier for institutions |
+| `_id`   | Unique identifier for institutions |
 | `institutionName` | Name of the institutions           |
+| `address` | Address of institutions           |
+| `poc` | POC of institutions           |
 
 #### Failures
 
