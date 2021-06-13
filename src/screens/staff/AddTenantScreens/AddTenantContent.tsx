@@ -58,13 +58,15 @@ const AddTenantContent = ({
   const handleSubmitForm = async (values) => {
     try {
       setLoading(true);
-      const { fileName } = await uploadToS3(imageAdded);
-      const data = {
+      let data = {
         ...values,
         institutionID: authStore.institutionID,
         staffID: authStore._id,
-        ...(imageAdded && { image: fileName }),
       };
+      if (imageAdded) {
+        const { fileName } = await uploadToS3(imageAdded);
+        data = { ...data, fileName };
+      }
 
       await dispatch(databaseActions.createNewTenant(data));
 

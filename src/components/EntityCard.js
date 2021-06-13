@@ -30,7 +30,7 @@ const EntityCard = ({
       onPress={onPress}
       onLongPress={onLongPress}
     >
-      {image ? (
+      {imageUri ? (
         <Image style={[styles.image, { width }]} source={{ uri: imageUri }} />
       ) : (
         <View
