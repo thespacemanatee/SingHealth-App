@@ -128,7 +128,7 @@ const SelectDeleteScreen = ({ route, navigation }) => {
   return (
     <SafeAreaView style={styles.screen}>
       <TopNavigation
-        title={displayName}
+        title="Delete Tenants"
         alignment="center"
         accessoryLeft={BackAction}
       />
@@ -144,11 +144,6 @@ const SelectDeleteScreen = ({ route, navigation }) => {
             <RefreshControl refreshing={listLoading} onRefresh={getTenants} />
           }
           ListEmptyComponent={renderEmptyComponent}
-          ListHeaderComponent={
-            <View style={styles.textContainer}>
-              <CustomText style={styles.text}>Delete Tenants</CustomText>
-            </View>
-          }
         />
         <View style={styles.buttonContainer}>
           <Button disabled={!selectedTenant} onPress={handleDeleteTenant}>
@@ -167,13 +162,6 @@ const styles = StyleService.create({
   },
   layout: {
     flex: 1,
-  },
-  textContainer: {
-    marginVertical: 10,
-  },
-  text: {
-    fontSize: 26,
-    fontFamily: "SFProDisplay-Bold",
   },
   contentContainer: {
     paddingHorizontal: 10,

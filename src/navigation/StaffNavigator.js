@@ -248,12 +248,12 @@ const ChooseTenantTopTabNavigator = ({ navigation }) => {
         <Screen
           name="Tenants"
           component={ChooseTenantScreen}
-          options={{ tabBarLabel: "Available" }}
+          options={{ tabBarLabel: "Available Tenants" }}
         />
         <Screen
           name="Saved"
           component={ChooseSavedScreen}
-          options={{ tabBarLabel: "Saved" }}
+          options={{ tabBarLabel: "Saved Checklists" }}
         />
       </Navigator>
     </View>
