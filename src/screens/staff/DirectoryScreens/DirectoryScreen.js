@@ -57,7 +57,7 @@ const DirectoryScreen = ({ navigation }) => {
         <EntityCard
           onPress={() => {
             handleNavigateTenants(
-              itemData.item.institutionID,
+              itemData.item._id,
               itemData.item.institutionName
             );
           }}
