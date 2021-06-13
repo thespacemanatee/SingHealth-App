@@ -1,12 +1,9 @@
 import React from "react";
-import { View } from "react-native";
 import { useDispatch } from "react-redux";
-import { StyleService } from "@ui-kitten/components";
 import moment from "moment";
 
 import * as checklistActions from "../store/actions/checklistActions";
-import CustomText from "./ui/CustomText";
-import ShadowCard from "./ui/ShadowCard";
+import EntityCard from "./EntityCard";
 import { handleErrorResponse } from "../helpers/utils";
 
 const NewChecklistCard = ({
@@ -46,31 +43,12 @@ const NewChecklistCard = ({
   };
 
   return (
-    <ShadowCard
-      style={styles.cardContainer}
-      status="info"
-      activeOpacity={0.5}
+    <EntityCard
       onPress={handleCreateNewChecklist}
-    >
-      <View>
-        <CustomText style={styles.stallNameText}>{item.stallName}</CustomText>
-      </View>
-    </ShadowCard>
+      displayName={item.stallName}
+      image={item.image}
+    />
   );
 };
 
 export default NewChecklistCard;
-
-const styles = StyleService.create({
-  cardContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    padding: 20,
-  },
-  item: {
-    // marginVertical: 4,
-  },
-  stallNameText: {
-    fontFamily: "SFProDisplay-Regular",
-  },
-});

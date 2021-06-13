@@ -54,9 +54,11 @@ const TenantsDirectoryScreen = ({ route, navigation }) => {
     (itemData) => {
       return (
         <EntityCard
-          onPress={handleOpenTenant}
+          onPress={() => {
+            handleOpenTenant(itemData.item.tenantID, itemData.item.stallName);
+          }}
           displayName={itemData.item.stallName}
-          _id={itemData.item.tenantID}
+          image={itemData.item.image}
         />
       );
     },
@@ -152,6 +154,11 @@ const styles = StyleService.create({
     // flexGrow: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
+  },
+  emptyComponent: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexGrow: 1,
   },
 });
 

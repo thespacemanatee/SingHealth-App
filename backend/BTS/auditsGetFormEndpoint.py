@@ -21,7 +21,8 @@ def addGetFormEndpoints(app, mongo):
                 result = [{
                     'tenantID': str(tenant['_id']),
                     'stallName': tenant["stallName"],
-                    'fnb': tenant["fnb"]
+                    'fnb': tenant["fnb"],
+                    'image': tenant.get('image', None)
                 }
                     for tenant in tenants]
 

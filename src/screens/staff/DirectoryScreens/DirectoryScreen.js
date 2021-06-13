@@ -55,9 +55,14 @@ const DirectoryScreen = ({ navigation }) => {
     (itemData) => {
       return (
         <EntityCard
-          onPress={handleNavigateTenants}
+          onPress={() => {
+            handleNavigateTenants(
+              itemData.item.institutionID,
+              itemData.item.institutionName
+            );
+          }}
           displayName={itemData.item.institutionName}
-          _id={itemData.item.institutionID}
+          image={itemData.item.image}
         />
       );
     },
@@ -137,6 +142,11 @@ const styles = StyleService.create({
     // flexGrow: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
+  },
+  emptyComponent: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexGrow: 1,
   },
 });
 

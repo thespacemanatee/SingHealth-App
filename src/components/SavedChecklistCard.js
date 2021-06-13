@@ -1,15 +1,12 @@
 import React, { useCallback } from "react";
 import { useDispatch } from "react-redux";
-import { View } from "react-native";
-import { StyleService } from "@ui-kitten/components";
 import moment from "moment";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import * as checklistActions from "../store/actions/checklistActions";
 import alert from "./CustomAlert";
-import CustomText from "./ui/CustomText";
-import ShadowCard from "./ui/ShadowCard";
+import EntityCard from "./EntityCard";
 import { handleErrorResponse } from "../helpers/utils";
 
 const SavedChecklistCard = ({ item, navigation, deleteSave, onLoading }) => {
@@ -52,40 +49,18 @@ const SavedChecklistCard = ({ item, navigation, deleteSave, onLoading }) => {
   }, [deleteSaved]);
 
   return (
-    <ShadowCard
-      style={styles.cardContainer}
-      status="info"
-      activeOpacity={0.5}
+    <EntityCard
       onPress={handleOpenSavedChecklist}
       onLongPress={longPressHandler}
-    >
-      <View>
-        <CustomText style={styles.stallNameText}>
-          {item.data.chosen_tenant.stallName}
-        </CustomText>
-        <CustomText style={styles.stallNameText}>
-          {moment(item.time).toLocaleString().split(" ").slice(0, 5).join(" ")}
-        </CustomText>
-      </View>
-    </ShadowCard>
+      displayName={item.data.chosen_tenant.stallName}
+      timestamp={moment(item.time)
+        .toLocaleString()
+        .split(" ")
+        .slice(0, 5)
+        .join(" ")}
+      image={item.image}
+    />
   );
 };
 
 export default SavedChecklistCard;
-
-const styles = StyleService.create({
-  cardContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    padding: 20,
-  },
-  deleteBox: {
-    // flex: 1,
-    justifyContent: "center",
-    alignItems: "flex-start",
-    // width: 100,
-  },
-  stallNameText: {
-    fontFamily: "SFProDisplay-Regular",
-  },
-});

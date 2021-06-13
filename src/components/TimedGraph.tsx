@@ -141,7 +141,7 @@ const TimedGraph = ({ label, type, id }) => {
     } catch (err) {
       dispatch(databaseActions.storeGraphData({}));
       if (isMounted()) {
-        setGraphData(null);
+        setGraphData(undefined);
       }
       handleErrorResponse(err);
     } finally {
