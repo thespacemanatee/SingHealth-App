@@ -58,15 +58,17 @@ const AddTenantContent = ({
   const handleSubmitForm = async (values) => {
     try {
       setLoading(true);
-      let data = {
+      let image: any;
+      if (imageAdded) {
+        const { fileName } = await uploadToS3(imageAdded);
+        image = fileName;
+      }
+      const data = {
         ...values,
         institutionID: authStore.institutionID,
         staffID: authStore._id,
+        image,
       };
-      if (imageAdded) {
-        const { fileName: image } = await uploadToS3(imageAdded);
-        data = { ...data, image };
-      }
 
       await dispatch(databaseActions.createNewTenant(data));
 
@@ -249,7 +251,7 @@ const styles = StyleService.create({
   },
   buttonContainer: {
     flex: 1,
-    marginBottom: MIN_HEADER_HEIGHT + 20,
+    marginBottom: MIN_HEADER_HEIGHT + 50,
     justifyContent: "flex-end",
   },
   toggleContainer: {

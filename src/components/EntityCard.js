@@ -31,10 +31,12 @@ const EntityCard = ({
       } else {
         const url = await getS3Image(image);
         const downloadImage = await FileSystem.downloadAsync(url, destination);
-        setImageUri(downloadImage);
+        setImageUri(downloadImage.uri);
       }
     };
-    getImage();
+    if (image) {
+      getImage();
+    }
   }, [image]);
 
   return (

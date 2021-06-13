@@ -164,6 +164,7 @@ const styles = StyleService.create({
     flex: 1,
   },
   contentContainer: {
+    flexGrow: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
   },
