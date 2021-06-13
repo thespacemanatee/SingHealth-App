@@ -1,7 +1,7 @@
 import React from "react";
 import { Text } from "@ui-kitten/components";
 
-const CustomText = ({ children, bold, ...props }) => {
+const CustomText = ({ children, bold = false, ...props }) => {
   return (
     <Text
       {...props}

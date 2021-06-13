@@ -20,14 +20,8 @@ const initialState = {
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case RESTORE_TOKEN: {
-      const {
-        userType,
-        _id,
-        email,
-        institutionID,
-        name,
-        stallName,
-      } = action.userData;
+      const { userType, _id, email, institutionID, name, stallName } =
+        action.userData;
 
       return {
         ...state,
@@ -41,14 +35,8 @@ const authReducer = (state = initialState, action) => {
       };
     }
     case SIGN_IN: {
-      const {
-        userType,
-        _id,
-        email,
-        institutionID,
-        name,
-        stallName,
-      } = action.userData;
+      const { userType, _id, email, institutionID, name, stallName } =
+        action.userData;
       return {
         ...state,
         isSignOut: false,

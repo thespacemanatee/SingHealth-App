@@ -1171,6 +1171,7 @@ The staff to add new tenant.
 | --------------- | -------------------------------------------------------- |
 | `name`          | Tenant's full name in upper case.                        |
 | `stallName`     | Name of the stall.                                       |
+`image` | The filename of the profile photo. Optional.
 | `email`         | The user email of a tenant. Unique email for each tenant |
 | `pswd`          | The password credentials for a tenant.                   |
 | `fnb`           | Whether the stall is an F&B stall.                       |
@@ -1200,12 +1201,13 @@ The staff to add new tenant.
 }
 ```
 
-#### With all compulsory data
+#### With all data
 
 ```js
 {
     "name": "myname",
     "stallName": "mystall",
+    "image": "profilePhoto.png",
     "email": "myemail.gg.com",
     "pswd": "mypassword",
     "institutionID": "myinstitution",
@@ -1390,6 +1392,7 @@ http://127.0.0.1:5000/tenant?tenantID=6074222a576f86e1952e8be1
         "name": "myname",
         "pswd": "mypassword",
         "stallName": "mystall",
+        "image": null,
         "tenantDateEnd": "12/2025",
         "tenantDateStart": "01/2021"
     }

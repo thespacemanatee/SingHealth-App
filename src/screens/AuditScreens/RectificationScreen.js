@@ -306,9 +306,9 @@ const RectificationScreen = ({ route, navigation }) => {
           ListEmptyComponent={renderEmptyComponent}
         />
         <View style={styles.bottomContainer}>
+          <CustomText bold>Filter by: </CustomText>
           <Chip
             style={styles.chipContainer}
-            icon="filter-outline"
             selected={compliantFilter}
             onPress={handleCompliantFilter}
             onClose={createNewSections}
@@ -317,7 +317,6 @@ const RectificationScreen = ({ route, navigation }) => {
           </Chip>
           <Chip
             style={styles.chipContainer}
-            icon="filter-outline"
             selected={nonCompliantFilter}
             onPress={handleNonCompliantFilter}
             onClose={createNewSections}

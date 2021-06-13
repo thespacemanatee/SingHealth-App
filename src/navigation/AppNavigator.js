@@ -49,7 +49,8 @@ const AppNavigator = () => {
                       QuestionDetails: "staff/new-audit/details",
                       AuditSubmit: "staff/new-audit/submit",
                       Rectification: "staff/rectification/:stallName",
-                      RectificationDetails: "staff/rectification/details",
+                      RectificationDetails:
+                        "staff/rectification/details:index:checklistType:section",
                       StaffRectification: "staff/rectification/status",
                     },
                   },
@@ -60,7 +61,8 @@ const AppNavigator = () => {
                         "staff/directory/institution/:institutionID",
                       TenantInfo: "staff/directory/stall/:tenantID",
                       Rectification: "staff/directory/stall/:stallName",
-                      RectificationDetails: "staff/directory/stall/details",
+                      RectificationDetails:
+                        "staff/directory/stall/details:index:checklistType:section",
                       StaffRectification: "staff/directory/stall/status",
                     },
                   },
@@ -94,7 +96,8 @@ const AppNavigator = () => {
                         },
                       },
                       Rectification: "tenant/rectification/:stallName",
-                      RectificationDetails: "tenant/rectification/details",
+                      RectificationDetails:
+                        "tenant/rectification/details:index:checklistType:section",
                       TenantRectification: "tenant/rectification/status",
                     },
                   },
@@ -103,7 +106,7 @@ const AppNavigator = () => {
                       TenantRecords: "tenant/records",
                       Rectification: "tenant/records/rectification/:stallName",
                       RectificationDetails:
-                        "tenant/records/rectification/:stallName/details",
+                        "tenant/records/rectification/:stallName/details:index:checklistType:section",
                       TenantRectification:
                         "tenant/records/rectification/status",
                     },

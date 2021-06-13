@@ -10,6 +10,7 @@ import {
   StyleService,
   Button,
 } from "@ui-kitten/components";
+import { SafeAreaView } from "react-native-safe-area-context";
 import useMountedState from "react-use/lib/useMountedState";
 import { RefreshControl } from "react-native-web-refresh-control";
 
@@ -81,9 +82,10 @@ const SelectDeleteScreen = ({ route, navigation }) => {
     (itemData) => {
       return (
         <EntityCard
-          onPress={handleSelectTenant}
+          onPress={() => {
+            handleSelectTenant(itemData.item.stallName, itemData.item.tenantID);
+          }}
           displayName={itemData.item.stallName}
-          _id={itemData.item.tenantID}
         />
       );
     },
@@ -123,7 +125,7 @@ const SelectDeleteScreen = ({ route, navigation }) => {
     );
 
   return (
-    <View style={styles.screen}>
+    <SafeAreaView style={styles.screen}>
       <TopNavigation
         title={displayName}
         alignment="center"
@@ -153,13 +155,14 @@ const SelectDeleteScreen = ({ route, navigation }) => {
           </Button>
         </View>
       </Layout>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleService.create({
   screen: {
     flex: 1,
+    backgroundColor: "white",
   },
   layout: {
     flex: 1,

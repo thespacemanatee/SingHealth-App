@@ -36,6 +36,7 @@ const ExpandImagesScreen = ({ route, navigation }) => {
   const windowDimensions = useWindowDimensions();
   const { width, height } = windowDimensions;
   const { height: screenHeight } = Dimensions.get("screen");
+  const IMAGE_WIDTH = (height / 4) * 3;
 
   const handleClose = () => {
     if (Platform.OS === "web") {
@@ -70,6 +71,7 @@ const ExpandImagesScreen = ({ route, navigation }) => {
 
   const renderImages = useCallback(
     (itemData) => {
+      const position = (width - IMAGE_WIDTH) / 2;
       return (
         <View
           style={{
@@ -79,12 +81,20 @@ const ExpandImagesScreen = ({ route, navigation }) => {
         >
           <Image
             source={{ uri: itemData.item }}
-            style={StyleSheet.absoluteFillObject}
+            style={[
+              StyleSheet.absoluteFillObject,
+              // eslint-disable-next-line react-native/no-inline-styles
+              {
+                width,
+                maxWidth: IMAGE_WIDTH,
+                left: position > 0 ? position : 0,
+              },
+            ]}
           />
         </View>
       );
     },
-    [height, width]
+    [IMAGE_WIDTH, height, screenHeight, width]
   );
 
   const renderThumbnail = useCallback(
@@ -127,7 +137,6 @@ const ExpandImagesScreen = ({ route, navigation }) => {
           }}
           horizontal
           pagingEnabled
-          showsHorizontalScrollIndicator={Platform.OS === "web"}
         />
         <FlatList
           ref={thumbRef}
@@ -135,7 +144,6 @@ const ExpandImagesScreen = ({ route, navigation }) => {
           keyExtractor={(item, index) => String(index)}
           renderItem={renderThumbnail}
           horizontal
-          showsHorizontalScrollIndicator={Platform.OS === "web"}
           style={styles.thumbnailList}
           contentContainerStyle={{ paddingHorizontal: SPACING }}
         />

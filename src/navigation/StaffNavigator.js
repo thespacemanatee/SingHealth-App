@@ -36,7 +36,6 @@ import * as authActions from "../store/actions/authActions";
 import * as checklistActions from "../store/actions/checklistActions";
 import * as databaseActions from "../store/actions/databaseActions";
 import ManageTenantAccountsScreen from "../screens/staff/AddTenantScreens/ManageTenantAccountsScreen";
-import CreateTenantScreen from "../screens/staff/AddTenantScreens/CreateTenantScreen";
 import ExpandImagesScreen from "../screens/ExpandImagesScreen";
 import TenantInfoScreen from "../screens/TenantInfoScreen";
 import DeleteTenantScreen from "../screens/staff/AddTenantScreens/DeleteTenantScreen";
@@ -44,6 +43,7 @@ import SelectDeleteScreen from "../screens/staff/AddTenantScreens/SelectDeleteSc
 import { stackTransition, modalTransition } from "../helpers/config";
 import UnreadScreen from "../screens/NotificationScreens/UnreadScreen";
 import ReadScreen from "../screens/NotificationScreens/ReadScreen";
+import CreateTenantScreen from "../screens/staff/AddTenantScreens/CreateTenantScreen";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const DashboardIcon = (props) => <Icon {...props} name="home-outline" />;
@@ -263,17 +263,15 @@ const ChooseTenantTopTabNavigator = ({ navigation }) => {
 const AddTenantStackNavigator = () => {
   const { Navigator, Screen } = createStackNavigator();
   return (
-    <SafeAreaView style={styles.screen}>
-      <Navigator headerMode="none" screenOptions={stackTransition}>
-        <Screen
-          name="ManageTenantAccounts"
-          component={ManageTenantAccountsScreen}
-        />
-        <Screen name="CreateTenant" component={CreateTenantScreen} />
-        <Screen name="DeleteTenant" component={DeleteTenantScreen} />
-        <Screen name="SelectDelete" component={SelectDeleteScreen} />
-      </Navigator>
-    </SafeAreaView>
+    <Navigator headerMode="none" screenOptions={stackTransition}>
+      <Screen
+        name="ManageTenantAccounts"
+        component={ManageTenantAccountsScreen}
+      />
+      <Screen name="CreateTenant" component={CreateTenantScreen} />
+      <Screen name="DeleteTenant" component={DeleteTenantScreen} />
+      <Screen name="SelectDelete" component={SelectDeleteScreen} />
+    </Navigator>
   );
 };
 

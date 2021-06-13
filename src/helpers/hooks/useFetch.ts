@@ -18,6 +18,7 @@ const useFetch = (url: string, options: AxiosRequestConfig) => {
       }
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return { response, error };
 };

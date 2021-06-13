@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Platform, useWindowDimensions } from "react-native";
 import {
   PanGestureHandler,
@@ -13,7 +13,6 @@ import Animated, {
   runOnJS,
   EasingNode,
 } from "react-native-reanimated";
-import useForceUpdate from "../../../helpers/hooks/useForceUpdate";
 
 import { Path } from "../../AnimatedHelpers";
 
@@ -91,12 +90,6 @@ const Cursor = ({ path, length, point }: CursorProps) => {
     }
   };
 
-  const forceUpdate = useForceUpdate();
-
-  const reRender = useCallback(() => {
-    forceUpdate();
-  }, [forceUpdate]);
-
   const onGestureEvent = useAnimatedGestureHandler<
     PanGestureHandlerGestureEvent,
     {
@@ -106,9 +99,6 @@ const Cursor = ({ path, length, point }: CursorProps) => {
   >({
     onStart: (_event, ctx) => {
       runOnJS(fadeIn)();
-      if (Platform.OS !== "web") {
-        runOnJS(reRender)();
-      }
       ctx.offsetX = interpolate(
         length.value,
         [0, path.length],
@@ -117,9 +107,6 @@ const Cursor = ({ path, length, point }: CursorProps) => {
       );
     },
     onActive: (event, ctx) => {
-      if (Platform.OS === "web") {
-        runOnJS(reRender)();
-      }
       // eslint-disable-next-line no-param-reassign
       length.value = interpolate(
         ctx.offsetX + event.translationX,
@@ -130,9 +117,6 @@ const Cursor = ({ path, length, point }: CursorProps) => {
     },
     onEnd: ({ velocityX }) => {
       runOnJS(fadeOut)();
-      if (Platform.OS !== "web") {
-        runOnJS(reRender)();
-      }
       // eslint-disable-next-line no-param-reassign
       length.value = withDecay({
         velocity: velocityX,

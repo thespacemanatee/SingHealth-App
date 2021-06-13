@@ -24,6 +24,7 @@ import CustomText from "../../components/ui/CustomText";
 import SkeletonLoading from "../../components/ui/loading/SkeletonLoading";
 import useHandleScroll from "../../helpers/hooks/useHandleScroll";
 import TimedGraph from "../../components/TimedGraph";
+import AuditsHeader from "../../components/AuditsHeader";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
@@ -33,6 +34,8 @@ const StaffDashboardScreen = ({ navigation }) => {
   const databaseStore = useSelector((state) => state.database);
   const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(false);
+  const [sortedListData, setSortedListData] = useState([]);
+  const [orderedBy, setOrderedBy] = useState("Oldest");
   const [error, setError] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
 
@@ -183,6 +186,46 @@ const StaffDashboardScreen = ({ navigation }) => {
     };
   }, [getListData, getNotifications, navigation]);
 
+  useEffect(() => {
+    const temp = [...databaseStore.activeAudits];
+    switch (orderedBy) {
+      case "Oldest":
+        setSortedListData(
+          temp.sort((a, b) => {
+            return a.auditMetadata.date.$date - b.auditMetadata.date.$date;
+          })
+        );
+        break;
+
+      case "Newest":
+        setSortedListData(
+          temp.sort((a, b) => {
+            return b.auditMetadata.date.$date - a.auditMetadata.date.$date;
+          })
+        );
+        break;
+
+      case "Increasing Score":
+        setSortedListData(
+          temp.sort((a, b) => {
+            return a.auditMetadata.score - b.auditMetadata.score;
+          })
+        );
+        break;
+
+      case "Decreasing Score":
+        setSortedListData(
+          temp.sort((a, b) => {
+            return b.auditMetadata.score - a.auditMetadata.score;
+          })
+        );
+        break;
+
+      default:
+        break;
+    }
+  }, [orderedBy, databaseStore.activeAudits]);
+
   return (
     <View style={styles.screen}>
       <TopNavigation
@@ -197,7 +240,7 @@ const StaffDashboardScreen = ({ navigation }) => {
         <FlatList
           contentContainerStyle={styles.contentContainer}
           keyExtractor={(item, index) => String(index)}
-          data={databaseStore.activeAudits}
+          data={sortedListData}
           renderItem={renderActiveAudits}
           onScroll={handleScroll}
           refreshControl={
@@ -210,11 +253,13 @@ const StaffDashboardScreen = ({ navigation }) => {
           ListHeaderComponent={
             <>
               <TimedGraph label="Average Scores (All Institutions)" />
-              <View style={styles.textContainer}>
-                <CustomText style={styles.text}>
-                  Rectification Progress
-                </CustomText>
-              </View>
+              <AuditsHeader
+                label="Rectification Progress"
+                onOldestPress={(type) => setOrderedBy(type)}
+                onNewestPress={(type) => setOrderedBy(type)}
+                onIncreasingScorePress={(type) => setOrderedBy(type)}
+                onDecreasingScorePress={(type) => setOrderedBy(type)}
+              />
             </>
           }
         />
