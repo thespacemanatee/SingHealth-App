@@ -56,9 +56,13 @@ const DeleteTenantScreen = ({ navigation }) => {
     (itemData) => {
       return (
         <EntityCard
-          onPress={handleNavigateTenants}
+          onPress={() => {
+            handleNavigateTenants(
+              itemData.item.institutionID,
+              itemData.item.institutionName
+            );
+          }}
           displayName={itemData.item.institutionName}
-          _id={itemData.item.institutionID}
         />
       );
     },
@@ -142,6 +146,11 @@ const styles = StyleService.create({
   contentContainer: {
     paddingHorizontal: 10,
     paddingVertical: 10,
+  },
+  emptyComponent: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexGrow: 1,
   },
 });
 

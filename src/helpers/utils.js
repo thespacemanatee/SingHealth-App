@@ -114,12 +114,6 @@ export const processAuditForms = async (checklist) => {
         if (images.length === 0) {
           delete question.images;
         } else {
-          await Promise.all(
-            images.map(() => {
-              return httpClient(`${endpoint}/images/upload-url`);
-            })
-          );
-
           const res = await Promise.all(
             images.map((e) => {
               return uploadToS3(e);
@@ -141,7 +135,7 @@ export const processAuditForms = async (checklist) => {
 };
 
 export const saveDestination = async (id, imageData) => {
-  const fileName = `${`${id}${Math.round(Date.now() * Math.random())}`}.jpg`;
+  const fileName = `${`${id}_${Math.round(Date.now() * Math.random())}`}.jpg`;
   let destination;
   if (Platform.OS === "web") {
     destination = imageData.uri;

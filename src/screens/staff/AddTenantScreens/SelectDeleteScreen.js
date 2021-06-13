@@ -82,9 +82,10 @@ const SelectDeleteScreen = ({ route, navigation }) => {
     (itemData) => {
       return (
         <EntityCard
-          onPress={handleSelectTenant}
+          onPress={() => {
+            handleSelectTenant(itemData.item.stallName, itemData.item.tenantID);
+          }}
           displayName={itemData.item.stallName}
-          _id={itemData.item.tenantID}
         />
       );
     },

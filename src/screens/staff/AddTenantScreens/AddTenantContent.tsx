@@ -22,7 +22,7 @@ import * as ImagePicker from "expo-image-picker";
 
 import CustomTextInput from "../../../components/CustomTextInput";
 import * as databaseActions from "../../../store/actions/databaseActions";
-import { handleErrorResponse } from "../../../helpers/utils";
+import { handleErrorResponse, uploadToS3 } from "../../../helpers/utils";
 import CenteredLoading from "../../../components/ui/CenteredLoading";
 import {
   MIN_HEADER_HEIGHT,
@@ -56,13 +56,14 @@ const AddTenantContent = ({
   };
 
   const handleSubmitForm = async (values) => {
-    // TODO: handle imageAdded
     try {
       setLoading(true);
+      const { fileName } = await uploadToS3(imageAdded);
       const data = {
         ...values,
         institutionID: authStore.institutionID,
         staffID: authStore._id,
+        ...(imageAdded && { image: fileName }),
       };
 
       await dispatch(databaseActions.createNewTenant(data));
