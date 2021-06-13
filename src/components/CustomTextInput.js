@@ -4,7 +4,7 @@ import { Input, useTheme } from "@ui-kitten/components";
 
 import CustomText from "./ui/CustomText";
 
-const CustomTextInput = ({ errorText, description, ...props }) => {
+const CustomTextInput = ({ errorText, description = null, ...props }) => {
   const theme = useTheme();
 
   return (

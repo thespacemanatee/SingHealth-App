@@ -9,6 +9,7 @@ import {
   StyleService,
   Icon,
 } from "@ui-kitten/components";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import Logo from "../../../components/ui/Logo";
 
@@ -33,7 +34,7 @@ const ManageTenantAccountsScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.screen}>
+    <SafeAreaView style={styles.screen}>
       <TopNavigation
         title="Manage Tenant Accounts"
         alignment="center"
@@ -51,13 +52,14 @@ const ManageTenantAccountsScreen = ({ navigation }) => {
           </Button>
         </View>
       </Layout>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleService.create({
   screen: {
     flex: 1,
+    backgroundColor: "white",
   },
   layout: {
     flex: 1,

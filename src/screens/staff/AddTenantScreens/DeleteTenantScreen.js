@@ -9,6 +9,7 @@ import {
   TopNavigationAction,
   StyleService,
 } from "@ui-kitten/components";
+import { SafeAreaView } from "react-native-safe-area-context";
 import useMountedState from "react-use/lib/useMountedState";
 import { RefreshControl } from "react-native-web-refresh-control";
 
@@ -104,7 +105,7 @@ const DeleteTenantScreen = ({ navigation }) => {
     );
 
   return (
-    <View style={styles.screen}>
+    <SafeAreaView style={styles.screen}>
       <TopNavigation
         title="Delete Tenant"
         alignment="center"
@@ -126,13 +127,14 @@ const DeleteTenantScreen = ({ navigation }) => {
           ListEmptyComponent={renderEmptyComponent}
         />
       </Layout>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleService.create({
   screen: {
     flex: 1,
+    backgroundColor: "white",
   },
   layout: {
     flex: 1,
