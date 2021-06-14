@@ -101,7 +101,7 @@ const EntityCard = ({
       )}
       <LinearGradient
         style={StyleSheet.absoluteFill}
-        start={[1, 0]}
+        start={[1, 2]}
         end={[0, 1]}
         colors={["'rgba(255, 255, 255, 0)'", "rgba(255, 255, 255, 0.8)"]}
       />
