@@ -1,12 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Image, useWindowDimensions } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  useWindowDimensions,
+  Platform,
+} from "react-native";
 import { StyleService, useTheme } from "@ui-kitten/components";
 import { LinearGradient } from "expo-linear-gradient";
 import * as FileSystem from "expo-file-system";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 import CustomText from "./ui/CustomText";
 import ShadowCard from "./ui/ShadowCard";
-import { getS3Image } from "../helpers/utils";
+import { getS3Image, blobToBase64 } from "../helpers/utils";
 
 const CARD_HEIGHT = 100;
 
@@ -34,8 +42,37 @@ const EntityCard = ({
         setImageUri(downloadImage.uri);
       }
     };
+    const getImageWeb = async () => {
+      const imageCache = await AsyncStorage.getItem("imageCache");
+      if (imageCache === null) {
+        const url = await getS3Image(image);
+        const uri = await axios(url, { responseType: "blob" });
+        const base64Image = await blobToBase64(uri.data);
+        setImageUri(base64Image);
+        AsyncStorage.setItem(
+          "imageCache",
+          JSON.stringify({ [image]: JSON.stringify(base64Image) })
+        );
+      } else {
+        const cacheJson = JSON.parse(imageCache);
+        if (cacheJson[image]) {
+          setImageUri(JSON.parse(cacheJson[image]));
+        } else {
+          const url = await getS3Image(image);
+          const uri = await axios(url, { responseType: "blob" });
+          const base64Image = await blobToBase64(uri.data);
+          setImageUri(base64Image);
+          cacheJson[image] = JSON.stringify(base64Image);
+          AsyncStorage.setItem("imageCache", JSON.stringify(cacheJson));
+        }
+      }
+    };
     if (image) {
-      getImage();
+      if (Platform.OS === "web") {
+        getImageWeb();
+      } else {
+        getImage();
+      }
     } else {
       setImageUri(null);
     }
