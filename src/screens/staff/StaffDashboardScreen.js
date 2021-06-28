@@ -25,6 +25,7 @@ import SkeletonLoading from "../../components/ui/loading/SkeletonLoading";
 import useHandleScroll from "../../helpers/hooks/useHandleScroll";
 import TimedGraph from "../../components/TimedGraph";
 import AuditsHeader from "../../components/AuditsHeader";
+import AnimatedFab from "../../components/ui/AnimatedFab";
 
 const DrawerIcon = (props) => <Icon {...props} name="menu-outline" />;
 const NotificationIcon = (props) => <Icon {...props} name="bell-outline" />;
@@ -265,9 +266,10 @@ const StaffDashboardScreen = ({ navigation }) => {
           }
         />
 
-        <FAB
+        <AnimatedFab
           icon="plus"
-          label={showButton ? "New Audit" : null}
+          label="New Audit"
+          showLabel={showButton}
           style={styles.fab}
           onPress={() => {
             navigation.navigate("ChooseTenant");
