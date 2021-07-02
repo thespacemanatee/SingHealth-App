@@ -37,7 +37,7 @@
     "expo-font": "~9.1.0",
     "expo-image-picker": "~10.1.4",
     "expo-linear-gradient": "~9.1.0",
-    "expo-notifications": "~0.11.6",
+    "expo-notifications": "~0.12.2",
     "formik": "^2.2.9",
     "lodash": "^4.17.21",
     "lottie-react-native": "^4.0.2",
