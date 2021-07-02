@@ -36,7 +36,7 @@
     "expo-file-system": "~11.0.2",
     "expo-font": "~9.1.0",
     "expo-image-picker": "~10.1.4",
-    "expo-linear-gradient": "~9.1.0",
+    "expo-linear-gradient": "~9.2.0",
     "expo-notifications": "~0.11.6",
     "formik": "^2.2.9",
     "lodash": "^4.17.21",
