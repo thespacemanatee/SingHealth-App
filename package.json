@@ -33,7 +33,7 @@
     "expo-app-loading": "^1.0.3",
     "expo-camera": "~11.0.3",
     "expo-constants": "~10.1.3",
-    "expo-file-system": "~11.0.2",
+    "expo-file-system": "~11.1.3",
     "expo-font": "~9.1.0",
     "expo-image-picker": "~10.1.4",
     "expo-linear-gradient": "~9.1.0",
