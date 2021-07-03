@@ -11,7 +11,7 @@ import {
   useStyleSheet,
 } from "@ui-kitten/components";
 import moment from "moment";
-import { FAB, Badge } from "react-native-paper";
+import { Badge } from "react-native-paper";
 import useMountedState from "react-use/lib/useMountedState";
 import { RefreshControl } from "react-native-web-refresh-control";
 

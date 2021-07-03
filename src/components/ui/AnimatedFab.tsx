@@ -102,7 +102,7 @@ const AnimatedFab = ({
     } else {
       progress.value = withTiming(0, { duration: 100 });
     }
-  }, [showLabel]);
+  }, [progress, showLabel]);
 
   return (
     <AnimatedTouchableOpacity

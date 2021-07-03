@@ -9,18 +9,20 @@ import {
 
 import CustomText from "./ui/CustomText";
 
-const AuditsHeader = ({
-  label,
-  onNewestPress,
-  onOldestPress,
-  onIncreasingScorePress,
-  onDecreasingScorePress,
-}: {
+interface AuditHeaderProps {
   label: string;
   onNewestPress: (type: string) => void;
   onOldestPress: (type: string) => void;
   onIncreasingScorePress: (type: string) => void;
   onDecreasingScorePress: (type: string) => void;
+}
+
+const AuditsHeader: React.FC<AuditHeaderProps> = ({
+  label,
+  onNewestPress,
+  onOldestPress,
+  onIncreasingScorePress,
+  onDecreasingScorePress,
 }) => {
   const [visible, setVisible] = useState(false);
   const [orderedBy, setOrderedBy] = useState("Oldest");

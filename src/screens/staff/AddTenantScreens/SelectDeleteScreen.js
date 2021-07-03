@@ -29,7 +29,7 @@ const SelectDeleteScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
   const [selectedTenant, setSelectedTenant] = useState(false);
-  const { institutionID, displayName } = route.params;
+  const { institutionID } = route.params;
 
   const isMounted = useMountedState();
 
