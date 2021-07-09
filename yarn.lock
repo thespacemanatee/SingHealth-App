@@ -1566,27 +1566,10 @@
     xcode "^3.0.0"
     xml-js "^1.6.11"
 
-"@expo/image-utils@0.3.14", "@expo/image-utils@~0.3.14":
+"@expo/image-utils@0.3.14", "@expo/image-utils@^0.3.10", "@expo/image-utils@~0.3.14":
   version "0.3.14"
   resolved "https://registry.yarnpkg.com/@expo/image-utils/-/image-utils-0.3.14.tgz#eea0d59c5845e8b19504011c20afd837c5d044c5"
   integrity sha512-n+JkLZ71CWuNKLVVsPTzMGRwmbeKiVQw/2b99Ro7znCKzJy3tyE5T2C6WBvYh/5h/hjg8TqEODjXXWucRIzMXA==
-  dependencies:
-    "@expo/spawn-async" "1.5.0"
-    chalk "^4.0.0"
-    fs-extra "9.0.0"
-    getenv "^1.0.0"
-    jimp "0.12.1"
-    mime "^2.4.4"
-    node-fetch "^2.6.0"
-    parse-png "^2.1.0"
-    resolve-from "^5.0.0"
-    semver "7.3.2"
-    tempy "0.3.0"
-
-"@expo/image-utils@^0.3.10":
-  version "0.3.11"
-  resolved "https://registry.yarnpkg.com/@expo/image-utils/-/image-utils-0.3.11.tgz#2a2ddf48af14eb0faf5b1b296b16eb6518b22d79"
-  integrity sha512-JH5/FExvEsz9H9QsgoOEN3QYqH9V50dKjpkwTkytXLutD5Z587xSRka57pbX+d4nkHqiQBT0W8buUkbma78NYg==
   dependencies:
     "@expo/spawn-async" "1.5.0"
     chalk "^4.0.0"
@@ -5690,10 +5673,10 @@ expo-modules-core@~0.2.0:
   resolved "https://registry.yarnpkg.com/expo-modules-core/-/expo-modules-core-0.2.0.tgz#68e5b6e53d0afbf8d131578831aed657589a2d42"
   integrity sha512-inpfZ5X/BaTtbj2wG9PA9AC0MN8VyId6KSRlVuEg7+ziurHBy/kKDFxpOddUokhwiln2uhoYPSStJjR/tKypdw==
 
-expo-notifications@~0.12.2:
-  version "0.12.2"
-  resolved "https://registry.yarnpkg.com/expo-notifications/-/expo-notifications-0.12.2.tgz#54b29b522e0a441f44b2749d86d3e9448f1f423d"
-  integrity sha512-SCI2nBdhZXZxR2LR4/ixcit/tNOkC7eHD+fWkTpxky/I4ZSBCpP/nhrdD5Sr0G3o/r86/OSXY8XRRrp2pKG8iA==
+expo-notifications@~0.12.3:
+  version "0.12.3"
+  resolved "https://registry.yarnpkg.com/expo-notifications/-/expo-notifications-0.12.3.tgz#19a574a05634540670a69e242de5c8cb3b8d14d5"
+  integrity sha512-4N8uoDJwYYXeIH+iGtjA9H6dF4yaEdDyFoYcUbHwsC1MUCL9CquDXpxoO1X2GCBFpwE0kqkyXTOCDqLAQlj5PA==
   dependencies:
     "@expo/config-plugins" "^3.0.0"
     "@expo/image-utils" "^0.3.10"
