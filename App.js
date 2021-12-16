@@ -37,7 +37,7 @@ const paperTheme = {
   colors: {
     ...DefaultTheme.colors,
     primary: "#FD8352",
-    accent: "#FC4A1A",
+    accent: "#FC4C1A",
   },
 };
 
